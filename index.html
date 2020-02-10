@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+<title>OpenCore 参考手册(简体中文) | Open Core 中文文档 | Sukka</title>
+<meta name="generator" content="Hexo 4.2.0">
+<meta http-equiv="x-dns-prefetch-control" content="on">
+<meta name="description" content="Open Core 文档简体中文翻译">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="shortcut icon" href="/favicon.ico">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.8.0/css/bulma.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.11.2/css/all.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.16.2/styles/github.min.css">
+<link rel="stylesheet" href="/theme-doku/css/doku.css">
+
+</head>
+
+<body>
+    
+
+<nav id="doku-navbar" class="navbar is-spaced has-shadow">
+    <div class="container">
+        <div class="navbar-brand">
+            <!-- burger btn -->
+            <a role="button" class="navbar-burger burger" id="doku-sidebar-toggle">
+                <span aria-hidden="true"></span>
+                <span aria-hidden="true"></span>
+                <span aria-hidden="true"></span>
+            </a>
+
+            <a class="navbar-item" href="https://oc.skk.moe">
+                <h1 class="doku-navbar-title">
+                    <img src="/logo/navbar.png" height="28">
+                    <span class="is-size-4"></span>
+                </h1>
+            </a>
+        </div>
+        <div class="navbar-menu">
+            <div class="navbar-start">
+                
+                    <a class="navbar-item" href="https://github.com/SukkaW/OpenCore-Document-zh_Hans" target="_blank" rel="noopener">
+                        
+                            <span class="icon">
+                                <i class="fab fa-github"></i>
+                            </span>
+                        
+                        
+                    </a>
+                
+                <!-- navbar link -->
+                <!--<a class="navbar-item">
+                Home
+            </a>-->
+            </div>
+            <!-- i18n switch -->
+            <div class="navbar-end">
+                <!--<div class="navbar-item">
+                    <div class="dropdown is-right is-hoverable">
+                        <div class="dropdown-trigger">
+                            <button class="button" id="navbar-i18n-btn">
+                                <span class="icon is-small">
+                                    <i class="fas fa-globe-americas" aria-hidden="true"></i>
+                                </span>
+                                <span>Language</span>
+                                <span class="icon is-small">
+                                    <i class="fas fa-angle-down" aria-hidden="true"></i>
+                                </span>
+                            </button>
+                        </div>
+                        <div class="dropdown-menu">
+                            <div class="dropdown-content">
+                                <a href="#" class="dropdown-item">
+                                    Dropdown item
+                                </a>
+                                <a class="dropdown-item">
+                                    Other dropdown item
+                                </a>
+                                <a href="#" class="dropdown-item">
+                                    Active dropdown item
+                                </a>
+                                <a href="#" class="dropdown-item">
+                                    Other dropdown item
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>-->
+            </div>
+        </div>
+    </div>
+</nav>
+
+
+    <div class="container-fluid">
+        <section class="main-content">
+            
+
+
+<aside class="doku-sidebar" id="doku-sidebar">
+    <div class="doku-sidebar-content">
+        <div class="menu">
+            
+                <ul class="menu-list is-hidden-desktop">
+                    
+                        
+                    
+                </ul>
+            
+            <hr class="is-hidden-desktop">
+            
+                
+                    <ul class="menu-list">
+                        
+                            <li><a class="is-current" href="/">0. 首页</a></li>
+                        
+                            <li><a  href="/1-introduction.html">1. 简介</a></li>
+                        
+                            <li><a  href="/2-configuration.html">2. 配置</a></li>
+                        
+                            <li><a  href="/3-setup.html">3. 设定</a></li>
+                        
+                            <li><a  href="/4-acpi.html">4. ACPI</a></li>
+                        
+                            <li><a  href="/5-booter.html">5. Booter</a></li>
+                        
+                            <li><a  href="/6-device-properties.html">6. DeviceProperties</a></li>
+                        
+                            <li><a  href="/7-kernel.html">7. Kernel</a></li>
+                        
+                            <li><a  href="/8-misc.html">8. Misc</a></li>
+                        
+                            <li><a  href="/9-nvram.html">9. NVRAM</a></li>
+                        
+                            <li><a  href="/10-platform-info.html">10. PlatformInfo</a></li>
+                        
+                            <li><a  href="/11-uefi.md">11. UEFI</a></li>
+                        
+                            <li><a  href="/12-troubleshooting.html">12. 排错</a></li>
+                        
+                    </ul>
+                
+            
+        </div>
+    </div>
+</aside>
+
+            <main class="is-paddingless doku-main-wrapper" id="doku-main">
+                
+
+<article class="doku-document-container clearfix">
+    <header class="hero is-light" id="doku-document-hero">
+        <div class="hero-body">
+            <h1 class="title">OpenCore 参考手册(简体中文)</h1>
+            
+                <p class="subtitle">非官方维护的 OpenCore 参考手册的简体中文翻译</p>
+            
+            
+                <a href="https://github.com/sukkaw/OpenCore-Document-zh_Hans/tree/master/source/index.md" target="_blank" rel="external nofollow noreferrer noopener" class="button is-small is-rounded is-black"><span class="icon is-small"><i class="fab fa-github"></i></span><span>在 GitHub 上编辑</span></a>
+            
+        </div>
+    </header>
+    <div class="columns">
+        <div class="column is-9-tablet doku-document-wrapper">
+            <div class="content">
+                <p><br><br></p>
+<div align="center">
+<img src="/logo/opencore.png" alt="Open Core Logo" width="128px">
+
+<h1 id="OpenCore"><a href="#OpenCore" class="headerlink" title="OpenCore"></a>OpenCore</h1><h2 id="参考手册（v0-5-6）"><a href="#参考手册（v0-5-6）" class="headerlink" title="参考手册（v0.5.6）"></a>参考手册（v0.5.6）</h2></div>
+<br><br><br>
+
+<hr>
+<h2 id="阅读须知"><a href="#阅读须知" class="headerlink" title="阅读须知"></a>阅读须知</h2><p>你现在访问的是由 <strong>非官方</strong> 维护的 OpenCore 参考手册的简体中文翻译（以下简称本网站）。</p>
+<p><strong>本网站以及网站的维护人员和 OpenCore 的开发团队 <code>acidanthera</code> 没有任何关系</strong>。本网站对 Open Core 的 Logo（商标）的使用已经过 <code>acidanthera</code> 的授权。</p>
+<p>由于 OpenCore 仍处于积极的维护之中，OpenCore 参考手册 仍然在高频率更新，本网站提供的内容 <strong>仅可供参考</strong>。本网站的内容和 OpenCore 官方的参考手册的任何出入，<strong>请以 OpenCore 官方的参考手册为准</strong>。</p>
+<p>本网站以及 <code>acidanthera</code> <strong>不会对因本网站引起的任何损失负责</strong>，包括但不限于 Kernel Panic、设备无法开机或正常使用、硬盘损坏或数据丢失、原子弹爆炸、第三次世界大战、<a href="https://scp-wiki-cn.wikidot.com/" target="_blank" rel="noopener">SCP 基金会</a> 无法阻止的全球 CK 级现实重构等。</p>
+<blockquote>
+<p>本网站翻译基于如下描述的 OpenCore 官方文档：</p>
+<ul>
+<li><strong>OpenCore 文档释出日期</strong>：2020.02.09</li>
+<li><strong>OpenCore 文档版本</strong>：<a href="https://github.com/acidanthera/OpenCorePkg/commit/2f8b301f9a17684ec65c7a3a54a93f3e311abc01" target="_blank" rel="noopener"><code>2f8b301f9a17684ec65c7a3a54a93f3e311abc01</code></a></li>
+</ul>
+<p>本网站翻译适用于如下描述的 OpenCore 版本：</p>
+<ul>
+<li><strong>OpenCore 版本</strong>：0.5.6</li>
+</ul>
+</blockquote>
+<h2 id="有用的链接"><a href="#有用的链接" class="headerlink" title="有用的链接"></a>有用的链接</h2><ul>
+<li><a href="https://github.com/acidanthera/OpenCorePkg/blob/master/Docs/Configuration.pdf" target="_blank" rel="noopener">OpenCore 官方文档</a></li>
+<li><a href="https://github.com/acidanthera/OpenCorePkg/blob/master/Docs/Differences/Differences.pdf" target="_blank" rel="noopener">OpenCore 官方文档迭代</a></li>
+</ul>
+<h2 id="维护者"><a href="#维护者" class="headerlink" title="维护者"></a>维护者</h2><p><strong>OpenCore 参考手册(简体中文)</strong> © <a href="https://github.com/SukkaW" target="_blank" rel="noopener">Sukka</a>.<br><br>Authored and maintained by <a href="https://github.com/SukkaW" target="_blank" rel="noopener">Sukka</a> with help from contributors (<a href="https://github.com/SukkaW/OpenCore-Document-zh_Hans/contributors" target="_blank" rel="noopener">list</a>).</p>
+<blockquote>
+<p><a href="https://skk.moe" target="_blank" rel="noopener">Personal Website</a> · <a href="https://blog.skk.moe" target="_blank" rel="noopener">Blog</a> · GitHub <a href="https://github.com/SukkaW" target="_blank" rel="noopener">@SukkaW</a> · Telegram Channel <a href="https://t.me/SukkaChannel" target="_blank" rel="noopener">@SukkaChannel</a> · Twitter <a href="https://twitter.com/isukkaw" target="_blank" rel="noopener">@isukkaw</a> · Keybase <a href="https://keybase.io/sukka" target="_blank" rel="noopener">@sukka</a></p>
+</blockquote>
+
+            </div>
+
+            <ul class="doku-pagination">
+            <li class="page-item page-next">
+                <a href="/1-introduction.html">
+                    <div class="page-item-subtitle"><span>后一页</span> <span class="icon is-small"><i class="fas fa-arrow-right"></i></span></div>
+                    <div class="page-item-title h5">1. 简介</div>
+                </a>
+            </li></ul>
+        </div>
+        
+        <div class="column is-3 is-narrow-touch is-hidden-mobile">
+            <aside class="doku-document-toc" id="doku-document-toc">
+                <div class="doku-document-toc-content">
+                    <p class="doku-document-toc-title">目录</p>
+                    <ol class="post-toc"><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#OpenCore"><span class="post-toc-text">OpenCore</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#参考手册（v0-5-6）"><span class="post-toc-text">参考手册（v0.5.6）</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#阅读须知"><span class="post-toc-text">阅读须知</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#有用的链接"><span class="post-toc-text">有用的链接</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#维护者"><span class="post-toc-text">维护者</span></a></li></ol></li></ol>
+                </div>
+            </aside>
+        </div>
+        
+    </div>
+</article>
+
+                <footer>
+    <div class="doku-footer-container is-clearfix">
+        <div class="doku-footer-item is-pulled-left">&copy; <span id="doku-copyrght-year"></span> <a href="/">Open Core 中文文档 | Sukka</a></div>
+
+        <div class="doku-footer-item is-pulled-right">Powered by <a href="https://hexo.io" target="_blank" rel="external noopenner nofollow">Hexo</a> & <a href="https://github.com/SukkaW/hexo-theme-doku" target="_blank" rel="external noopenner nofollow">Doku</a></div>
+    </div>
+</footer>
+
+            </main>
+        </section>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/stickyfilljs@2.1.0/dist/stickyfill.min.js"></script>
+    <script src="/theme-doku/js/doku.js"></script>
+</body>
+
+</html>

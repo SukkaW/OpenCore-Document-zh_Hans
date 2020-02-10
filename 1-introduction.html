@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+<title>1. 简介 | Open Core 中文文档 | Sukka</title>
+<meta name="generator" content="Hexo 4.2.0">
+<meta http-equiv="x-dns-prefetch-control" content="on">
+<meta name="description" content="Open Core 文档简体中文翻译">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="shortcut icon" href="/favicon.ico">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.8.0/css/bulma.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.11.2/css/all.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.16.2/styles/github.min.css">
+<link rel="stylesheet" href="/theme-doku/css/doku.css">
+
+</head>
+
+<body>
+    
+
+<nav id="doku-navbar" class="navbar is-spaced has-shadow">
+    <div class="container">
+        <div class="navbar-brand">
+            <!-- burger btn -->
+            <a role="button" class="navbar-burger burger" id="doku-sidebar-toggle">
+                <span aria-hidden="true"></span>
+                <span aria-hidden="true"></span>
+                <span aria-hidden="true"></span>
+            </a>
+
+            <a class="navbar-item" href="https://oc.skk.moe">
+                <h1 class="doku-navbar-title">
+                    <img src="/logo/navbar.png" height="28">
+                    <span class="is-size-4"></span>
+                </h1>
+            </a>
+        </div>
+        <div class="navbar-menu">
+            <div class="navbar-start">
+                
+                    <a class="navbar-item" href="https://github.com/SukkaW/OpenCore-Document-zh_Hans" target="_blank" rel="noopener">
+                        
+                            <span class="icon">
+                                <i class="fab fa-github"></i>
+                            </span>
+                        
+                        
+                    </a>
+                
+                <!-- navbar link -->
+                <!--<a class="navbar-item">
+                Home
+            </a>-->
+            </div>
+            <!-- i18n switch -->
+            <div class="navbar-end">
+                <!--<div class="navbar-item">
+                    <div class="dropdown is-right is-hoverable">
+                        <div class="dropdown-trigger">
+                            <button class="button" id="navbar-i18n-btn">
+                                <span class="icon is-small">
+                                    <i class="fas fa-globe-americas" aria-hidden="true"></i>
+                                </span>
+                                <span>Language</span>
+                                <span class="icon is-small">
+                                    <i class="fas fa-angle-down" aria-hidden="true"></i>
+                                </span>
+                            </button>
+                        </div>
+                        <div class="dropdown-menu">
+                            <div class="dropdown-content">
+                                <a href="#" class="dropdown-item">
+                                    Dropdown item
+                                </a>
+                                <a class="dropdown-item">
+                                    Other dropdown item
+                                </a>
+                                <a href="#" class="dropdown-item">
+                                    Active dropdown item
+                                </a>
+                                <a href="#" class="dropdown-item">
+                                    Other dropdown item
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>-->
+            </div>
+        </div>
+    </div>
+</nav>
+
+
+    <div class="container-fluid">
+        <section class="main-content">
+            
+
+
+<aside class="doku-sidebar" id="doku-sidebar">
+    <div class="doku-sidebar-content">
+        <div class="menu">
+            
+                <ul class="menu-list is-hidden-desktop">
+                    
+                        
+                    
+                </ul>
+            
+            <hr class="is-hidden-desktop">
+            
+                
+                    <ul class="menu-list">
+                        
+                            <li><a  href="/">0. 首页</a></li>
+                        
+                            <li><a class="is-current" href="/1-introduction.html">1. 简介</a></li>
+                        
+                            <li><a  href="/2-configuration.html">2. 配置</a></li>
+                        
+                            <li><a  href="/3-setup.html">3. 设定</a></li>
+                        
+                            <li><a  href="/4-acpi.html">4. ACPI</a></li>
+                        
+                            <li><a  href="/5-booter.html">5. Booter</a></li>
+                        
+                            <li><a  href="/6-device-properties.html">6. DeviceProperties</a></li>
+                        
+                            <li><a  href="/7-kernel.html">7. Kernel</a></li>
+                        
+                            <li><a  href="/8-misc.html">8. Misc</a></li>
+                        
+                            <li><a  href="/9-nvram.html">9. NVRAM</a></li>
+                        
+                            <li><a  href="/10-platform-info.html">10. PlatformInfo</a></li>
+                        
+                            <li><a  href="/11-uefi.md">11. UEFI</a></li>
+                        
+                            <li><a  href="/12-troubleshooting.html">12. 排错</a></li>
+                        
+                    </ul>
+                
+            
+        </div>
+    </div>
+</aside>
+
+            <main class="is-paddingless doku-main-wrapper" id="doku-main">
+                
+
+<article class="doku-document-container clearfix">
+    <header class="hero is-light" id="doku-document-hero">
+        <div class="hero-body">
+            <h1 class="title">1. 简介</h1>
+            
+                <p class="subtitle">Introduction（简体中文翻译填坑中）</p>
+            
+            
+                <a href="https://github.com/sukkaw/OpenCore-Document-zh_Hans/tree/master/source/1-introduction.md" target="_blank" rel="external nofollow noreferrer noopener" class="button is-small is-rounded is-black"><span class="icon is-small"><i class="fab fa-github"></i></span><span>在 GitHub 上编辑</span></a>
+            
+        </div>
+    </header>
+    <div class="columns">
+        <div class="column is-9-tablet doku-document-wrapper">
+            <div class="content">
+                <p>本文档提供关于 OpenCore 用户配置文件的信息，以使 macOS 操作系统正常工作。你应当视本文档为 OpenCore 预期行为的解释。如果在已经发布的 OpenCore 版本中找到与文档中的描述存在偏差的行为，应当视为 OpenCore 存在 Bug 或文档出现错误，应通过 Acidanthera Bugtracker 进行反馈。<strong>本文档所有其他来源或翻译都是非官方的，并且可能存在错误</strong>。</p>
+<blockquote>
+<p>译者注：</p>
+<ol>
+<li>此处以及之后的「本文档」都指代 OpenCore 的官方文档（而非你现在访问的网站）。</li>
+<li>「Acidanthera Bugtracker」即 <a href="https://github.com/acidanthera/bugtracker" target="_blank" rel="noopener">acidanthera/bugtracker</a>。你应当使用英语进行反馈。</li>
+</ol>
+</blockquote>
+<p>本文档仅作为规范结构、并非用于提供手把手的配置教程。提供这类材料（译者注：即「手把手的配置教程」）都容易收到其作者的喜好和品位、对本文档的误解、过时的理解等。如果您仍然在使用这些资料来源，例如 OpenCore Vanilla Guide，请务必在参考本文档后再作出每个决定、并判断其后果。无论使用哪种来源，你都必须全面了解每种专用工具。</p>
+<blockquote>
+<p>译者注：<a href="https://khronokernel-2.gitbook.io/opencore-vanilla-desktop-guide/" target="_blank" rel="noopener">OpenCore Vanilla Guide</a></p>
+</blockquote>
+<p>在通过 Acidanthera Bugtracker 反馈任何问题之间，请确保你彻底理解了 OpenCore 的每个配置选项及其对应的概念。</p>
+<h2 id="1-1-通用术语"><a href="#1-1-通用术语" class="headerlink" title="1.1 通用术语"></a>1.1 通用术语</h2><ul>
+<li><code>plist</code> - 使用 XML 编写的 ASCII 属性列表格式的子集，也被称为 <code>XML plist format version</code>。</li>
+</ul>
+<ol>
+<li>统一类型标识符（UTI）：<code>com.apple.property-list</code>。 Plist 文件由 plist 对象组成，它们是组合形成的一个层次结构。由于 plist 格式的定义尚不完善，因此所有的定义只有通过运行 <code>plutil -lint</code> 才能判断是否有效。外部参考： <a href="https://www.apple.com/DTDs/PropertyList-1.0.dtd" target="_blank" rel="noopener">https://www.apple.com/DTDs/PropertyList-1.0.dtd</a> 和 <code>man plutil</code>。</li>
+</ol>
+<ul>
+<li><code>plist type</code> - plist collections (plist array, plist dictionary, plist key) and primitives (plist string, plist data, plist date, plist boolean, plist integer, plist real).</li>
+<li><code>plist object</code> - definite realisation of plist type, which may be interpreted as value.</li>
+<li><code>plist array</code> - array-like collection, conforms to array. Consists of zero or more plist objects.</li>
+<li><code>plist dictionary</code> - map-like (associative array) collection, conforms to dict. Consists of zero or more plist keys.</li>
+<li><code>plist key</code> - contains one plist object going by the name of plist key, conforms to key. Consists of printable 7-bit ASCII characters.</li>
+<li><code>plist string</code> - printable 7-bit ASCII string, conforms to string.</li>
+<li><code>plist data</code> - base64-encoded blob, conforms to data.</li>
+<li><code>plist date</code> - ISO-8601 date, conforms to date, unsupported.</li>
+<li><code>plist boolean</code> - logical state object, which is either true (1) or false (0), conforms to true and false.</li>
+<li><code>plist integer</code> - possibly signed integer number in base 10, conforms to integer. Fits in 64-bit unsigned integer in two’s complement representation, unless a smaller signed or unsigned integral type is explicitly mentioned in specific plist object description.</li>
+<li><code>plist real</code> - floating point number, conforms to real, unsupported.</li>
+<li><code>plist metadata</code> - value cast to data by the implementation. Permits passing plist string, in which case the result is represented by a null-terminated sequence of bytes (aka C string), plist integer, in which case the result is represented by 32-bit little endian sequence of bytes in two’s complement representation, plist boolean, in which case the value is one byte: 01 for true and 00 for false, and plist data itself. All other types or larger integers invoke undefined behaviour.</li>
+</ul>
+
+            </div>
+
+            <ul class="doku-pagination">
+            <li class="page-item page-prev">
+                <a href="/">
+                    <div class="page-item-subtitle"><span class="icon is-small"><i class="fas fa-arrow-left"></i></span> <span>前一页</span></div>
+                    <div class="page-item-title h5">0. 首页</div>
+                </a>
+            </li>
+            <li class="page-item page-next">
+                <a href="/2-configuration.html">
+                    <div class="page-item-subtitle"><span>后一页</span> <span class="icon is-small"><i class="fas fa-arrow-right"></i></span></div>
+                    <div class="page-item-title h5">2. 配置</div>
+                </a>
+            </li></ul>
+        </div>
+        
+        <div class="column is-3 is-narrow-touch is-hidden-mobile">
+            <aside class="doku-document-toc" id="doku-document-toc">
+                <div class="doku-document-toc-content">
+                    <p class="doku-document-toc-title">目录</p>
+                    <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#1-1-通用术语"><span class="post-toc-text">1.1 通用术语</span></a></li></ol>
+                </div>
+            </aside>
+        </div>
+        
+    </div>
+</article>
+
+                <footer>
+    <div class="doku-footer-container is-clearfix">
+        <div class="doku-footer-item is-pulled-left">&copy; <span id="doku-copyrght-year"></span> <a href="/">Open Core 中文文档 | Sukka</a></div>
+
+        <div class="doku-footer-item is-pulled-right">Powered by <a href="https://hexo.io" target="_blank" rel="external noopenner nofollow">Hexo</a> & <a href="https://github.com/SukkaW/hexo-theme-doku" target="_blank" rel="external noopenner nofollow">Doku</a></div>
+    </div>
+</footer>
+
+            </main>
+        </section>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/stickyfilljs@2.1.0/dist/stickyfill.min.js"></script>
+    <script src="/theme-doku/js/doku.js"></script>
+</body>
+
+</html>
