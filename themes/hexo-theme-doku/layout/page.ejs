@@ -1,0 +1,37 @@
+<% const toc_obj = toc(page.content, {
+    class: 'post-toc',
+    list_number: false,
+}) %>
+
+<article class="doku-document-container clearfix">
+    <header class="hero is-light" id="doku-document-hero">
+        <div class="hero-body">
+            <h1 class="title"><%= page.title %></h1>
+            <% if (page.description) { %>
+                <p class="subtitle"><%= page.description %></p>
+            <% } %>
+            <% if (theme.github.repo && theme.github.edit_on_github) { %>
+                <a href="<%= 'https://github.com/' + theme.github.repo + '/tree/master/source/' + page.source %>" target="_blank" rel="external nofollow noreferrer noopener" class="button is-small is-rounded is-black"><span class="icon is-small"><i class="fab fa-github"></i></span><span>在 GitHub 上编辑</span></a>
+            <% } %>
+        </div>
+    </header>
+    <div class="columns">
+        <div class="column <% if (toc_obj.length > 0) { %>is-9-tablet <% } %>doku-document-wrapper">
+            <div class="content">
+                <%- page.content %>
+            </div>
+
+            <%- page_nav() %>
+        </div>
+        <% if (toc_obj.length > 0) { %>
+        <div class="column is-3 is-narrow-touch is-hidden-mobile">
+            <aside class="doku-document-toc" id="doku-document-toc">
+                <div class="doku-document-toc-content">
+                    <p class="doku-document-toc-title">目录</p>
+                    <%- toc_obj %>
+                </div>
+            </aside>
+        </div>
+        <% } %>
+    </div>
+</article>

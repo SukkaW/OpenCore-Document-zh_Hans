@@ -1,0 +1,12 @@
+<meta charset="utf-8">
+<title><%= page_title() %></title>
+<%- _meta_generator() %>
+<meta http-equiv="x-dns-prefetch-control" content="on">
+<meta name="description" content="<%= config.description %>">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="shortcut icon" href="<%= url_for(theme.favicon) %>">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.8.0/css/bulma.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.11.2/css/all.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.16.2/styles/github.min.css">
+<link rel="stylesheet" href="<%= url_for('theme-doku/css/doku.css') %>">

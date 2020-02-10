@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <%- partial('_partial/head') %>
+</head>
+
+<body>
+    <%- partial('_partial/navbar') %>
+
+    <div class="container-fluid">
+        <section class="main-content">
+            <%- partial('_partial/sidebar') %>
+            <main class="is-paddingless doku-main-wrapper" id="doku-main">
+                <%- body %>
+                <%- partial('_partial/footer') %>
+            </main>
+        </section>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/stickyfilljs@2.1.0/dist/stickyfill.min.js"></script>
+    <script src="<%= url_for('theme-doku/js/doku.js') %>"></script>
+</body>
+
+</html>

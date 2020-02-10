@@ -1,0 +1,75 @@
+<% const navbar = theme.navbar.links[page.lang]; %>
+
+<nav id="doku-navbar" class="navbar is-spaced has-shadow">
+    <div class="container">
+        <div class="navbar-brand">
+            <!-- burger btn -->
+            <a role="button" class="navbar-burger burger" id="doku-sidebar-toggle">
+                <span aria-hidden="true"></span>
+                <span aria-hidden="true"></span>
+                <span aria-hidden="true"></span>
+            </a>
+
+            <a class="navbar-item" href="<%= config.url %>">
+                <h1 class="doku-navbar-title">
+                    <img src="<%= url_for(theme.navbar.logo) %>" height="28">
+                    <span class="is-size-4"><%= theme.navbar.logo_text %></span>
+                </h1>
+            </a>
+        </div>
+        <div class="navbar-menu">
+            <div class="navbar-start">
+                <% for (const link of navbar) { %>
+                    <a class="navbar-item" href="<%= url_for(link.url) %>">
+                        <% if (link.logo) { %>
+                            <span class="icon">
+                                <i class="<%= link.logo %>"></i>
+                            </span>
+                        <% } %>
+                        <% if (link.text) { %>
+                            <span><%= link.text %></span>
+                        <% } %>
+                    </a>
+                <% } %>
+                <!-- navbar link -->
+                <!--<a class="navbar-item">
+                Home
+            </a>-->
+            </div>
+            <!-- i18n switch -->
+            <div class="navbar-end">
+                <!--<div class="navbar-item">
+                    <div class="dropdown is-right is-hoverable">
+                        <div class="dropdown-trigger">
+                            <button class="button" id="navbar-i18n-btn">
+                                <span class="icon is-small">
+                                    <i class="fas fa-globe-americas" aria-hidden="true"></i>
+                                </span>
+                                <span>Language</span>
+                                <span class="icon is-small">
+                                    <i class="fas fa-angle-down" aria-hidden="true"></i>
+                                </span>
+                            </button>
+                        </div>
+                        <div class="dropdown-menu">
+                            <div class="dropdown-content">
+                                <a href="#" class="dropdown-item">
+                                    Dropdown item
+                                </a>
+                                <a class="dropdown-item">
+                                    Other dropdown item
+                                </a>
+                                <a href="#" class="dropdown-item">
+                                    Active dropdown item
+                                </a>
+                                <a href="#" class="dropdown-item">
+                                    Other dropdown item
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>-->
+            </div>
+        </div>
+    </div>
+</nav>

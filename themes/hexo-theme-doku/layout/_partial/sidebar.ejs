@@ -1,0 +1,39 @@
+<% const sidebar = theme.sidebar[page.lang][page.type]; %>
+<% const navbar = theme.navbar.links[page.lang]; %>
+
+<aside class="doku-sidebar" id="doku-sidebar">
+    <div class="doku-sidebar-content">
+        <div class="menu">
+            <% if (theme.navbar.links) { %>
+                <ul class="menu-list is-hidden-desktop">
+                    <% for (const link of navbar) { %>
+                        <% if (link.text) { %>
+                            <li><a href="<%= url_for(link.url) %>"><%= link.text %></span></a></li>
+                        <% } %>
+                    <% } %>
+                </ul>
+            <% } %>
+            <hr class="is-hidden-desktop">
+            <% if (page.type) { %>
+                <% if (sidebar.level === 1) { %>
+                    <ul class="menu-list">
+                        <% for (const item of sidebar.items) { %>
+                            <li><a <% if (url_for(item.split(' | ')[1]) === url_for(page.path)) { %>class="is-current"<% } %> href="<%= url_for(item.split(' | ')[1]) %>"><%= item.split(' | ')[0] %></a></li>
+                        <% } %>
+                    </ul>
+                <% } else if (sidebar.level === 2) { %>
+                    <% for (const obj of sidebar.items) { %>
+                        <% for (const [header, children] of Object.entries(obj)) { %>
+                            <p class="menu-label"><%= header %></p>
+                            <ul class="menu-list">
+                                <% for (const item of children) { %>
+                                    <li><a <% if (url_for(item.split(' | ')[1]) === url_for(page.path)) { %>class="is-current"<% } %> href="<%= url_for(item.split(' | ')[1]) %>"><%= item.split(' | ')[0] %></a></li>
+                                <% } %>
+                            </ul>
+                        <% } %>
+                    <% } %>
+                <% } %>
+            <% } %>
+        </div>
+    </div>
+</aside>

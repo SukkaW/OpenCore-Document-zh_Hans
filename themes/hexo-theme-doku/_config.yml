@@ -1,0 +1,44 @@
+# Favicon
+favicon: 'theme-doku/img/favicon.ico'
+
+# --------------------
+# Navbar
+# --------------------
+navbar:
+  # The URL of Logo which will be shown at navbar
+  logo: 'theme-doku/img/logo.png'
+  # If you Logo has no text, you can add title next to your logo.
+  # Leave it as an empty string if you don't have
+  logo_text: '中文文档'
+  links:
+    zh-CN:
+      # - logo: # The font-awesome class name of the logo. Leave it blank if you don't need logo for this link
+      #  text: '使用文档' # The logo text
+      #  url: '/' # The url
+      # - logo: 'fab fa-github' # The font-awesome class name of the logo
+      #  text: '' # The logo text
+      #  url: 'https://github.com/SukkaW/hexo-theme-doku' # The url
+
+# --------------------
+# Sidebar Items
+# --------------------
+sidebar:
+  zh-CN: # Language
+    docs: # Type bname
+      level: 2 # 1 or 2
+      items:
+        # 1 level example:
+        # - 开始使用 | start.html
+        # - 配置文件 | config.html
+        #
+        # 2 level example:
+        # 开始使用:
+        #  - 安装 | install.html
+        #  - 配置 | config.html
+        # 基本操作:
+        #  - 编写 | writing.html
+
+
+github:
+  repo: sukkaw/OpenCore-Document-zh_Hans # sukkaw/doku-theme-docs
+  edit_on_github: true # true / false
