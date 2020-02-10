@@ -164,38 +164,30 @@
     <div class="columns">
         <div class="column is-9-tablet doku-document-wrapper">
             <div class="content">
-                <p>本文档提供关于 OpenCore 用户配置文件的信息，以使 macOS 操作系统正常工作。你应当视本文档为 OpenCore 预期行为的解释。如果在已经发布的 OpenCore 版本中找到与文档中的描述存在偏差的行为，应当视为 OpenCore 存在 Bug 或文档出现错误，应通过 Acidanthera Bugtracker 进行反馈。<strong>本文档所有其他来源或翻译都是非官方的，并且可能存在错误</strong>。</p>
+                <p>本文档提供关于 OpenCore 用户配置文件的信息，以使 macOS 操作系统正常工作。你应当视本文档为 OpenCore 预期行为的解释。如果在已经发布的 OpenCore 版本中找到与文档中的描述存在偏差的行为，应当视为 OpenCore 存在 Bug 或文档出现错误，应通过 <a href="https://github.com/acidanthera/bugtracker" target="_blank" rel="noopener">Acidanthera Bugtracker</a> 进行反馈。<strong>本文档所有其他来源或翻译都是非官方的，并且可能存在错误</strong>。</p>
 <blockquote>
 <p>译者注：</p>
 <ol>
 <li>此处以及之后的「本文档」都指代 OpenCore 的官方文档（而非你现在访问的网站）。</li>
-<li>「Acidanthera Bugtracker」即 <a href="https://github.com/acidanthera/bugtracker" target="_blank" rel="noopener">acidanthera/bugtracker</a>。你应当使用英语进行反馈。</li>
+<li>你应当使用英语在 Acidanthera Bugtracker 进行反馈。</li>
 </ol>
 </blockquote>
-<p>本文档仅作为规范结构、并非用于提供手把手的配置教程。提供这类材料（译者注：即「手把手的配置教程」）都容易收到其作者的喜好和品位、对本文档的误解、过时的理解等。如果您仍然在使用这些资料来源，例如 OpenCore Vanilla Guide，请务必在参考本文档后再作出每个决定、并判断其后果。无论使用哪种来源，你都必须全面了解每种专用工具。</p>
-<blockquote>
-<p>译者注：<a href="https://khronokernel-2.gitbook.io/opencore-vanilla-desktop-guide/" target="_blank" rel="noopener">OpenCore Vanilla Guide</a></p>
-</blockquote>
-<p>在通过 Acidanthera Bugtracker 反馈任何问题之间，请确保你彻底理解了 OpenCore 的每个配置选项及其对应的概念。</p>
+<p>本文档仅作为规范结构、并非用于提供手把手的配置教程。提供这类材料（译者注：即「手把手的配置教程」）都容易收到其作者的喜好和品位、对本文档的误解、过时的理解等。如果您仍然在使用这些资料来源，例如 <a href="https://khronokernel-2.gitbook.io/opencore-vanilla-desktop-guide/" target="_blank" rel="noopener">OpenCore Vanilla Guide</a>，请务必在参考本文档后再作出每个决定、并判断其后果。无论使用哪种来源，你都必须全面了解每种专用工具。</p>
+<p>在通过 Acidanthera Bugtracker 反馈任何问题之前，请确保你彻底理解了 OpenCore 的每个配置选项及其对应的概念。</p>
 <h2 id="1-1-通用术语"><a href="#1-1-通用术语" class="headerlink" title="1.1 通用术语"></a>1.1 通用术语</h2><ul>
-<li><code>plist</code> - 使用 XML 编写的 ASCII 属性列表格式的子集，也被称为 <code>XML plist format version</code>。</li>
-</ul>
-<ol>
-<li>统一类型标识符（UTI）：<code>com.apple.property-list</code>。 Plist 文件由 plist 对象组成，它们是组合形成的一个层次结构。由于 plist 格式的定义尚不完善，因此所有的定义只有通过运行 <code>plutil -lint</code> 才能判断是否有效。外部参考： <a href="https://www.apple.com/DTDs/PropertyList-1.0.dtd" target="_blank" rel="noopener">https://www.apple.com/DTDs/PropertyList-1.0.dtd</a> 和 <code>man plutil</code>。</li>
-</ol>
-<ul>
-<li><code>plist type</code> - plist collections (plist array, plist dictionary, plist key) and primitives (plist string, plist data, plist date, plist boolean, plist integer, plist real).</li>
-<li><code>plist object</code> - definite realisation of plist type, which may be interpreted as value.</li>
-<li><code>plist array</code> - array-like collection, conforms to array. Consists of zero or more plist objects.</li>
-<li><code>plist dictionary</code> - map-like (associative array) collection, conforms to dict. Consists of zero or more plist keys.</li>
-<li><code>plist key</code> - contains one plist object going by the name of plist key, conforms to key. Consists of printable 7-bit ASCII characters.</li>
-<li><code>plist string</code> - printable 7-bit ASCII string, conforms to string.</li>
-<li><code>plist data</code> - base64-encoded blob, conforms to data.</li>
-<li><code>plist date</code> - ISO-8601 date, conforms to date, unsupported.</li>
-<li><code>plist boolean</code> - logical state object, which is either true (1) or false (0), conforms to true and false.</li>
-<li><code>plist integer</code> - possibly signed integer number in base 10, conforms to integer. Fits in 64-bit unsigned integer in two’s complement representation, unless a smaller signed or unsigned integral type is explicitly mentioned in specific plist object description.</li>
-<li><code>plist real</code> - floating point number, conforms to real, unsupported.</li>
-<li><code>plist metadata</code> - value cast to data by the implementation. Permits passing plist string, in which case the result is represented by a null-terminated sequence of bytes (aka C string), plist integer, in which case the result is represented by 32-bit little endian sequence of bytes in two’s complement representation, plist boolean, in which case the value is one byte: 01 for true and 00 for false, and plist data itself. All other types or larger integers invoke undefined behaviour.</li>
+<li><code>plist</code> — Subset of ASCII Property List format written in XML, also know as XML plist format version 1. Uniform Type Identifier (UTI): <code>com.apple.property-list</code>. Plists consist of  <code>plist objects</code>, which are combined to form a hierarchical structure. Due to plist format not being well-defined, all the definitions of this document may only be applied after plist is considered valid by running <code>plutil -lint</code>. External references: <a href="https://www.apple.com/DTDs/PropertyList-1.0.dtd" target="_blank" rel="noopener">https://www.apple.com/DTDs/PropertyList-1.0.dtd</a>,  <code>man plutil</code>.</li>
+<li><code>plist type</code> — plist collections (<code>plist array</code>, <code>plist dictionary</code>, <code>plist key</code>) and primitives (<code>plist string</code>, <code>plist data</code>, <code>plist date</code>, <code>plist boolean</code>, <code>plist integer</code>,  <code>plist real</code>).</li>
+<li><code>plist object</code> — definite realisation of <code>plist type</code>, which may be interpreted as value.</li>
+<li><code>plist array</code> — array-like collection, conforms to <code>array</code>. Consists of zero or more <code>plist\ objects</code>.</li>
+<li><code>plist dictionary</code> — map-like (associative array) collection, conforms to <code>dict</code>. Consists of zero or more <code>plist\ keys</code>.</li>
+<li><code>plist key</code> — contains one <code>plist object</code> going by the name of <code>plist key</code>, conforms to <code>key</code>. Consists of printable 7-bit ASCII characters.</li>
+<li><code>plist string</code> — printable 7-bit ASCII string, conforms to <code>string</code>.</li>
+<li><code>plist data</code> — base64-encoded blob, conforms to <code>data</code>.</li>
+<li><code>plist date</code> — ISO-8601 date, conforms to <code>date</code>, unsupported.</li>
+<li><code>plist boolean</code> — logical state object, w   hich is either true (1) or false (0), conforms to <code>true</code> and <code>false</code>.</li>
+<li><code>plist integer</code> — possibly signed integer number in base 10, conforms to <code>integer</code>. Fits in 64-bit unsigned integer in two’s complement representation, unless a smaller signed or unsigned integral type is explicitly mentioned in specific <code>plist object</code> description.</li>
+<li><code>plist real</code> — floating point number, conforms to <code>real</code>, unsupported.</li>
+<li><code>plist metadata</code> — value cast to data by the implementation. Permits passing <code>plist string</code>, in which case the result is represented by a null-terminated sequence of bytes (aka C string),<br><code>plist integer</code>, in which case the result is represented by <em>32-bit</em> little endian sequence of bytes in two’s complement representation, <code>plist boolean</code>, in which case the value is one byte: <code>01</code> for <code>true</code> and <code>00</code> for <code>false</code>, and <code>plist data</code> itself. All other types or larger integers invoke undefined behaviour.</li>
 </ul>
 
             </div>
