@@ -197,20 +197,20 @@ Tianocore [AcpiAml.h](https://github.com/tianocore/edk2/blob/UDK2018/MdePkg/Incl
 
 ## 4.6 Quirks Properties
 
-### 4.5.1 FadtEnableReset
+### 4.6.1 FadtEnableReset
 
 **Type**: plist boolean
 **Failsafe**: false
 **Description**: Provide reset register and flag in FADT table to enable reboot and shutdown on legacy hardware. Not recommended unless required.
 
-### 4.5.2 NormalizeHeaders
+### 4.6.2 NormalizeHeaders
 
 **Type**: plist boolean
 **Failsafe**: false
 **Description**: : Cleanup ACPI header fields to workaround macOS ACPI implementation bug causing boot crashes.
 *Reference*: Debugging AppleACPIPlatform on 10.13 by Alex James aka theracermaster. The issue is fixed in macOS Mojave (10.14).
 
-### 4.5.3 RebaseRegions
+### 4.6.3 RebaseRegions
 
 **Type**: plist boolean
 **Failsafe**: false
@@ -223,7 +223,7 @@ For this reason it is very dangerous to apply any kind of modifications to ACPI 
 When this is not possible, then at least attempt to ensure that custom DSDT is based on the most recent DSDT or remove writes and reads for the affected areas. When nothing else helps this option could be tried to avoid stalls at PCI Configuration Begin phase of macOS booting by attempting to fix the ACPI addresses. It does not do magic, and only works with most common cases.
 Do not use unless absolutely required.
 
-### 4.5.4 ResetHwSig
+### 4.6.4 ResetHwSig
 
 **Type**: plist boolean
 **Failsafe**: false
@@ -232,7 +232,7 @@ Do not use unless absolutely required.
 This works around firmwares that fail to maintain hardware signature across the reboots and cause issues with
 waking from hibernation.
 
-### 4.5.5 ResetLogoStatusesetHwSig
+### 4.6.5 ResetLogoStatusesetHwSig
 
 **Type**: plist boolean
 **Failsafe**: false
