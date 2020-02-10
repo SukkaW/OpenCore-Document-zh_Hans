@@ -30,7 +30,7 @@ jobs:
       uses: peaceiris/actions-gh-pages@v2
       env:
         PERSONAL_TOKEN: ${{ secrets.ACCESS_TOKEN }}
-        PUBLISH_BRANCH: dist
+        PUBLISH_BRANCH: gh-pages
         PUBLISH_DIR: ./public
       with:
         username: ${{ secrets.GIT_USERNAME }}
