@@ -6,7 +6,7 @@ type: docs
 
 <br><br>
 <div align="center">
-<img src="/logo/opencore.png" alt="Open Core Logo" width="128px">
+<img src="/logo/opencore.png" alt="OpenCore Logo" width="128px">
 
 # OpenCore
 
@@ -20,7 +20,7 @@ type: docs
 
 你现在访问的是由 **非官方** 维护的 OpenCore 参考手册的简体中文翻译（以下简称本网站）。
 
-**本网站以及网站的维护人员和 OpenCore 的开发团队 `acidanthera` 没有任何关系**。本网站对 Open Core 的 Logo（商标）的使用已经过 `acidanthera` 的授权。
+**本网站以及网站的维护人员和 OpenCore 的开发团队 `acidanthera` 没有任何关系**。本网站对 OpenCore 的 Logo（商标）的使用已经过 `acidanthera` 的授权。
 
 由于 OpenCore 仍处于积极的维护之中，OpenCore 参考手册 仍然在高频率更新，本网站提供的内容 **仅可供参考**。本网站的内容和 OpenCore 官方的参考手册的任何出入，**请以 OpenCore 官方的参考手册为准**。
 
