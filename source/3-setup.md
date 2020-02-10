@@ -125,6 +125,7 @@ For IDE usage Xcode projects are available in the root of the repositories. Anot
 -Wno-unused-const-variable
 -DOC_TARGET_NOOPT=1
 ```
+
 > **Warning:** Tool developers modifying `config.plist` or any other OpenCore files must ensure that their tool checks for `opencore-version` NVRAM variable (see `Debug Properties` section below) and warn the user if the version listed is unsupported or prerelease. OpenCore configuration may change across the releases and the tool shall ensure that it carefully follows this document. Failure to do so may result in this tool to be considered as malware and blocked with all possible means.
 
 ## 3.4 代码约定
