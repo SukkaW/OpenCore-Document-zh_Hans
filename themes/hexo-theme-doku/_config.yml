@@ -1,5 +1,5 @@
 # Favicon
-favicon: 'theme-doku/img/favicon.ico'
+favicon: '/favicon.ico'
 
 # --------------------
 # Navbar
@@ -27,19 +27,19 @@ sidebar:
     docs: # Type bname
       level: 1 # 1 or 2
       items:
-        - 首页 | index.html
-        - 简介 | introduction.html
-        # 1 level example:
-        # - 开始使用 | start.html
-        # - 配置文件 | config.html
-        #
-        # 2 level example:
-        # 开始使用:
-        #  - 安装 | install.html
-        #  - 配置 | config.html
-        # 基本操作:
-        #  - 编写 | writing.html
-
+        - 0. 首页 | index.html
+        - 1. 简介 | 1-introduction.html
+        - 2. 配置 | 2-configuration.html
+        - 3. 设定 | 3-setup.html
+        - 4. ACPI | 4-acpi.html
+        - 5. Booter | 5-booter.html
+        - 6. DeviceProperties | 6-device-properties.html
+        - 7. Kernel | 7-kernel.html
+        - 8. Misc | 8-misc.html
+        - 9. NVRAM | 9-nvram.html
+        - 10. PlatformInfo | 10-platform-info.html
+        - 11. UEFI | 11-uefi.md
+        - 12. 排错 | 12-troubleshooting.html
 
 github:
   repo: sukkaw/OpenCore-Document-zh_Hans # sukkaw/doku-theme-docs
