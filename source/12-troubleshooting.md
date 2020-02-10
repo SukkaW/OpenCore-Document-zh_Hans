@@ -136,7 +136,7 @@ To download recovery online you may use [macrecovery.py](https://github.com/acid
 
 ### 8. How can I migrate from `AptioMemoryFix`?
 
-​	Behaviour similar to that of `AptioMemoryFix` can be obtained by installing `FwRuntimeServices` driver and enabling the quirks listed below. Please note, that most of these are not necessary to be enabled. Refer to their individual descriptions in this document for more details.
+​Behaviour similar to that of `AptioMemoryFix` can be obtained by installing `FwRuntimeServices` driver and enabling the quirks listed below. Please note, that most of these are not necessary to be enabled. Refer to their individual descriptions in this document for more details.
 
    -  `ProvideConsoleGop` (UEFI quirk)
    -  `AvoidRuntimeDefrag`
