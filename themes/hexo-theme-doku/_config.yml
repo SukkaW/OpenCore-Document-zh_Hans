@@ -6,18 +6,18 @@ favicon: 'theme-doku/img/favicon.ico'
 # --------------------
 navbar:
   # The URL of Logo which will be shown at navbar
-  logo: 'theme-doku/img/logo.png'
+  logo: '/logo/navbar.png'
   # If you Logo has no text, you can add title next to your logo.
   # Leave it as an empty string if you don't have
-  logo_text: '中文文档'
+  logo_text: ''
   links:
     zh-CN:
       # - logo: # The font-awesome class name of the logo. Leave it blank if you don't need logo for this link
       #  text: '使用文档' # The logo text
       #  url: '/' # The url
-      # - logo: 'fab fa-github' # The font-awesome class name of the logo
-      #  text: '' # The logo text
-      #  url: 'https://github.com/SukkaW/hexo-theme-doku' # The url
+      - logo: 'fab fa-github' # The font-awesome class name of the logo
+        text: '' # The logo text
+        url: 'https://github.com/SukkaW/OpenCore-Document-zh_Hans' # The url
 
 # --------------------
 # Sidebar Items
@@ -25,8 +25,10 @@ navbar:
 sidebar:
   zh-CN: # Language
     docs: # Type bname
-      level: 2 # 1 or 2
+      level: 1 # 1 or 2
       items:
+        - 首页 | index.html
+        - 简介 | introduction.html
         # 1 level example:
         # - 开始使用 | start.html
         # - 配置文件 | config.html
