@@ -148,3 +148,4 @@ To download recovery online you may use [macrecovery.py](https://github.com/acid
    -  `ProvideCustomSlide`
    -  `SetupVirtualMap`
    -  `ShrinkMemoryMap`
+   

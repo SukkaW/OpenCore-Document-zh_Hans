@@ -30,7 +30,7 @@ sidebar:
         - 0. 首页 | index.html
         - 1. 简介 | 1-introduction.html
         - 2. 配置 | 2-configuration.html
-        - 3. 设定 | 3-setup.html
+        - 3. Setup | 3-setup.html
         - 4. ACPI | 4-acpi.html
         - 5. Booter | 5-booter.html
         - 6. DeviceProperties | 6-device-properties.html
