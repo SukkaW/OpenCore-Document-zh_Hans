@@ -1,6 +1,6 @@
 ---
 title: 10. UEFI
-description: UEFI（搬运填坑中）
+description: UEFI（待整理）
 type: docs
 ---
 

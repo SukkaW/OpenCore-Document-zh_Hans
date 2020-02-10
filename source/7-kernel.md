@@ -1,6 +1,6 @@
 ---
 title: 7. Kernel
-description: Kernel（搬运填坑中）
+description: Kernel（待整理）
 type: docs
 ---
 

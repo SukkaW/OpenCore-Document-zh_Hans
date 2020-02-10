@@ -1,6 +1,6 @@
 ---
 title: 3. 设定
-description: Setup（搬运填坑中）
+description: Setup（待整理）
 type: docs
 ---
 

@@ -1,6 +1,6 @@
 ---
 title: 4. ACPI
-description: ACPI（搬运填坑中）
+description: ACPI（待整理）
 type: docs
 ---
 

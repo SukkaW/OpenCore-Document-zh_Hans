@@ -1,6 +1,6 @@
 ---
 title: 5. Booter
-description: Booter（搬运填坑中）
+description: Booter（待整理）
 type: docs
 ---
 

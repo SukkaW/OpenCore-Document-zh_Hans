@@ -1,6 +1,6 @@
 ---
 title: 12. 排错
-description: Troubleshooting（搬运填坑中）
+description: Troubleshooting（待整理）
 type: docs
 ---
 
