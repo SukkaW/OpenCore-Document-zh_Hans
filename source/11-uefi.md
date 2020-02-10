@@ -1,10 +1,10 @@
 ---
 title: 11. UEFI
-description: UEFI（待整理）
+description: UEFI（待翻译）
 type: docs
 ---
 
-## 11.1 Introduction
+  ## 11.1 Introduction
 
 [UEFI](https://uefi.org/specifications) (Unified Extensible Firmware Interface) is a specification that defines a software interface between an operating system and platform firmware. This section allows to load additional UEFI modules and/or apply tweaks for the onboard firmware. To inspect firmware contents, apply modifications and perform upgrades [UEFITool](https://github.com/LongSoft/UEFITool/releases) and supplementary utilities can be used.
 
@@ -26,25 +26,25 @@ type: docs
 
   Designed to be filled with string filenames meant to be loaded as UEFI drivers. Depending on the firmware a different set of drivers may be required. Loading an incompatible driver may lead your system to unbootable state or even cause permanent firmware damage. Some of the known drivers include:
 
-   - [`ApfsDriverLoader`](https://github.com/acidanthera/AppleSupportPkg) --- APFS file system bootstrap driver adding the support of embedded APFS drivers in bootable APFS containers in UEFI firmwares.
-   - [`FwRuntimeServices`](https://github.com/acidanthera/OcSupportPkg) --- `OC_FIRMWARE_RUNTIME` protocol implementation that increases the security  of OpenCore and Lilu by supporting read-only and write-only NVRAM variables. Some  quirks, like `RequestBootVarRouting`, require this driver for proper function.
+  - [`ApfsDriverLoader`](https://github.com/acidanthera/AppleSupportPkg) --- APFS file system bootstrap driver adding the support of embedded APFS drivers in bootable APFS containers in UEFI firmwares.
+  - [`FwRuntimeServices`](https://github.com/acidanthera/OcSupportPkg) --- `OC_FIRMWARE_RUNTIME` protocol implementation that increases the security  of OpenCore and Lilu by supporting read-only and write-only NVRAM variables. Some  quirks, like `RequestBootVarRouting`, require this driver for proper function.
   Due to the nature of being a runtime driver, i.e. functioning in parallel with the target operating system, it cannot be mplemented within OpenCore itself, but is bundled with OpenCore releases.
-   - [`EnhancedFatDxe`](https://github.com/acidanthera/audk) --- FAT filesystem driver from `FatPkg`. This driver is embedded in all  UEFI firmwares, and cannot be used from OpenCore. It is known that multiple firmwares have a bug in their FAT support mplementation, which leads to corrupted filesystems on write attempt. Embedding this driver within the firmware may be required in case writing to EFI partition is needed during the boot process.
-   - [`NvmExpressDxe`](https://github.com/acidanthera/audk) --- NVMe support driver from `MdeModulePkg`. This driver is included in most firmwares starting with Broadwell generation. For Haswell and earlier embedding it within the firmware may be more favourable in case a NVMe SSD drive is installed.
-   - [`AppleUsbKbDxe`](https://github.com/acidanthera/OcSupportPkg) --- USB keyboard driver adding the support of `AppleKeyMapAggregator` protocols on top of a custom USB keyboard driver implementation. This is an alternative to builtin `KeySupport`, which may work better or worse depending on the firmware.
-   -  [`VBoxHfs`](https://github.com/acidanthera/AppleSupportPkg) --- HFS file system driver with bless support. This driver is an alternative to a closed source `HFSPlus` driver commonly found in Apple firmwares. While it is feature complete, it is approximately 3~times slower and is yet to undergo a security audit.
-   -  [`XhciDxe`](https://github.com/acidanthera/audk) --- XHCI USB controller support driver from `MdeModulePkg`. This driver is included in most firmwares starting with Sandy Bridge generation. For earlier firmwares or legacy systems it may be used to support external USB 3.0 PCI cards.
+  - [`EnhancedFatDxe`](https://github.com/acidanthera/audk) --- FAT filesystem driver from `FatPkg`. This driver is embedded in all  UEFI firmwares, and cannot be used from OpenCore. It is known that multiple firmwares have a bug in their FAT support mplementation, which leads to corrupted filesystems on write attempt. Embedding this driver within the firmware may be required in case writing to EFI partition is needed during the boot process.
+  - [`NvmExpressDxe`](https://github.com/acidanthera/audk) --- NVMe support driver from `MdeModulePkg`. This driver is included in most firmwares starting with Broadwell generation. For Haswell and earlier embedding it within the firmware may be more favourable in case a NVMe SSD drive is installed.
+  - [`AppleUsbKbDxe`](https://github.com/acidanthera/OcSupportPkg) --- USB keyboard driver adding the support of `AppleKeyMapAggregator` protocols on top of a custom USB keyboard driver implementation. This is an alternative to builtin `KeySupport`, which may work better or worse depending on the firmware.
+  -  [`VBoxHfs`](https://github.com/acidanthera/AppleSupportPkg) --- HFS file system driver with bless support. This driver is an alternative to a closed source `HFSPlus` driver commonly found in Apple firmwares. While it is feature complete, it is approximately 3~times slower and is yet to undergo a security audit.
+  -  [`XhciDxe`](https://github.com/acidanthera/audk) --- XHCI USB controller support driver from `MdeModulePkg`. This driver is included in most firmwares starting with Sandy Bridge generation. For earlier firmwares or legacy systems it may be used to support external USB 3.0 PCI cards.
 
   To compile the drivers from UDK (EDK II) use the same command you do normally use  for OpenCore compilation, but choose a corresponding package:
 
-> ```
-> git clone https://github.com/acidanthera/audk UDK
-> cd UDK
-> source edksetup.sh
-> make -C BaseTools
-> build -a X64 -b RELEASE -t XCODE5 -p FatPkg/FatPkg.dsc
-> build -a X64 -b RELEASE -t XCODE5 -p MdeModulePkg/MdeModulePkg.dsc
-> ```
+  > ```
+  > git clone https://github.com/acidanthera/audk UDK
+  > cd UDK
+  > source edksetup.sh
+  > make -C BaseTools
+  > build -a X64 -b RELEASE -t XCODE5 -p FatPkg/FatPkg.dsc
+  > build -a X64 -b RELEASE -t XCODE5 -p MdeModulePkg/MdeModulePkg.dsc
+  > ```
 
 ### 3. `Input`
   **Type**: `plist dict`
@@ -110,26 +110,21 @@ type: docs
   **Failsafe**: `false`
   **Description**: Swap `Command` and `Option` keys during submission.
 
-  This option may be useful for keyboard layouts with `Option` key situated to the right
-  of `Command` key.
+  This option may be useful for keyboard layouts with `Option` key situated to the right of `Command` key.
 
 ### 6. `PointerSupport`
   **Type**: `plist boolean`
   **Failsafe**: `false`
   **Description**: Enable internal pointer driver.
 
-  This option implements standard UEFI pointer protocol (`EFI_SIMPLE_POINTER_PROTOCOL`)
-  through select OEM protocols. The option may be useful on Z87 ASUS boards, where
-  `EFI_SIMPLE_POINTER_PROTOCOL` is broken.
+  This option implements standard UEFI pointer protocol (`EFI_SIMPLE_POINTER_PROTOCOL`) through select OEM protocols. The option may be useful on Z87 ASUS boards, where `EFI_SIMPLE_POINTER_PROTOCOL` is broken.
 
 ### 7. `PointerSupportMode`
   **Type**: `plist string`
   **Failsafe**: empty string
   **Description**: Set OEM protocol used for internal pointer driver.
 
-  Currently the only supported variant is `ASUS`, using specialised protocol available
-  on select Z87 and Z97 ASUS boards. More details can be found in
-  [`LongSoft/UefiTool#116`](https://github.com/LongSoft/UEFITool/pull/116).
+  Currently the only supported variant is `ASUS`, using specialised protocol available on select Z87 and Z97 ASUS boards. More details can be found in [`LongSoft/UefiTool#116`](https://github.com/LongSoft/UEFITool/pull/116).
 
 ### 8. `TimerResolution`
   **Type**: `plist integer`
