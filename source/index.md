@@ -42,4 +42,5 @@ type: docs
 ## 维护者
 
 **OpenCore 简体中文参考手册** © [Sukka](https://github.com/SukkaW).<br>
+
 由 [Sukka](https://github.com/SukkaW) 和 [众多的贡献者](https://github.com/SukkaW/OpenCore-Document-zh_Hans/contributors) 一起维护。
