@@ -165,9 +165,6 @@
         <div class="column is-9-tablet doku-document-wrapper">
             <div class="content">
                 
-                    <blockquote class="message doku-blockquote is-info">
-                        <div class="message-body"></div>
-                    </blockquote>
                 <h2 id="7-1-简介"><a href="#7-1-简介" class="headerlink" title="7.1 简介"></a>7.1 简介</h2><p>This section allows to apply different kinds of kernelspace modifications on Apple Kernel (<a href="https://opensource.apple.com/source/xnu" target="_blank" rel="noopener">XNU</a>). The modifications currently provide driver (kext) injection, kernel and driver patching, and driver blocking.</p>
 <h2 id="7-2-属性列表"><a href="#7-2-属性列表" class="headerlink" title="7.2 属性列表"></a>7.2 属性列表</h2><h3 id="7-2-1-Add"><a href="#7-2-1-Add" class="headerlink" title="7.2.1 Add"></a>7.2.1 Add</h3><p><strong>Type</strong>: plist array<br><strong>Failsafe</strong>: Empty<br><strong>Description</strong>: Load selected kernel drivers from <code>OC/Kexts</code> directory.</p>
 <p>Designed to be filled with plist dict values, describing each driver. See Add Properties section below. Kernel driver load order follows the item order in the array, thus the dependencies should be written prior to their<br>consumers.</p>

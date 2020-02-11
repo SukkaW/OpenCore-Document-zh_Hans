@@ -165,9 +165,6 @@
         <div class="column is-9-tablet doku-document-wrapper">
             <div class="content">
                 
-                    <blockquote class="message doku-blockquote is-info">
-                        <div class="message-body"></div>
-                    </blockquote>
                 <h2 id="4-1-简介"><a href="#4-1-简介" class="headerlink" title="4.1 简介"></a>4.1 简介</h2><p>ACPI (Advanced Configuration and Power Interface) is an open standard to<br>discover and configure computer hardware.<br><a href="https://uefi.org/specifications" target="_blank" rel="noopener">ACPI specification</a> defines the<br>standard tables (e.g. <code>DSDT</code>, <code>SSDT</code>, <code>FACS</code>, <code>DMAR</code>) and various methods (e.g. <code>_DSM</code>, <code>_PRW</code>) for implementation. Modern hardware needs little changes to maintain ACPI compatibility, yet some of those are provided as a part of OpenCore.</p>
 <p>To compile and disassemble ACPI tables <a href="https://github.com/acpica/acpica" target="_blank" rel="noopener">iASL compiler</a> can be used developed by <a href="https://www.acpica.org" target="_blank" rel="noopener">ACPICA</a>. GUI front-end to iASL compiler can be downloaded from <a href="https://github.com/acidanthera/MaciASL/releases" target="_blank" rel="noopener">Acidanthera/MaciASL</a>.</p>
 <h2 id="4-2-属性列表"><a href="#4-2-属性列表" class="headerlink" title="4.2 属性列表"></a>4.2 属性列表</h2><h3 id="4-2-1-Add"><a href="#4-2-1-Add" class="headerlink" title="4.2.1 Add"></a>4.2.1 <code>Add</code></h3><p><strong>Type</strong>: plist array<br><strong>Failsafe</strong>: Empty<br><strong>Description</strong>: Load selected tables from <code>OC/ACPI</code> directory</p>
