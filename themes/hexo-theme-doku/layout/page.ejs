@@ -18,6 +18,10 @@
     <div class="columns">
         <div class="column <% if (toc_obj.length > 0) { %>is-9-tablet <% } %>doku-document-wrapper">
             <div class="content">
+                <% if (page.author_info && page.author_info.length) %>
+                    <blockquote class="message doku-blockquote is-info">
+                        <div class="message-body"><%= page.author_info %></div>
+                    </blockquote>
                 <%- page.content %>
             </div>
 

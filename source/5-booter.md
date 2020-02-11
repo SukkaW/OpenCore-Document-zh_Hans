@@ -1,7 +1,8 @@
 ---
 title: 5. Booter
-description: Booter（待整理）
+description: Booter（待翻译）
 type: docs
+author_info: 由 Sukka 整理。
 ---
 
 ## 5.1 简介
