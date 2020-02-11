@@ -10,12 +10,11 @@ type: docs
 
 While no official Windows support is provided, 64-bit UEFI Windows installations (Windows 8 and above) prepared with Boot Camp are supposed to work. Third-party UEFI installations as well as systems partially supporting UEFI boot, like Windows 7, might work with some extra precautions. Things to keep in mind:
 
-   -  MBR (Master Boot Record) installations are legacy and will not be supported.
-   -  To install Windows, macOS, and OpenCore on the same drive you can specify windows bootloader path (`\EFI\Microsoft\Boot\bootmgfw.efi`) in `BlessOverride` section.
-   -  All the modifications applied (to ACPI, NVRAM, SMBIOS, etc.) are supposed to be operating system agnostic, i.e. apply equally regardless of the OS booted. This enables Boot Camp software experience on Windows.
-   -  macOS requires the first partition to be EFI System Partition, and does not support the default Windows layout. While OpenCore does have a [workaround](https://github.com/acidanthera/bugtracker/issues/327) for this, it is highly recommend not to rely on it and install properly.
-   -  Windows may need to be reactivated. To avoid it consider setting SystemUUID to the original firmware UUID. Be warned, on old firmwares it may be invalid, i.e. not random. In case you still have issues, consider using HWID or KMS38 license. The nuances of Windows activation are out of the scope of this document and can be found online.
-
+- MBR (Master Boot Record) installations are legacy and will not be supported.
+- To install Windows, macOS, and OpenCore on the same drive you can specify windows bootloader path (`\EFI\Microsoft\Boot\bootmgfw.efi`) in `BlessOverride` section.
+- All the modifications applied (to ACPI, NVRAM, SMBIOS, etc.) are supposed to be operating system agnostic, i.e. apply equally regardless of the OS booted. This enables Boot Camp software experience on Windows.
+- macOS requires the first partition to be EFI System Partition, and does not support the default Windows layout. While OpenCore does have a [workaround](https://github.com/acidanthera/bugtracker/issues/327) for this, it is highly recommend not to rely on it and install properly.
+- Windows may need to be reactivated. To avoid it consider setting SystemUUID to the original firmware UUID. Be warned, on old firmwares it may be invalid, i.e. not random. In case you still have issues, consider using HWID or KMS38 license. The nuances of Windows activation are out of the scope of this document and can be found online.
 
 ### What additional software do I need?
 
@@ -25,10 +24,9 @@ Remember to always use the latest version of Windows support software from Boot 
 
 While Windows support software from Boot Camp solves most of compatibility problems, sometimes you may have to address some of them manually:
 
-   -  To invert mouse wheel scroll direction `FlipFlopWheel` must be set to `1` as explained on [SuperUser](https://superuser.com/a/364353).
-   -  `RealTimeIsUniversal` must be set to `1` to avoid time desync between Windows and macOS as explained on [SuperUser](https://superuser.com/q/494432) (this one is usually not needed).
-   -  To access Apple filesystems like HFS and APFS separate software may need to be installed. Some of the known tools are: [Apple HFS+ driver](https://forums.macrumors.com/threads/apple-hfs-windows-driver-download.1368010/) ([hack for Windows 10](https://forums.macrumors.com/threads/apple-hfs-windows-driver-download.1368010/page-4#post-24180079)), [HFSExplorer](http://www.catacombae.org/hfsexplorer), MacDrive, Paragon APFS, Paragon HFS+, TransMac, etc. Remember to never ever attempt to modify Apple file systems from Windows as this often leads to irrecoverable data loss.
-
+- To invert mouse wheel scroll direction `FlipFlopWheel` must be set to `1` as explained on [SuperUser](https://superuser.com/a/364353).
+- `RealTimeIsUniversal` must be set to `1` to avoid time desync between Windows and macOS as explained on [SuperUser](https://superuser.com/q/494432) (this one is usually not needed).
+- To access Apple filesystems like HFS and APFS separate software may need to be installed. Some of the known tools are: [Apple HFS+ driver](https://forums.macrumors.com/threads/apple-hfs-windows-driver-download.1368010/) ([hack for Windows 10](https://forums.macrumors.com/threads/apple-hfs-windows-driver-download.1368010/page-4#post-24180079)), [HFSExplorer](http://www.catacombae.org/hfsexplorer), MacDrive, Paragon APFS, Paragon HFS+, TransMac, etc. Remember to never ever attempt to modify Apple file systems from Windows as this often leads to irrecoverable data loss.
 
 ### Why do I see `Basic data partition` in Boot Camp Startup Disk control panel?
 
@@ -99,16 +97,13 @@ Remember to enable `COM` port in firmware settings, and never use USB cables lon
 
 ​If there is no obvious error, check the available hacks in `Quirks` sections one by one. For early boot troubleshooting, for instance, when OpenCore menu does not appear, using [UEFI Shell](https://github.com/acidanthera/OpenCoreShell) may help to see early debug messages.
 
-
 ### 2. How to customise boot entries?
 
 ​OpenCore follows standard Apple Bless model and extracts the entry name from `.contentDetails` and `.disk_label.contentDetails` files in the booter directory if present. These files contain an ASCII string with an entry title, which may then be customised by the user.
 
-
 ### 3. How to choose the default boot entry?
 
 ​OpenCore uses the primary UEFI boot option to select the default entry. This choice can be altered from UEFI Setup, with the macOS [Startup Disk](https://support.apple.com/HT202796) preference, or the Windows [Boot Camp](https://support.apple.com/guide/bootcamp-control-panel/start-up-your-mac-in-windows-or-macos-bcmp29b8ac66/mac) Control Panel. Since choosing OpenCore's `BOOTx64.EFI` as a primary boot option limits this functionality in addition to several firmwares deleting incompatible boot options, potentially including those created by macOS, you are strongly encouraged to use the `RequestBootVarRouting` quirk, which will preserve your selection made in the operating system within the OpenCore variable space. Note, that `RequestBootVarRouting` requires a separate driver for functioning.
-
 
 ### 4. What is the simplest way to install macOS?
 
@@ -118,34 +113,29 @@ To download recovery online you may use [macrecovery.py](https://github.com/acid
 
 ​For offline installation refer to [How to create a bootable installer for macOS](https://support.apple.com/HT201372) article. Apart from App Store and `softwareupdate` utility there also are [third-party tools](https://github.com/corpnewt/gibMacOS) to download an offline image.
 
-
 ### 5. Why do online recovery images (`*.dmg`) fail to load?
 
 ​This may be caused by missing HFS+ driver, as all presently known recovery volumes have HFS+ filesystem.
-
 
 ### 6. Can I use this on Apple hardware or virtual machines?
 
 ​Sure, most relatively modern Mac models including `MacPro5,1` and virtual machines are fully supported. Even though there are little to none specific details relevant to Mac hardware, some ongoing instructions can be found in [acidanthera/bugtracker\#377](https://github.com/acidanthera/bugtracker/issues/377).
 
-
 ### 7. Why do Find\&Replace patches must equal in length?
 
 ​For machine code (x86 code) it is not possible to do differently sized replacements due to [relative addressing](https://en.wikipedia.org/w/index.php?title=Relative_addressing). For ACPI code this is risky, and is technically equivalent to ACPI table replacement, thus not implemented. More detailed explanation can be found on [AppleLife.ru](https://applelife.ru/posts/819790).
-
 
 ### 8. How can I migrate from `AptioMemoryFix`?
 
 ​Behaviour similar to that of `AptioMemoryFix` can be obtained by installing `FwRuntimeServices` driver and enabling the quirks listed below. Please note, that most of these are not necessary to be enabled. Refer to their individual descriptions in this document for more details.
 
-   -  `ProvideConsoleGop` (UEFI quirk)
-   -  `AvoidRuntimeDefrag`
-   -  `DiscardHibernateMap`
-   -  `EnableSafeModeSlide`
-   -  `EnableWriteUnprotector`
-   -  `ForceExitBootServices`
-   -  `ProtectCsmRegion`
-   -  `ProvideCustomSlide`
-   -  `SetupVirtualMap`
-   -  `ShrinkMemoryMap`
-   
+- `ProvideConsoleGop` (UEFI quirk)
+- `AvoidRuntimeDefrag`
+- `DiscardHibernateMap`
+- `EnableSafeModeSlide`
+- `EnableWriteUnprotector`
+- `ForceExitBootServices`
+- `ProtectCsmRegion`
+- `ProvideCustomSlide`
+- `SetupVirtualMap`
+- `ShrinkMemoryMap`
