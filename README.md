@@ -35,16 +35,4 @@ npm run server # 运行一个 Server 并 watch 所有改动
 
 ## 贡献
 
-文档所有文件位于 `source` 下。
-
-文件的 Front-Matter 的字段说明：
-
-```markdown
----
-title: # 标题
-description: # 副标题、当前页面的一句话简介（可选）
-type: docs
-author_info: # 整理者、翻译者、校对者信息（可选）
-updated: # 最后修改日期，使用 ISO 8681 格式（YYYY-MM-DD，可选）
----
-```
+请阅读 [贡献指南](https://oc.skk.moe/about/contributing.html)。

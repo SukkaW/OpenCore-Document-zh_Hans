@@ -43,6 +43,10 @@ sidebar:
         - 10. PlatformInfo | 10-platform-info.html
         - 11. UEFI | 11-uefi.html
         - 12. 排错 | 12-troubleshooting.html
+    about:
+      level: 1
+      items:
+        - 贡献指南 | about/contributing.html
 
 github:
   repo: sukkaw/OpenCore-Document-zh_Hans # sukkaw/doku-theme-docs
