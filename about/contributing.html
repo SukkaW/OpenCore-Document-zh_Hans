@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+<title>贡献指南 | OpenCore 简体中文参考手册(非官方)</title>
+<meta name="generator" content="Hexo 4.2.0">
+<meta http-equiv="x-dns-prefetch-control" content="on">
+<meta name="description" content="OpenCore 文档简体中文翻译">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="shortcut icon" href="/logo/favicon.ico">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.8.0/css/bulma.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.11.2/css/all.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.16.2/styles/github.min.css">
+<link rel="stylesheet" href="/theme-doku/css/doku.css">
+
+</head>
+
+<body>
+    
+
+<nav id="doku-navbar" class="navbar is-spaced has-shadow">
+    <div class="container">
+        <div class="navbar-brand">
+            <!-- burger btn -->
+            <a role="button" class="navbar-burger burger" id="doku-sidebar-toggle">
+                <span aria-hidden="true"></span>
+                <span aria-hidden="true"></span>
+                <span aria-hidden="true"></span>
+            </a>
+
+            <a class="navbar-item" href="https://oc.skk.moe">
+                <h1 class="doku-navbar-title">
+                    <img src="/logo/navbar.png" height="28">
+                    <span class="is-size-4"></span>
+                </h1>
+            </a>
+        </div>
+        <div class="navbar-menu">
+            <div class="navbar-start">
+                
+                    <a class="navbar-item" href="/">
+                        
+                        
+                            <span>OpenCore 参考手册(简体中文)</span>
+                        
+                    </a>
+                
+                    <a class="navbar-item" href="https://github.com/SukkaW/OpenCore-Document-zh_Hans" target="_blank" rel="noopener">
+                        
+                            <span class="icon">
+                                <i class="fab fa-github"></i>
+                            </span>
+                        
+                        
+                            <span>GitHub</span>
+                        
+                    </a>
+                
+                <!-- navbar link -->
+                <!--<a class="navbar-item">
+                Home
+            </a>-->
+            </div>
+            <!-- i18n switch -->
+            <div class="navbar-end">
+                <!--<div class="navbar-item">
+                    <div class="dropdown is-right is-hoverable">
+                        <div class="dropdown-trigger">
+                            <button class="button" id="navbar-i18n-btn">
+                                <span class="icon is-small">
+                                    <i class="fas fa-globe-americas" aria-hidden="true"></i>
+                                </span>
+                                <span>Language</span>
+                                <span class="icon is-small">
+                                    <i class="fas fa-angle-down" aria-hidden="true"></i>
+                                </span>
+                            </button>
+                        </div>
+                        <div class="dropdown-menu">
+                            <div class="dropdown-content">
+                                <a href="#" class="dropdown-item">
+                                    Dropdown item
+                                </a>
+                                <a class="dropdown-item">
+                                    Other dropdown item
+                                </a>
+                                <a href="#" class="dropdown-item">
+                                    Active dropdown item
+                                </a>
+                                <a href="#" class="dropdown-item">
+                                    Other dropdown item
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>-->
+            </div>
+        </div>
+    </div>
+</nav>
+
+
+    <div class="container-fluid">
+        <section class="main-content">
+            
+
+
+<aside class="doku-sidebar" id="doku-sidebar">
+    <div class="doku-sidebar-content">
+        <div class="menu">
+            
+                <ul class="menu-list is-hidden-desktop">
+                    
+                        
+                            <li><a href="/">OpenCore 参考手册(简体中文)</span></a></li>
+                        
+                    
+                        
+                            <li><a href="https://github.com/SukkaW/OpenCore-Document-zh_Hans" target="_blank" rel="noopener">GitHub</span></a></li>
+                        
+                    
+                </ul>
+            
+            <hr class="is-hidden-desktop">
+            
+                
+                    <ul class="menu-list">
+                        
+                            <li><a class="is-current" href="/about/contributing.html">贡献指南</a></li>
+                        
+                    </ul>
+                
+            
+        </div>
+    </div>
+</aside>
+
+            <main class="is-paddingless doku-main-wrapper" id="doku-main">
+                
+
+<article class="doku-document-container clearfix">
+    <header class="hero is-light" id="doku-document-hero">
+        <div class="hero-body">
+            <h1 class="title">贡献指南</h1>
+            
+                <p class="subtitle">没有规矩，不成方圆</p>
+            
+            
+                <a href="https://github.com/sukkaw/OpenCore-Document-zh_Hans/tree/master/source/about/contributing.md" target="_blank" rel="external nofollow noreferrer noopener" class="button is-small is-rounded is-black"><span class="icon is-small"><i class="fab fa-github"></i></span><span>在 GitHub 上编辑</span></a>
+            
+        </div>
+    </header>
+    <div class="columns">
+        <div class="column is-9-tablet doku-document-wrapper">
+            <div class="content">
+                
+                <h2 id="目录结构"><a href="#目录结构" class="headerlink" title="目录结构"></a>目录结构</h2><p>文档所有文件位于 <code>source</code> 下。</p>
+<ul>
+<li><code>about</code> 目录：关于项目自身的文档，如你现在看到的「贡献指南」的 md 源文件就位于这个目录下</li>
+<li><code>guide</code> 目录：如果未来项目开始收录 OpenCore 指南类的文章，就将相关的 md 文件放在这个目录下</li>
+<li><code>img</code> 目录：存放文档中使用的图片</li>
+<li><code>logo</code> 目录：存放 OpenCore 的 Logo 和网站的 favicon</li>
+<li><code>CNAME</code> 文件：GitHub Pages 绑定自定义域名</li>
+<li><code>index.md</code> 文件：网站首页的 md 源文件</li>
+<li>其余 <code>.md</code> 文件：经过整理的 OpenCore 参考手册的 md 源文件（需要翻译的就是这些文件）</li>
+</ul>
+<h2 id="Markdown-文件的-Front-Matter-的字段说明"><a href="#Markdown-文件的-Front-Matter-的字段说明" class="headerlink" title="Markdown 文件的 Front-Matter 的字段说明"></a>Markdown 文件的 Front-Matter 的字段说明</h2><figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs markdown">---<br>title: # 标题<br>description: # 副标题、当前页面的一句话简介（可选）<br>type: docs # 文件类型。不同类型的文件、构建后的页面左边侧边栏的内容不同<br>author_info: # 整理者、翻译者、校对者信息（可选）<br><span class="hljs-section">updated: # 最后修改日期，使用 ISO 8681 格式（YYYY-MM-DD，可选）<br>---</span><br></code></pre></td></tr></table></figure>
+
+<h2 id="Commit-Message-规范"><a href="#Commit-Message-规范" class="headerlink" title="Commit Message 规范"></a>Commit Message 规范</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs plain">&lt;type&gt;(&lt;scope&gt;): &lt;subject&gt;<br>&lt;BLANK LINE(Not necessary)&gt;<br>&lt;body&gt;<br></code></pre></td></tr></table></figure>
+
+<p><strong>type</strong></p>
+<ul>
+<li>init: Initialization 初始化项目、模块、组件</li>
+<li>docs: Documentation 文档（包括 README 的更新）</li>
+<li>revert: Revert 代码回退，用于撤回某个改动</li>
+<li>feat: New feature 新功能</li>
+<li>fix: Fix bug 修补 bug</li>
+<li>style: Format 格式（不影响代码运行的变动）</li>
+<li>refactor: Refactor 重构（即不是新增功能，也不是修改 bug 的代码变动）</li>
+<li>test: Test 测试相关</li>
+<li>workflow: WorkFlow 工作流相关</li>
+<li>chore: 构建过程或辅助工具的变动</li>
+<li>merge: 合并 Pull Request</li>
+<li>ci: 持续集成和构建相关</li>
+</ul>
+<p>允许多个 type 的使用，如修复文档中的 Typo 可以用 <code>docs/type</code> 作为 type。</p>
+<p><strong>scope</strong></p>
+<p>scope 用于说明 commit 影响的范围（一般取修改的文件的名称），紧接 type 置于 <code>()</code> 之内。</p>
+<p>scope 非必须，当改动代码范围较大或者范围不明确时可忽略。</p>
+<blockquote>
+<p>当使用 Merge Pull Request 合并不同分支时，scope 为 PR 在 GitHub 上的编号；当使用 revert 回退代码时，scope 为对应 commit 的 Title，也可以是简短的介绍。</p>
+</blockquote>
+<p><strong>subject</strong></p>
+<p>subject 是 commit 目的的简短描述，不超过 50 个字符。</p>
+<ul>
+<li>以动词开头</li>
+<li>使用第一人称现在时比如 change，尽可能避免使用 changed 或 changes</li>
+<li>首字母小写，并且 尽可能 subject 全部小写</li>
+<li>结尾不加句号 .</li>
+<li>当 type 是 merge 时，subject 应为 from {base branch name} into {target branch name}</li>
+</ul>
+<p><strong>body</strong></p>
+<p>Body 部分是 可选的 对本次 commit 的详细描述，可以分成多行。下面是一个范例。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs plain">docs(commit): add about body of commit message<br>More detailed explanatory text, if necessary. Wrap it to about 72 characters or so.<br><br>Further paragraphs come after blank lines.<br><br>- Bullet points are okay, too<br>- Use a hanging indent<br></code></pre></td></tr></table></figure>
+
+<p>和 title.subject 不同，Body 的要求如下：</p>
+<ul>
+<li>Body 是可选、非必须的</li>
+<li>使用第一人称现在时比如 change，尽可能避免使用 changed 或 changes</li>
+<li>应该说明代码变动的动机，以及与以前行为的对比。</li>
+<li>如果使用 Squash 合并分支时，Body 为以无序列表排列的对应多条 commit 记录。</li>
+</ul>
+<h2 id="其他参考资料"><a href="#其他参考资料" class="headerlink" title="其他参考资料"></a>其他参考资料</h2><ul>
+<li><a href="https://hexo.io" target="_blank" rel="noopener">Hexo 文档</a></li>
+<li><a href="https://doku.skk.moe" target="_blank" rel="noopener">hexo-theme-doku 文档</a></li>
+</ul>
+
+            </div>
+
+            <ul class="doku-pagination"></ul>
+        </div>
+        
+        <div class="column is-3 is-narrow-touch is-hidden-mobile">
+            <aside class="doku-document-toc" id="doku-document-toc">
+                <div class="doku-document-toc-content">
+                    <p class="doku-document-toc-title">目录</p>
+                    <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#目录结构"><span class="post-toc-text">目录结构</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#Markdown-文件的-Front-Matter-的字段说明"><span class="post-toc-text">Markdown 文件的 Front-Matter 的字段说明</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#Commit-Message-规范"><span class="post-toc-text">Commit Message 规范</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#其他参考资料"><span class="post-toc-text">其他参考资料</span></a></li></ol>
+                </div>
+            </aside>
+        </div>
+        
+    </div>
+</article>
+
+                <footer>
+    <div class="doku-footer-container is-clearfix">
+        <div class="doku-footer-item is-pulled-left">&copy; <span id="doku-copyrght-year"></span> <a href="/">OpenCore 简体中文参考手册(非官方)</a></div>
+
+        <div class="doku-footer-item is-pulled-right">Powered by <a href="https://hexo.io" target="_blank" rel="external noopenner nofollow">Hexo</a> & <a href="https://github.com/SukkaW/hexo-theme-doku" target="_blank" rel="external noopenner nofollow">Doku</a></div>
+    </div>
+</footer>
+
+            </main>
+        </section>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/stickyfilljs@2.1.0/dist/stickyfill.min.js"></script>
+    <script src="/theme-doku/js/doku.js"></script>
+</body>
+
+</html>
