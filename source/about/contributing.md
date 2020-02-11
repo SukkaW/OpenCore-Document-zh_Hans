@@ -25,9 +25,11 @@ title: # 标题
 description: # 副标题、当前页面的一句话简介（可选）
 type: docs # 文件类型。不同类型的文件、构建后的页面左边侧边栏的内容不同
 author_info: # 整理者、翻译者、校对者信息（可选）
-updated: # 最后修改日期，使用 ISO 8681 格式（YYYY-MM-DD，可选）
+last_updated: # 最后修改日期，使用 ISO 8681 格式（YYYY-MM-DD，可选）
 ---
 ```
+
+当你完成了对一个文件的整理、翻译后，别忘了修改 `author_info` 和 `last_updated` 两个字段！
 
 ## Commit Message 规范
 

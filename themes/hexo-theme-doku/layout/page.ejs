@@ -10,6 +10,15 @@
             <% if (page.description) { %>
                 <p class="subtitle"><%= page.description %></p>
             <% } %>
+            <% if (page.author_info || page.last_updated) { %>
+                <% if (page.author_info || page.last_updated) { %>
+                    <p><small><%= page.author_info %></small></p>
+                <% } %>
+                <% if (page.last_updated) { %>
+                    <p><small>本页面最后更新于 <%= date(page.last_updated, 'YYYY 年 MM 月 DD 日') %></small></p>
+                <% } %>
+                <br>
+            <% } %>
             <% if (theme.github.repo && theme.github.edit_on_github) { %>
                 <a href="<%= 'https://github.com/' + theme.github.repo + '/tree/master/source/' + page.source %>" target="_blank" rel="external nofollow noreferrer noopener" class="button is-small is-rounded is-black"><span class="icon is-small"><i class="fab fa-github"></i></span><span>在 GitHub 上编辑</span></a>
             <% } %>
@@ -18,11 +27,6 @@
     <div class="columns">
         <div class="column <% if (toc_obj.length > 0) { %>is-9-tablet <% } %>doku-document-wrapper">
             <div class="content">
-                <% if (page.author_info && page.author_info.length) { %>
-                    <blockquote class="message doku-blockquote is-info">
-                        <div class="message-body"><%= page.author_info %></div>
-                    </blockquote>
-                <% } %>
                 <%- page.content %>
             </div>
 
