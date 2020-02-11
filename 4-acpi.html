@@ -172,6 +172,13 @@
                 <p class="subtitle">ACPI（待翻译）</p>
             
             
+                
+                    <p><small>由 Sukka 整理、由 Sukka 翻译</small></p>
+                
+                
+                <br>
+            
+            
                 <a href="https://github.com/sukkaw/OpenCore-Document-zh_Hans/tree/master/source/4-acpi.md" target="_blank" rel="external nofollow noreferrer noopener" class="button is-small is-rounded is-black"><span class="icon is-small"><i class="fab fa-github"></i></span><span>在 GitHub 上编辑</span></a>
             
         </div>
@@ -179,11 +186,6 @@
     <div class="columns">
         <div class="column is-9-tablet doku-document-wrapper">
             <div class="content">
-                
-                    <blockquote class="message doku-blockquote is-info">
-                        <div class="message-body">由 Sukka 整理、由 Sukka 翻译</div>
-                    </blockquote>
-                
                 <h2 id="4-1-简介"><a href="#4-1-简介" class="headerlink" title="4.1 简介"></a>4.1 简介</h2><p>ACPI（Advanced Configuration and Power Interface，高级配置和电源接口）是发现和配置计算机硬件的开放标准。<br><a href="https://uefi.org/specifications" target="_blank" rel="noopener">ACPI 规格</a> 定义了实现用的标准表（如 <code>DSDT</code>、<code>SSDT</code>、<code>FACS</code>、<code>DMAR</code>）和各种方法（如 <code>_DSM</code> 和 `_PRW）。现代硬件几乎不需要更改即可保持 ACPI 兼容性，但是 OpenCore 仍然提供了修改 ACPI 的方法。</p>
 <p>要反汇编和编译 ACPI 表，可以使用由 <a href="https://www.acpica.org" target="_blank" rel="noopener">ACPICA</a> 开发的 <a href="https://github.com/acpica/acpica" target="_blank" rel="noopener">iASL compiler</a>。你可以从 <a href="https://github.com/acidanthera/MaciASL/releases" target="_blank" rel="noopener">Acidanthera/MaciASL</a> 下载 iASL 的图形界面程序。</p>
 <h2 id="4-2-属性列表"><a href="#4-2-属性列表" class="headerlink" title="4.2 属性列表"></a>4.2 属性列表</h2><h3 id="4-2-1-Add"><a href="#4-2-1-Add" class="headerlink" title="4.2.1 Add"></a>4.2.1 <code>Add</code></h3><p><strong>Type</strong>: <code>plist array</code><br><strong>Failsafe</strong>: Empty<br><strong>Description</strong>: 从 <code>OC/ACPI</code> 目录加载指定的 ACPI 表。</p>

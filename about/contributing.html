@@ -148,6 +148,7 @@
                 <p class="subtitle">没有规矩，不成方圆</p>
             
             
+            
                 <a href="https://github.com/sukkaw/OpenCore-Document-zh_Hans/tree/master/source/about/contributing.md" target="_blank" rel="external nofollow noreferrer noopener" class="button is-small is-rounded is-black"><span class="icon is-small"><i class="fab fa-github"></i></span><span>在 GitHub 上编辑</span></a>
             
         </div>
@@ -155,7 +156,6 @@
     <div class="columns">
         <div class="column is-9-tablet doku-document-wrapper">
             <div class="content">
-                
                 <h2 id="目录结构"><a href="#目录结构" class="headerlink" title="目录结构"></a>目录结构</h2><p>文档所有文件位于 <code>source</code> 下。</p>
 <ul>
 <li><code>about</code> 目录：关于项目自身的文档，如你现在看到的「贡献指南」的 md 源文件就位于这个目录下</li>
@@ -166,8 +166,9 @@
 <li><code>index.md</code> 文件：网站首页的 md 源文件</li>
 <li>其余 <code>.md</code> 文件：经过整理的 OpenCore 参考手册的 md 源文件（需要翻译的就是这些文件）</li>
 </ul>
-<h2 id="Markdown-文件的-Front-Matter-的字段说明"><a href="#Markdown-文件的-Front-Matter-的字段说明" class="headerlink" title="Markdown 文件的 Front-Matter 的字段说明"></a>Markdown 文件的 Front-Matter 的字段说明</h2><figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs markdown">---<br>title: # 标题<br>description: # 副标题、当前页面的一句话简介（可选）<br>type: docs # 文件类型。不同类型的文件、构建后的页面左边侧边栏的内容不同<br>author_info: # 整理者、翻译者、校对者信息（可选）<br><span class="hljs-section">updated: # 最后修改日期，使用 ISO 8681 格式（YYYY-MM-DD，可选）<br>---</span><br></code></pre></td></tr></table></figure>
+<h2 id="Markdown-文件的-Front-Matter-的字段说明"><a href="#Markdown-文件的-Front-Matter-的字段说明" class="headerlink" title="Markdown 文件的 Front-Matter 的字段说明"></a>Markdown 文件的 Front-Matter 的字段说明</h2><figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs markdown">---<br>title: # 标题<br>description: # 副标题、当前页面的一句话简介（可选）<br>type: docs # 文件类型。不同类型的文件、构建后的页面左边侧边栏的内容不同<br>author_info: # 整理者、翻译者、校对者信息（可选）<br><span class="hljs-section">last_updated: # 最后修改日期，使用 ISO 8681 格式（YYYY-MM-DD，可选）<br>---</span><br></code></pre></td></tr></table></figure>
 
+<p>当你完成了对一个文件的整理、翻译后，别忘了修改 <code>author_info</code> 和 <code>last_updated</code> 两个字段！</p>
 <h2 id="Commit-Message-规范"><a href="#Commit-Message-规范" class="headerlink" title="Commit Message 规范"></a>Commit Message 规范</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs plain">&lt;type&gt;(&lt;scope&gt;): &lt;subject&gt;<br>&lt;BLANK LINE(Not necessary)&gt;<br>&lt;body&gt;<br></code></pre></td></tr></table></figure>
 
 <p><strong>type</strong></p>

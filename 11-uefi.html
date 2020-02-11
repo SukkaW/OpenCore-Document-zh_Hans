@@ -172,6 +172,13 @@
                 <p class="subtitle">UEFI（待翻译）</p>
             
             
+                
+                    <p><small>由 xMuu 整理</small></p>
+                
+                
+                <br>
+            
+            
                 <a href="https://github.com/sukkaw/OpenCore-Document-zh_Hans/tree/master/source/11-uefi.md" target="_blank" rel="external nofollow noreferrer noopener" class="button is-small is-rounded is-black"><span class="icon is-small"><i class="fab fa-github"></i></span><span>在 GitHub 上编辑</span></a>
             
         </div>
@@ -179,11 +186,6 @@
     <div class="columns">
         <div class="column is-9-tablet doku-document-wrapper">
             <div class="content">
-                
-                    <blockquote class="message doku-blockquote is-info">
-                        <div class="message-body">由 xMuu 整理</div>
-                    </blockquote>
-                
                 <h2 id="11-1-Introduction"><a href="#11-1-Introduction" class="headerlink" title="11.1 Introduction"></a>11.1 Introduction</h2><p><a href="https://uefi.org/specifications" target="_blank" rel="noopener">UEFI</a> (Unified Extensible Firmware Interface) is a specification that defines a software interface between an operating system and platform firmware. This section allows to load additional UEFI modules and/or apply tweaks for the onboard firmware. To inspect firmware contents, apply modifications and perform upgrades <a href="https://github.com/LongSoft/UEFITool/releases" target="_blank" rel="noopener">UEFITool</a> and supplementary utilities can be used.</p>
 <h2 id="11-2-Properties"><a href="#11-2-Properties" class="headerlink" title="11.2 Properties"></a>11.2 Properties</h2><h3 id="1-ConnectDrivers"><a href="#1-ConnectDrivers" class="headerlink" title="1.  ConnectDrivers"></a>1.  <code>ConnectDrivers</code></h3><p>  <strong>Type</strong>: <code>plist boolean</code><br>  <strong>Failsafe</strong>: <code>false</code><br>  <strong>Description</strong>: Perform UEFI controller connection after driver loading.</p>
 <p>  This option is useful for loading filesystem drivers, which  usually follow UEFI driver model, and may not start by themselves. While effective, this option may not be necessary for drivers performing automatic connection, and may slightly slowdown the boot.</p>

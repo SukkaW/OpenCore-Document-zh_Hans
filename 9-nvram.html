@@ -172,6 +172,13 @@
                 <p class="subtitle">NVRAM（待翻译）</p>
             
             
+                
+                    <p><small>由 xMuu 整理</small></p>
+                
+                
+                <br>
+            
+            
                 <a href="https://github.com/sukkaw/OpenCore-Document-zh_Hans/tree/master/source/9-nvram.md" target="_blank" rel="external nofollow noreferrer noopener" class="button is-small is-rounded is-black"><span class="icon is-small"><i class="fab fa-github"></i></span><span>在 GitHub 上编辑</span></a>
             
         </div>
@@ -179,11 +186,6 @@
     <div class="columns">
         <div class="column is-9-tablet doku-document-wrapper">
             <div class="content">
-                
-                    <blockquote class="message doku-blockquote is-info">
-                        <div class="message-body">由 xMuu 整理</div>
-                    </blockquote>
-                
                 <h2 id="9-1-Introduction"><a href="#9-1-Introduction" class="headerlink" title="9.1 Introduction"></a>9.1 Introduction</h2><p>Has <code>plist dict</code> type and allows to set volatile UEFI variables commonly referred as NVRAM variables. Refer to <code>man nvram</code> for more details. macOS extensively uses NVRAM variables for OS — Bootloader — Firmware intercommunication, and thus supplying several NVRAM is required for proper macOS functioning.</p>
 <p>Each NVRAM variable consists of its name, value, attributes (refer to UEFI specification), and its <a href="https://en.wikipedia.org/wiki/Universally_unique_identifier" target="_blank" rel="noopener">GUID</a>, representing which `section’ NVRAM variable belongs to. macOS uses several GUIDs, including but not limited to:</p>
 <ul>
