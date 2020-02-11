@@ -8,9 +8,10 @@ type: docs
 <div align="center">
 <img src="/logo/opencore.png" alt="OpenCore Logo" width="128px">
 
-# OpenCore
-
-## 参考手册（v0.5.6）
+<p>
+<span style="margin-top: 1em; margin-bottom: .5em; font-size: 2em">OpenCore</span>
+<br><br>
+<span style="margin-top: 2.2857em; margin-bottom: .5714em; font-size: 1.25em">参考手册（v0.5.6）</span>
 </div>
 <br><br><br>
 
@@ -41,6 +42,5 @@ type: docs
 ## 维护者
 
 **OpenCore 简体中文参考手册** © [Sukka](https://github.com/SukkaW).<br>
-Authored and maintained by [Sukka](https://github.com/SukkaW) with help from contributors ([list](https://github.com/SukkaW/OpenCore-Document-zh_Hans/contributors)).
 
-> [Personal Website](https://skk.moe) · [Blog](https://blog.skk.moe) · GitHub [@SukkaW](https://github.com/SukkaW) · Telegram Channel [@SukkaChannel](https://t.me/SukkaChannel) · Twitter [@isukkaw](https://twitter.com/isukkaw) · Keybase [@sukka](https://keybase.io/sukka)
+由 [Sukka](https://github.com/SukkaW) 和 [众多的贡献者](https://github.com/SukkaW/OpenCore-Document-zh_Hans/contributors) 一起维护。
