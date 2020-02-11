@@ -2,6 +2,7 @@
 title: 11. UEFI
 description: UEFI（待翻译）
 type: docs
+author_info: 由 xMuu 整理
 ---
 
   ## 11.1 Introduction

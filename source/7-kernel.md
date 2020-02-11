@@ -1,7 +1,8 @@
 ---
 title: 7. Kernel
-description: Kernel（待整理）
+description: Kernel（待翻译）
 type: docs
+author_info: 由 Sukka 整理
 ---
 
 ## 7.1 简介

@@ -2,6 +2,7 @@
 title: 9. NVRAM
 description: NVRAM（待翻译）
 type: docs
+author_info: 由 xMuu 整理
 ---
 
 ## 9.1 Introduction

@@ -2,6 +2,7 @@
 title: 3. Setup
 description: Setup（待翻译）
 type: docs
+author_info: 由 Sukka 整理
 ---
 
 ## 3.1 目录结构

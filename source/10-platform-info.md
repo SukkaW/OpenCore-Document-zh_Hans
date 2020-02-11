@@ -2,6 +2,7 @@
 title: 10. PlatformInfo
 description: PlatformInfo（待翻译）
 type: docs
+author_info: 由 xMuu 整理
 ---
 
 Platform information is comprised of several identification fields generated or filled manually to be compatible with macOS services. The base part of the configuration may be obtained from [`MacInfoPkg`](https://github.com/acidanthera/MacInfoPkg) package, which itself generates a set of interfaces based on a database in [YAML](https://yaml.org/spec/1.2/spec.html) format. These fields are written to three select destinations:

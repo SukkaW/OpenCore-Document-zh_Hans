@@ -2,6 +2,7 @@
 title: 4. ACPI
 description: ACPI（待翻译）
 type: docs
+author_info: 由 Sukka 整理
 ---
 
 ## 4.1 简介

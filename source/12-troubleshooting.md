@@ -1,6 +1,6 @@
 ---
 title: 12. 排错
-description: Troubleshooting（待翻译）
+description: Troubleshooting
 type: docs
 author_info: 由 xMuu 整理，由 Sukka 翻译
 ---
