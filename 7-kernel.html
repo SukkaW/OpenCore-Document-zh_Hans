@@ -119,7 +119,7 @@
                         
                             <li><a  href="/2-configuration.html">2. 配置</a></li>
                         
-                            <li><a  href="/3-setup.html">3. 设定</a></li>
+                            <li><a  href="/3-setup.html">3. Setup</a></li>
                         
                             <li><a  href="/4-acpi.html">4. ACPI</a></li>
                         
@@ -154,7 +154,7 @@
         <div class="hero-body">
             <h1 class="title">7. Kernel</h1>
             
-                <p class="subtitle">Kernel（搬运填坑中）</p>
+                <p class="subtitle">Kernel（待整理）</p>
             
             
                 <a href="https://github.com/sukkaw/OpenCore-Document-zh_Hans/tree/master/source/7-kernel.md" target="_blank" rel="external nofollow noreferrer noopener" class="button is-small is-rounded is-black"><span class="icon is-small"><i class="fab fa-github"></i></span><span>在 GitHub 上编辑</span></a>
@@ -164,7 +164,163 @@
     <div class="columns">
         <div class="column doku-document-wrapper">
             <div class="content">
-                
+                <p>\subsection{Introduction}\label{kernelintro}</p>
+<p>This section allows to apply different kinds of kernelspace modifications on<br>Apple Kernel (<a href="https://opensource.apple.com/source/xnu" target="_blank" rel="noopener">XNU</a>). The modifications<br>currently provide driver (kext) injection, kernel and driver patching, and driver<br>blocking.</p>
+<p>\subsection{Properties}\label{kernelprops}</p>
+<p>\begin{enumerate}</p>
+<ul>
+<li><p>\texttt{Add}\<br>\textbf{Type}: \texttt{plist\ array}\<br>\textbf{Failsafe}: Empty\<br>\textbf{Description}: Load selected kernel drivers from \texttt{OC/Kexts} directory.</p>
+<p>Designed to be filled with \texttt{plist\ dict} values, describing each driver.<br>See \hyperref[kernelpropsadd]{Add Properties} section below. Kernel driver load<br>order follows the item order in the array, thus the dependencies should be written<br>prior to their consumers.</p>
+</li>
+<li><p>\texttt{Block}\<br>\textbf{Type}: \texttt{plist\ array}\<br>\textbf{Failsafe}: Empty\<br>\textbf{Description}: Remove selected kernel drivers from prelinked kernel.</p>
+<p>Designed to be filled with \texttt{plist\ dictionary} values, describing each<br>blocked driver. See \hyperref[kernelpropsblock]{Block Properties} section below.</p>
+</li>
+<li><p>\texttt{Emulate}\<br>\textbf{Type}: \texttt{plist\ dict}\<br>\textbf{Description}: Emulate select hardware in kernelspace via parameters<br>described in \hyperref[kernelpropsemu]{Emulate Properties} section below.</p>
+</li>
+<li><p>\texttt{Patch}\<br>\textbf{Type}: \texttt{plist\ array}\<br>\textbf{Failsafe}: Empty\<br>\textbf{Description}: Perform binary patches in kernel and drivers prior to<br>driver addition and removal.</p>
+<p>Designed to be filled with \texttt{plist\ dictionary} values, describing each<br>patch. See \hyperref[kernelpropspatch]{Patch Properties} section below.</p>
+</li>
+<li><p>\texttt{Quirks}\<br>\textbf{Type}: \texttt{plist\ dict}\<br>\textbf{Description}: Apply individual kernel and driver quirks described<br>in \hyperref[kernelpropsquirks]{Quirks Properties} section below.</p>
+</li>
+</ul>
+<p>\end{enumerate}</p>
+<p>\subsection{Add Properties}\label{kernelpropsadd}</p>
+<p>\begin{enumerate}</p>
+<ul>
+<li><p>\texttt{BundlePath}\<br>\textbf{Type}: \texttt{plist\ string}\<br>\textbf{Failsafe}: Empty string\<br>\textbf{Description}: Kext bundle path (e.g. \texttt{Lilu.kext}<br>or \texttt{MyKext.kext/Contents/PlugIns/MySubKext.kext}).</p>
+</li>
+<li><p>\texttt{Comment}\<br>\textbf{Type}: \texttt{plist\ string}\<br>\textbf{Failsafe}: Empty string\<br>\textbf{Description}: Arbitrary ASCII string used to provide human readable<br>reference for the entry. It is implementation defined whether this value is<br>used.</p>
+</li>
+<li><p>\texttt{Enabled}\<br>\textbf{Type}: \texttt{plist\ boolean}\<br>\textbf{Failsafe}: \texttt{false}\<br>\textbf{Description}: This kernel driver will not be added unless set to<br>\texttt{true}.</p>
+</li>
+<li><p>\texttt{ExecutablePath}\<br>\textbf{Type}: \texttt{plist\ string}\<br>\textbf{Failsafe}: Empty string\<br>\textbf{Description}: Kext executable path relative to bundle<br>(e.g. \texttt{Contents/MacOS/Lilu}).</p>
+</li>
+<li><p>\texttt{MaxKernel}\<br>\textbf{Type}: \texttt{plist\ string}\<br>\textbf{Failsafe}: Empty string\<br>\textbf{Description}: Adds kernel driver on specified macOS version or older.</p>
+<p>\hypertarget{kernmatch}Kernel version can be obtained with \texttt{uname -r} command,<br>and should look like 3 numbers separated by dots, for example \texttt{18.7.0} is the<br>kernel version for \texttt{10.14.6}. Kernel version interpretation is implemented as follows:<br>\begin{align<em>}<br>\begin{aligned}<br> ParseDarwinVersion(\kappa,\lambda,\mu)&amp;=\kappa \cdot10000 &amp;&amp;<br>   \text{Where }\kappa\in(0,99)\text{ is kernel version major} \<br> &amp;+ \lambda\cdot100 &amp;&amp;<br>   \text{Where }\lambda\in(0,99)\text{ is kernel version minor} \<br> &amp;+ \mu &amp;&amp;<br>   \text{Where }\mu\in(0,99)\text{ is kernel version patch}<br>\end{aligned}<br>\end{align</em>}<br>Kernel version comparison is implemented as follows:<br>\begin{align<em>}<br>\alpha&amp;=\begin{cases}<br> \vspace{-0.5cm}\mbox{\hspace{8cm}} &amp; \mbox{\hspace{5cm}} \<br> ParseDarwinVersion(\texttt{MinKernel}), &amp; \text{If } \texttt{MinKernel} \text{ is valid} \<br> 0 &amp; Otherwise<br>\end{cases} \<br>\beta&amp;=\begin{cases}<br> \vspace{-0.5cm}\mbox{\hspace{8cm}} &amp; \mbox{\hspace{5cm}} \<br> ParseDarwinVersion(\texttt{MaxKernel}), &amp; \text{If } \texttt{MaxKernel} \text{ is valid} \<br> \infty &amp; Otherwise<br>\end{cases} \<br>\gamma&amp;=\begin{cases}<br> \vspace{-0.5cm}\mbox{\hspace{8cm}} &amp; \mbox{\hspace{5cm}} \<br> ParseDarwinVersion(FindDarwinVersion()), &amp; \text{If valid } \texttt{“Darwin Kernel Version”} \text{ is found} \<br> \infty &amp; Otherwise<br>\end{cases} \<br>&amp; \hspace{5cm} f(\alpha,\beta,\gamma)=\alpha\leq\gamma\leq\beta<br>\end{align</em>}<br>Here $ParseDarwinVersion$ argument is assumed to be 3 integers obtained by splitting Darwin kernel version<br>string from left to right by the \texttt{.} symbol. $FindDarwinVersion$ function looks up<br>Darwin kernel version by locating \texttt{“Darwin Kernel Version $\kappa$.$\lambda$.$\mu$”} string<br>in the kernel image.</p>
+</li>
+<li><p>\texttt{MinKernel}\<br>\textbf{Type}: \texttt{plist\ string}\<br>\textbf{Failsafe}: Empty string\<br>\textbf{Description}: Adds kernel driver on specified macOS version or newer.</p>
+<p>\emph{Note}: Refer to \hyperlink{kernmatch}{\texttt{Add} \texttt{MaxKernel} description} for matching logic.</p>
+</li>
+<li><p>\texttt{PlistPath}\<br>\textbf{Type}: \texttt{plist\ string}\<br>\textbf{Failsafe}: Empty string\<br>\textbf{Description}: Kext \texttt{Info.plist} path relative to bundle<br>(e.g. \texttt{Contents/Info.plist}).</p>
+</li>
+</ul>
+<p>\end{enumerate}</p>
+<p>\subsection{Block Properties}\label{kernelpropsblock}</p>
+<p>\begin{enumerate}</p>
+<ul>
+<li><p>\texttt{Comment}\<br>\textbf{Type}: \texttt{plist\ string}\<br>\textbf{Failsafe}: Empty string\<br>\textbf{Description}: Arbitrary ASCII string used to provide human readable<br>reference for the entry. It is implementation defined whether this value is<br>used.</p>
+</li>
+<li><p>\texttt{Enabled}\<br>\textbf{Type}: \texttt{plist\ boolean}\<br>\textbf{Failsafe}: \texttt{false}\<br>\textbf{Description}: This kernel driver will not be blocked unless set to<br>\texttt{true}.</p>
+</li>
+<li><p>\texttt{Identifier}\<br>\textbf{Type}: \texttt{plist\ string}\<br>\textbf{Failsafe}: Empty string\<br>\textbf{Description}: Kext bundle identifier<br>(e.g. \texttt{com.apple.driver.AppleTyMCEDriver}).</p>
+</li>
+<li><p>\texttt{MaxKernel}\<br>\textbf{Type}: \texttt{plist\ string}\<br>\textbf{Failsafe}: Empty string\<br>\textbf{Description}: Blocks kernel driver on specified macOS version or older.</p>
+<p>\emph{Note}: Refer to \hyperlink{kernmatch}{\texttt{Add} \texttt{MaxKernel} description} for matching logic.</p>
+</li>
+<li><p>\texttt{MinKernel}\<br>\textbf{Type}: \texttt{plist\ string}\<br>\textbf{Failsafe}: Empty string\<br>\textbf{Description}: Blocks kernel driver on specified macOS version or newer.</p>
+<p>\emph{Note}: Refer to \hyperlink{kernmatch}{\texttt{Add} \texttt{MaxKernel} description} for matching logic.</p>
+</li>
+</ul>
+<p>\end{enumerate}</p>
+<p>\subsection{Emulate Properties}\label{kernelpropsemu}</p>
+<p>\begin{enumerate}</p>
+<ul>
+<li><p>\texttt{Cpuid1Data}\<br>\textbf{Type}: \texttt{plist\ data}, 16 bytes\<br>\textbf{Failsafe}: All zero\<br>\textbf{Description}: Sequence of \texttt{EAX}, \texttt{EBX}, \texttt{ECX},<br>\texttt{EDX} values to replace \texttt{CPUID (1)} call in XNU kernel.</p>
+<p>This property serves for two needs:</p>
+<p>\begin{itemize}<br>\tightlist<br>\item Enabling support of an unsupported CPU model.<br>\item Enabling XCPM support for an unsupported CPU variant.<br>\end{itemize}</p>
+<p>Normally it is only the value of \texttt{EAX} that needs to be taken care of,<br>since it represents the full CPUID. The remaining bytes are to be left as zeroes.<br>Byte order is Little Endian, so for example, \texttt{A9 06 03 00} stands for CPUID<br>\texttt{0x0306A9} (Ivy Bridge).</p>
+<p>For XCPM support it is recommended to use the following combinations.</p>
+<p>\begin{itemize}<br>\tightlist<br>\item Haswell-E (\texttt{0x306F2}) to Haswell (\texttt{0x0306C3}):\<br>\texttt{Cpuid1Data}: \texttt{C3 06 03 00 00 00 00 00 00 00 00 00 00 00 00 00}\<br>\texttt{Cpuid1Mask}: \texttt{FF FF FF FF 00 00 00 00 00 00 00 00 00 00 00 00}<br>\item Broadwell-E (\texttt{0x0406F1}) to Broadwell (\texttt{0x0306D4}):\<br>\texttt{Cpuid1Data}: \texttt{D4 06 03 00 00 00 00 00 00 00 00 00 00 00 00 00}\<br>\texttt{Cpuid1Mask}: \texttt{FF FF FF FF 00 00 00 00 00 00 00 00 00 00 00 00}<br>\end{itemize}</p>
+<p>Further explanations can be found at<br><a href="https://github.com/acidanthera/bugtracker/issues/365" target="_blank" rel="noopener">acidanthera/bugtracker#365</a>.<br>See \texttt{Special NOTES} for Haswell+ low-end.</p>
+</li>
+<li><p>\texttt{Cpuid1Mask}\<br>\textbf{Type}: \texttt{plist\ data}, 16 bytes\<br>\textbf{Failsafe}: All zero\<br>\textbf{Description}: Bit mask of active bits in \texttt{Cpuid1Data}.</p>
+<p>When each \texttt{Cpuid1Mask} bit is set to 0, the original CPU bit is used,<br>otherwise set bits take the value of \texttt{Cpuid1Data}.</p>
+</li>
+</ul>
+<p>\end{enumerate}</p>
+<p>\subsection{Patch Properties}\label{kernelpropspatch}</p>
+<p>\begin{enumerate}</p>
+<ul>
+<li><p>\texttt{Base}\<br>\textbf{Type}: \texttt{plist\ string}\<br>\textbf{Failsafe}: Empty string\<br>\textbf{Description}: Selects symbol-matched base for patch lookup (or immediate<br>replacement) by obtaining the address of provided symbol name. Can be set to<br>empty string to be ignored.</p>
+</li>
+<li><p>\texttt{Comment}\<br>\textbf{Type}: \texttt{plist\ string}\<br>\textbf{Failsafe}: Empty string\<br>\textbf{Description}: Arbitrary ASCII string used to provide human readable<br>reference for the entry. It is implementation defined whether this value is<br>used.</p>
+</li>
+<li><p>\texttt{Count}\<br>\textbf{Type}: \texttt{plist\ integer}\<br>\textbf{Failsafe}: \texttt{0}\<br>\textbf{Description}: Number of patch occurrences to apply. \texttt{0} applies<br>the patch to all occurrences found.</p>
+</li>
+<li><p>\texttt{Enabled}\<br>\textbf{Type}: \texttt{plist\ boolean}\<br>\textbf{Failsafe}: \texttt{false}\<br>\textbf{Description}: This kernel patch will not be used unless set to<br>\texttt{true}.</p>
+</li>
+<li><p>\texttt{Find}\<br>\textbf{Type}: \texttt{plist\ data}\<br>\textbf{Failsafe}: Empty data\<br>\textbf{Description}: Data to find. Can be set to empty for immediate<br>replacement at \texttt{Base}. Must equal to \texttt{Replace} in size<br>otherwise.</p>
+</li>
+<li><p>\texttt{Identifier}\<br>\textbf{Type}: \texttt{plist\ string}\<br>\textbf{Failsafe}: Empty string\<br>\textbf{Description}: Kext bundle identifier (e.g. \texttt{com.apple.driver.AppleHDA})<br>or \texttt{kernel} for kernel patch.</p>
+</li>
+<li><p>\texttt{Limit}\<br>\textbf{Type}: \texttt{plist\ integer}\<br>\textbf{Failsafe}: \texttt{0}\<br>\textbf{Description}: Maximum number of bytes to search for. Can be set to<br>\texttt{0} to look through the whole kext or kernel.</p>
+</li>
+<li><p>\texttt{Mask}\<br>\textbf{Type}: \texttt{plist\ data}\<br>\textbf{Failsafe}: Empty data\<br>\textbf{Description}: Data bitwise mask used during find comparison.<br>Allows fuzzy search by ignoring not masked (set to zero) bits. Can be<br>set to empty data to be ignored. Must equal to \texttt{Replace} in size<br>otherwise.</p>
+</li>
+<li><p>\texttt{MaxKernel}\<br>\textbf{Type}: \texttt{plist\ string}\<br>\textbf{Failsafe}: Empty string\<br>\textbf{Description}: Patches data on specified macOS version or older.</p>
+<p>\emph{Note}: Refer to \hyperlink{kernmatch}{\texttt{Add} \texttt{MaxKernel} description} for matching logic.</p>
+</li>
+<li><p>\texttt{MinKernel}\<br>\textbf{Type}: \texttt{plist\ string}\<br>\textbf{Failsafe}: Empty string\<br>\textbf{Description}: Patches data on specified macOS version or newer.</p>
+<p>\emph{Note}: Refer to \hyperlink{kernmatch}{\texttt{Add} \texttt{MaxKernel} description} for matching logic.</p>
+</li>
+<li><p>\texttt{Replace}\<br>\textbf{Type}: \texttt{plist\ data}\<br>\textbf{Failsafe}: Empty data\<br>\textbf{Description}: Replacement data of one or more bytes.</p>
+</li>
+<li><p>\texttt{ReplaceMask}\<br>\textbf{Type}: \texttt{plist\ data}\<br>\textbf{Failsafe}: Empty data\<br>\textbf{Description}: Data bitwise mask used during replacement.<br>Allows fuzzy replacement by updating masked (set to non-zero) bits. Can be<br>set to empty data to be ignored. Must equal to \texttt{Replace} in size<br>otherwise.</p>
+</li>
+<li><p>\texttt{Skip}\<br>\textbf{Type}: \texttt{plist\ integer}\<br>\textbf{Failsafe}: \texttt{0}\<br>\textbf{Description}: Number of found occurrences to be skipped before replacement<br>is done.</p>
+</li>
+</ul>
+<p>\end{enumerate}</p>
+<p>\subsection{Quirks Properties}\label{kernelpropsquirks}</p>
+<p>\begin{enumerate}</p>
+<ul>
+<li><p>\texttt{AppleCpuPmCfgLock}\<br>\textbf{Type}: \texttt{plist\ boolean}\<br>\textbf{Failsafe}: \texttt{false}\<br>\textbf{Description}: Disables \texttt{PKG_CST_CONFIG_CONTROL} (\texttt{0xE2})<br>MSR modification in AppleIntelCPUPowerManagement.kext, commonly causing early<br>kernel panic, when it is locked from writing.</p>
+<p>Certain firmwares lock \texttt{PKG_CST_CONFIG_CONTROL} MSR register. To check its<br>state one can use bundled \texttt{VerifyMsrE2} tool. Select firmwares have this<br>register locked on some cores only.</p>
+<p>As modern firmwares provide \texttt{CFG Lock} setting, which allows configuring<br>\texttt{PKG_CST_CONFIG_CONTROL} MSR register lock, this option should be avoided<br>whenever possible. For several APTIO firmwares not displaying \texttt{CFG Lock} setting<br>in the GUI it is possible to access the option directly:</p>
+<p>\begin{enumerate}<br>\tightlist<br>\item Download <a href="https://github.com/LongSoft/UEFITool/releases" target="_blank" rel="noopener">UEFITool</a> and<br> <a href="https://github.com/LongSoft/Universal-IFR-Extractor/releases" target="_blank" rel="noopener">IFR-Extractor</a>.<br>\item Open your firmware image in UEFITool and find \texttt{CFG Lock} unicode string.<br> If it is not present, your firmware may not have this option and you should stop.<br>\item Extract the \texttt{Setup.bin} PE32 Image Section (the one UEFITool found) through<br> \texttt{Extract Body} menu option.<br>\item Run IFR-Extractor on the extracted file (e.g. \texttt{./ifrextract Setup.bin Setup.txt}).<br>\item Find \texttt{CFG Lock, VarStoreInfo (VarOffset/VarName):} in \texttt{Setup.txt} and<br> remember the offset right after it (e.g. \texttt{0x123}).<br>\item Download and run <a href="http://brains.by/posts/bootx64.7z" target="_blank" rel="noopener">Modified GRUB Shell</a> compiled by<br> <a href="https://geektimes.com/post/258090" target="_blank" rel="noopener">brainsucker</a> or use<br> <a href="https://github.com/datasone/grub-mod-setup_var" target="_blank" rel="noopener">a newer version</a> by<br> <a href="https://github.com/datasone" target="_blank" rel="noopener">datasone</a>.<br>\item Enter \texttt{setup_var 0x123 0x00} command, where \texttt{0x123} should be replaced by<br> your actual offset, and reboot.<br>\end{enumerate}</p>
+<p>\textbf{WARNING}: Variable offsets are unique not only to each motherboard but even to its firmware<br>version. Never ever try to use an offset without checking.</p>
+</li>
+<li><p>\texttt{AppleXcpmCfgLock}\<br>\textbf{Type}: \texttt{plist\ boolean}\<br>\textbf{Failsafe}: \texttt{false}\<br>\textbf{Description}: Disables \texttt{PKG_CST_CONFIG_CONTROL} (\texttt{0xE2})<br>MSR modification in XNU kernel, commonly causing early kernel panic, when it is<br>locked from writing (XCPM power management).</p>
+<p>\emph{Note}: This option should be avoided whenever possible. See \texttt{AppleCpuPmCfgLock}<br>description for more details.</p>
+</li>
+<li><p>\texttt{AppleXcpmExtraMsrs}\<br>\textbf{Type}: \texttt{plist\ boolean}\<br>\textbf{Failsafe}: \texttt{false}\<br>\textbf{Description}: Disables multiple MSR access critical for select CPUs,<br>which have no native XCPM support.</p>
+<p>This is normally used in conjunction with \texttt{Emulate} section on Haswell-E,<br>Broadwell-E, Skylake-X, and similar CPUs. More details on the XCPM patches are outlined in<br><a href="https://github.com/acidanthera/bugtracker/issues/365" target="_blank" rel="noopener">acidanthera/bugtracker#365</a>.</p>
+<p>\emph{Note}: Additional not provided patches will be required for Ivy Bridge or Pentium<br>CPUs. It is recommended to use \texttt{AppleIntelCpuPowerManagement.kext} for the former.</p>
+</li>
+<li><p>\texttt{AppleXcpmForceBoost}\<br>\textbf{Type}: \texttt{plist\ boolean}\<br>\textbf{Failsafe}: \texttt{false}\<br>\textbf{Description}: Forces maximum performance in XCPM mode.</p>
+<p>This patch writes \texttt{0xFF00} to \texttt{MSR_IA32_PERF_CONTROL} (\texttt{0x199}),<br>effectively setting maximum multiplier for all the time.</p>
+<p>\emph{Note}: While this may increase the performance, this patch is strongly discouraged<br>on all systems but those explicitly dedicated to scientific or media calculations.<br>In general only certain Xeon models benefit from the patch.</p>
+</li>
+<li><p>\texttt{CustomSMBIOSGuid}\<br>\textbf{Type}: \texttt{plist\ boolean}\<br>\textbf{Failsafe}: \texttt{false}\<br>\textbf{Description}: Performs GUID patching for \texttt{UpdateSMBIOSMode}<br>\texttt{Custom} mode. Usually relevant for Dell laptops.</p>
+</li>
+<li><p>\texttt{DisableIoMapper}\<br>\textbf{Type}: \texttt{plist\ boolean}\<br>\textbf{Failsafe}: \texttt{false}\<br>\textbf{Description}: Disables \texttt{IOMapper} support in XNU (VT-d),<br>which may conflict with the firmware implementation.</p>
+<p>\emph{Note}: This option is a preferred alternative to dropping \texttt{DMAR}<br>ACPI table and disabling VT-d in firmware preferences, which does not break<br>VT-d support in other systems in case they need it.</p>
+</li>
+<li><p>\texttt{DummyPowerManagement}\<br>\textbf{Type}: \texttt{plist\ boolean}\<br>\textbf{Failsafe}: \texttt{false}\<br>\textbf{Description}: Disables \texttt{AppleIntelCpuPowerManagement}.</p>
+<p>\emph{Note}: This option is a preferred alternative to<br>\texttt{NullCpuPowerManagement.kext} for CPUs without native power<br>management driver in macOS.</p>
+</li>
+<li><p>\texttt{ExternalDiskIcons}\<br>\textbf{Type}: \texttt{plist\ boolean}\<br>\textbf{Failsafe}: \texttt{false}\<br>\textbf{Description}: Apply icon type patches to AppleAHCIPort.kext to force<br>internal disk icons for all AHCI disks.</p>
+<p>\emph{Note}: This option should be avoided whenever possible. Modern firmwares<br>usually have compatible AHCI controllers.</p>
+</li>
+<li><p>\texttt{IncreasePciBarSize}\<br>\textbf{Type}: \texttt{plist\ boolean}\<br>\textbf{Failsafe}: \texttt{false}\<br>\textbf{Description}: Increases 32-bit PCI bar size in IOPCIFamily from 1 to 4 GBs.</p>
+<p>\emph{Note}: This option should be avoided whenever possible. In general the necessity<br>of this option means misconfigured or broken firmware.</p>
+</li>
+<li><p>\texttt{LapicKernelPanic}\<br>\textbf{Type}: \texttt{plist\ boolean}\<br>\textbf{Failsafe}: \texttt{false}\<br>\textbf{Description}: Disables kernel panic on LAPIC interrupts.</p>
+</li>
+<li><p>\texttt{PanicNoKextDump}\<br>\textbf{Type}: \texttt{plist\ boolean}\<br>\textbf{Failsafe}: \texttt{false}\<br>\textbf{Description}: Prevent kernel from printing kext dump in the panic<br>log preventing from observing panic details. Affects 10.13 and above.</p>
+</li>
+<li><p>\texttt{PowerTimeoutKernelPanic}\<br>\textbf{Type}: \texttt{plist\ boolean}\<br>\textbf{Failsafe}: \texttt{false}\<br>\textbf{Description}: Disables kernel panic on setPowerState timeout.</p>
+<p>An additional security measure was added to macOS Catalina (10.15) causing<br>kernel panic on power change timeout for Apple drivers. Sometimes it may cause<br>issues on misconfigured hardware, notably digital audio, which sometimes fails<br>to wake up. For debug kernels \texttt{setpowerstate_panic=0} boot argument<br>should be used, which is otherwise equivalent to this quirk.</p>
+</li>
+<li><p>\texttt{ThirdPartyDrives}\<br>\textbf{Type}: \texttt{plist\ boolean}\<br>\textbf{Failsafe}: \texttt{false}\<br>\textbf{Description}: Apply vendor patches to IOAHCIBlockStorage.kext to enable<br>native features for third-party drives, such as TRIM on SSDs or hibernation<br>support on 10.15 and newer.</p>
+<p>\emph{Note}: This option may be avoided on user preference. NVMe SSDs are<br>compatible without the change. For AHCI SSDs on modern macOS version there<br>is a dedicated built-in utility called \texttt{trimforce}. Starting from 10.15<br>this utility creates \texttt{EnableTRIM} variable in \texttt{APPLE_BOOT_VARIABLE_GUID}<br>namespace with \texttt{01 00 00 00} value.</p>
+</li>
+<li><p>\texttt{XhciPortLimit}\<br>\textbf{Type}: \texttt{plist\ boolean}\<br>\textbf{Failsafe}: \texttt{false}\<br>\textbf{Description}: Patch various kexts (AppleUSBXHCI.kext, AppleUSBXHCIPCI.kext,<br>IOUSBHostFamily.kext) to remove USB port count limit of 15 ports.</p>
+<p>\emph{Note}: This option should be avoided whenever possible. USB port limit<br>is imposed by the amount of used bits in locationID format and there is no<br>possible way to workaround this without heavy OS modification. The only<br>valid solution is to limit the amount of used ports to 15 (discarding some).<br>More details can be found on <a href="https://applelife.ru/posts/550233" target="_blank" rel="noopener">AppleLife.ru</a>.</p>
+</li>
+</ul>
+<p>\end{enumerate}</p>
+
             </div>
 
             <ul class="doku-pagination">

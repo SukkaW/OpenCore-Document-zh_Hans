@@ -119,7 +119,7 @@
                         
                             <li><a  href="/2-configuration.html">2. 配置</a></li>
                         
-                            <li><a  href="/3-setup.html">3. 设定</a></li>
+                            <li><a  href="/3-setup.html">3. Setup</a></li>
                         
                             <li><a  href="/4-acpi.html">4. ACPI</a></li>
                         
@@ -154,7 +154,7 @@
         <div class="hero-body">
             <h1 class="title">9. NVRAM</h1>
             
-                <p class="subtitle">NVRAM（搬运填坑中）</p>
+                <p class="subtitle">NVRAM（待整理）</p>
             
             
                 <a href="https://github.com/sukkaw/OpenCore-Document-zh_Hans/tree/master/source/9-nvram.md" target="_blank" rel="external nofollow noreferrer noopener" class="button is-small is-rounded is-black"><span class="icon is-small"><i class="fab fa-github"></i></span><span>在 GitHub 上编辑</span></a>
@@ -164,7 +164,90 @@
     <div class="columns">
         <div class="column doku-document-wrapper">
             <div class="content">
-                
+                <p>\subsection{Introduction}\label{nvramintro}</p>
+<p>Has \texttt{plist\ dict} type and allows to set volatile UEFI variables<br>commonly referred as NVRAM variables. Refer to \texttt{man\ nvram} for<br>more details. macOS extensively uses NVRAM variables for OS — Bootloader<br>— Firmware intercommunication, and thus supplying several NVRAM is<br>required for proper macOS functioning.</p>
+<p>Each NVRAM variable consists of its name, value, attributes (refer to<br>UEFI specification), and its<br><a href="https://en.wikipedia.org/wiki/Universally_unique_identifier" target="_blank" rel="noopener">GUID</a>,<br>representing which `section’ NVRAM variable belongs to. macOS uses<br>several GUIDs, including but not limited to:</p>
+<p>\begin{itemize}<br>\tightlist</p>
+<ul>
+<li>\texttt{4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14}<br>(\texttt{APPLE_VENDOR_VARIABLE_GUID})</li>
+<li>\texttt{7C436110-AB2A-4BBB-A880-FE41995C9F82}<br>(\texttt{APPLE_BOOT_VARIABLE_GUID})</li>
+<li>\texttt{8BE4DF61-93CA-11D2-AA0D-00E098032B8C}<br>(\texttt{EFI_GLOBAL_VARIABLE_GUID})</li>
+<li>\texttt{4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102}<br>(\texttt{OC_VENDOR_VARIABLE_GUID})<br>\end{itemize}</li>
+</ul>
+<p>\emph{Note}: Some of the variables may be added by<br>\hyperref[platforminfonvram]{PlatformNVRAM} or<br>\hyperref[platforminfogeneric]{Generic} subsections of<br>\hyperref[platforminfo]{PlatformInfo} section.<br>Please ensure that variables of this section never collide with them,<br>as behaviour is undefined otherwise.</p>
+<p>For proper macOS functioning it is often required to use \texttt{OC_FIRMWARE_RUNTIME}<br>protocol implementation currently offered as a part of \texttt{FwRuntimeServices} driver.<br>While it brings any benefits, there are certain limitations which arise depending on the<br>use.</p>
+<p>\begin{enumerate}<br>\item Not all tools may be aware of protected namespaces.\<br>  When \texttt{RequestBootVarRouting} is used \texttt{Boot}-prefixed variable access<br>  is restricted and protected in a separate namespace. To access the original variables<br>  tools have to be aware of \texttt{OC_FIRMWARE_RUNTIME} logic.<br>\item Assigned NVRAM variables are not always allowed to exceed 512 bytes.\<br>  This is true for \texttt{Boot}-prefixed variables when \texttt{RequestBootVarFallback}<br>  is used, and for overwriting volatile variables with non-volatile on UEFI 2.8<br>  non-conformant firmwares.<br>\end{enumerate}</p>
+<p>\subsection{Properties}\label{nvramprops}</p>
+<p>\begin{enumerate}</p>
+<ul>
+<li><p>\texttt{Add}\<br>\textbf{Type}: \texttt{plist\ dict}\<br>\textbf{Description}: Sets NVRAM variables from a map (\texttt{plist\ dict})<br>of GUIDs to a map (\texttt{plist\ dict}) of variable names and their values<br>in \texttt{plist\ metadata} format. GUIDs must be provided in canonic string<br>format in upper or lower case (e.g. \texttt{8BE4DF61-93CA-11D2-AA0D-00E098032B8C}).</p>
+<p>Created variables get \texttt{EFI_VARIABLE_BOOTSERVICE_ACCESS} and<br>\texttt{EFI_VARIABLE_RUNTIME_ACCESS} attributes set.<br>Variables will only be set if not present and not blocked.<br>To overwrite a variable add it to \texttt{Block} section. This approach<br>enables to provide default values till the operating system takes the lead.</p>
+<p>\emph{Note}: If \texttt{plist\ key} does not conform to GUID format,<br>behaviour is undefined.</p>
+</li>
+<li><p>\texttt{Block}\<br>\textbf{Type}: \texttt{plist\ dict}\<br>\textbf{Description}: Removes NVRAM variables from a map (\texttt{plist\ dict})<br>of GUIDs to an array (\texttt{plist\ array}) of variable names in<br>\texttt{plist\ string} format.</p>
+</li>
+<li><p>\texttt{LegacyEnable}\<br>\textbf{Type}: \texttt{plist\ boolean}\<br>\textbf{Failsafe}: \texttt{false}\<br>\textbf{Description}: Enables loading of NVRAM variable file named \texttt{nvram.plist}<br>from EFI volume root.</p>
+<p>This file must have root \texttt{plist\ dictionary} type and contain two fields:<br>\begin{itemize}<br>\tightlist<br>\item \texttt{Version} — \texttt{plist\ integer}, file version, must be set to 1.<br>\item \texttt{Add} — \texttt{plist\ dictionary}, equivalent to \texttt{Add} from<br>\texttt{config.plist}.<br>\end{itemize}</p>
+<p>Variable loading happens prior to \texttt{Block} (and \texttt{Add}) phases. Unless<br>\texttt{LegacyOverwrite} is enabled, it will not overwrite any existing variable.<br>Variables allowed to be set must be specified in \texttt{LegacySchema}.<br>Third-party scripts may be used to create \texttt{nvram.plist}<br>file. An example of such script can be found in \texttt{Utilities}. The use of third-party<br>scripts may require \texttt{ExposeSensitiveData} set to \texttt{0x3} to provide<br>\texttt{boot-path} variable with OpenCore EFI partition UUID.</p>
+<p>\textbf{WARNING}: This feature is very dangerous as it passes unprotected data to your<br>firmware variable services. Use it only when no hardware NVRAM implementation is provided<br>by the firmware or it is incompatible.</p>
+</li>
+<li><p>\texttt{LegacyOverwrite}\<br>\textbf{Type}: \texttt{plist\ boolean}\<br>\textbf{Failsafe}: \texttt{false}\<br>\textbf{Description}: Permits overwriting firmware variables from \texttt{nvram.plist}.</p>
+<p>\emph{Note}: Only variables accessible from the operating system will be overwritten.</p>
+</li>
+<li><p>\texttt{LegacySchema}\<br>\textbf{Type}: \texttt{plist\ dict}\<br>\textbf{Description}: Allows setting select NVRAM variables from a map<br>(\texttt{plist\ dict}) of GUIDs to an array (\texttt{plist\ array}) of<br>variable names in \texttt{plist\ string} format.</p>
+<p>You can use \texttt{*} value to accept all variables for select GUID.</p>
+<p>\textbf{WARNING}: Choose variables very carefully, as nvram.plist is not vaulted.<br>For instance, do not put \texttt{boot-args} or \texttt{csr-active-config}, as<br>this can bypass SIP.</p>
+</li>
+<li><p>\texttt{WriteFlash}\<br>\textbf{Type}: \texttt{plist\ boolean}\<br>\textbf{Failsafe}: \texttt{false}\<br>\textbf{Description}: Enables writing to flash memory for all added variables.</p>
+<p>\emph{Note}: This value is recommended to be enabled on most firmwares, but is<br>left configurable for firmwares that may have issues with NVRAM variable storage<br>garbage collection or alike.</p>
+</li>
+</ul>
+<p>\end{enumerate}</p>
+<p>To read NVRAM variable value from macOS one could use \texttt{nvram}<br>by concatenating variable GUID and name separated by \texttt{:} symbol.<br>For example, \texttt{nvram 7C436110-AB2A-4BBB-A880-FE41995C9F82:boot-args}.</p>
+<p>A continuously updated variable list can be found in a corresponding document:<br><a href="https://docs.google.com/spreadsheets/d/1HTCBwfOBkXsHiK7os3b2CUc6k68axdJYdGl-TyXqLu0" target="_blank" rel="noopener">NVRAM Variables</a>.</p>
+<p>\subsection{Mandatory Variables}\label{nvramvars}</p>
+<p>\emph{Warning}: These variables may be added by<br>\hyperref[platforminfonvram]{PlatformNVRAM} or<br>\hyperref[platforminfogeneric]{Generic} subsections of<br>\hyperref[platforminfo]{PlatformInfo} section.<br>Using \texttt{PlatformInfo} is the recommend way of setting these variables.</p>
+<p>The following variables are mandatory for macOS functioning:</p>
+<p>\begin{itemize}<br>\tightlist</p>
+<ul>
+<li>\texttt{4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14:FirmwareFeatures}<br>\break<br>32-bit \texttt{FirmwareFeatures}. Present on all Macs to avoid extra parsing of SMBIOS tables</li>
+<li>\texttt{4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14:FirmwareFeaturesMask}<br>\break<br>32-bit \texttt{FirmwareFeaturesMask}. Present on all Macs to avoid extra parsing<br>of SMBIOS tables.</li>
+<li>\texttt{4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14:MLB}<br>\break<br>\texttt{BoardSerialNumber}. Present on newer Macs (2013+ at least) to avoid extra parsing<br>of SMBIOS tables, especially in boot.efi.</li>
+<li>\texttt{4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14:ROM}<br>\break<br>Primary network adapter MAC address or replacement value. Present on newer Macs<br>(2013+ at least) to avoid accessing special memory region, especially in boot.efi.<br>\end{itemize}</li>
+</ul>
+<p>\subsection{Recommended Variables}\label{nvramvarsrec}</p>
+<p>The following variables are recommended for faster startup or other<br>improvements:</p>
+<p>\begin{itemize}<br>\tightlist</p>
+<ul>
+<li>\texttt{7C436110-AB2A-4BBB-A880-FE41995C9F82:csr-active-config}<br>\break<br>32-bit System Integrity Protection bitmask. Declared in XNU source code in<br><a href="https://opensource.apple.com/source/xnu/xnu-4570.71.2/bsd/sys/csr.h.auto.html" target="_blank" rel="noopener">csr.h</a>.</li>
+<li>\texttt{4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14:ExtendedFirmwareFeatures}<br>\break<br>Combined \texttt{FirmwareFeatures} and \texttt{ExtendedFirmwareFeatures}. Present on<br>newer Macs to avoid extra parsing of SMBIOS tables</li>
+<li>\texttt{4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14:ExtendedFirmwareFeaturesMask}<br>\break<br>Combined \texttt{FirmwareFeaturesMask} and \texttt{ExtendedFirmwareFeaturesMask}.<br>Present on newer Macs to avoid extra parsing of SMBIOS tables.</li>
+<li>\texttt{4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14:HW_BID}<br>\break<br>Hardware \texttt{BoardProduct} (e.g. \texttt{Mac-35C1E88140C3E6CF}). Not present on<br>real Macs, but used to avoid extra parsing of SMBIOS tables, especially in boot.efi.</li>
+<li>\texttt{4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14:HW_MLB}<br>\break<br>Hardware \texttt{BoardSerialNumber}. Override for MLB. Present on newer Macs (2013+ at least).</li>
+<li>\texttt{4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14:HW_ROM}<br>\break<br>Hardware ROM. Override for ROM. Present on newer Macs (2013+ at least).</li>
+<li>\texttt{7C436110-AB2A-4BBB-A880-FE41995C9F82:prev-lang:kbd}<br>\break<br>ASCII string defining default keyboard layout. Format is \texttt{lang-COUNTRY:keyboard},<br>e.g. \texttt{ru-RU:252} for Russian locale and ABC keyboard. Also accepts short forms:<br>\texttt{ru:252} or \texttt{ru:0} (U.S. keyboard, compatible with 10.9). Full decoded<br>keyboard list from \texttt{AppleKeyboardLayouts-L.dat} can be found<br><a href="https://github.com/acidanthera/OcSupportPkg/tree/master/Utilities/AppleKeyboardLayouts" target="_blank" rel="noopener">here</a>. Using non-latin keyboard on 10.14<br>will not enable ABC keyboard, unlike previous and subsequent macOS versions, and is thus not recommended in case you need 10.14.</li>
+<li>\texttt{7C436110-AB2A-4BBB-A880-FE41995C9F82:security-mode}<br>\break<br>ASCII string defining FireWire security mode. Legacy, can be found in IOFireWireFamily<br>source code in<br><a href="https://opensource.apple.com/source/IOFireWireFamily/IOFireWireFamily-473/IOFireWireFamily.kmodproj/IOFireWireController.cpp.auto.html" target="_blank" rel="noopener">IOFireWireController.cpp</a>.<br>It is recommended not to set this variable, which may speedup system startup. Setting to<br>\texttt{full} is equivalent to not setting the variable and \texttt{none} disables<br>FireWire security.<ul>
+<li>\texttt{4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14:UIScale}<br>\break<br>One-byte data defining boot.efi user interface scaling. Should be \textbf{01} for normal<br>screens and \textbf{02} for HiDPI screens.<br>\end{itemize}</li>
+</ul>
+</li>
+</ul>
+<p>\subsection{Other Variables}\label{nvramvarsother}</p>
+<p>The following variables may be useful for certain configurations or<br>troubleshooting:</p>
+<p>\begin{itemize}<br>\tightlist</p>
+<ul>
+<li><p>\texttt{7C436110-AB2A-4BBB-A880-FE41995C9F82:boot-args}<br>\break<br>Kernel arguments, used to pass configuration to Apple kernel and drivers.<br>There are many arguments, which may be found by looking for the use of<br>\texttt{PE_parse_boot_argn} function in the kernel or driver code.<br>Some of the known boot arguments include:</p>
+<p>\begin{itemize}<br>\item \texttt{acpi_layer=0xFFFFFFFF}<br>\item \texttt{acpi_level=0xFFFF5F} (implies<br>\href{<a href="https://github.com/acpica/acpica/blob/master/source/include/acoutput.h}" target="_blank" rel="noopener">https://github.com/acpica/acpica/blob/master/source/include/acoutput.h}</a><br>{\texttt{ACPI_ALL_COMPONENTS}})<br>\item \texttt{batman=VALUE} (\texttt{AppleSmartBatteryManager} debug mask)<br>\item \texttt{batman-nosmc=1} (disable \texttt{AppleSmartBatteryManager} SMC interface)<br>\item \texttt{cpus=VALUE} (maximum number of CPUs used)<br>\item \texttt{debug=VALUE} (debug mask)<br>\item \texttt{io=VALUE} (\texttt{IOKit} debug mask)<br>\item \texttt{keepsyms=1} (show panic log debug symbols)<br>\item \texttt{kextlog=VALUE} (kernel extension loading debug mask)<br>\item \texttt{nv_disable=1} (disables NVIDIA GPU acceleration)<br>\item \texttt{nvda_drv=1} (legacy way to enable NVIDIA web driver, removed in 10.12)<br>\item \texttt{npci=0x2000} (<a href="https://www.insanelymac.com/forum/topic/260539-1068-officially-released/?do=findComment&comment=1707972" target="_blank" rel="noopener">legacy</a>, disables \texttt{kIOPCIConfiguratorPFM64})<br>\item \texttt{lapic_dont_panic=1}<br>\item \texttt{slide=VALUE} (manually set KASLR slide)<br>\item \texttt{smcdebug=VALUE} (\texttt{AppleSMC} debug mask)<br>\item \texttt{-amd_no_dgpu_accel} (alternative to <a href="https://github.com/acidanthera/WhateverGreen" target="_blank" rel="noopener">WhateverGreen</a>‘s \texttt{-radvesa} for new GPUs)<br>\item \texttt{-nehalem_error_disable}<br>\item \texttt{-no_compat_check} (disable model checking)<br>\item \texttt{-s} (single mode)<br>\item \texttt{-v} (verbose mode)<br>\item \texttt{-x} (safe mode)<br>\end{itemize}</p>
+<p>There are multiple external places summarising macOS argument lists:<br><a href="https://osxeon.wordpress.com/2015/08/10/boot-argument-options-in-os-x" target="_blank" rel="noopener">example 1</a>,<br><a href="https://superuser.com/questions/255176/is-there-a-list-of-available-boot-args-for-darwin-os-x" target="_blank" rel="noopener">example 2</a>.</p>
+</li>
+<li><p>\texttt{7C436110-AB2A-4BBB-A880-FE41995C9F82:bootercfg}<br>\break<br>Booter arguments, similar to \texttt{boot-args} but for boot.efi. Accepts a set of<br>arguments, which are hexadecimal 64-bit values with or without 0x prefix primarily<br>for logging control:<br>\begin{itemize}<br>\item \texttt{log=VALUE}<br>\begin{itemize}<br>\item \texttt{1} — AppleLoggingConOutOrErrSet/AppleLoggingConOutOrErrPrint<br>(classical ConOut/StdErr)<br>\item \texttt{2} — AppleLoggingStdErrSet/AppleLoggingStdErrPrint (StdErr or serial?)<br>\item \texttt{4} — AppleLoggingFileSet/AppleLoggingFilePrint (BOOTER.LOG/BOOTER.OLD<br>file on EFI partition)<br>\end{itemize}<br>\item \texttt{debug=VALUE}<br>\begin{itemize}<br>\item \texttt{1} — enables print something to BOOTER.LOG (stripped code implies there<br>may be a crash)<br>\item \texttt{2} — enables perf logging to /efi/debug-log in the device three<br>\item \texttt{4} — enables timestamp printing for styled printf calls<br>\end{itemize}<br>\item \texttt{level=VALUE} — Verbosity level of DEBUG output. Everything but<br>\texttt{0x80000000} is stripped from the binary, and this is the default value.<br>\item \texttt{kc-read-size=VALUE} — Chunk size used for buffered I/O from network or<br>disk for prelinkedkernel reading and related. Set to 1MB (0x100000) by default, can be<br>tuned for faster booting.<br>\end{itemize}</p>
+<p>\emph{Note}: To quickly see verbose output from \texttt{boot.efi} set this to \texttt{log=1}<br>(currently this is broken in 10.15).<br>\item \texttt{7C436110-AB2A-4BBB-A880-FE41995C9F82:bootercfg-once}<br>\break<br>Booter arguments override removed after first launch. Otherwise equivalent to \texttt{bootercfg}.</p>
+</li>
+<li><p>\texttt{7C436110-AB2A-4BBB-A880-FE41995C9F82:fmm-computer-name}<br>\break<br>Current saved host name. ASCII string.</p>
+</li>
+<li><p>\texttt{7C436110-AB2A-4BBB-A880-FE41995C9F82:nvda_drv}<br>\break<br>NVIDIA Web Driver control variable. Takes ASCII digit \texttt{1} or \texttt{0}<br>to enable or disable installed driver.<br>\end{itemize}</p>
+</li>
+</ul>
+
             </div>
 
             <ul class="doku-pagination">

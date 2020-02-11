@@ -119,7 +119,7 @@
                         
                             <li><a  href="/2-configuration.html">2. 配置</a></li>
                         
-                            <li><a  href="/3-setup.html">3. 设定</a></li>
+                            <li><a  href="/3-setup.html">3. Setup</a></li>
                         
                             <li><a  href="/4-acpi.html">4. ACPI</a></li>
                         
@@ -154,7 +154,7 @@
         <div class="hero-body">
             <h1 class="title">6. DeviceProperties</h1>
             
-                <p class="subtitle">DeviceProperties（搬运填坑中）</p>
+                <p class="subtitle">DeviceProperties</p>
             
             
                 <a href="https://github.com/sukkaw/OpenCore-Document-zh_Hans/tree/master/source/6-device-properties.md" target="_blank" rel="external nofollow noreferrer noopener" class="button is-small is-rounded is-black"><span class="icon is-small"><i class="fab fa-github"></i></span><span>在 GitHub 上编辑</span></a>
@@ -162,9 +162,23 @@
         </div>
     </header>
     <div class="columns">
-        <div class="column doku-document-wrapper">
+        <div class="column is-9-tablet doku-document-wrapper">
             <div class="content">
-                
+                <h2 id="6-1-简介"><a href="#6-1-简介" class="headerlink" title="6.1 简介"></a>6.1 简介</h2><p>Device configuration is provided to macOS with a dedicated buffer, called <code>EfiDevicePropertyDatabase</code>. This buffer is a serialised map of DevicePaths to a map of property names and their values.</p>
+<p>Property data can be debugged with <a href="https://github.com/acidanthera/gfxutil" target="_blank" rel="noopener">gfxutil</a>. To obtain current property data use the following command in macOS:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs bash">ioreg -lw0 -p IODeviceTree -n efi -r -x | grep device-properties |<br>  sed <span class="hljs-string">'s/.*&lt;//;s/&gt;.*//'</span> &gt; /tmp/device-properties.hex &amp;&amp;<br>  gfxutil /tmp/device-properties.hex /tmp/device-properties.plist &amp;&amp;<br>  cat /tmp/device-properties.plist<br></code></pre></td></tr></table></figure>
+
+<h2 id="6-2-属性列表"><a href="#6-2-属性列表" class="headerlink" title="6.2 属性列表"></a>6.2 属性列表</h2><h3 id="6-2-1-Add"><a href="#6-2-1-Add" class="headerlink" title="6.2.1 Add"></a>6.2.1 Add</h3><p><strong>Type</strong>: plist dict<br><strong>Description</strong>: Sets device properties from a map (plist dict) of deivce paths to a map (plist dict) of variable names and their values in plist metadata format. Device paths must be provided in canonic string format (e.g. <code>PciRoot(0x0)/Pci(0x1,0x0)/Pci(0x0,0x0)</code>). Properties will only be set if not present and not blocked.<br><em>Note</em>: Currently properties may only be (formerly) added by the original driver, so unless a separate driver was installed, there is no reason to block the variables.</p>
+<h3 id="6-2-2-Block"><a href="#6-2-2-Block" class="headerlink" title="6.2.2 Block"></a>6.2.2 Block</h3><p><strong>Type</strong>: plist dict<br><strong>Description</strong>: Removes device properties from a map (plist dict) of deivce paths to an array (plist array) of variable names in plist string format.</p>
+<h2 id="6-3-常见属性"><a href="#6-3-常见属性" class="headerlink" title="6.3 常见属性"></a>6.3 常见属性</h2><p>一些常见的属性包括：</p>
+<ul>
+<li>device-id<br>User-specified device identifier used for I/O Kit matching. Has 4 byte data type.</li>
+<li>vendor-id<br>User-specified vendor identifier used for I/O Kit matching. Has 4 byte data type.</li>
+<li>AAPL,ig-platform-id<br>Intel GPU framebuffer identifier used for framebuffer selection on Ivy Bridge and newer. Has 4 byte data type.</li>
+<li>AAPL,snb-platform-id<br>Intel GPU framebuffer identifier used for framebuffer selection on Sandy Bridge. Has 4 byte data type.</li>
+<li>layout-id<br>Audio layout used for AppleHDA layout selection. Has 4 byte data type.</li>
+</ul>
+
             </div>
 
             <ul class="doku-pagination">
@@ -180,6 +194,15 @@
                     <div class="page-item-title h5">7. Kernel</div>
                 </a>
             </li></ul>
+        </div>
+        
+        <div class="column is-3 is-narrow-touch is-hidden-mobile">
+            <aside class="doku-document-toc" id="doku-document-toc">
+                <div class="doku-document-toc-content">
+                    <p class="doku-document-toc-title">目录</p>
+                    <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#6-1-简介"><span class="post-toc-text">6.1 简介</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#6-2-属性列表"><span class="post-toc-text">6.2 属性列表</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#6-2-1-Add"><span class="post-toc-text">6.2.1 Add</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#6-2-2-Block"><span class="post-toc-text">6.2.2 Block</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#6-3-常见属性"><span class="post-toc-text">6.3 常见属性</span></a></li></ol>
+                </div>
+            </aside>
         </div>
         
     </div>

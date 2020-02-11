@@ -119,7 +119,7 @@
                         
                             <li><a  href="/2-configuration.html">2. 配置</a></li>
                         
-                            <li><a  href="/3-setup.html">3. 设定</a></li>
+                            <li><a  href="/3-setup.html">3. Setup</a></li>
                         
                             <li><a  href="/4-acpi.html">4. ACPI</a></li>
                         
@@ -154,7 +154,7 @@
         <div class="hero-body">
             <h1 class="title">5. Booter</h1>
             
-                <p class="subtitle">Booter（搬运填坑中）</p>
+                <p class="subtitle">Booter（待整理）</p>
             
             
                 <a href="https://github.com/sukkaw/OpenCore-Document-zh_Hans/tree/master/source/5-booter.md" target="_blank" rel="external nofollow noreferrer noopener" class="button is-small is-rounded is-black"><span class="icon is-small"><i class="fab fa-github"></i></span><span>在 GitHub 上编辑</span></a>
@@ -162,9 +162,34 @@
         </div>
     </header>
     <div class="columns">
-        <div class="column doku-document-wrapper">
+        <div class="column is-9-tablet doku-document-wrapper">
             <div class="content">
-                
+                <h2 id="5-1-简介"><a href="#5-1-简介" class="headerlink" title="5.1 简介"></a>5.1 简介</h2><p>This section allows to apply different kinds of UEFI modifications on Apple bootloader (<code>boot.efi</code>). The modifications currently provide various patches and environment alterations for different firmwares. Some of these features were originally implemented as a part of <a href="https://github.com/acidanthera/AptioFixPkg" target="_blank" rel="noopener">AptioMemoryFix.efi</a>, which is no longer maintained. See <code>Tips and Tricks</code> section for migration steps.</p>
+<p>If you are using this for the first time on a customised firmware, there is a<br>list of checks to do first. Prior to starting please ensure that you have:</p>
+<ul>
+<li>Most up-to-date UEFI firmware (check your motherboard vendor website).</li>
+<li><code>Fast Boot</code> and <code>Hardware Fast Boot</code> disabled in firmware settings if present.</li>
+<li><code>Above 4G Decoding</code> or similar enabled in firmware settings if present. Note, that on some motherboards (notably ASUS WS-X299-PRO) this option causes adverse effects, and must be disabled. While no other motherboards with the same issue are known, consider this option to be first to check if you have erratic boot failures.</li>
+<li><code>DisableIoMapper</code> quirk enabled, or <code>VT-d</code> disabled in firmware settings if present, or ACPI DMAR table dropped.</li>
+<li><strong>No</strong> <code>slide</code> boot argument present in NVRAM or anywhere else. It is not necessary unless you cannot boot at all or see <code>No slide values are usable! Use custom slide!</code> message in the log.</li>
+<li><code>CFG Lock</code> (MSR <code>0xE2</code> write protection) disabled in firmware settings if present. Cconsider <a href="https://github.com/LongSoft/UEFITool/blob/master/UEFIPatch/patches.txt" target="_blank" rel="noopener">patching it</a> if you have enough skills and no option is available. See <a href="https://github.com/acidanthera/AppleSupportPkg#verifymsre2" target="_blank" rel="noopener">VerifyMsrE2</a> nots for more details.</li>
+<li><code>CSM</code> (Compatibility Support Module) disabled in firmware settings if present. You may need to flash GOP ROM on NVIDIA 6xx/AMD 2xx or older. Use <a href="https://www.win-raid.com/t892f16-AMD-and-Nvidia-GOP-update-No-requests-DIY.html#msg15730" target="_blank" rel="noopener">GopUpdate</a> or <a href="http://www.insanelymac.com/forum/topic/299614-asus-eah6450-video-bios-uefi-gop-upgrade-and-gop-uefi-binary-in-efi-for-many-ati-cards/page-1#entry2042163" target="_blank" rel="noopener">AMD UEFI GOP MAKER</a> in case you are not sure how.</li>
+<li><code>EHCI/XHCI Hand-off</code> enabled in firmware settings <code>only</code> if boot stalls unless USB devices are disconnected.</li>
+<li><code>VT-x</code>, <code>Hyper Threading</code>, <code>Execute Disable Bit</code> enabled in firmware settings if present.</li>
+<li>While it may not be required, sometimes you have to disable <code>Thunderbolt support</code>, <code>Intel SGX</code>, and <code>Intel Platform Trust</code> in firmware settings present.</li>
+</ul>
+<p>When debugging sleep issues you may want to (temporarily) disable Power Nap and automatic power off, which appear to sometimes cause wake to black screen or boot loop issues on older platforms. The particular issues may vary, but in general you should<br>check ACPI tables first. Here is an example of a bug found in some <a href="http://www.insanelymac.com/forum/topic/329624-need-cmos-reset-after-sleep-only-after-login/#entry2534645" target="_blank" rel="noopener">Z68 motherboards</a>. To turn Power Nap and the others off run the following commands in Terminal:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs bash">sudo pmset autopoweroff 0<br>sudo pmset powernap 0<br>sudo pmset standby 0<br></code></pre></td></tr></table></figure>
+
+<p><em>Note</em>: These settings may reset at hardware change and in certain other circumstances.<br>To view their current state use <code>pmset -g</code> command in Terminal.</p>
+<h2 id="5-2-属性列表"><a href="#5-2-属性列表" class="headerlink" title="5.2 属性列表"></a>5.2 属性列表</h2><h3 id="5-2-1-MmioWhitelist"><a href="#5-2-1-MmioWhitelist" class="headerlink" title="5.2.1 MmioWhitelist"></a>5.2.1 MmioWhitelist</h3><p><strong>Type</strong>: plist array<br><strong>Description</strong>: Designed to be filled with <code>plist dict</code> values, describing addresses critical for particular firmware functioning when <code>DevirtualiseMmio</code> quirk is in use. See MmioWhitelist Properties section below.</p>
+<h3 id="5-2-2-Quirks"><a href="#5-2-2-Quirks" class="headerlink" title="5.2.2 Quirks"></a>5.2.2 Quirks</h3><p><strong>Type</strong>: plist dict<br><strong>Description</strong>: Apply individual booter quirks described in Quirks Properties section below.</p>
+<h3 id="5-3-MmioWhitelist-属性"><a href="#5-3-MmioWhitelist-属性" class="headerlink" title="5.3 MmioWhitelist 属性"></a>5.3 MmioWhitelist 属性</h3><h2 id="5-3-1-Address"><a href="#5-3-1-Address" class="headerlink" title="5.3.1 Address"></a>5.3.1 Address</h2><p><strong>Type</strong>: plist integer<br><strong>Failsafe</strong>: 0<br><strong>Description</strong>: Exceptional MMIO address, which memory descriptor should be left virtualised (unchanged) by <code>DevirtualiseMmio</code>. This means that the firmware will be able to directly communicate with this memory region during operating system functioning, because the region this value is in will be assigned a virtual address.</p>
+<h2 id="5-3-2-Comment"><a href="#5-3-2-Comment" class="headerlink" title="5.3.2 Comment"></a>5.3.2 Comment</h2><p><strong>Type</strong>: plist string<br><strong>Failsafe</strong>: Empty string<br><strong>Description</strong>: Arbitrary ASCII string used to provide human readable reference for the entry. It is implementation<br>defined whether this value is used.</p>
+<h2 id="5-3-3-Enabled"><a href="#5-3-3-Enabled" class="headerlink" title="5.3.3 Enabled"></a>5.3.3 Enabled</h2><p><strong>Type</strong>: plist boolean<br><strong>Failsafe</strong>: false<br><strong>Description</strong>: This address will be devirtualised unless set to <code>true</code>.</p>
+<h2 id="5-4-Quirks-属性"><a href="#5-4-Quirks-属性" class="headerlink" title="5.4 Quirks 属性"></a>5.4 Quirks 属性</h2><!-- FIXME -->[待补全]
+
+
             </div>
 
             <ul class="doku-pagination">
@@ -180,6 +205,15 @@
                     <div class="page-item-title h5">6. DeviceProperties</div>
                 </a>
             </li></ul>
+        </div>
+        
+        <div class="column is-3 is-narrow-touch is-hidden-mobile">
+            <aside class="doku-document-toc" id="doku-document-toc">
+                <div class="doku-document-toc-content">
+                    <p class="doku-document-toc-title">目录</p>
+                    <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#5-1-简介"><span class="post-toc-text">5.1 简介</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#5-2-属性列表"><span class="post-toc-text">5.2 属性列表</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#5-2-1-MmioWhitelist"><span class="post-toc-text">5.2.1 MmioWhitelist</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#5-2-2-Quirks"><span class="post-toc-text">5.2.2 Quirks</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#5-3-MmioWhitelist-属性"><span class="post-toc-text">5.3 MmioWhitelist 属性</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#5-3-1-Address"><span class="post-toc-text">5.3.1 Address</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#5-3-2-Comment"><span class="post-toc-text">5.3.2 Comment</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#5-3-3-Enabled"><span class="post-toc-text">5.3.3 Enabled</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#5-4-Quirks-属性"><span class="post-toc-text">5.4 Quirks 属性</span></a></li></ol>
+                </div>
+            </aside>
         </div>
         
     </div>
