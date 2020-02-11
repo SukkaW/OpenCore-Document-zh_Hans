@@ -16,7 +16,7 @@ navbar:
       #  text: '使用文档' # The logo text
       #  url: '/' # The url
       - logo: 'fab fa-github' # The font-awesome class name of the logo
-        text: '' # The logo text
+        text: 'GitHub' # The logo text
         url: 'https://github.com/SukkaW/OpenCore-Document-zh_Hans' # The url
 
 # --------------------
