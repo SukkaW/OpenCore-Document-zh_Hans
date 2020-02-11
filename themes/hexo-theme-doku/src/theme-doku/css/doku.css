@@ -275,6 +275,10 @@ html *::-webkit-scrollbar-thumb {
     text-align: left;
 }
 
+.content code {
+    color: #666;
+}
+
 /* override highlightjs */
 
 .content blockquote.doku-blockquote {
