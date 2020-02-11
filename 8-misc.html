@@ -169,7 +169,7 @@
         <div class="hero-body">
             <h1 class="title">8. Misc</h1>
             
-                <p class="subtitle">Misc（待整理）</p>
+                <p class="subtitle">Misc（待翻译）</p>
             
             
                 <a href="https://github.com/sukkaw/OpenCore-Document-zh_Hans/tree/master/source/8-misc.md" target="_blank" rel="external nofollow noreferrer noopener" class="button is-small is-rounded is-black"><span class="icon is-small"><i class="fab fa-github"></i></span><span>在 GitHub 上编辑</span></a>
@@ -177,149 +177,238 @@
         </div>
     </header>
     <div class="columns">
-        <div class="column doku-document-wrapper">
+        <div class="column is-9-tablet doku-document-wrapper">
             <div class="content">
                 
-                <p>\subsection{Introduction}\label{miscintro}</p>
-<p>This section contains miscellaneous configuration entries for OpenCore<br>behaviour that does not go to any other sections</p>
-<p>\subsection{Properties}\label{miscprops}</p>
-<p>\begin{enumerate}</p>
+                    <blockquote class="message doku-blockquote is-info">
+                        <div class="message-body">由 xMuu 整理</div>
+                    </blockquote>
+                
+                <h2 id="8-1-Introduction"><a href="#8-1-Introduction" class="headerlink" title="8.1 Introduction"></a>8.1 Introduction</h2><p>This section contains miscellaneous configuration entries for OpenCore behaviour that does not go to any other sections.</p>
+<h2 id="8-2-Properties"><a href="#8-2-Properties" class="headerlink" title="8.2 Properties"></a>8.2 Properties</h2><h3 id="1-Boot"><a href="#1-Boot" class="headerlink" title="1. Boot"></a>1. <code>Boot</code></h3><p>  <strong>Type</strong>: <code>plist dict</code><br>  <strong>Description</strong>: Apply boot configuration described in <a href="">Boot Properties</a> section below.</p>
+<h3 id="2-BlessOverride"><a href="#2-BlessOverride" class="headerlink" title="2. BlessOverride"></a>2. <code>BlessOverride</code></h3><p>  <strong>Type</strong>: <code>plist array</code><br>  <strong>Description</strong>: Add custom scanning paths through bless model.</p>
+<p>  Designed to be filled with <code>plist string</code> entries containing absolute UEFI paths to customised bootloaders, for example, <code>\EFI\Microsoft\Boot\bootmgfw.efi</code> for Microsoft bootloader. This allows unusual boot paths to be automaticlly discovered by the boot picker. Designwise they are equivalent to predefined blessed path, such as <code>\System\Library\CoreServices\boot.efi</code>, but unlike predefined bless paths they have highest priority.</p>
+<h3 id="3-Debug"><a href="#3-Debug" class="headerlink" title="3. Debug"></a>3. <code>Debug</code></h3><p>  <strong>Type</strong>: <code>plist dict</code><br>  <strong>Description</strong>: Apply debug configuration described in <a href="">Debug Properties</a> section below.</p>
+<h3 id="4-Entries"><a href="#4-Entries" class="headerlink" title="4. Entries"></a>4. <code>Entries</code></h3><p>  <strong>Type</strong>: <code>plist array</code><br>  <strong>Description</strong>: Add boot entries to boot picker.</p>
+<p>  Designed to be filled with <code>plist dict</code> values, describing each load entry. See <a href="">Entry Properties</a> section below.</p>
+<h3 id="5-Security"><a href="#5-Security" class="headerlink" title="5. Security"></a>5. <code>Security</code></h3><p>  <strong>Type</strong>: <code>plist dict</code><br>  <strong>Description</strong>: Apply security configuration described in <a href="">Security Properties</a> section below.</p>
+<h3 id="6-Tools"><a href="#6-Tools" class="headerlink" title="6. Tools"></a>6. <code>Tools</code></h3><p>  <strong>Type</strong>: <code>plist array</code><br>  <strong>Description</strong>: Add tool entries to boot picker.</p>
+<p>  Designed to be filled with <code>plist dict</code> values, describing each load entry. See <a href="">Entry Properties</a> section below.</p>
+<p>  <em>Note</em>: Select tools, for example, <a href="https://github.com/acidanthera/OpenCoreShell" target="_blank" rel="noopener">UEFI Shell</a> are very dangerous and <strong>MUST NOT</strong> appear in production configurations, especially in vaulted ones and protected with secure boot, as they may be used to easily bypass secure boot chain.</p>
+<h2 id="8-3-Boot-Properties"><a href="#8-3-Boot-Properties" class="headerlink" title="8.3 Boot Properties"></a>8.3 Boot Properties</h2><h3 id="1-HibernateMode"><a href="#1-HibernateMode" class="headerlink" title="1. HibernateMode"></a>1. <code>HibernateMode</code></h3><p>  <strong>Type</strong>: <code>plist string</code><br>  <strong>Failsafe</strong>: <code>None</code><br>  <strong>Description</strong>: Hibernation detection mode. The following modes are supported:</p>
 <ul>
-<li><p>\texttt{Boot}\<br>\textbf{Type}: \texttt{plist\ dict}\<br>\textbf{Description}: Apply boot configuration described in<br>\hyperref[miscbootprops]{Boot Properties} section below.</p>
+<li><code>None</code> — Avoid hibernation for your own good.</li>
+<li><code>Auto</code> — Use RTC and NVRAM detection.</li>
+<li><code>RTC</code> — Use RTC detection.</li>
+<li><code>NVRAM</code> — Use NVRAM detection.</li>
+</ul>
+<h3 id="2-HideSelf"><a href="#2-HideSelf" class="headerlink" title="2. HideSelf"></a>2. <code>HideSelf</code></h3><p>  <strong>Type</strong>: <code>plist boolean</code><br>  <strong>Failsafe</strong>: <code>false</code><br>  <strong>Description</strong>: Hides own boot entry from boot picker. This may potentially hide other entries, for instance, when another UEFI OS is installed on the same volume and driver boot is used.</p>
+<h3 id="3-PickerAttributes"><a href="#3-PickerAttributes" class="headerlink" title="3. PickerAttributes"></a>3. <code>PickerAttributes</code></h3><p>  <strong>Type</strong>: <code>plist integer</code><br>  <strong>Failsafe</strong>: <code>0</code><br>  <strong>Description</strong>: Sets specific attributes for picker.</p>
+<p>  Builtin picker supports colour arguments as a sum of foreground and background colors according to UEFI specification. The value of black background and black foreground (<code>0</code>) is reserved. List of colour names:</p>
+<ul>
+<li><code>0x00</code> — <code>EFI_BLACK</code></li>
+<li><code>0x01</code> — <code>EFI_BLUE</code></li>
+<li><code>0x02</code> — <code>EFI_GREEN</code></li>
+<li><code>0x03</code> — <code>EFI_CYAN</code></li>
+<li><code>0x04</code> — <code>EFI_RED</code></li>
+<li><code>0x05</code> — <code>EFI_MAGENTA</code></li>
+<li><code>0x06</code> — <code>EFI_BROWN</code></li>
+<li><code>0x07</code> — <code>EFI_LIGHTGRAY</code></li>
+<li><code>0x08</code> — <code>EFI_DARKGRAY</code></li>
+<li><code>0x09</code> — <code>EFI_LIGHTBLUE</code></li>
+<li><code>0x0A</code> — <code>EFI_LIGHTGREEN</code></li>
+<li><code>0x0B</code> — <code>EFI_LIGHTCYAN</code></li>
+<li><code>0x0C</code> — <code>EFI_LIGHTRED</code></li>
+<li><code>0x0D</code> — <code>EFI_LIGHTMAGENTA</code></li>
+<li><code>0x0E</code> — <code>EFI_YELLOW</code></li>
+<li><code>0x0F</code> — <code>EFI_WHITE</code></li>
+<li><code>0x00</code> — <code>EFI_BACKGROUND_BLACK</code></li>
+<li><code>0x10</code> — <code>EFI_BACKGROUND_BLUE</code></li>
+<li><code>0x20</code> — <code>EFI_BACKGROUND_GREEN</code></li>
+<li><code>0x30</code> — <code>EFI_BACKGROUND_CYAN</code></li>
+<li><code>0x40</code> — <code>EFI_BACKGROUND_RED</code></li>
+<li><code>0x50</code> — <code>EFI_BACKGROUND_MAGENTA</code></li>
+<li><code>0x60</code> — <code>EFI_BACKGROUND_BROWN</code></li>
+<li><code>0x70</code> — <code>EFI_BACKGROUND_LIGHTGRAY</code></li>
+</ul>
+<p>  <em>Note</em>: This option may not work well with <code>System</code> text renderer.<br>  Setting a background different from black could help testing proper GOP functioning.</p>
+<h3 id="4-PollAppleHotKeys"><a href="#4-PollAppleHotKeys" class="headerlink" title="4. PollAppleHotKeys"></a>4. <code>PollAppleHotKeys</code></h3><p>  <strong>Type</strong>: <code>plist boolean</code><br>  <strong>Failsafe</strong>: <code>false</code><br>  <strong>Description</strong>: Enable <code>modifier hotkey</code> handling in boot picker.</p>
+<p>  In addition to <code>action hotkeys</code>, which are partially described in <code>PickerMode</code> section and are normally handled by Apple BDS, there exist modifier keys, which are handled by operating system bootloader, namely <code>boot.efi</code>. These keys allow to change operating system behaviour by providing different boot modes.</p>
+<p>  On some firmwares it may be problematic to use modifier keys due to driver incompatibilities. To workaround this problem this option allows registering select hotkeys in a more permissive manner from within boot picker. Such extensions include the support of tapping on keys in addition to holding and pressing <code>Shift</code> along with other keys instead of just <code>Shift</code> alone, which is not detectible on many PS/2 keyboards. This list of known <code>modifier hotkeys</code> includes:</p>
+<ul>
+<li><code>CMD+C+MINUS</code> — disable board compatibility checking.</li>
+<li><code>CMD+K</code> — boot release kernel, similar to <code>kcsuffix=release</code>.</li>
+<li><code>CMD+S</code> — single user mode.</li>
+<li><code>CMD+S+MINUS</code> — disable KASLR slide, requires disabled SIP.</li>
+<li><code>CMD+V</code> — verbose mode.</li>
+<li><code>Shift</code> — safe mode.</li>
+</ul>
+<h3 id="5-ShowPicker"><a href="#5-ShowPicker" class="headerlink" title="5. ShowPicker"></a>5. <code>ShowPicker</code></h3><p>  <strong>Type</strong>: <code>plist boolean</code><br>  <strong>Failsafe</strong>: <code>false</code><br>  <strong>Description</strong>: Show simple boot picker to allow boot entry selection.</p>
+<h3 id="6-TakeoffDelay"><a href="#6-TakeoffDelay" class="headerlink" title="6. TakeoffDelay"></a>6. <code>TakeoffDelay</code></h3><p>  <strong>Type</strong>: <code>plist integer</code>, 32 bit<br>  <strong>Failsafe</strong>: <code>0</code><br>  <strong>Description</strong>: Delay in microseconds performed before handling<br>  picker startup and <code>action hotkeys</code>.</p>
+<p>  Introducing a delay may give extra time to hold the right <code>action hotkey</code> sequence to e.g. boot to recovery mode. On some platforms setting this option to at least <code>5000-10000</code> microseconds may be necessary to access <code>action hotkeys</code> at all due to the nature of the keyboard driver.</p>
+<h3 id="7-Timeout"><a href="#7-Timeout" class="headerlink" title="7. Timeout"></a>7. <code>Timeout</code></h3><p>  <strong>Type</strong>: <code>plist integer</code>, 32 bit<br>  <strong>Failsafe</strong>: <code>0</code><br>  <strong>Description</strong>: Timeout in seconds in boot picker before automatic booting of the default boot entry. Use 0 to disable timer.</p>
+<h3 id="8-PickerMode"><a href="#8-PickerMode" class="headerlink" title="8. PickerMode"></a>8. <code>PickerMode</code></h3><p>  <strong>Type</strong>: <code>plist string</code><br>  <strong>Failsafe</strong>: <code>Builtin</code><br>  <strong>Description</strong>: Choose boot picker used for boot management.</p>
+<p>  Picker describes underlying boot management with an optional user interface responsible for handling boot options. The following values are supported:</p>
+<ul>
+<li><p><code>Builtin</code> — boot management is handled by OpenCore, a simple<br>text only user interface is used.</p>
 </li>
-<li><p>\texttt{BlessOverride}\<br>\textbf{Type}: \texttt{plist\ array}\<br>\textbf{Description}: Add custom scanning paths through bless model.</p>
-<p>Designed to be filled with \texttt{plist\ string} entries containing<br>absolute UEFI paths to customised bootloaders, for example,<br>\texttt{\textbackslash EFI\textbackslash Microsoft\textbackslash Boot\textbackslash bootmgfw.efi}<br>for Microsoft bootloader. This allows unusual boot paths to be automaticlly<br>discovered by the boot picker. Designwise they are equivalent to predefined blessed path, such as<br>\texttt{\textbackslash System\textbackslash Library\textbackslash CoreServices\textbackslash boot.efi},<br>but unlike predefined bless paths they have highest priority.</p>
+<li><p><code>External</code> — an external boot management protocol is used<br>if available. Otherwise <code>Builtin</code> mode is used.</p>
 </li>
-<li><p>\texttt{Debug}\<br>\textbf{Type}: \texttt{plist\ dict}\<br>\textbf{Description}: Apply debug configuration described in<br>\hyperref[miscdebugprops]{Debug Properties} section below.</p>
+<li><p><code>Apple</code> — Apple boot management is used if available.<br>Otherwise <code>Builtin</code> mode is used.</p>
+<p>Upon success <code>External</code> mode will entirely disable all boot management in OpenCore except policy enforcement. In <code>Apple</code> mode it may additionally bypass policy enforcement. To implement <code>External</code> mode a custom user interface may utilise <a href="https://github.com/acidanthera/OcSupportPkg" target="_blank" rel="noopener">OcSupportPkg</a> <code>OcBootManagementLib</code>. Reference example of external graphics interface is provided in <a href="https://github.com/acidanthera/OcSupportPkg/tree/master/Tests/ExternalUi" target="_blank" rel="noopener">ExternalUi</a> test driver.</p>
+<p>OpenCore built-in boot picker contains a set of actions chosen during the boot process. The list of supported actions is similar to Apple BDS and in general can be accessed by holding <code>action hotkeys</code> during boot process. Currently the following actions are considered:</p>
 </li>
-<li><p>\texttt{Entries}\<br>\textbf{Type}: \texttt{plist\ array}\<br>\textbf{Description}: Add boot entries to boot picker.</p>
-<p>Designed to be filled with \texttt{plist\ dict} values, describing each load entry.<br>See \hyperref[miscentryprops]{Entry Properties} section below.</p>
+<li><p><code>Default</code> — this is the default option, and it lets OpenCore built-in boot picker to loads the default boot option as specified in <a href="https://support.apple.com/HT202796" target="_blank" rel="noopener">Startup Disk</a> preference pane.</p>
 </li>
-<li><p>\texttt{Security}\<br>\textbf{Type}: \texttt{plist\ dict}\<br>\textbf{Description}: Apply security configuration described in<br>\hyperref[miscsecurityprops]{Security Properties} section below.</p>
+<li><p><code>ShowPicker</code> — this option forces picker to show. Normally it can be achieved by holding <code>OPT</code> key during boot. Setting <code>ShowPicker</code> to <code>true</code> will make <code>ShowPicker</code> the default option.</p>
 </li>
-<li><p>\texttt{Tools}\<br>\textbf{Type}: \texttt{plist\ array}\<br>\textbf{Description}: Add tool entries to boot picker.</p>
-<p>Designed to be filled with \texttt{plist\ dict} values, describing each load entry.<br>See \hyperref[miscentryprops]{Entry Properties} section below.</p>
-<p>\emph{Note}: Select tools, for example,<br><a href="https://github.com/acidanthera/OpenCoreShell" target="_blank" rel="noopener">UEFI Shell</a> are very<br>dangerous and \textbf{MUST NOT} appear in production configurations, especially<br>in vaulted ones and protected with secure boot, as they may be used to easily<br>bypass secure boot chain.</p>
+<li><p><code>ResetNvram</code> — this option performs select UEFI variable erase and is normally achieved by holding <code>CMD+OPT+P+R</code> key combination during boot. Another way to erase UEFI variables is to choose <code>Reset NVRAM</code> in the picker. This option requires <code>AllowNvramReset</code> to be set to <code>true</code>.</p>
+</li>
+<li><p><code>BootApple</code> — this options performs booting to the first found Apple operating system unless the default chosen operating system is already made by Apple. Hold <code>X</code> key to choose this option.</p>
+</li>
+<li><p><code>BootAppleRecovery</code> — this option performs booting to Apple operating system recovery. Either the one related to the default chosen operating system, or first found in case default chosen operating system is not made by Apple or has no recovery. Hold <code>CMD+R</code> key combination to choose this option.</p>
 </li>
 </ul>
-<p>\end{enumerate}</p>
-<p>\subsection{Boot Properties}\label{miscbootprops}</p>
-<p>\begin{enumerate}</p>
+<p>  <em>Note 1</em>: Activated <code>KeySupport</code>, <code>AppleUsbKbDxe</code>, or similar driver is required for key handling to work. On many firmwares it is not possible to get all the keys function.</p>
+<p>  <em>Note 2</em>: In addition to <code>OPT</code> OpenCore supports <code>Escape</code> key to display picker when <code>ShowPicker</code> is disabled. This key exists for <code>Apple</code> picker mode and for firmwares with PS/2 keyboards that fail to report held <code>OPT</code> key and require continual presses of <code>Escape</code> key to enter the boot menu.</p>
+<p>  <em>Note 3</em>: On Macs with problematic GOP it may be difficult to access Apple BootPicker. To workaround this problem even without loading OpenCore <code>BootKicker</code> utility can be blessed.</p>
+<h2 id="8-4-Debug-Properties"><a href="#8-4-Debug-Properties" class="headerlink" title="8.4 Debug Properties"></a>8.4 Debug Properties</h2><h3 id="1-DisableWatchDog"><a href="#1-DisableWatchDog" class="headerlink" title="1. DisableWatchDog"></a>1. <code>DisableWatchDog</code></h3><p>  <strong>Type</strong>: <code>plist boolean</code><br>  <strong>Failsafe</strong>: <code>false</code><br>  <strong>Description</strong>: Select firmwares may not succeed in quickly booting the operating system, especially in debug mode, which results in watch dog timer aborting the process. This option turns off watch dog timer.</p>
+<h3 id="2-DisplayDelay"><a href="#2-DisplayDelay" class="headerlink" title="2. DisplayDelay"></a>2. <code>DisplayDelay</code></h3><p>  <strong>Type</strong>: <code>plist integer</code><br>  <strong>Failsafe</strong>: <code>0</code><br>  <strong>Description</strong>: Delay in microseconds performed after every printed line visible onscreen (i.e. console).</p>
+<h3 id="3-DisplayLevel"><a href="#3-DisplayLevel" class="headerlink" title="3.  DisplayLevel"></a>3.  <code>DisplayLevel</code></h3><p>  <strong>Type</strong>: <code>plist integer</code>, 64 bit<br>  <strong>Failsafe</strong>: <code>0</code><br>  <strong>Description</strong>: EDK II debug level bitmask (sum) showed onscreen. Unless <code>Target</code> enables console (onscreen) printing, onscreen debug output will not be visible. The following levels are supported (discover more in <a href="https://github.com/tianocore/edk2/blob/UDK2018/MdePkg/Include/Library/DebugLib.h" target="_blank" rel="noopener">DebugLib.h</a>):</p>
 <ul>
-<li><p>\texttt{HibernateMode}\<br>\textbf{Type}: \texttt{plist\ string}\<br>\textbf{Failsafe}: \texttt{None}\<br>\textbf{Description}: Hibernation detection mode. The following modes are supported:</p>
-<p>\begin{itemize}<br>\tightlist<br>\item \texttt{None} — Avoid hibernation for your own good.<br>\item \texttt{Auto} — Use RTC and NVRAM detection.<br>\item \texttt{RTC} — Use RTC detection.<br>\item \texttt{NVRAM} — Use NVRAM detection.<br>\end{itemize}</p>
+<li><code>0x00000002</code> (bit <code>1</code>) — <code>DEBUG_WARN</code> in <code>DEBUG</code>, <code>NOOPT</code>, <code>RELEASE</code>.</li>
+<li><code>0x00000040</code> (bit <code>6</code>) — <code>DEBUG_INFO</code> in <code>DEBUG</code>, <code>NOOPT</code>.</li>
+<li><code>0x00400000</code> (bit <code>22</code>) — <code>DEBUG_VERBOSE</code> in custom builds.</li>
+<li><code>0x80000000</code> (bit <code>31</code>) — <code>DEBUG_ERROR</code> in <code>DEBUG</code>, <code>NOOPT</code>, <code>RELEASE</code>.</li>
+</ul>
+<h3 id="4-Target"><a href="#4-Target" class="headerlink" title="4. Target"></a>4. <code>Target</code></h3><p>  <strong>Type</strong>: <code>plist integer</code><br>  <strong>Failsafe</strong>: <code>0</code><br>  <strong>Description</strong>: A bitmask (sum) of enabled logging targets. By default all the logging output is hidden, so this option is required to be set when debugging is necessary.</p>
+<p>  The following logging targets are supported:</p>
+<ul>
+<li><p><code>0x01</code> (bit <code>0</code>) — Enable logging, otherwise all log is discarded.</p>
 </li>
-<li><p>\texttt{HideSelf}\<br>\textbf{Type}: \texttt{plist\ boolean}\<br>\textbf{Failsafe}: \texttt{false}\<br>\textbf{Description}: Hides own boot entry from boot picker. This<br>may potentially hide other entries, for instance, when another UEFI OS is<br>installed on the same volume and driver boot is used.</p>
+<li><p><code>0x02</code> (bit <code>1</code>) — Enable basic console (onscreen) logging.</p>
 </li>
-<li><p>\texttt{PickerAttributes}\<br>\textbf{Type}: \texttt{plist\ integer}\<br>\textbf{Failsafe}: \texttt{0}\<br>\textbf{Description}: Sets specific attributes for picker.</p>
-<p>Builtin picker supports colour arguments as a sum of foreground and background<br>colors according to UEFI specification. The value of black background and<br>black foreground (\texttt{0}) is reserved. List of colour names:</p>
-<p>\begin{itemize}<br>\tightlist<br>\item \texttt{0x00} — \texttt{EFI_BLACK}<br>\item \texttt{0x01} — \texttt{EFI_BLUE}<br>\item \texttt{0x02} — \texttt{EFI_GREEN}<br>\item \texttt{0x03} — \texttt{EFI_CYAN}<br>\item \texttt{0x04} — \texttt{EFI_RED}<br>\item \texttt{0x05} — \texttt{EFI_MAGENTA}<br>\item \texttt{0x06} — \texttt{EFI_BROWN}<br>\item \texttt{0x07} — \texttt{EFI_LIGHTGRAY}<br>\item \texttt{0x08} — \texttt{EFI_DARKGRAY}<br>\item \texttt{0x09} — \texttt{EFI_LIGHTBLUE}<br>\item \texttt{0x0A} — \texttt{EFI_LIGHTGREEN}<br>\item \texttt{0x0B} — \texttt{EFI_LIGHTCYAN}<br>\item \texttt{0x0C} — \texttt{EFI_LIGHTRED}<br>\item \texttt{0x0D} — \texttt{EFI_LIGHTMAGENTA}<br>\item \texttt{0x0E} — \texttt{EFI_YELLOW}<br>\item \texttt{0x0F} — \texttt{EFI_WHITE}<br>\item \texttt{0x00} — \texttt{EFI_BACKGROUND_BLACK}<br>\item \texttt{0x10} — \texttt{EFI_BACKGROUND_BLUE}<br>\item \texttt{0x20} — \texttt{EFI_BACKGROUND_GREEN}<br>\item \texttt{0x30} — \texttt{EFI_BACKGROUND_CYAN}<br>\item \texttt{0x40} — \texttt{EFI_BACKGROUND_RED}<br>\item \texttt{0x50} — \texttt{EFI_BACKGROUND_MAGENTA}<br>\item \texttt{0x60} — \texttt{EFI_BACKGROUND_BROWN}<br>\item \texttt{0x70} — \texttt{EFI_BACKGROUND_LIGHTGRAY}<br>\end{itemize}</p>
-<p>\emph{Note}: This option may not work well with \texttt{System} text renderer.<br>Setting a background different from black could help testing proper GOP functioning.</p>
+<li><p><code>0x04</code> (bit <code>2</code>) — Enable logging to Data Hub.</p>
 </li>
-<li><p>\texttt{PollAppleHotKeys}\<br>\textbf{Type}: \texttt{plist\ boolean}\<br>\textbf{Failsafe}: \texttt{false}\<br>\textbf{Description}: Enable \texttt{modifier hotkey} handling in boot picker.</p>
-<p>In addition to \texttt{action hotkeys}, which are partially described in \texttt{PickerMode}<br>section and are normally handled by Apple BDS, there exist modifier keys, which are<br>handled by operating system bootloader, namely \texttt{boot.efi}. These keys<br>allow to change operating system behaviour by providing different boot modes.</p>
-<p>On some firmwares it may be problematic to use modifier keys due to driver incompatibilities.<br>To workaround this problem this option allows registering select hotkeys in a more<br>permissive manner from within boot picker. Such extensions include the support<br>of tapping on keys in addition to holding and pressing \texttt{Shift} along with<br>other keys instead of just \texttt{Shift} alone, which is not detectible on many<br>PS/2 keyboards. This list of known \texttt{modifier hotkeys} includes:<br>\begin{itemize}<br>\tightlist<br>\item \texttt{CMD+C+MINUS} — disable board compatibility checking.<br>\item \texttt{CMD+K} — boot release kernel, similar to \texttt{kcsuffix=release}.<br>\item \texttt{CMD+S} — single user mode.<br>\item \texttt{CMD+S+MINUS} — disable KASLR slide, requires disabled SIP.<br>\item \texttt{CMD+V} — verbose mode.<br>\item \texttt{Shift} — safe mode.<br>\end{itemize}</p>
+<li><p><code>0x08</code> (bit <code>3</code>) — Enable serial port logging.</p>
 </li>
-<li><p>\texttt{ShowPicker}\<br>\textbf{Type}: \texttt{plist\ boolean}\<br>\textbf{Failsafe}: \texttt{false}\<br>\textbf{Description}: Show simple boot picker to allow boot entry selection.</p>
+<li><p><code>0x10</code> (bit <code>4</code>) — Enable UEFI variable logging.</p>
 </li>
-<li><p>\texttt{TakeoffDelay}\<br>\textbf{Type}: \texttt{plist\ integer}, 32 bit\<br>\textbf{Failsafe}: \texttt{0}\<br>\textbf{Description}: Delay in microseconds performed before handling<br>picker startup and \texttt{action hotkeys}.</p>
-<p>Introducing a delay may give extra time to hold the right \texttt{action hotkey}<br>sequence to e.g. boot to recovery mode. On some platforms setting this option to<br>at least \texttt{5000-10000} microseconds may be necessary to access<br>\texttt{action hotkeys} at all due to the nature of the keyboard driver.</p>
+<li><p><code>0x20</code> (bit <code>5</code>) — Enable non-volatile UEFI variable logging.</p>
 </li>
-<li><p>\texttt{Timeout}\<br>\textbf{Type}: \texttt{plist\ integer}, 32 bit\<br>\textbf{Failsafe}: \texttt{0}\<br>\textbf{Description}: Timeout in seconds in boot picker before<br>automatic booting of the default boot entry. Use 0 to disable timer.</p>
-</li>
-<li><p>\texttt{PickerMode}\<br>\textbf{Type}: \texttt{plist\ string}\<br>\textbf{Failsafe}: \texttt{Builtin}\<br>\textbf{Description}: Choose boot picker used for boot management.</p>
-<p>Picker describes underlying boot management with an optional user interface<br>responsible for handling boot options. The following values are supported:</p>
-<p>\begin{itemize}<br>\tightlist<br>\item \texttt{Builtin} — boot management is handled by OpenCore, a simple<br>text only user interface is used.<br>\item \texttt{External} — an external boot management protocol is used<br>if available. Otherwise \texttt{Builtin} mode is used.<br>\item \texttt{Apple} — Apple boot management is used if available.<br>Otherwise \texttt{Builtin} mode is used.<br>\end{itemize}</p>
+<li><p><code>0x40</code> (bit <code>6</code>) — Enable logging to file.</p>
+<p>Console logging prints less than all the other variants. Depending on the build type (<code>RELEASE</code>, <code>DEBUG</code>, or <code>NOOPT</code>) different amount of logging may be read (from least to most).</p>
+<p>Data Hub log will not log kernel and kext patches. To obtain Data Hub log use the following command in macOS:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plain">ioreg -lw0 -p IODeviceTree | grep boot-log | sort | sed &#39;s&#x2F;.*&lt;\(.*\)&gt;.*&#x2F;\1&#x2F;&#39; | xxd -r -p<br></code></pre></td></tr></table></figure>
+
+<p>UEFI variable log does not include some messages and has no performance data. For safety reasons log size is limited to 32 kilobytes. Some firmwares may truncate it much earlier or drop completely if they have no memory. Using non-volatile flag will write the log to NVRAM flash after every printed line. To obtain UEFI variable log use the following command<br>in macOS:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs plain">nvram 4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102:boot-log |<br>  awk &#39;&#123;gsub(&#x2F;%0d%0a%00&#x2F;,&quot;&quot;);gsub(&#x2F;%0d%0a&#x2F;,&quot;\n&quot;)&#125;1&#39;<br></code></pre></td></tr></table></figure>
 </li>
 </ul>
-<p>  Upon success \texttt{External} mode will entirely disable all boot management<br>  in OpenCore except policy enforcement. In \texttt{Apple} mode it may additionally<br>  bypass policy enforcement. To implement \texttt{External} mode a custom user interface may<br>  utilise <a href="https://github.com/acidanthera/OcSupportPkg" target="_blank" rel="noopener">OcSupportPkg</a><br>  \texttt{OcBootManagementLib}. Reference example of external graphics interface is provided in<br>  <a href="https://github.com/acidanthera/OcSupportPkg/tree/master/Tests/ExternalUi" target="_blank" rel="noopener">ExternalUi</a><br>  test driver.</p>
-<p>  OpenCore built-in boot picker contains a set of actions chosen during the boot process.<br>  The list of supported actions is similar to Apple BDS and in general can be accessed by<br>  holding \texttt{action hotkeys} during boot process. Currently the following actions are<br>  considered:</p>
-<p>  \begin{itemize}<br>  \tightlist<br>  \item \texttt{Default} — this is the default option, and it lets OpenCore built-in<br>  boot picker to loads the default boot option as specified in<br>  <a href="https://support.apple.com/HT202796" target="_blank" rel="noopener">Startup Disk</a> preference pane.<br>  \item \texttt{ShowPicker} — this option forces picker to show. Normally it can be<br>  achieved by holding \texttt{OPT} key during boot. Setting \texttt{ShowPicker} to<br>  \texttt{true} will make \texttt{ShowPicker} the default option.<br>  \item \texttt{ResetNvram} — this option performs select UEFI variable erase and is<br>  normally achieved by holding \texttt{CMD+OPT+P+R} key combination during boot.<br>  Another way to erase UEFI variables is to choose \texttt{Reset NVRAM} in the picker.<br>  This option requires \texttt{AllowNvramReset} to be set to \texttt{true}.<br>  \item \texttt{BootApple} — this options performs booting to the first found Apple<br>  operating system unless the default chosen operating system is already made by Apple.<br>  Hold \texttt{X} key to choose this option.<br>  \item \texttt{BootAppleRecovery} — this option performs booting to Apple operating<br>  system recovery. Either the one related to the default chosen operating system,<br>  or first found in case default chosen operating system is not made by Apple or has no<br>  recovery. Hold \texttt{CMD+R} key combination to choose this option.<br>  \end{itemize}</p>
-<p>  \emph{Note 1}: Activated \texttt{KeySupport}, \texttt{AppleUsbKbDxe}, or similar driver is required<br>  for key handling to work. On many firmwares it is not possible to get all the keys function.</p>
-<p>  \emph{Note 2}: In addition to \texttt{OPT} OpenCore supports \texttt{Escape} key to display picker when<br>  \texttt{ShowPicker} is disabled. This key exists for \texttt{Apple} picker mode and for<br>  firmwares with PS/2 keyboards that fail to report held \texttt{OPT} key and require continual<br>  presses of \texttt{Escape} key to enter the boot menu.</p>
-<p>  \emph{Note 3}: On Macs with problematic GOP it may be difficult to access Apple BootPicker.<br>  To workaround this problem even without loading OpenCore \texttt{BootKicker} utility can be blessed.</p>
-<p>\end{enumerate}</p>
-<p>\subsection{Debug Properties}\label{miscdebugprops}</p>
-<p>\begin{enumerate}</p>
+<p>  <em>Warning</em>: Some firmwares are reported to have broken NVRAM garbage collection. This means that they may not be able to always free space after variable deletion. Do not use non-volatile NVRAM logging without extra need on such devices.</p>
+<p>  While OpenCore boot log already contains basic version information with build type and date, this data may also be found in NVRAM in <code>opencore-version</code> variable even with boot log disabled.</p>
+<p>  File logging will create a file named <code>opencore-YYYY-MM-DD-HHMMSS.txt</code> at EFI volume root with log contents (the upper case letter sequence is replaced with date and time from the firmware). Please be warned that some file system drivers present in firmwares are not reliable, and may corrupt data when writing files through UEFI. Log is attempted to be written in the safest manner, and thus is very slow. Ensure that <code>DisableWatchDog</code> is set to <code>true</code> when you use a slow drive.</p>
+<h2 id="8-5-Security-Properties"><a href="#8-5-Security-Properties" class="headerlink" title="8.5 Security Properties"></a>8.5 Security Properties</h2><h3 id="1-AllowNvramReset"><a href="#1-AllowNvramReset" class="headerlink" title="1. AllowNvramReset"></a>1. <code>AllowNvramReset</code></h3><p>  <strong>Type</strong>: <code>plist boolean</code><br>  <strong>Failsafe</strong>: <code>false</code><br>  <strong>Description</strong>: Allow <code>CMD+OPT+P+R</code> handling and enable showing <code>NVRAM Reset</code> entry in boot picker.</p>
+<h3 id="2-AllowSetDefault"><a href="#2-AllowSetDefault" class="headerlink" title="2. AllowSetDefault"></a>2. <code>AllowSetDefault</code></h3><p>  <strong>Type</strong>: <code>plist boolean</code><br>  <strong>Failsafe</strong>: <code>false</code><br>  <strong>Description</strong>: Allow <code>CTRL+Enter</code> and <code>CTRL+Index</code> handling to set the default boot option in boot picker.</p>
+<h3 id="3-AuthRestart"><a href="#3-AuthRestart" class="headerlink" title="3. AuthRestart"></a>3. <code>AuthRestart</code></h3><p>  <strong>Type</strong>: <code>plist boolean</code><br>  <strong>Failsafe</strong>: <code>false</code><br>  <strong>Description</strong>: Enable <code>VirtualSMC</code>-compatible authenticated restart.</p>
+<p>  Authenticated restart is a way to reboot FileVault 2 enabled macOS without entering the password. To perform authenticated restart one can use a dedicated terminal command: <code>sudo fdesetup authrestart</code>. It is also used when installing operating system updates.</p>
+<p>  VirtualSMC performs authenticated restart by saving disk encryption key split in NVRAM and RTC, which despite being removed as soon as OpenCore starts, may be considered a security risk and thus is optional.</p>
+<h3 id="4-ExposeSensitiveData"><a href="#4-ExposeSensitiveData" class="headerlink" title="4. ExposeSensitiveData"></a>4. <code>ExposeSensitiveData</code></h3><p>  <strong>Type</strong>: <code>plist integer</code><br>  <strong>Failsafe</strong>: <code>0x6</code><br>  <strong>Description</strong>: Sensitive data exposure bitmask (sum) to operating system.</p>
 <ul>
-<li><p>\texttt{DisableWatchDog}\<br>\textbf{Type}: \texttt{plist\ boolean}\<br>\textbf{Failsafe}: \texttt{false}\<br>\textbf{Description}: Select firmwares may not succeed in quickly booting<br>the operating system, especially in debug mode, which results in watch dog<br>timer aborting the process. This option turns off watch dog timer.</p>
+<li><p><code>0x01</code> — Expose printable booter path as an UEFI variable.</p>
 </li>
-<li><p>\texttt{DisplayDelay}\<br>\textbf{Type}: \texttt{plist\ integer}\<br>\textbf{Failsafe}: \texttt{0}\<br>\textbf{Description}: Delay in microseconds performed after<br>every printed line visible onscreen (i.e. console).</p>
+<li><p><code>0x02</code> — Expose OpenCore version as an UEFI variable.</p>
 </li>
-<li><p>\texttt{DisplayLevel}\<br>\textbf{Type}: \texttt{plist\ integer}, 64 bit\<br>\textbf{Failsafe}: \texttt{0}\<br>\textbf{Description}: EDK II debug level bitmask (sum) showed onscreen.<br>Unless \texttt{Target} enables console (onscreen) printing,<br>onscreen debug output will not be visible. The following levels<br>are supported (discover more in<br><a href="https://github.com/tianocore/edk2/blob/UDK2018/MdePkg/Include/Library/DebugLib.h" target="_blank" rel="noopener">DebugLib.h</a>):</p>
-<p>\begin{itemize}<br>\tightlist<br>\item \texttt{0x00000002} (bit \texttt{1}) — \texttt{DEBUG_WARN} in \texttt{DEBUG},<br> \texttt{NOOPT}, \texttt{RELEASE}.<br>\item \texttt{0x00000040} (bit \texttt{6}) — \texttt{DEBUG_INFO} in \texttt{DEBUG},<br> \texttt{NOOPT}.<br>\item \texttt{0x00400000} (bit \texttt{22}) — \texttt{DEBUG_VERBOSE} in custom builds.<br>\item \texttt{0x80000000} (bit \texttt{31}) — \texttt{DEBUG_ERROR} in \texttt{DEBUG},<br> \texttt{NOOPT}, \texttt{RELEASE}.<br>\end{itemize}</p>
+<li><p><code>0x04</code> — Expose OpenCore version in boot picker menu title.</p>
 </li>
-<li><p>\texttt{Target}\<br>\textbf{Type}: \texttt{plist\ integer}\<br>\textbf{Failsafe}: \texttt{0}\<br>\textbf{Description}: A bitmask (sum) of enabled logging targets.<br>By default all the logging output is hidden, so this option is<br>required to be set when debugging is necessary.</p>
-<p>The following logging targets are supported:</p>
-<p>\begin{itemize}<br>\tightlist<br>\item \texttt{0x01} (bit \texttt{0}) — Enable logging, otherwise all log is discarded.<br>\item \texttt{0x02} (bit \texttt{1}) — Enable basic console (onscreen) logging.<br>\item \texttt{0x04} (bit \texttt{2}) — Enable logging to Data Hub.<br>\item \texttt{0x08} (bit \texttt{3}) — Enable serial port logging.<br>\item \texttt{0x10} (bit \texttt{4}) — Enable UEFI variable logging.<br>\item \texttt{0x20} (bit \texttt{5}) — Enable non-volatile UEFI variable logging.<br>\item \texttt{0x40} (bit \texttt{6}) — Enable logging to file.<br>\end{itemize}</p>
-<p>Console logging prints less than all the other variants.<br>Depending on the build type (\texttt{RELEASE}, \texttt{DEBUG}, or<br>\texttt{NOOPT}) different amount of logging may be read (from least to most).</p>
-<p>Data Hub log will not log kernel and kext patches. To obtain Data Hub log use<br>the following command in macOS:<br>\begin{lstlisting}[label=dhublog, style=ocbash]<br>ioreg -lw0 -p IODeviceTree | grep boot-log | sort | sed ‘s/.*&lt;(.<em>)&gt;.</em>/\1/‘ | xxd -r -p<br>\end{lstlisting}</p>
-<p>UEFI variable log does not include some messages and has no performance data. For safety<br>reasons log size is limited to 32 kilobytes. Some firmwares may truncate it much earlier<br>or drop completely if they have no memory. Using non-volatile flag will write the log to<br>NVRAM flash after every printed line. To obtain UEFI variable log use the following command<br>in macOS:<br>\begin{lstlisting}[label=nvramlog, style=ocbash]<br>nvram 4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102:boot-log |<br>awk ‘{gsub(/%0d%0a%00/,””);gsub(/%0d%0a/,”\n”)}1’<br>\end{lstlisting}</p>
-<p>\emph{Warning}: Some firmwares are reported to have broken NVRAM garbage collection.<br>This means that they may not be able to always free space after variable deletion.<br>Do not use non-volatile NVRAM logging without extra need on such devices.</p>
-<p>While OpenCore boot log already contains basic version information with build type and<br>date, this data may also be found in NVRAM in \texttt{opencore-version} variable<br>even with boot log disabled.</p>
-<p>File logging will create a file named \texttt{opencore-YYYY-MM-DD-HHMMSS.txt} at EFI<br>volume root with log contents (the upper case letter sequence is replaced with date<br>and time from the firmware). Please be warned that some file system drivers present<br>in firmwares are not reliable, and may corrupt data when writing files through UEFI.<br>Log is attempted to be written in the safest manner, and thus is very slow. Ensure that<br>\texttt{DisableWatchDog} is set to \texttt{true} when you use a slow drive.</p>
+<li><p><code>0x08</code> — Expose OEM information as a set of UEFI variables.</p>
+<p>Exposed booter path points to OpenCore.efi or its booter depending on the load order. To obtain booter path use the following command in macOS:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plain">nvram 4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102:boot-path<br></code></pre></td></tr></table></figure>
+
+<p>To use booter path for mounting booter volume use the following command in macOS:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs plain">u&#x3D;$(nvram 4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102:boot-path | sed &#39;s&#x2F;.*GPT,\([^,]*\),.*&#x2F;\1&#x2F;&#39;); \<br>  if [ &quot;$u&quot; !&#x3D; &quot;&quot; ]; then sudo diskutil mount $u ; fi<br></code></pre></td></tr></table></figure>
+
+<p>To obtain OpenCore version use the following command in macOS:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plain">nvram 4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102:opencore-version<br></code></pre></td></tr></table></figure>
+
+<p>To obtain OEM information use the following commands in macOS:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs plain">nvram 4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102:oem-product # SMBIOS Type1 ProductName<br>nvram 4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102:oem-vendor  # SMBIOS Type2 Manufacturer<br>nvram 4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102:oem-board   # SMBIOS Type2 ProductName<br></code></pre></td></tr></table></figure>
+
 </li>
 </ul>
-<p>\end{enumerate}</p>
-<p>\subsection{Security Properties}\label{miscsecurityprops}</p>
-<p>\begin{enumerate}</p>
+<h3 id="5-HaltLevel"><a href="#5-HaltLevel" class="headerlink" title="5. HaltLevel"></a>5. <code>HaltLevel</code></h3><p>  <strong>Type</strong>: <code>plist integer</code>, 64 bit<br>  <strong>Failsafe</strong>: <code>0x80000000</code> (<code>DEBUG_ERROR</code>)<br>  <strong>Description</strong>: EDK II debug level bitmask (sum) causing CPU to halt (stop execution) after obtaining a message of <code>HaltLevel</code>. Possible values match <code>DisplayLevel</code> values.</p>
+<h3 id="6-Vault"><a href="#6-Vault" class="headerlink" title="6. Vault"></a>6. <code>Vault</code></h3><p>  <strong>Type</strong>: <code>plist string</code><br>  <strong>Failsafe</strong>: <code>Secure</code><br>  <strong>Description</strong>: Enables vaulting mechanism in OpenCore.</p>
+<p>  Valid values:</p>
 <ul>
-<li><p>\texttt{AllowNvramReset}\<br>\textbf{Type}: \texttt{plist\ boolean}\<br>\textbf{Failsafe}: \texttt{false}\<br>\textbf{Description}: Allow \texttt{CMD+OPT+P+R} handling and enable<br>showing \texttt{NVRAM Reset} entry in boot picker.</p>
+<li><p><code>Optional</code> — require nothing, no vault is enforced, insecure.</p>
 </li>
-<li><p>\texttt{AllowSetDefault}\<br>\textbf{Type}: \texttt{plist\ boolean}\<br>\textbf{Failsafe}: \texttt{false}\<br>\textbf{Description}: Allow \texttt{CTRL+Enter} and \texttt{CTRL+Index} handling<br>to set the default boot option in boot picker.</p>
+<li><p><code>Basic</code> — require <code>vault.plist</code> file present in <code>OC</code> directory. This provides basic filesystem integrity verification and may protect from unintentional filesystem corruption.</p>
 </li>
-<li><p>\texttt{AuthRestart}\<br>\textbf{Type}: \texttt{plist\ boolean}\<br>\textbf{Failsafe}: \texttt{false}\<br>\textbf{Description}: Enable \texttt{VirtualSMC}-compatible authenticated restart.</p>
-<p>Authenticated restart is a way to reboot FileVault 2 enabled macOS without entering<br>the password. To perform authenticated restart one can use a dedicated terminal<br>command: \texttt{sudo fdesetup authrestart}. It is also used when installing<br>operating system updates.</p>
-<p>VirtualSMC performs authenticated restart by saving disk encryption key split in<br>NVRAM and RTC, which despite being removed as soon as OpenCore starts, may be<br>considered a security risk and thus is optional.</p>
+<li><p><code>Secure</code> — require <code>vault.sig</code> signature file for <code>vault.plist</code> in <code>OC</code> directory. This includes <code>Basic</code> integrity checking but also attempts to build a trusted bootchain.</p>
+<p><code>vault.plist</code> file should contain SHA-256 hashes for all files used by OpenCore. Presence of this file is highly recommended to ensure that unintentional file modifications (including filesystem corruption) do not happen unnoticed. To create this file automatically use <a href="https://github.com/acidanthera/OcSupportPkg/tree/master/Utilities/CreateVault" target="_blank" rel="noopener"><code>create_vault.sh</code></a> script. Regardless of the underlying filesystem, path name and case must match between <code>config.plist</code> and <code>vault.plist</code>.</p>
+<p><code>vault.sig</code> file should contain a raw 256 byte RSA-2048 signature from SHA-256 hash of <code>vault.plist</code>. The signature is verified against the public key embedded into <code>OpenCore.efi</code>. To embed the public key you should do either of the following:</p>
 </li>
-<li><p>\texttt{ExposeSensitiveData}\<br>\textbf{Type}: \texttt{plist\ integer}\<br>\textbf{Failsafe}: \texttt{0x6}\<br>\textbf{Description}: Sensitive data exposure bitmask (sum) to operating system.</p>
-<p>\begin{itemize}<br>\tightlist<br>\item \texttt{0x01} — Expose printable booter path as an UEFI variable.<br>\item \texttt{0x02} — Expose OpenCore version as an UEFI variable.<br>\item \texttt{0x04} — Expose OpenCore version in boot picker menu title.<br>\item \texttt{0x08} — Expose OEM information as a set of UEFI variables.<br>\end{itemize}</p>
-<p>Exposed booter path points to OpenCore.efi or its booter depending on the load order.<br>To obtain booter path use the following command in macOS:<br>\begin{lstlisting}[label=nvrampath, style=ocbash]<br>nvram 4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102:boot-path<br>\end{lstlisting}</p>
-<p>To use booter path for mounting booter volume use the following command in macOS:<br>\begin{lstlisting}[label=nvrampathmount, style=ocbash]<br>u=$(nvram 4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102:boot-path | sed ‘s/.<em>GPT,([^,]*),.</em>/\1/‘); <br>if [ “$u” != “” ]; then sudo diskutil mount $u ; fi<br>\end{lstlisting}</p>
-<p>To obtain OpenCore version use the following command in macOS:<br>\begin{lstlisting}[label=nvramver, style=ocbash]<br>nvram 4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102:opencore-version<br>\end{lstlisting}</p>
-<p>To obtain OEM information use the following commands in macOS:<br>\begin{lstlisting}[label=nvramver, style=ocbash]<br>nvram 4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102:oem-product # SMBIOS Type1 ProductName<br>nvram 4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102:oem-vendor  # SMBIOS Type2 Manufacturer<br>nvram 4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102:oem-board   # SMBIOS Type2 ProductName<br>\end{lstlisting}</p>
+<li><p>Provide public key during the <code>OpenCore.efi</code> compilation in <a href="https://github.com/acidanthera/OpenCorePkg/blob/master/Platform/OpenCore/OpenCoreVault.c" target="_blank" rel="noopener"><code>OpenCoreVault.c</code></a> file.</p>
 </li>
-<li><p>\texttt{HaltLevel}\<br>\textbf{Type}: \texttt{plist\ integer}, 64 bit\<br>\textbf{Failsafe}: \texttt{0x80000000} (\texttt{DEBUG_ERROR})\<br>\textbf{Description}: EDK II debug level bitmask (sum) causing CPU to<br>halt (stop execution) after obtaining a message of \texttt{HaltLevel}.<br>Possible values match \texttt{DisplayLevel} values.</p>
+<li><p>Binary patch <code>OpenCore.efi</code> replacing zeroes with the public key between <code>=BEGIN OC VAULT=</code> and <code>==END OC VAULT==</code> ASCII markers.</p>
+<p>RSA public key 520 byte format description can be found in Chromium OS documentation. To convert public key from X.509 certificate or from PEM file use <a href="https://github.com/acidanthera/OcSupportPkg/tree/master/Utilities/CreateVault" target="_blank" rel="noopener">RsaTool</a>.</p>
+<p>The complete set of commands to:</p>
 </li>
-<li><p>\texttt{Vault}\<br>\textbf{Type}: \texttt{plist\ string}\<br>\textbf{Failsafe}: \texttt{Secure}\<br>\textbf{Description}: Enables vaulting mechanism in OpenCore.</p>
-<p>Valid values:</p>
-<p>\begin{itemize}<br>\tightlist<br>\item \texttt{Optional} — require nothing, no vault is enforced, insecure.<br>\item \texttt{Basic} — require \texttt{vault.plist} file present<br>in \texttt{OC} directory. This provides basic filesystem integrity<br>verification and may protect from unintentional filesystem corruption.<br>\item \texttt{Secure} — require \texttt{vault.sig} signature file for<br>\texttt{vault.plist} in \texttt{OC} directory. This includes \texttt{Basic}<br>integrity checking but also attempts to build a trusted bootchain.<br>\end{itemize}</p>
-<p>\texttt{vault.plist} file should contain SHA-256 hashes for all files used by OpenCore.<br>Presence of this file is highly recommended to ensure that unintentional<br>file modifications (including filesystem corruption) do not happen unnoticed.<br>To create this file automatically use<br><a href="https://github.com/acidanthera/OcSupportPkg/tree/master/Utilities/CreateVault" target="_blank" rel="noopener">\texttt{create_vault.sh</a>} script.<br>Regardless of the underlying filesystem, path name and case must match<br>between \texttt{config.plist} and \texttt{vault.plist}.</p>
-<p>\texttt{vault.sig} file should contain a raw 256 byte RSA-2048 signature from SHA-256<br>hash of \texttt{vault.plist}. The signature is verified against the public<br>key embedded into \texttt{OpenCore.efi}. To embed the public key you should<br>do either of the following:</p>
-<p>\begin{itemize}<br>\tightlist<br>\item Provide public key during the \texttt{OpenCore.efi} compilation in<br><a href="https://github.com/acidanthera/OpenCorePkg/blob/master/Platform/OpenCore/OpenCoreVault.c" target="_blank" rel="noopener">\texttt{OpenCoreVault.c</a>} file.<br>\item Binary patch \texttt{OpenCore.efi} replacing zeroes with the public key<br>between \texttt{=BEGIN OC VAULT=} and \texttt{==END OC VAULT==} ASCII markers.<br>\end{itemize}</p>
-<p>RSA public key 520 byte format description can be found in Chromium OS documentation.<br>To convert public key from X.509 certificate or from PEM file use<br><a href="https://github.com/acidanthera/OcSupportPkg/tree/master/Utilities/CreateVault" target="_blank" rel="noopener">RsaTool</a>.</p>
+<li><p>Create <code>vault.plist</code>.</p>
+</li>
+<li><p>Create a new RSA key (always do this to avoid loading old configuration).</p>
+</li>
+<li><p>Embed RSA key into <code>OpenCore.efi</code>.</p>
+</li>
+<li><p>Create <code>vault.sig</code>.</p>
+<p>Can look as follows:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs plain">cd &#x2F;Volumes&#x2F;EFI&#x2F;EFI&#x2F;OC<br>&#x2F;path&#x2F;to&#x2F;create_vault.sh .<br>&#x2F;path&#x2F;to&#x2F;RsaTool -sign vault.plist vault.sig vault.pub<br>off&#x3D;$(($(strings -a -t d OpenCore.efi | grep &quot;&#x3D;BEGIN OC VAULT&#x3D;&quot; | cut -f1 -d&#39; &#39;)+16))<br>dd of&#x3D;OpenCore.efi if&#x3D;vault.pub bs&#x3D;1 seek&#x3D;$off count&#x3D;528 conv&#x3D;notrunc<br>rm vault.pub<br></code></pre></td></tr></table></figure>
 </li>
 </ul>
-<p>  The complete set of commands to:</p>
-<p>  \begin{itemize}<br>  \tightlist<br>  \item Create \texttt{vault.plist}.<br>  \item Create a new RSA key (always do this to avoid loading old configuration).<br>  \item Embed RSA key into \texttt{OpenCore.efi}.<br>  \item Create \texttt{vault.sig}.<br>  \end{itemize}</p>
-<p>  Can look as follows:<br>\begin{lstlisting}[label=createvault, style=ocbash]<br>cd /Volumes/EFI/EFI/OC<br>/path/to/create_vault.sh .<br>/path/to/RsaTool -sign vault.plist vault.sig vault.pub<br>off=$(($(strings -a -t d OpenCore.efi | grep “=BEGIN OC VAULT=” | cut -f1 -d’ ‘)+16))<br>dd of=OpenCore.efi if=vault.pub bs=1 seek=$off count=528 conv=notrunc<br>rm vault.pub<br>\end{lstlisting}</p>
-<p>  \emph{Note 1}: While it may appear obvious, but you have to use an external<br>  method to verify \texttt{OpenCore.efi} and \texttt{BOOTx64.efi} for<br>  secure boot path. For this you are recommended to at least enable UEFI SecureBoot<br>  with a custom certificate, and sign \texttt{OpenCore.efi} and \texttt{BOOTx64.efi}<br>  with your custom key. More details on customising secure boot on modern firmwares<br>  can be found in <a href="https://habr.com/post/273497/" target="_blank" rel="noopener">Taming UEFI SecureBoot</a><br>  paper (in Russian).</p>
-<p>  \emph{Note 2}: \texttt{vault.plist} and \texttt{vault.sig} are used regardless of this<br>  option when \texttt{vault.plist} is present or public key is embedded into<br>  \texttt{OpenCore.efi}. Setting this option will only ensure configuration sanity,<br>  and abort the boot process otherwise.</p>
+<p>  <em>Note 1</em>: While it may appear obvious, but you have to use an external  method to verify <code>OpenCore.efi</code> and <code>BOOTx64.efi</code> for secure boot path. For this you are recommended to at least enable UEFI SecureBoot with a custom certificate, and sign <code>OpenCore.efi</code> and <code>BOOTx64.efi</code> with your custom key. More details on customising secure boot on modern firmwares can be found in <a href="https://habr.com/post/273497/" target="_blank" rel="noopener">Taming UEFI SecureBoot</a> paper (in Russian).</p>
+<p>  <em>Note 2</em>: <code>vault.plist</code> and <code>vault.sig</code> are used regardless of this option when <code>vault.plist</code> is present or public key is embedded into <code>OpenCore.efi</code>. Setting this option will only ensure configuration sanity, and abort the boot process otherwise.</p>
+<h3 id="7-ScanPolicy"><a href="#7-ScanPolicy" class="headerlink" title="7. ScanPolicy"></a>7. <code>ScanPolicy</code></h3><p>  <strong>Type</strong>: <code>plist integer</code>, 32 bit<br>  <strong>Failsafe</strong>: <code>0xF0103</code><br>  <strong>Description</strong>: Define operating system detection policy.</p>
+<p>  This value allows to prevent scanning (and booting) from untrusted source based on a bitmask (sum) of select flags. As it is not possible to reliably detect every file system or device type, this feature cannot be fully relied upon in open environments, and the additional measures are to be applied.</p>
+<p>  Third party drivers may introduce additional security (and performance) measures following the provided scan policy. Scan policy is exposed in <code>scan-policy</code> variable of <code>4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102</code> GUID for UEFI Boot Services only.</p>
 <ul>
-<li><p>\texttt{ScanPolicy}\<br>\textbf{Type}: \texttt{plist\ integer}, 32 bit\<br>\textbf{Failsafe}: \texttt{0xF0103}\<br>\textbf{Description}: Define operating system detection policy.</p>
-<p>This value allows to prevent scanning (and booting) from untrusted<br>source based on a bitmask (sum) of select flags. As it is not possible<br>to reliably detect every file system or device type, this feature<br>cannot be fully relied upon in open environments, and the additional<br>measures are to be applied.</p>
-<p>Third party drivers may introduce additional security (and performance)<br>measures following the provided scan policy. Scan policy is exposed<br>in \texttt{scan-policy} variable of \texttt{4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102}<br>GUID for UEFI Boot Services only.</p>
-<p>\begin{itemize}<br>\tightlist<br>\item \texttt{0x00000001} (bit \texttt{0}) — \texttt{OC_SCAN_FILE_SYSTEM_LOCK}, restricts<br>scanning to only known file systems defined as a part of this policy. File system<br>drivers may not be aware of this policy, and to avoid mounting of undesired file<br>systems it is best not to load its driver. This bit does not affect dmg mounting,<br>which may have any file system. Known file systems are prefixed with<br>\texttt{OC_SCAN_ALLOW_FS_}.<br>\item \texttt{0x00000002} (bit \texttt{1}) — \texttt{OC_SCAN_DEVICE_LOCK}, restricts scanning<br>to only known device types defined as a part of this policy. This is not always possible<br>to detect protocol tunneling, so be aware that on some systems it may be possible for<br>e.g. USB HDDs to be recognised as SATA. Cases like this must be reported. Known device<br>types are prefixed with \texttt{OC_SCAN_ALLOW_DEVICE_}.<br>\item \texttt{0x00000100} (bit \texttt{8}) — \texttt{OC_SCAN_ALLOW_FS_APFS}, allows scanning<br>of APFS file system.<br>\item \texttt{0x00000200} (bit \texttt{9}) — \texttt{OC_SCAN_ALLOW_FS_HFS}, allows scanning<br>of HFS file system.<br>\item \texttt{0x00000400} (bit \texttt{10}) — \texttt{OC_SCAN_ALLOW_FS_ESP}, allows scanning<br>of EFI System Partition file system.<br>\item \texttt{0x00000800} (bit \texttt{11}) — \texttt{OC_SCAN_ALLOW_FS_NTFS}, allows scanning<br>of NTFS (Msft Basic Data) file system.<br>\item \texttt{0x00001000} (bit \texttt{12}) — \texttt{OC_SCAN_ALLOW_FS_EXT}, allows scanning<br>of EXT (Linux Root) file system.<br>\item \texttt{0x00010000} (bit \texttt{16}) — \texttt{OC_SCAN_ALLOW_DEVICE_SATA}, allow<br>scanning SATA devices.<br>\item \texttt{0x00020000} (bit \texttt{17}) — \texttt{OC_SCAN_ALLOW_DEVICE_SASEX}, allow<br>scanning SAS and Mac NVMe devices.<br>\item \texttt{0x00040000} (bit \texttt{18}) — \texttt{OC_SCAN_ALLOW_DEVICE_SCSI}, allow<br>scanning SCSI devices.<br>\item \texttt{0x00080000} (bit \texttt{19}) — \texttt{OC_SCAN_ALLOW_DEVICE_NVME}, allow<br>scanning NVMe devices.<br>\item \texttt{0x00100000} (bit \texttt{20}) — \texttt{OC_SCAN_ALLOW_DEVICE_ATAPI}, allow<br>scanning CD/DVD devices.<br>\item \texttt{0x00200000} (bit \texttt{21}) — \texttt{OC_SCAN_ALLOW_DEVICE_USB}, allow<br>scanning USB devices.<br>\item \texttt{0x00400000} (bit \texttt{22}) — \texttt{OC_SCAN_ALLOW_DEVICE_FIREWIRE}, allow<br>scanning FireWire devices.<br>\item \texttt{0x00800000} (bit \texttt{23}) — \texttt{OC_SCAN_ALLOW_DEVICE_SDCARD}, allow<br>scanning card reader devices.<br>\end{itemize}</p>
-<p>\emph{Note}: Given the above description, \texttt{0xF0103} value is expected to allow<br>scanning of SATA, SAS, SCSI, and NVMe devices with APFS file system, and prevent scanning<br>of any devices with HFS or FAT32 file systems in addition to not scanning APFS file systems<br>on USB, CD, and FireWire drives. The combination reads as:<br>\begin{itemize}<br>\tightlist<br>\item \texttt{OC_SCAN_FILE_SYSTEM_LOCK}<br>\item \texttt{OC_SCAN_DEVICE_LOCK}<br>\item \texttt{OC_SCAN_ALLOW_FS_APFS}<br>\item \texttt{OC_SCAN_ALLOW_DEVICE_SATA}<br>\item \texttt{OC_SCAN_ALLOW_DEVICE_SASEX}<br>\item \texttt{OC_SCAN_ALLOW_DEVICE_SCSI}<br>\item \texttt{OC_SCAN_ALLOW_DEVICE_NVME}<br>\end{itemize}</p>
+<li><code>0x00000001</code> (bit <code>0</code>) — <code>OC_SCAN_FILE_SYSTEM_LOCK</code>, restricts scanning to only known file systems defined as a part of this policy. File system drivers may not be aware of this policy, and to avoid mounting of undesired file systems it is best not to load its driver. This bit does not affect dmg mounting, which may have any file system. Known file systems are prefixed with <code>OC_SCAN_ALLOW_FS_</code>.</li>
+<li><code>0x00000002</code> (bit <code>1</code>) — <code>OC_SCAN_DEVICE_LOCK</code>, restricts scanning to only known device types defined as a part of this policy. This is not always possible to detect protocol tunneling, so be aware that on some systems it may be possible for e.g. USB HDDs to be recognised as SATA. Cases like this must be reported. Known device types are prefixed with <code>OC_SCAN_ALLOW_DEVICE_</code>.</li>
+<li><code>0x00000100</code> (bit <code>8</code>) — <code>OC_SCAN_ALLOW_FS_APFS</code>, allows scanning of APFS file system.</li>
+<li><code>0x00000200</code> (bit <code>9</code>) — <code>OC_SCAN_ALLOW_FS_HFS</code>, allows scanning of HFS file system.</li>
+<li><code>0x00000400</code> (bit <code>10</code>) — <code>OC_SCAN_ALLOW_FS_ESP</code>, allows scanning of EFI System Partition file system.</li>
+<li><code>0x00000800</code> (bit <code>11</code>) — <code>OC_SCAN_ALLOW_FS_NTFS</code>, allows scanning of NTFS (Msft Basic Data) file system.</li>
+<li><code>0x00001000</code> (bit <code>12</code>) — <code>OC_SCAN_ALLOW_FS_EXT</code>, allows scanning of EXT (Linux Root) file system.</li>
+<li><code>0x00010000</code> (bit <code>16</code>) — <code>OC_SCAN_ALLOW_DEVICE_SATA</code>, allow scanning SATA devices.</li>
+<li><code>0x00020000</code> (bit <code>17</code>) — <code>OC_SCAN_ALLOW_DEVICE_SASEX</code>, allow scanning SAS and Mac NVMe devices.</li>
+<li><code>0x00040000</code> (bit <code>18</code>) — <code>OC_SCAN_ALLOW_DEVICE_SCSI</code>, allow scanning SCSI devices.</li>
+<li><code>0x00080000</code> (bit <code>19</code>) — <code>OC_SCAN_ALLOW_DEVICE_NVME</code>, allow scanning NVMe devices.</li>
+<li><code>0x00100000</code> (bit <code>20</code>) — <code>OC_SCAN_ALLOW_DEVICE_ATAPI</code>, allow scanning CD/DVD devices.</li>
+<li><code>0x00200000</code> (bit <code>21</code>) — <code>OC_SCAN_ALLOW_DEVICE_USB</code>, allow scanning USB devices.</li>
+<li><code>0x00400000</code> (bit <code>22</code>) — <code>OC_SCAN_ALLOW_DEVICE_FIREWIRE</code>, allow scanning FireWire devices.</li>
+<li><code>0x00800000</code> (bit <code>23</code>) — <code>OC_SCAN_ALLOW_DEVICE_SDCARD</code>, allow scanning card reader devices.</li>
+</ul>
+<p>  <em>Note</em>: Given the above description, <code>0xF0103</code> value is expected to allow scanning of SATA, SAS, SCSI, and NVMe devices with APFS file system, and prevent scanning of any devices with HFS or FAT32 file systems in addition to not scanning APFS file systems on USB, CD, and FireWire drives. The combination reads as:</p>
+<ul>
+<li><code>OC_SCAN_FILE_SYSTEM_LOCK</code></li>
+<li><code>OC_SCAN_DEVICE_LOCK</code></li>
+<li><code>OC_SCAN_ALLOW_FS_APFS</code></li>
+<li><code>OC_SCAN_ALLOW_DEVICE_SATA</code></li>
+<li><code>OC_SCAN_ALLOW_DEVICE_SASEX</code></li>
+<li><code>OC_SCAN_ALLOW_DEVICE_SCSI</code></li>
+<li><code>OC_SCAN_ALLOW_DEVICE_NVME</code></li>
+</ul>
+<h2 id="8-6-Entry-Properties"><a href="#8-6-Entry-Properties" class="headerlink" title="8.6 Entry Properties"></a>8.6 Entry Properties</h2><h3 id="1-Arguments"><a href="#1-Arguments" class="headerlink" title="1. Arguments"></a>1. <code>Arguments</code></h3><p>  <strong>Type</strong>: <code>plist string</code><br>  <strong>Failsafe</strong>: Empty string<br>  <strong>Description</strong>: Arbitrary ASCII string used as boot arguments (load options) of the specified entry.</p>
+<h3 id="2-Comment"><a href="#2-Comment" class="headerlink" title="2. Comment"></a>2. <code>Comment</code></h3><p>  <strong>Type</strong>: <code>plist string</code><br>  <strong>Failsafe</strong>: Empty string<br>  <strong>Description</strong>: Arbitrary ASCII string used to provide human readable reference for the entry. It is implementation defined whether this value is used.</p>
+<h3 id="3-Enabled"><a href="#3-Enabled" class="headerlink" title="3. Enabled"></a>3. <code>Enabled</code></h3><p>  <strong>Type</strong>: <code>plist boolean</code><br>  <strong>Failsafe</strong>: <code>false</code><br>  <strong>Description</strong>: This entry will not be listed unless set to<br>  <code>true</code>.</p>
+<h3 id="4-Name"><a href="#4-Name" class="headerlink" title="4. Name"></a>4. <code>Name</code></h3><p>  <strong>Type</strong>: <code>plist string</code><br>  <strong>Failsafe</strong>: Empty string<br>  <strong>Description</strong>: Human readable entry name displayed in boot picker.</p>
+<ul>
+<li><p><code>Path</code><br><strong>Type</strong>: <code>plist string</code><br><strong>Failsafe</strong>: Empty string<br><strong>Description</strong>: Entry location depending on entry type.</p>
+<ul>
+<li><code>Entries</code> specify external boot options, and therefore take device paths in <code>Path</code> key. These values are not checked, thus be extremely careful. Example: <code>PciRoot(0x0)/Pci(0x1,0x1)/.../\EFI\COOL.EFI</code></li>
+<li><code>Tools</code> specify internal boot options, which are part of bootloader vault, and therefore take file paths relative to <code>OC/Tools</code> directory. Example: <code>Shell.efi</code>.</li>
+</ul>
 </li>
 </ul>
-<p>\end{enumerate}</p>
-<p>\subsection{Entry Properties}\label{miscentryprops}</p>
-<p>\begin{enumerate}</p>
-<ul>
-<li><p>\texttt{Arguments}\<br>\textbf{Type}: \texttt{plist\ string}\<br>\textbf{Failsafe}: Empty string\<br>\textbf{Description}: Arbitrary ASCII string used as boot arguments (load options)<br>of the specified entry.</p>
-</li>
-<li><p>\texttt{Comment}\<br>\textbf{Type}: \texttt{plist\ string}\<br>\textbf{Failsafe}: Empty string\<br>\textbf{Description}: Arbitrary ASCII string used to provide human readable<br>reference for the entry. It is implementation defined whether this value is<br>used.</p>
-</li>
-<li><p>\texttt{Enabled}\<br>\textbf{Type}: \texttt{plist\ boolean}\<br>\textbf{Failsafe}: \texttt{false}\<br>\textbf{Description}: This entry will not be listed unless set to<br>\texttt{true}.</p>
-</li>
-<li><p>\texttt{Name}\<br>\textbf{Type}: \texttt{plist\ string}\<br>\textbf{Failsafe}: Empty string\<br>\textbf{Description}: Human readable entry name displayed in boot picker.</p>
-</li>
-<li><p>\texttt{Path}\<br>\textbf{Type}: \texttt{plist\ string}\<br>\textbf{Failsafe}: Empty string\<br>\textbf{Description}: Entry location depending on entry type.</p>
-<p>\begin{itemize}<br>\tightlist<br>\item \texttt{Entries} specify external boot options, and therefore take device<br>paths in \texttt{Path} key. These values are not checked, thus be extremely careful.<br>Example: \texttt{PciRoot(0x0)/Pci(0x1,0x1)/…/\textbackslash EFI\textbackslash COOL.EFI}<br>\item \texttt{Tools} specify internal boot options, which are part of bootloader<br>vault, and therefore take file paths relative to \texttt{OC/Tools} directory.<br>Example: \texttt{Shell.efi}.<br>\end{itemize}</p>
-</li>
-</ul>
-<p>\end{enumerate}</p>
 
             </div>
 
@@ -336,6 +425,15 @@
                     <div class="page-item-title h5">9. NVRAM</div>
                 </a>
             </li></ul>
+        </div>
+        
+        <div class="column is-3 is-narrow-touch is-hidden-mobile">
+            <aside class="doku-document-toc" id="doku-document-toc">
+                <div class="doku-document-toc-content">
+                    <p class="doku-document-toc-title">目录</p>
+                    <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#8-1-Introduction"><span class="post-toc-text">8.1 Introduction</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#8-2-Properties"><span class="post-toc-text">8.2 Properties</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#1-Boot"><span class="post-toc-text">1. Boot</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#2-BlessOverride"><span class="post-toc-text">2. BlessOverride</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#3-Debug"><span class="post-toc-text">3. Debug</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#4-Entries"><span class="post-toc-text">4. Entries</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#5-Security"><span class="post-toc-text">5. Security</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#6-Tools"><span class="post-toc-text">6. Tools</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#8-3-Boot-Properties"><span class="post-toc-text">8.3 Boot Properties</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#1-HibernateMode"><span class="post-toc-text">1. HibernateMode</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#2-HideSelf"><span class="post-toc-text">2. HideSelf</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#3-PickerAttributes"><span class="post-toc-text">3. PickerAttributes</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#4-PollAppleHotKeys"><span class="post-toc-text">4. PollAppleHotKeys</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#5-ShowPicker"><span class="post-toc-text">5. ShowPicker</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#6-TakeoffDelay"><span class="post-toc-text">6. TakeoffDelay</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#7-Timeout"><span class="post-toc-text">7. Timeout</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#8-PickerMode"><span class="post-toc-text">8. PickerMode</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#8-4-Debug-Properties"><span class="post-toc-text">8.4 Debug Properties</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#1-DisableWatchDog"><span class="post-toc-text">1. DisableWatchDog</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#2-DisplayDelay"><span class="post-toc-text">2. DisplayDelay</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#3-DisplayLevel"><span class="post-toc-text">3.  DisplayLevel</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#4-Target"><span class="post-toc-text">4. Target</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#8-5-Security-Properties"><span class="post-toc-text">8.5 Security Properties</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#1-AllowNvramReset"><span class="post-toc-text">1. AllowNvramReset</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#2-AllowSetDefault"><span class="post-toc-text">2. AllowSetDefault</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#3-AuthRestart"><span class="post-toc-text">3. AuthRestart</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#4-ExposeSensitiveData"><span class="post-toc-text">4. ExposeSensitiveData</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#5-HaltLevel"><span class="post-toc-text">5. HaltLevel</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#6-Vault"><span class="post-toc-text">6. Vault</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#7-ScanPolicy"><span class="post-toc-text">7. ScanPolicy</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#8-6-Entry-Properties"><span class="post-toc-text">8.6 Entry Properties</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#1-Arguments"><span class="post-toc-text">1. Arguments</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#2-Comment"><span class="post-toc-text">2. Comment</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#3-Enabled"><span class="post-toc-text">3. Enabled</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#4-Name"><span class="post-toc-text">4. Name</span></a></li></ol></li></ol>
+                </div>
+            </aside>
         </div>
         
     </div>
