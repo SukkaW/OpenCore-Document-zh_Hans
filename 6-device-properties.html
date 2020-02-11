@@ -164,6 +164,10 @@
     <div class="columns">
         <div class="column is-9-tablet doku-document-wrapper">
             <div class="content">
+                
+                    <blockquote class="message doku-blockquote is-info">
+                        <div class="message-body"></div>
+                    </blockquote>
                 <h2 id="6-1-简介"><a href="#6-1-简介" class="headerlink" title="6.1 简介"></a>6.1 简介</h2><p>Device configuration is provided to macOS with a dedicated buffer, called <code>EfiDevicePropertyDatabase</code>. This buffer is a serialised map of DevicePaths to a map of property names and their values.</p>
 <p>Property data can be debugged with <a href="https://github.com/acidanthera/gfxutil" target="_blank" rel="noopener">gfxutil</a>. To obtain current property data use the following command in macOS:</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs bash">ioreg -lw0 -p IODeviceTree -n efi -r -x | grep device-properties |<br>  sed <span class="hljs-string">'s/.*&lt;//;s/&gt;.*//'</span> &gt; /tmp/device-properties.hex &amp;&amp;<br>  gfxutil /tmp/device-properties.hex /tmp/device-properties.plist &amp;&amp;<br>  cat /tmp/device-properties.plist<br></code></pre></td></tr></table></figure>

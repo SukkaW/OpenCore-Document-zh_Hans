@@ -164,6 +164,10 @@
     <div class="columns">
         <div class="column is-9-tablet doku-document-wrapper">
             <div class="content">
+                
+                    <blockquote class="message doku-blockquote is-info">
+                        <div class="message-body"></div>
+                    </blockquote>
                 <h2 id="2-1-配置术语"><a href="#2-1-配置术语" class="headerlink" title="2.1 配置术语"></a>2.1 配置术语</h2><ul>
 <li><code>OC config</code> — OpenCore Configuration file in plist format named config.plist. It has to provide extensible way to configure OpenCore and is structured to be separated into multiple named sections situated in the root plist dictionary. These sections are permitted to have plist array or plist dictionary types and are described in corresponding sections of this document.</li>
 <li><code>valid key</code> — plist key object of OC config described in this document or its future revisions. Besides explicitly described valid keys, keys starting with # symbol (e.g. #Hello) are also considered valid keys and behave as comments, effectively discarding their value, which is still required to be a valid plist object. All other plist keys are not valid, and their presence yields to undefined behaviour.</li>
