@@ -32,7 +32,7 @@ sudo pmset powernap 0
 sudo pmset standby 0
 ```
 
-*Note*: These settings may reset at hardware change and in certain other circumstances.
+**Note**: These settings may reset at hardware change and in certain other circumstances.
 To view their current state use `pmset -g` command in Terminal.
 
 ## 5.2 属性列表
@@ -47,22 +47,22 @@ To view their current state use `pmset -g` command in Terminal.
 **Type**: plist dict
 **Description**: Apply individual booter quirks described in Quirks Properties section below.
 
-### 5.3 MmioWhitelist 属性
+## 5.3 MmioWhitelist 属性
 
-## 5.3.1 Address
+### 5.3.1 Address
 
 **Type**: plist integer
 **Failsafe**: 0
 **Description**: Exceptional MMIO address, which memory descriptor should be left virtualised (unchanged) by `DevirtualiseMmio`. This means that the firmware will be able to directly communicate with this memory region during operating system functioning, because the region this value is in will be assigned a virtual address.
 
-## 5.3.2 Comment
+### 5.3.2 Comment
 
 **Type**: plist string
 **Failsafe**: Empty string
 **Description**: Arbitrary ASCII string used to provide human readable reference for the entry. It is implementation
 defined whether this value is used.
 
-## 5.3.3 Enabled
+### 5.3.3 Enabled
 
 **Type**: plist boolean
 **Failsafe**: false

@@ -1,6 +1,6 @@
 ---
 title: 3. Setup
-description: Setup（待整理）
+description: Setup（待翻译）
 type: docs
 ---
 

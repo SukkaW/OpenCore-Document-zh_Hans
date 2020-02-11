@@ -1,6 +1,6 @@
 ---
 title: 2. 配置
-description: Introduction（待整理）
+description: Introduction（待翻译）
 type: docs
 ---
 

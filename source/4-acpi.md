@@ -1,6 +1,6 @@
 ---
 title: 4. ACPI
-description: ACPI（待整理）
+description: ACPI（待翻译）
 type: docs
 ---
 
@@ -106,7 +106,7 @@ ACPI table load order follows the item order in the array. All ACPI tables load 
 **Failsafe**: All zero
 **Description**:  Match table signature to be equal to this value unless all zero.
 
-*Note*: Make sure not to specify table signature when the sequence needs to be replaced in multiple places. Especially when performing different kinds of renames.
+**Note**: Make sure not to specify table signature when the sequence needs to be replaced in multiple places. Especially when performing different kinds of renames.
 
 ## 4.5 属性 Patch
 
