@@ -172,12 +172,12 @@
                 <h2 id="12-1-Windows-支持"><a href="#12-1-Windows-支持" class="headerlink" title="12.1 Windows 支持"></a>12.1 Windows 支持</h2><h3 id="我能安装-Windows-系统吗？"><a href="#我能安装-Windows-系统吗？" class="headerlink" title="我能安装 Windows 系统吗？"></a>我能安装 Windows 系统吗？</h3><p>虽然 OpenCore 并没有提供官方的 Windows 支持，但是使用 Boot Camp 安装 64 位 UEFI Windows（即 Windows 8 及更高版本）应该是可以正常工作的。安装第三方 UEFI、或者仅部分支持 UEFI 引导的系统（如 Windows 7）可能需要额外注意。不论如何，记住以下几点：</p>
 <ul>
 <li>MBR (Master Boot Record) 属于 Legacy 引导，因此将不会被支持。</li>
-<li>在同一块硬盘上安装 Windows、macOS 和 OpenCore 时，你尅在 <code>BlessOverride</code> 部分中指定 Windows Bootloader 的路径（<code>\EFI\Microsoft\Boot\bootmgfw.efi</code>）。</li>
+<li>在同一块硬盘上安装 Windows、macOS 和 OpenCore 时，你可以在 <code>BlessOverride</code> 部分中指定 Windows Bootloader 的路径（<code>\EFI\Microsoft\Boot\bootmgfw.efi</code>）。</li>
 <li>在 OpenCore 上应用的所有更改（ACPI、NVRAM、SMBIOS）都应该与操作系统本身无关。OpenCore 会将这些改动生效于所有操作系统，这样在 Windows 上可以获得 Boot Camp 的体验。</li>
 <li>macOS 要求硬盘中的第一份分区为 EFI 分区，并且与 Windows 的默认布局不支持。尽管 OpenCore 确实提供了一个 <a href="https://github.com/acidanthera/bugtracker/issues/327" target="_blank" rel="noopener">解决方法</a>，但是强烈建议不要依赖这个方法。</li>
 <li>Windows 系统可能需要重新激活。为了避免这种情况发生，请考虑将 SystemUUID 设置为原始固件的 UUID。请注意，在旧固件上 UUID 可能是无效的（非随机的）。如果你还遇到了什么问题，可以考虑使用 HWID 或 KMS38 的 Windows 许可证。Windows 激活的细节不在本文档的讨论范围内，你应该能够在网上查找到相关资料。</li>
 </ul>
-<h3 id="我需要安装其他什么软件吗？"><a href="#我需要安装其他什么软件吗？" class="headerlink" title="我需要安装其他什么软件吗？"></a>我需要安装其他什么软件吗？</h3><p>在大多数情况下，要启用多操作系统切换、安装相关驱动程序，你将需要 <a href="https://support.apple.com/boot-camp" target="_blank" rel="noopener">Boot Camp</a> 提供的 Windows 支持软件。为了简化下载过程、或者配置硬盘中已经安装好的 Windows，可以使用 <a href="https://github.com/timsutton/brigadier" target="_blank" rel="noopener">Brigadier</a> 这个实用软件。请注意在使用 Brigadier 之前，你可能需要先下载并安装<a href="https://www.7-zip.org" target="_blank" rel="noopener">7-Zip</a>。</p>
+<h3 id="我需要安装其他什么软件吗？"><a href="#我需要安装其他什么软件吗？" class="headerlink" title="我需要安装其他什么软件吗？"></a>我需要安装其他什么软件吗？</h3><p>在大多数情况下，要启用多操作系统切换、安装相关驱动程序，你将需要 <a href="https://support.apple.com/boot-camp" target="_blank" rel="noopener">Boot Camp</a> 提供的 Windows 支持软件。为了简化下载过程、或者配置硬盘中已经安装好的 Windows，可以使用 <a href="https://github.com/timsutton/brigadier" target="_blank" rel="noopener">Brigadier</a> 这个实用软件。请注意在使用 Brigadier 之前，你可能需要先下载并安装 <a href="https://www.7-zip.org" target="_blank" rel="noopener">7-Zip</a>。</p>
 <blockquote>
 <p>译者注：<a href="https://sparanoid.com/lab/7z/" target="_blank" rel="noopener">7-zip 官方中文网站</a></p>
 </blockquote>
@@ -241,8 +241,8 @@
 <p>你可能会用到 <a href="https://github.com/acidanthera/MacInfoPkg/releases" target="_blank" rel="noopener">MacInfoPkg</a> 内置的 <a href="https://github.com/acidanthera/MacInfoPkg/blob/master/macrecovery/macrecovery.py" target="_blank" rel="noopener">macrecovery.py</a> 来下载 Recovery 镜像。</p>
 <p>如果你需要进行离线安装，请参考 <a href="https://support.apple.com/HT201372" target="_blank" rel="noopener">How to create a bootable installer for macOS</a>。除了通过 App Store 或 系统更新，你还可以使用 <a href="https://github.com/corpnewt/gibMacOS" target="_blank" rel="noopener">第三方工具</a> 下载 macOS 镜像文件。</p>
 <h3 id="5-为什么无法加载-Recovery-恢复镜像-进行在线安装？"><a href="#5-为什么无法加载-Recovery-恢复镜像-进行在线安装？" class="headerlink" title="5. 为什么无法加载 Recovery 恢复镜像 进行在线安装？"></a>5. 为什么无法加载 Recovery 恢复镜像 进行在线安装？</h3><p>可能是因为你没带 HFS+ 驱动。目前我们所知道的 Recovery 分区全都是 HFS+ 文件系统。</p>
-<h3 id="6-我可以在-Apple-的硬件、或虚拟机中使用-OpenCore-吗？"><a href="#6-我可以在-Apple-的硬件、或虚拟机中使用-OpenCore-吗？" class="headerlink" title="6. 我可以在 Apple 的硬件、或虚拟机中使用 OpenCore 吗？"></a>6. 我可以在 Apple 的硬件、或虚拟机中使用 OpenCore 吗？</h3><p><del>下一个问题</del><br><del>可以，没有必要，但请加大力度</del></p>
-<p>OpenCore 支持包括 MacPro 5,1 和虚拟机在内的大部分较新的 Mac 想好。不过，OpenCore 与 Mac 硬件的具体细节微乎其微，你可以在 <a href="https://github.com/acidanthera/bugtracker/issues/377" target="_blank" rel="noopener">acidanthera/bugtracker#377</a> 查看相关讨论。</p>
+<h3 id="6-我可以在-Apple-的硬件、或虚拟机中使用-OpenCore-吗？"><a href="#6-我可以在-Apple-的硬件、或虚拟机中使用-OpenCore-吗？" class="headerlink" title="6. 我可以在 Apple 的硬件、或虚拟机中使用 OpenCore 吗？"></a>6. 我可以在 Apple 的硬件、或虚拟机中使用 OpenCore 吗？</h3><p><del>可以，没有必要，但请加大力度</del></p>
+<p>OpenCore 支持包括 MacPro 5,1 和虚拟机在内的大部分较新的 Mac 想好。不过，OpenCore有关在 Mac 硬件上使用的具体细节微乎其微。你可以在 <a href="https://github.com/acidanthera/bugtracker/issues/377" target="_blank" rel="noopener">acidanthera/bugtracker#377</a> 查看相关讨论。</p>
 <h3 id="7-为什么-Find-和-Replace-的补丁的长度必须相等？"><a href="#7-为什么-Find-和-Replace-的补丁的长度必须相等？" class="headerlink" title="7. 为什么 Find 和 Replace 的补丁的长度必须相等？"></a>7. 为什么 Find 和 Replace 的补丁的长度必须相等？</h3><p>对于 x86 机器码来说，<a href="https://en.wikipedia.org/w/index.php?title=Relative_addressing" target="_blank" rel="noopener">相对寻址</a> 无法进行大小不同的替换。对于 ACPI 代码来说这是有风险的，而且在技术上这与替换 ACPI 表等价，所以 OpenCore 没有实现。更多详细的解答可以在 <a href="https://applelife.ru/posts/819790" target="_blank" rel="noopener">AppleLife.ru</a> 上找到。</p>
 <h3 id="8-我如何从-AptioMemoryFix-迁移到-OpenCore"><a href="#8-我如何从-AptioMemoryFix-迁移到-OpenCore" class="headerlink" title="8. 我如何从 AptioMemoryFix 迁移到 OpenCore?"></a>8. 我如何从 <code>AptioMemoryFix</code> 迁移到 OpenCore?</h3><p>可以通过安装 <code>FwRuntimeServices.efi</code> 驱动程序并启用以下列出的 quirk 来获得与 <code>AptioMemoryFix</code> 类似的行为。 请注意，其中大多数功能都不需要启用。有关更多详细信息，请参阅本文档中关于它们的单独描述。</p>
 <ul>
