@@ -2,7 +2,7 @@
 title: 3. Setup
 description: Setup（待翻译）
 type: docs
-author_info: 由 Sukka 整理
+author_info: 由 Sukka 整理、由 Sukka 翻译。
 ---
 
 ## 3.1 目录结构
@@ -38,41 +38,27 @@ ESP
 
 使用目录引导时，使用的目录结构应该遵循上述目录结构。可用的条目有：
 
-- **BOOTx64.efi**
-Initial booter, which loads OpenCore.efi unless it was already started as a driver.
-- **ACPI**
-Directory used for storing supplemental ACPI information for ACPI section.
-- **Drivers**
-Directory used for storing supplemental UEFI drivers for UEFI section.
-- **Kexts**
-Directory used for storing supplemental kernel information for Kernel section.
-- **Tools**
-Directory used for storing supplemental tools.
-- **OpenCore.efi**
-Main booter driver responsible for operating system loading.
-- **vault.plist**
-Hashes for all files potentially loadable by OC Config.
-- **config.plist**
-OC Config.
-- **vault.sig**
-Signature for vault.plist.
-- **nvram.plist**
-OpenCore variable import file.
-- **opencore-YYYY-MM-DD-HHMMSS.txt**
-OpenCore log file.
+- **BOOTx64.efi** - 初始引导程序。除非 OpenCore.efi 已作为驱动程序启动，否则将用于加载 OpenCore.efi。
+- **ACPI** - 用于存储 ACPI 补充信息的目录。
+- **Drivers** - 用于存储 UEFI 补充驱动程序的目录。
+- **Kexts** - 用于存储内核驱动（kext）补充的目录。
+- **Tools** - 用于存储补充工具的目录。
+- **OpenCore.efi** - 主引导驱动程序，负责操作系统加载。
+- **vault.plist** - OC Config 可能加载的所有文件的哈希。
+- **config.plist** - OC Config（即 OpenCore 的配置文件，见「配置术语」）。
+- **vault.sig** - vault.plist 的签名文件。
+- **nvram.plist** - OpenCore 变量导入文件。
+- **opencore-YYYY-MM-DD-HHMMSS.txt** - OpenCore 日志文件。
 
 ## 3.2 安装和升级
 
-To install OpenCore reflect the Configuration Structure described in the previous section on a EFI volume of a GPT partition. While corresponding sections of this document do provide some information in regards to external resources like ACPI tables, UEFI drivers, or kernel extensions (kexts), completeness of the matter is out of the scope of this document. Information about kernel extensions may be found in a separate [Kext List](https://github.com/acidanthera/OpenCorePkg/blob/master/Docs/Kexts.md) document available in OpenCore repository. Vaulting information is provided in Security Properties section of this document.
+如果要安装 OpenCore，请在使用 GPT 格式的硬盘上、按照上一节的文件夹结构建立文件和文件夹。尽管本文档的相应部分的确提供了有关你所需的外部资源（如 ACPI 表、UEFI 驱动程序或 kexts）的某些信息，但是本文档不保证会提供关于这些外部资源的全部信息。关于 kext 的完整信息可以查看由 OpenCore 提供的 [可选 kext 列表](https://github.com/acidanthera/OpenCorePkg/blob/master/Docs/Kexts.md)；而本文档也在安全属性的相关章节提供了 Vauting 的相关信息。
 
-`OC Config`, just like any property lists can be edited with any stock textual editor (e.g. nano, vim), but specialised software may provide better experience. On macOS the preferred GUI application is [Xcode](https://developer.apple.com/xcode). For a lightweight cross-platform and open-source alternative [ProperTree](https://github.com/corpnewt/ProperTree) editor can be utilised.
+OpenCore 的配置文件可以使用任何常规的文本编辑器（如 nano、vim、VSCode）进行编辑，但是专用软件可以带来更好的体验。在 macOS 上我们推荐使用 [Xcode](https://developer.apple.com/xcode)。你也可以使用 [ProperTree](https://github.com/corpnewt/ProperTree) ，这是一个轻量级的跨平台的开源 plist 编辑器。
 
-For BIOS booting a third-party UEFI environment provider will have to be used. `DuetPkg` is one of the known UEFI environment providers for legacy systems. To run OpenCore on such a legacy system you can install `DuetPkg` with a dedicated tool: [BootInstall](https://github.com/acidanthera/OcSupportPkg/tree/master/Utilities/BootInstall).
+如果要通过 BIOS 进行开机，你必须使用第三方 UEFI 环境提供程序。`DuetPkg` 是一个常用的为旧操作系统提供 Legacy 引导的 UEFI 环境提供程序。要在这样的旧操作系统上运行 OpenCore，你可以使用 [BootInstall](https://github.com/acidanthera/OcSupportPkg/tree/master/Utilities/BootInstall) 安装 `DuetPkg`。
 
-For upgrade purposes refer to `Differences.pdf` document, providing
-the information about the changes affecting the configuration compared
-to the previous release, and `Changelog.md` document, containing
-the list of modifications across all published updates.
+如果要升级 OpenCore，[`Differences.pdf`](https://github.com/acidanthera/OpenCorePkg/blob/master/Docs/Differences/Differences.pdf) 提供了 OpenCore 配置文件变更的相关信息，[`Changelog.md`](https://github.com/acidanthera/OpenCorePkg/blob/master/Changelog.md) 提供了 OpenCore 的更新日志。
 
 ## 3.3 贡献代码
 
@@ -97,7 +83,7 @@ make -C BaseTools
 build -a X64 -b RELEASE -t XCODE5 -p OpenCorePkg/OpenCorePkg.dsc
 ```
 
-For IDE usage Xcode projects are available in the root of the repositories. Another approach could be [Sublime Text](https://www.sublimetext.com) with [EasyClangComplete](https://niosus.github.io/EasyClangComplete) plugin. Add `.clang\_complete` file with similar content to your UDK root:
+For IDE usage Xcode projects are available in the root of the repositories. Another approach could be [Sublime Text](https://www.sublimetext.com) with [EasyClangComplete](https://niosus.github.io/EasyClangComplete) plugin. Add `.clang_complete` file with similar content to your UDK root:
 
 ```
 -I/UefiPackages/MdePkg
@@ -141,7 +127,7 @@ which contain separate EDK II packages. `AppleSupportPkg` and `OpenCorePkg` are 
 - Each unique commit should compile with `XCODE5` and preferably with other toolchains. In the majority of the cases it can be checked by accessing the [CI interface](https://travis-ci.com/acidanthera). Ensuring that static analysis finds no warnings is preferred.
 - External pull requests and tagged commits must be validated. That said, commits in master may build but may not necessarily work.
 - Internal branches should be named as follows: `author-name-date`, e.g. `vit9696-ballooning-20191026`.
-- Commit messages should be prefixed with the primary module (e.g. library or code module) the changes were made in. For example, `OcGuardLib: Add OC\_ALIGNED macro`. For non-library changes `Docs` or `Build` prefixes are used.
+- Commit messages should be prefixed with the primary module (e.g. library or code module) the changes were made in. For example, `OcGuardLib: Add OC_ALIGNED macro`. For non-library changes `Docs` or `Build` prefixes are used.
 
 **Design**. The codebase is written in a subset of freestanding C11 (C17) supported by most modern toolchains used by EDK II. Applying common software development practices or requesting clarification is recommended if any particular case is not discussed below.
 
@@ -149,17 +135,17 @@ which contain separate EDK II packages. `AppleSupportPkg` and `OpenCorePkg` are 
 - Use `OcGuardLib` to ensure safe integral arithmetics avoiding overflows. Unsigned wraparound should be relied on with care and reduced to the necessary amount.
 - Check pointers for correct alignment with `OcGuardLib` and do not rely on the architecture being able to dereference unaligned pointers.
 - Use flexible array members instead of zero-length or one-length arrays where necessary.
-- Use static assertions (`STATIC\_ASSERT`) for type and value assumptions, and runtime assertions (`ASSERT`) for precondition and invariant sanity checking. Do not use runtime assertions to check for errors as they should never alter control flow and potentially be excluded.
-- Assume `UINT32`/`INT32` to be `int`-sized and use `\%u`, `\%d`, and `\%x` to print them.
-- Assume `UINTN`/`INTN` to be of unspecified size, and cast them to `UINT64`/`INT64` for printing with `\%Lu`, `\%Ld` and so on as normal.
+- Use static assertions (`STATIC_ASSERT`) for type and value assumptions, and runtime assertions (`ASSERT`) for precondition and invariant sanity checking. Do not use runtime assertions to check for errors as they should never alter control flow and potentially be excluded.
+- Assume `UINT32`/`INT32` to be `int`-sized and use `%u`, `%d`, and `%x` to print them.
+- Assume `UINTN`/`INTN` to be of unspecified size, and cast them to `UINT64`/`INT64` for printing with `%Lu`, `%Ld` and so on as normal.
 - Do not rely on integer promotions for numeric literals. Use explicit casts when the type is
 implementation-dependent or suffixes when type size is known. Assume `U` for `UINT32` and `ULL` for `UINT64`.
 - Do ensure unsigned arithmetics especially in bitwise maths, shifts in particular.
-- `sizeof` operator should take variables instead of types where possible to be error prone. Use `ARRAY\_SIZE` to obtain array size in elements. Use `L\_STR\_LEN` and `L\_STR\_SIZE` macros from `OcStringLib` to obtain string literal sizes to ensure compiler optimisation.
+- `sizeof` operator should take variables instead of types where possible to be error prone. Use `ARRAY_SIZE` to obtain array size in elements. Use `L_STR_LEN` and `L_STR_SIZE` macros from `OcStringLib` to obtain string literal sizes to ensure compiler optimisation.
 - Do not use `goto` keyword. Prefer early `return`, `break`, or `continue` after failing to pass error checking instead of nesting conditionals.
 - Use `EFIAPI`, force UEFI calling convention, only in protocols, external callbacks between modules, and functions with variadic arguments.
 - Provide inline documentation to every added function, at least describing its inputs, outputs, precondition, postcondition, and giving a brief description.
-- Do not use `RETURN\_STATUS`. Assume `EFI\_STATUS` to be a matching superset that is to be always used when `BOOLEAN` is not enough.
+- Do not use `RETURN_STATUS`. Assume `EFI_STATUS` to be a matching superset that is to be always used when `BOOLEAN` is not enough.
 - Security violations should halt the system or cause a forced reboot.
 
 **Codestyle**. The codebase follows
@@ -174,9 +160,9 @@ and clarifications.
 **Debugging**. The codebase incorporates EDK II debugging and few custom features to improve the experience.
 
 - Use module prefixes, 2-5 letters followed by a colon (`:`), for debug messages. For `OpenCorePkg` use `OC:`, for libraries and drivers use their own unique prefixes.
-- Do not use dots (`.`) in the end of debug messages and separate `EFI\_STATUS`, printed by `\%r`, with a hyphen (e.g. `OCRAM: Allocation of \%u bytes failed - **\%r\textbackslash n`).**
-- Use `DEBUG\_CODE\_BEGIN ()` and `DEBUG\_CODE\_END ()` constructions to guard debug checks that may potentially reduce the performance of release builds and are otherwise unnecessary.
-- Use `DEBUG` macro to print debug messages during normal functioning, and `RUNTIME\_DEBUG` for debugging after `EXIT\_BOOT\_SERVICES`.
-- Use `DEBUG\_VERBOSE` debug level to leave debug messages for future debugging of the code, which are currently not necessary. By default `DEBUG\_VERBOSE` messages are ignored even in `DEBUG` builds.
-- Use `DEBUG\_INFO` debug level for all non critical messages (including errors) and `DEBUG\_BULK\_INFO` for extensive messages that should not appear in NVRAM log that is heavily limited in size. These messages are ignored in `RELEASE` builds.
-- Use `DEBUG\_ERROR` to print critical human visible messages that may potentially halt the boot process, and `DEBUG\_WARN` for all other human visible errors, `RELEASE` builds included.
+- Do not use dots (`.`) in the end of debug messages and separate `EFI_STATUS`, printed by `%r`, with a hyphen (e.g. `OCRAM: Allocation of %u bytes failed - **%rtextbackslash n`).**
+- Use `DEBUG_CODE_BEGIN ()` and `DEBUG_CODE_END ()` constructions to guard debug checks that may potentially reduce the performance of release builds and are otherwise unnecessary.
+- Use `DEBUG` macro to print debug messages during normal functioning, and `RUNTIME_DEBUG` for debugging after `EXIT_BOOT_SERVICES`.
+- Use `DEBUG_VERBOSE` debug level to leave debug messages for future debugging of the code, which are currently not necessary. By default `DEBUG_VERBOSE` messages are ignored even in `DEBUG` builds.
+- Use `DEBUG_INFO` debug level for all non critical messages (including errors) and `DEBUG_BULK_INFO` for extensive messages that should not appear in NVRAM log that is heavily limited in size. These messages are ignored in `RELEASE` builds.
+- Use `DEBUG_ERROR` to print critical human visible messages that may potentially halt the boot process, and `DEBUG_WARN` for all other human visible errors, `RELEASE` builds included.
