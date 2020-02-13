@@ -173,7 +173,7 @@
             
             
                 
-                    <p><small>由 Sukka 整理</small></p>
+                    <p><small>由 Sukka 整理，由 Sukka 翻译</small></p>
                 
                 
                 <br>
@@ -187,22 +187,22 @@
         <div class="column is-9-tablet doku-document-wrapper">
             <div class="content">
                 <h2 id="2-1-配置术语"><a href="#2-1-配置术语" class="headerlink" title="2.1 配置术语"></a>2.1 配置术语</h2><ul>
-<li><code>OC config</code> — OpenCore Configuration file in plist format named config.plist. It has to provide extensible way to configure OpenCore and is structured to be separated into multiple named sections situated in the root plist dictionary. These sections are permitted to have plist array or plist dictionary types and are described in corresponding sections of this document.</li>
-<li><code>valid key</code> — plist key object of OC config described in this document or its future revisions. Besides explicitly described valid keys, keys starting with # symbol (e.g. #Hello) are also considered valid keys and behave as comments, effectively discarding their value, which is still required to be a valid plist object. All other plist keys are not valid, and their presence yields to undefined behaviour.</li>
+<li><code>OC config</code> — OpenCore 的配置文件，格式为 plist，文件名为 <code>config.plist</code>。OpenCore 的配置文件具有可扩展性，并被设计为具有多个命名空间的结构。每个命名空间下允许具有 plist array 或 plist dictionary，在本文档相应部分中对其进行了描述</li>
+<li><code>valid key</code> — 现在以及未来本文档中描述的 OC Config 中的 plist key object。除了明确描述的 valid keys 以外，以 <code>#</code> 符号开头的 key（如 <code>#Hello</code>）也将被视为 valid key，并被表示为注释。虽然表示为注释的值会被丢弃，但是它们仍然是 valid key。其他的 plist key 都是无效、不合法的，它们的存在可能会导致未定义、非预期的行为。</li>
 <li><code>valid value</code> — valid plist object of OC config described in this document that matches all the additional requirements in specific plist object description if any.</li>
 <li><code>invalid value</code> — valid plist object of OC config described in this document that is of other plist type, does not conform to additional requirements found in specific plist object description (e.g. value range), or missing from the corresponding collection. Invalid value is read with or without an error message as any possible value of this plist object in an undetermined manner (i.e. the values may not be same across the reboots). Whilst reading an invalid value is equivalent to reading certain defined valid value, applying incompatible value to the host system may yield to undefined behaviour.</li>
 <li><code>optional value</code> — valid value of OC config described in this document that reads in a certain defined manner provided in specific plist object description (instead of invalid value) when not present in OC config. All other cases of invalid value do still apply. Unless explicitly marked as optional value, any other value is required to be present and reads to invalid value if missing.</li>
 <li><code>fatal behaviour</code> — behaviour leading to boot termination. Implementation must stop the boot process from going any further until next host system boot. It is allowed but not required to perform cold reboot or show any warning message.</li>
 <li><code>undefined behaviour</code> — behaviour not prescribed by this document. Implementation is allowed to take any measures including but not limited to fatal behaviour, assuming any states or values, or ignoring, unless these measures negatively affect system security in general.</li>
 </ul>
-<h2 id="2-2-配置处理"><a href="#2-2-配置处理" class="headerlink" title="2.2 配置处理"></a>2.2 配置处理</h2><p>OC config is guaranteed to be processed at least once if it was found. Depending on OpenCore bootstrapping mechanism multiple OC config files may lead to reading any of them. No OC Config may be present on disk, in which case all the values read follow the rules of invalid value and optional value.</p>
-<p>OC config has size, nesting, and key amount limitations. OC config size does not exceed 16 MBs. OC config has no more than 8 nesting levels. OC config has up to 16384 XML nodes (i.e. one plist dictionary item is counted as a pair of nodes) within each plist object. Reading malformed OC config file leads to undefined behaviour. Examples of malformed OC config cover at least the following cases:</p>
+<h2 id="2-2-配置处理"><a href="#2-2-配置处理" class="headerlink" title="2.2 配置处理"></a>2.2 配置处理</h2><p>如果 OpenCore 发现了 OC Config，则至少会被读取并处理一次。跟你局 OpenCore 的引导机制的不同，对于多个 OC Config 文件，OpenCore 可能会读取其中任何一个或数个。如果硬盘中没有 OC Config，OpenCore 将会使用可选值和无效值的规则。</p>
+<p>OC Config 有大小、嵌套、键数量的限制。OC Config 的大小不得超过 16 MB，嵌套层数不得超过 8 层，没个 plist object 中最多有 16384 个节点（一个 plist dictionary 将被计为一对节点）。不符合上述规则的 OC Config 文件将可能导致未定义、非预期的行为。常见的 OC Config 错误格式包括</p>
 <ul>
-<li>files non-conformant to plist DTD</li>
-<li>files with unsupported or non-conformant plist objects found in this document</li>
-<li>files violating size, nesting, and key amount limitations</li>
+<li>不符合 plist DTD</li>
+<li>存在本文档中没有记载的 plist object</li>
+<li>违反文件大小、嵌套层级和密钥数量的限制</li>
 </ul>
-<p>It is recommended but not required to abort loading malformed OC config and continue as if no OC config was present. For forward compatibility it is recommended but not required for the implementation to warn about the use of invalid values. Recommended practice of interpreting invalid values is to conform to the following convention where applicable:</p>
+<p>我们建议（但非强制）遇到格式错误的 OC Config 时不停止加载、然后继续进行就好像 OC Config 不存在一样。为了是先前向兼容性，建议（但非强制）要求实现对采用无效值的行为进行警告。采用无效值的建议做法是在使用的情况下遵守以下规则：</p>
 <table>
 <thead>
 <tr>
@@ -231,14 +231,14 @@
 <td align="left">False (<code>&lt;false/&gt;</code>)</td>
 </tr>
 </tbody></table>
-<h2 id="2-3-配置结构"><a href="#2-3-配置结构" class="headerlink" title="2.3 配置结构"></a>2.3 配置结构</h2><p>OC config is separated into following sections, which are described in separate sections of this document. By default it is tried to not enable anything and optionally provide kill switches with Enable property for plist dict entries. In general the configuration is written idiomatically to group similar actions in subsections:</p>
+<h2 id="2-3-配置结构"><a href="#2-3-配置结构" class="headerlink" title="2.3 配置结构"></a>2.3 配置结构</h2><p>OC Config 包括以下几个独立部分，将在本文档中分别进行介绍。默认情况下配置文件将尽可能不启用任何功能以及禁用某些功能。总的来说，这些配置的一般由如下的操作构成：</p>
 <ul>
-<li>Add provides support for data addition.</li>
-<li>Block provides support for data removal or ignorance.</li>
-<li>Patch provides support for data modification.</li>
-<li>Quirks provides support for specific hacks.</li>
+<li>Add：为数据提供 添加 操作支持</li>
+<li>Block：为数据提供 删除/忽视 操作支持</li>
+<li>Patch：为数据提供 补丁 操作支持</li>
+<li>Quirks：提供特定的黑科技支持</li>
 </ul>
-<p>Root configuration entries consist of the following:</p>
+<p>配置文件分为以下几个独立部分：</p>
 <ul>
 <li>ACPI</li>
 <li>Booter</li>
@@ -250,8 +250,9 @@
 <li>UEFI</li>
 </ul>
 <blockquote>
-<p>Note: Currently most properties try to have defined values even if not specified in the configuration for safety reasons. This behaviour should not be relied upon, and all fields must be properly specified in the configuration.</p>
+<p>译者注：对上述部分的介绍位于文档的第 4 至 11 章节。你可以在本网站左侧边栏中的目录中找到这些章节的入口。</p>
 </blockquote>
+<p><strong>注意</strong>：出于安全原因，目前大多数属性都有默认值（译者注：后续文档中以 <code>FailSafe</code> 字段呈现）。如果在配置项中未指定任何值，默认值将会生效。你不应该依赖默认值的功能，必须在配置中正确指定所有字段。</p>
 
             </div>
 
