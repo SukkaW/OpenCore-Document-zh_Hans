@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>站内搜索 | OpenCore 简体中文参考手册(非官方)</title>
+    <link rel="preload" href="/search.json" as="fetch" crossorigin="">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge, chrome=1">
+    <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+    <link href="https://oc.skk.moe/logo/favicon.ico" rel="icon" type="image/ico">
+    <meta content="telephone=no" name="format-detection">
+    <meta content="no-transform" http-equiv="Cache-Control">
+    <meta content="no-siteapp" http-equiv="Cache-Control">
+    <style>
+        .search-container{padding:2rem 1rem}.search-logo{text-align:center}.search-logo-title{font-size:1.2rem;font-weight:700}.search-logo a{text-decoration:none;color:#076dd0}.search-logo-title a{color:#111;text-decoration:none}.search-form-container,.search-result{max-width:50rem;margin:0 auto}.search-form{position:relative}.search-wrapper{margin-right:7rem}.search-input{box-sizing:border-box;padding:4px 6px;width:100%}.search-btn,.search-input{-webkit-appearance:none;border:1px solid #bbb;border-radius:0;display:block;font-size:1pc;height:40px;outline:0}.search-btn{background-color:#e7e7e7;border-left:0;color:#222;position:absolute;right:0;top:0;width:7rem}.search-info{color:#676767;font-size:13px;padding:15px 0}.search-info,.search-item{border-bottom:1px solid #ddd}.search-item{padding:10px 0 20px}mark{background:#ffe9b3;border-radius:.2rem;color:#50596c;padding:.05rem .2rem}.search-title{font-size:18px;margin:5px 0}.search-title a{text-decoration:none;color:#076dd0}.search-desc{font-size:15px;overflow:hidden}.search-summary{display:block;line-height:22px;max-height:88px}
+    </style>
+</head>
+
+<body class="zi-main zi-layout">
+    <div class="container">
+        <div class="search-container">
+            <div class="search-logo">
+                <img src="/logo/opencore.png" alt="OpenCore Logo" width="128px">
+                <h1 class="search-logo-title"><a href="https://oc.skk.moe/">OpenCore 非官方简体中文参考手册</a><br>站内搜索引擎</h1>
+                <p>化繁为简，查你所需 | <a href="https://oc.skk.moe">返回首页</a></p>
+            </div>
+            <div class="search-form-container">
+                <form class="search-form">
+                    <div class="search-wrapper">
+                        <input id="search-input" class="search-input" maxlength="100" name="s" placeholder="请输入关键字...." required value type="search" width="100%">
+                    </div>
+                    <button class="search-btn" type="submit">搜索 <small>(Enter)</small></button>
+                </form>
+            </div>
+            <div class="search-result" id="search-result"></div>
+        </div>
+    </div>
+
+    <script>
+        !function(e,t){var r=function(e){return t.getElementById(e)};e.getParameterByName=function(t){t=t.replace(/[\[]/,"\\[").replace(/[\]]/,"\\]");var r=new RegExp("[\\?&]"+t+"=([^&#]*)").exec(e.location.search);return null==r?"":decodeURIComponent(r[1])},e.searchEscape=function(e){var t={"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;","/":"&#x2F;"};return e.replace(/[&<>"'/]/g,function(e){return t[e]})};var n=e.getParameterByName("s");if(n){var a=function(e){var t=e.trim().toLowerCase().split(/[\s\-]+/),r=[];for(var n in t){var a=t[n];if(a.indexOf("+")>-1){var i=a.split("+");for(var c in i)r.push(i[c])}else r.push(a)}return r}(n);r("search-input").setAttribute("value",a.join(" ")),fetch("/search.json").then(function(e){return e.json()}).then(function(t){var n=[],i=0;t.forEach(function(t){if(void 0!==t.title&&void 0!==t.content){var r=t.title.trim().toLowerCase(),c=(new Date(t.date).toLocaleDateString(),void 0!==t.tags&&t.tags,t.content.trim().replace(/<[^>]+>/g,"").toLowerCase()),o=!0,s=-1,l=-1,u=0,v=0,f=-1,h=0;if(""!==r&&""!==c&&a.forEach(function(e,t){s=r.indexOf(e),u=r.split(e).length-1,l=c.indexOf(e),v=c.split(e).length-1,s<0&&l<0?o=!1:(s>=0&&(h+=5*u),l>=0&&(h+=1*v),0===t&&(f=l),i++)}),o){var d=t.title,g="";if(a.forEach(function(t){var r=new RegExp(t,"gi");d=d.replace(r,"<strong><mark>"+e.searchEscape(t)+"</mark></strong>")}),f>=0){var p=f-15,m=f+20;p<0&&(p=0),0===p&&(m=20),m>t.content.length&&(m=t.content.length-20),g=t.content.substr(p,m),a.forEach(function(t){var r=new RegExp(t,"gi");g=g.replace(r,"<strong><mark>"+e.searchEscape(t)+"</mark></strong>")})}var E='<div class="search-item"><div class="search-title"><a href="'+t.url+'">'+d+'</a></div><div class="search-desc"><div class="search-summary">'+g+"</div></div></div>";n.push([E,h])}}});var c="";for(var o in n.sort(function(e,t){return t[1]-e[1]}),n)c+=n[o][0];r("search-result").innerHTML='<div class="search-info">本次搜索共找到 '+i+" 条结果</div>"+c})}}(window,document);
+    </script>
+</body>
+
+</html>

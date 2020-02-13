@@ -18,6 +18,9 @@ navbar:
       - logo: ''
         text: 'OpenCore 参考手册(简体中文)'
         url: '/'
+      - logo: 'fas fa-search'
+        text: '站内搜索'
+        url: '/search.html'
       - logo: 'fab fa-github' # The font-awesome class name of the logo
         text: 'GitHub' # The logo text
         url: 'https://github.com/SukkaW/OpenCore-Document-zh_Hans' # The url
