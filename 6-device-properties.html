@@ -169,11 +169,11 @@
         <div class="hero-body">
             <h1 class="title">6. DeviceProperties</h1>
             
-                <p class="subtitle">DeviceProperties（待翻译）</p>
+                <p class="subtitle">关于设备注入属性（待翻译）</p>
             
             
                 
-                    <p><small>由 Sukka 整理</small></p>
+                    <p><small>由 Sukka 整理、由 Sukka 翻译。</small></p>
                 
                 
                 <br>
@@ -186,19 +186,19 @@
     <div class="columns">
         <div class="column is-9-tablet doku-document-wrapper">
             <div class="content">
-                <h2 id="6-1-简介"><a href="#6-1-简介" class="headerlink" title="6.1 简介"></a>6.1 简介</h2><p>Device configuration is provided to macOS with a dedicated buffer, called <code>EfiDevicePropertyDatabase</code>. This buffer is a serialised map of DevicePaths to a map of property names and their values.</p>
-<p>Property data can be debugged with <a href="https://github.com/acidanthera/gfxutil" target="_blank" rel="noopener">gfxutil</a>. To obtain current property data use the following command in macOS:</p>
+                <h2 id="6-1-简介"><a href="#6-1-简介" class="headerlink" title="6.1 简介"></a>6.1 简介</h2><p>设备相关配置通过专用的缓存区（<code>EfiDevicePropertyDatabase</code>）提供给 macOS，这个缓冲区是设备路径到属性名称与值的键值对的序列化映射。</p>
+<p>属性相关数据可以使用 <a href="https://github.com/acidanthera/gfxutil" target="_blank" rel="noopener">gfxutil</a> 进行调试。在 macOS 下获取当前属性数据请使用 <code>ioreg</code>：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs bash">ioreg -lw0 -p IODeviceTree -n efi -r -x | grep device-properties |<br>  sed <span class="hljs-string">'s/.*&lt;//;s/&gt;.*//'</span> &gt; /tmp/device-properties.hex &amp;&amp;<br>  gfxutil /tmp/device-properties.hex /tmp/device-properties.plist &amp;&amp;<br>  cat /tmp/device-properties.plist<br></code></pre></td></tr></table></figure>
 
-<h2 id="6-2-属性列表"><a href="#6-2-属性列表" class="headerlink" title="6.2 属性列表"></a>6.2 属性列表</h2><h3 id="6-2-1-Add"><a href="#6-2-1-Add" class="headerlink" title="6.2.1 Add"></a>6.2.1 Add</h3><p><strong>Type</strong>: plist dict<br><strong>Description</strong>: Sets device properties from a map (plist dict) of deivce paths to a map (plist dict) of variable names and their values in plist metadata format. Device paths must be provided in canonic string format (e.g. <code>PciRoot(0x0)/Pci(0x1,0x0)/Pci(0x0,0x0)</code>). Properties will only be set if not present and not blocked.<br><strong>Note</strong>: Currently properties may only be (formerly) added by the original driver, so unless a separate driver was installed, there is no reason to block the variables.</p>
+<h2 id="6-2-属性列表"><a href="#6-2-属性列表" class="headerlink" title="6.2 属性列表"></a>6.2 属性列表</h2><h3 id="6-2-1-Add"><a href="#6-2-1-Add" class="headerlink" title="6.2.1 Add"></a>6.2.1 Add</h3><p><strong>Type</strong>: plist dict<br><strong>Description</strong>: Sets device properties from a map (plist dict) of deivce paths to a map (plist dict) of variable names and their values in plist metadata format. Device paths must be provided in canonic string format (e.g. <code>PciRoot(0x0)/Pci(0x1,0x0)/Pci(0x0,0x0)</code>). Properties will only be set if not present and not blocked.<br><strong>Note</strong>: 目前，属性只能通过原始驱动程序添加。因此除非安装了单独的驱动程序，否则没有理由 Block 变量。</p>
 <h3 id="6-2-2-Block"><a href="#6-2-2-Block" class="headerlink" title="6.2.2 Block"></a>6.2.2 Block</h3><p><strong>Type</strong>: plist dict<br><strong>Description</strong>: Removes device properties from a map (plist dict) of deivce paths to an array (plist array) of variable names in plist string format.</p>
 <h2 id="6-3-常见属性"><a href="#6-3-常见属性" class="headerlink" title="6.3 常见属性"></a>6.3 常见属性</h2><p>一些常见的属性包括：</p>
 <ul>
-<li>device-id<br>User-specified device identifier used for I/O Kit matching. Has 4 byte data type.</li>
-<li>vendor-id<br>User-specified vendor identifier used for I/O Kit matching. Has 4 byte data type.</li>
-<li>AAPL,ig-platform-id<br>Intel GPU framebuffer identifier used for framebuffer selection on Ivy Bridge and newer. Has 4 byte data type.</li>
-<li>AAPL,snb-platform-id<br>Intel GPU framebuffer identifier used for framebuffer selection on Sandy Bridge. Has 4 byte data type.</li>
-<li>layout-id<br>Audio layout used for AppleHDA layout selection. Has 4 byte data type.</li>
+<li><code>device-id</code><br>用户指定的设备标识符，用于 I/O 套件匹配。数据类型为 4 byte data.</li>
+<li><code>vendor-id</code><br>用户指定的供应商标识符，用于 I/O 套件匹配。数据类型为 4 byte data.</li>
+<li><code>AAPL,ig-platform-id</code><br>Intel GPU 缓冲帧标识符，用于在 Ivy Bridge 上选择缓冲帧区域。数据类型为 4 byte data。</li>
+<li><code>AAPL,snb-platform-id</code><br>Intel GPU 缓冲帧标识符，用于在 Sandy Bridge 上选择缓冲帧区域。数据类型为 4 byte data。</li>
+<li><code>layout-id</code><br>AppleHDA 的音频布局，4 byte data。</li>
 </ul>
 
             </div>
