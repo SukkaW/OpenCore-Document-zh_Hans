@@ -192,21 +192,30 @@ author_info: 由 xMuu 整理
 
   *Note*: This option only applies to `System` renderer.
 
-### 5. `IgnoreTextInGraphics`
+### 5. `DirectGopRendering`
+  **Type**: `plist boolean`
+  **Failsafe**: `false`
+  **Description**: Use builtin graphics output protocol renderer for console.
+
+  On some firmwares this may provide better performance or even fix rendering issues,
+  but in general it is recommended not to use this option unless there is obvious
+  benefit.
+
+### 6. `IgnoreTextInGraphics`
   **Type**: `plist boolean`
   **Failsafe**: `false`
   **Description**: Select firmwares output text onscreen in both graphics and text mode. This is normally unexpected, because random text may appear over graphical images and cause UI corruption. Setting this option to `true` will discard all text output when console control is in mode different from `Text`.
 
   *Note*: This option only applies to `System` renderer.
 
-### 6. `ReplaceTabWithSpace`
+### 7. `ReplaceTabWithSpace`
   **Type**: `plist boolean`
   **Failsafe**: `false`
   **Description**: Some firmwares do not print tab characters or even everything that follows them, causing difficulties or inability to use the UEFI Shell builtin text editor to edit property lists and other documents. This option makes the console output spaces instead of tabs.
 
   *Note*: This option only applies to `System` renderer.
 
-### 7. `ProvideConsoleGop`
+### 8. `ProvideConsoleGop`
   **Type**: `plist boolean`
   **Failsafe**: `false`
   **Description**: Ensure GOP (Graphics Output Protocol) on console handle.
@@ -214,13 +223,6 @@ author_info: 由 xMuu 整理
   macOS bootloader requires GOP to be present on console handle, yet the exact location of GOP is not covered by the UEFI specification. This option will ensure GOP is installed on console handle if it is present.
 
   *Note*: This option will also replace broken GOP protocol on console handle, which may be the case on `MacPro5,1` with newer GPUs.
-
-### 8. `ProvideEarlyConsole`
-  **Type**: `plist boolean`
-  **Failsafe**: `false`
-  **Description**: Ensure switching to text mode early at startup.
-
-  Disabling this option may result in hiding all messages during startup. Since only error messages should normally be printed during startup, this option is recommended to be always enabled. The only exception for this option to be disabled is when firmware or third-party drivers, e.g. `ApfsJumpStart` on legacy Macs, unconditionally print to standard output and cannot be otherwise controlled by the bootloader.
 
 ### 9. `ReconnectOnResChange`
   **Type**: `plist boolean`
@@ -238,7 +240,7 @@ author_info: 由 xMuu 整理
 
   *Note*: This option only applies to `System` renderer. On all known affected systems `ConsoleMode` had to be set to empty string for this to work.
 
-### 11. `Scale`
+### 10. `Scale`
   **Type**: `plist integer`
   **Failsafe**: `100`
   **Description**: Sets text renderer HiDPI scaling in percents.
