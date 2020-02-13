@@ -75,61 +75,59 @@ defined whether this value is used.
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
-**Description**: Protect from boot.efi runtime memory defragmentation.
+**Description**: 防止 boot.efi 运行时执行内存碎片整理
 
-This option fixes UEFI runtime services (date, time, NVRAM, power control, etc.) support on many firmwares using SMM backing for select
-services like variable storage. SMM may try to access physical addresses, but they get moved by boot.efi.
+这个选项通过提供对可变存储的支持，修复了包括日期、时间、NVRAM、电源控制等 UEFI Runtime 服务。
 
-*Note*: Most but Apple and VMware firmwares need this quirk.
+*注*: 除 Apple 和 VMware 固件外，都需要启用此选项。
 
 ### 5.4.2 `DevirtualiseMmio`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
-**Description**: Remove runtime attribute from select MMIO regions.
+**Description**: 从选定的 MMIO 区域中删除 Runtime 属性。
 
-This option reduces stolen memory footprint from the memory map by removing runtime bit for known memory regions. This quirk may result in the increase of KASLR slides available, but is not necessarily compatible with the target board without additional measures. In general this frees from 64 to 256 megabytes of memory (present in the debug log), and on some platforms it is the only way to boot macOS, which otherwise fails with allocation error at bootloader stage.
+通过删除已知内存区域的 runtime bit，此选项可减少内存映射中 stolen memory footprint。 这个 Quirks 可能会导致可用的 KASLR slides 增加，但如果没有其他措施，不一定与目标主板兼容。 通常，这会释放 64 到 256 MB的内存（具体数值会显示在调试日志中）。在某些平台上这是引导 macOS 的唯一方法，否则在引导加载程序阶段会出现内存分配错误。
 
-This option is generally useful on all firmwares except some very old ones, like Sandy Bridge. On select firmwares it may require a list of exceptional addresses that still need to get their virtual addresses for proper NVRAM and hibernation functioning. Use `MmioWhitelist` section to
-do this.
+该选项通常对所有固件都有用，除了一些非常古老的固件（例如 Sandy Bridge）。 在某些固件上，它可能需要一个例外映射列表。为了使 NVRAM 和休眠功能正常工作，获取其虚拟地址仍然是必要的。 请参考 `MmioWhitelist` 章节来实现这个。
 
 ### 5.4.3 `DisableSingleUser`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
-**Description**: Disable single user mode.
+**Description**: 禁用 Apple 单用户模式
 
-This is a security option allowing one to restrict single user mode usage by ignoring `CMD+S` hotkey and `-s` boot argument. The behaviour with this quirk enabled is supposed to match T2-based model behaviour. Read [this article](https://support.apple.com/HT201573) to understand how to use single user mode with this quirk enabled.
+这个选项可以禁用 `CMD+S` 热键和 `-s` 启动参数来限制单用户模式。启用这一 Quirks 后预期行为应和 T2 的模型行为类似。请参考 Apple 的 [这篇文章](https://support.apple.com/HT201573) 以了解如何在启用这一 Quirks 后继续使用单用户模式。
 
 ### 5.4.4 `DisableVariableWrite`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
-**Description**: Protect from macOS NVRAM write access.
+**Description**: 防止 macOS 获取 NVRAM 的写入权限。
 
-This is a security option allowing one to restrict NVRAM access in macOS. This quirk requires `OC_FIRMWARE_RUNTIME` protocol implemented in `FwRuntimeServices.efi`.
+这个选项可以限制 macOS 对 NVRAM 的写入。这个 Quirk 需要 `FwRuntimeServices.efi` 提供了 `OC_FIRMWARE_RUNTIME` 协议的实现.
 
-*Note*: This quirk can also be used as an ugly workaround to buggy UEFI runtime services implementations that fail to write variables to NVRAM and break the rest of the operating system.
+*注*: 这个 Quirk 也可以避免由于无法将变量写入 NVRAM 而导致的对操作系统的破坏。
 
 ### 5.4.5 `DiscardHibernateMap`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
-**Description**: Reuse original hibernate memory map.
+**Description**: 复用原始的休眠内存映射。
 
-This option forces XNU kernel to ignore newly supplied memory map and assume that it did not change after waking from hibernation. This behaviour is required to work by Windows, which mandates to [preserve](https://docs.microsoft.com/en-us/windows-hardware/design/device-experiences/oem-uefi#hibernation-state-s4-transition-requirements) runtime memory size and location after S4 wake.
+这一选项强制 XNU 内核忽略新提供的内存映射、认定设备从休眠状态唤醒后无需对其更改。如果你在使用 Windows，则 [务必启用]((https://docs.microsoft.com/en-us/windows-hardware/design/device-experiences/oem-uefi#hibernation-state-s4-transition-requirements)) 这一选项，因为 Windows 要求 S4 花心后保留运行内存的大小和未知。
 
-*Note*: This may be used to workaround buggy memory maps on older hardware, and is now considered rare legacy. Examples of such hardware are Ivy Bridge laptops with Insyde firmware, like Acer V3-571G. Do not use this unless you fully understand the consequences.
+*注*: 这可能用于解决较旧硬件上的错误内存映射。如 Insyde 固件的 Ivy Bridge 笔记本电脑或者 Acer V3-571G。 除非您完全了解这一选项可能导致的后果，否则请勿使用此功能。
 
 ### 5.4.6 `EnableSafeModeSlide`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
-**Description**: Patch bootloader to have KASLR enabled in safe mode.
+**Description**: 修补引导加载程序以在安全模式下启用 KASLR。
 
-This option is relevant to the users that have issues booting to safe mode (e.g. by holding `shift` or using `-x` boot argument). By default safe mode forces `0` slide as if the system was launched with `slide=0` boot argument. This quirk tries to patch `boot.efi` to lift that limitation and let some other value (from `1` to `255`) be used. This quirk requires `ProvideCustomSlide` to be enabled.
+这个选与启动到安全模式（启动时按住 Shift 或受用了 `-x` 启动参数）有关。默认情况下，安全模式会使用 `slide=0`，这个 Quirks 试图通过修补 boot.efi 接触这一限制。只有当 `ProvideCustomSlide` 启用后才可以启用本 Quirks。
 
-*Note*: The necessity of this quirk is determined by safe mode availability. If booting to safe mode fails, this option can be tried to be enabled.
+*注*: 除非启动到安全模式失败，否则不需要启用此选项。
 
 ### 5.4.7 `EnableWriteUnprotector`
 
