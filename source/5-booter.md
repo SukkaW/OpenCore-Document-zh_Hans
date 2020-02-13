@@ -154,33 +154,32 @@ Try to ensure that `ExitBootServices` call succeeds even with outdated MemoryMap
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
-**Description**: Protect CSM region areas from relocation.
+**Description**: 保护 CSM 区域免于重新分配
 
-Ensure that CSM memory regions are marked as ACPI NVS to prevent boot.efi or XNU from relocating or using them.
+确保将 CSM 内存区域标记为 ACPI NVS，以防止 boot.efi 或 XNU 重新定位或使用这一区域。
 
-*Note*: The necessity of this quirk is determined by artifacts and sleep wake issues. As `AvoidRuntimeDefrag` resolves a similar problem, no known firmwares should need this quirk. Do not use this unless you fully
-understand the consequences.
+*Note*: 是否启用这一 Quirk 取决于你是否遇到了休眠或其他问题。`AvoidRuntimeDefrag` 理应能够解决所有类似的问题，所以已知的固件都不需要启用这一选项。除非你完全了解这一选项及其后果，否则请勿使用。
 
 
 ### 5.4.10 `ProtectSecureBoot`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
-**Description**: Protect UEFI Secure Boot variables from being written.
+**Description**: 保护 UEFI 安全启动变量不被写入。
 
-Reports security violation during attempts to write to `db`, `dbx`, `PK`, and `KEK` variables from the operating system.
+尝试从操作系统写入 `db`、`dbx`、`PK` 和 `KEK` 时生成报告。
 
-*Note*: This quirk mainly attempts to avoid issues with NVRAM implementations with problematic defragmentation, such as select Insyde or `MacPro5,1`.
+*Note*: 这个 Quirk 主要试图避免碎片整理导致的 NVRAM 相关问题，如 Insyde 或 `MacPro5,1`。
 
 ### 5.4.11 `ProvideCustomSlide`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
-**Description**: Provide custom KASLR slide on low memory.
+**Description**: 为低内存设备提供自定义 KASLR slide 值。
 
-This option performs memory map analysis of your firmware and checks whether all slides (from `1` to `255`) can be used. As `boot.efi` generates this value randomly with `rdrand` or pseudo randomly `rdtsc`, there is a chance of boot failure when it chooses a conflicting slide. In case potential conflicts exist, this option forces macOS to use a pseudo random value among the available ones. This also ensures that `slide=` argument is never passed to the operating system for security reasons.
+开启这个选项后，将会对固件进行内存映射分析，检查所有 slide（从 1 到 255）中是否有可用的。由于 boot.efi 私用 rdrand 或伪随机 rdtsc 随机生成此值，因此有可能出现冲突的 slide 值被使用并导致引导失败。如果出现潜在的冲突，这个选项将会强制为 macOS 选择一个伪随机值。这同时确保了 `slide=` 参数不会被传递给操作系统。
 
-*Note*: The necessity of this quirk is determined by `OCABC: Only N/256 slide values are usable!` message in the debug log. If the message is present, this option is to be enabled.
+*注*: OpenCore 会自动检查是否需要启用这一选项。如果 OpenCore 的调试日志中出现 `OCABC: Only N/256 slide values are usable!` 则请启用这一选项。
 
 ### 5.4.12 `SetupVirtualMap`
 
@@ -190,23 +189,22 @@ This option performs memory map analysis of your firmware and checks whether all
 
 Select firmwares access memory by virtual addresses after `SetVirtualAddresses` call, which results in early boot crashes. This quirk workarounds the problem by performing early boot identity mapping of assigned virtual addresses to physical memory.
 
-*Note*: The necessity of this quirk is determined by early boot failures.
-
+*Note*: 是否启用这个 Quirks 取决于你是否遇到了 Early Boot 故障。
 
 ### 5.4.13 `ShrinkMemoryMap`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
-**Description**: Attempt to join similar memory map entries.
+**Description**: 尝试合并相似的内存映射条目。
 
 Select firmwares have very large memory maps, which do not fit Apple kernel, permitting up to `64` slots for runtime memory. This quirk attempts to unify contiguous slots of similar types to prevent boot failures.
 
-*Note*: The necessity of this quirk is determined by early boot failures. It is rare to need this quirk on Haswell or newer. Do not use unless you fully understand the consequences.
+*注*: 是否启用这个 Quirks 取决于你是否遇到了 Early Boot 故障。Haswell 及更新版本一般都不需要启用。除非你完全了解这一选项及其后果，否则请勿使用。
 
 ### 5.4.14 `SignalAppleOS`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
-**Description**: Report macOS being loaded through OS Info for any OS.
+**Description**: 不论使用什么操作系统、总是向 OSInfo 报告启动的是 macOS。
 
-This quirk is useful on Mac firmwares, which behave differently in different OS. For example, it is supposed to enable Intel GPU in Windows and Linux in some dual-GPU MacBook models.
+Mac 设备在不同的操作系统中具有不同的行为，因此如果你在使用 Mac 设备，这一功能会非常有用。例如，你可以通过启用这一选项为某些双 GPU 的 MacBook 型号中在 Windows 和 Linux 中启用 Intel GPU。
