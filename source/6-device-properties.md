@@ -3,6 +3,7 @@ title: 6. DeviceProperties
 description: 关于设备注入属性（待翻译）
 type: docs
 author_info: 由 Sukka 整理、由 Sukka 翻译。
+last_updated: 2020-02-13
 ---
 
 ## 6.1 简介

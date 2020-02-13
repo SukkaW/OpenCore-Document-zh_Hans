@@ -3,6 +3,7 @@ title: 12. 排错
 description: Troubleshooting
 type: docs
 author_info: 由 xMuu 整理，由 Sukka 翻译
+last_updated: 2020-02-12
 ---
 
 ## 12.1 Windows 支持

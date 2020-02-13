@@ -3,6 +3,7 @@ title: 2. 配置
 description: Introduction（待翻译）
 type: docs
 author_info: 由 Sukka 整理，由 Sukka 翻译
+last_updated: 2020-02-13
 ---
 
 ## 2.1 配置术语
