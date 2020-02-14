@@ -184,7 +184,7 @@
         <div class="hero-body">
             <h1 class="title">5. Booter</h1>
             
-                <p class="subtitle">Booter（待翻译）</p>
+                <p class="subtitle">配置 FwRuntimeServices.efi（Slide 值计算、KASLR）</p>
             
             
                 
@@ -222,6 +222,9 @@
 
 <p><strong>Note</strong>: These settings may reset at hardware change and in certain other circumstances.<br>To view their current state use <code>pmset -g</code> command in Terminal.</p>
 <h2 id="5-2-属性列表"><a href="#5-2-属性列表" class="headerlink" title="5.2 属性列表"></a>5.2 属性列表</h2><h3 id="5-2-1-MmioWhitelist"><a href="#5-2-1-MmioWhitelist" class="headerlink" title="5.2.1 MmioWhitelist"></a>5.2.1 MmioWhitelist</h3><p><strong>Type</strong>: plist array<br><strong>Description</strong>: Designed to be filled with <code>plist dict</code> values, describing addresses critical for particular firmware functioning when <code>DevirtualiseMmio</code> quirk is in use. See MmioWhitelist Properties section below.</p>
+<blockquote>
+<p>译者注：如果开机卡在 <code>PCI...</code> 可以尝试开启 Item 1 下的 Patch</p>
+</blockquote>
 <h3 id="5-2-2-Quirks"><a href="#5-2-2-Quirks" class="headerlink" title="5.2.2 Quirks"></a>5.2.2 Quirks</h3><p><strong>Type</strong>: plist dict<br><strong>Description</strong>: Apply individual booter quirks described in Quirks Properties section below.</p>
 <h2 id="5-3-MmioWhitelist-属性"><a href="#5-3-MmioWhitelist-属性" class="headerlink" title="5.3 MmioWhitelist 属性"></a>5.3 MmioWhitelist 属性</h2><h3 id="5-3-1-Address"><a href="#5-3-1-Address" class="headerlink" title="5.3.1 Address"></a>5.3.1 Address</h3><p><strong>Type</strong>: plist integer<br><strong>Failsafe</strong>: 0<br><strong>Description</strong>: Exceptional MMIO address, which memory descriptor should be left virtualised (unchanged) by <code>DevirtualiseMmio</code>. This means that the firmware will be able to directly communicate with this memory region during operating system functioning, because the region this value is in will be assigned a virtual address.</p>
 <h3 id="5-3-2-Comment"><a href="#5-3-2-Comment" class="headerlink" title="5.3.2 Comment"></a>5.3.2 Comment</h3><p><strong>Type</strong>: plist string<br><strong>Failsafe</strong>: Empty string<br><strong>Description</strong>: Arbitrary ASCII string used to provide human readable reference for the entry. It is implementation<br>defined whether this value is used.</p>
