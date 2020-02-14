@@ -209,7 +209,7 @@
 <li><code>8BE4DF61-93CA-11D2-AA0D-00E098032B8C</code> (<code>EFI_GLOBAL_VARIABLE_GUID</code>)</li>
 <li><code>4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102</code> (<code>OC_VENDOR_VARIABLE_GUID</code>)</li>
 </ul>
-<p><em>Note</em>: Some of the variables may be added by <a href="">PlatformNVRAM</a> or <a href="">Generic</a> subsections of <a href="">PlatformInfo</a> section. Please ensure that variables of this section never collide with them, as behaviour is undefined otherwise.</p>
+<p><em>注</em>：Some of the variables may be added by <a href="">PlatformNVRAM</a> or <a href="">Generic</a> subsections of <a href="">PlatformInfo</a> section. Please ensure that variables of this section never collide with them, as behaviour is undefined otherwise.</p>
 <p>For proper macOS functioning it is often required to use <code>OC_FIRMWARE_RUNTIME</code> protocol implementation currently offered as a part of <code>FwRuntimeServices</code> driver. While it brings any benefits, there are certain limitations which arise depending on the use.</p>
 <ul>
 <li>Not all tools may be aware of protected namespaces. When <code>RequestBootVarRouting</code> is used <code>Boot</code>-prefixed variable access is restricted and protected in a separate namespace. To access the original variables tools have to be aware of <code>OC_FIRMWARE_RUNTIME</code> logic.</li>
@@ -217,7 +217,7 @@
 </ul>
 <h2 id="9-2-Properties"><a href="#9-2-Properties" class="headerlink" title="9.2 Properties"></a>9.2 Properties</h2><h3 id="1-Add"><a href="#1-Add" class="headerlink" title="1. Add"></a>1. <code>Add</code></h3><p> <strong>Type</strong>: <code>plist dict</code><br> <strong>Description</strong>: Sets NVRAM variables from a map (<code>plist dict</code>) of GUIDs to a map (<code>plist dict</code>) of variable names and their values in <code>plist metadata</code> format. GUIDs must be provided in canonic string format in upper or lower case (e.g. <code>8BE4DF61-93CA-11D2-AA0D-00E098032B8C</code>).</p>
 <p> Created variables get <code>EFI_VARIABLE_BOOTSERVICE_ACCESS</code> and <code>EFI_VARIABLE_RUNTIME_ACCESS</code> attributes set. Variables will only be set if not present and not blocked. To overwrite a variable add it to <code>Block</code> section. This approach enables to provide default values till the operating system takes the lead.</p>
-<p> <em>Note</em>: If <code>plist key</code> does not conform to GUID format, behaviour is undefined.</p>
+<p> <em>注</em>：If <code>plist key</code> does not conform to GUID format, behaviour is undefined.</p>
 <h3 id="2-Block"><a href="#2-Block" class="headerlink" title="2. Block"></a>2. <code>Block</code></h3><p> <strong>Type</strong>: <code>plist dict</code><br> <strong>Description</strong>: Removes NVRAM variables from a map (<code>plist dict</code>) of GUIDs to an array (<code>plist array</code>) of variable names in <code>plist string</code> format.</p>
 <h3 id="3-LegacyEnable"><a href="#3-LegacyEnable" class="headerlink" title="3. LegacyEnable"></a>3. <code>LegacyEnable</code></h3><p> <strong>Type</strong>: <code>plist boolean</code><br> <strong>Failsafe</strong>: <code>false</code><br> <strong>Description</strong>: Enables loading of NVRAM variable file named <code>nvram.plist</code> from EFI volume root.</p>
 <p> This file must have root <code>plist dictionary</code> type and contain two fields:</p>
@@ -230,12 +230,12 @@
 </li>
 </ul>
 <h3 id="4-LegacyOverwrite"><a href="#4-LegacyOverwrite" class="headerlink" title="4. LegacyOverwrite"></a>4. <code>LegacyOverwrite</code></h3><p> <strong>Type</strong>: <code>plist boolean</code><br> <strong>Failsafe</strong>: <code>false</code><br> <strong>Description</strong>: Permits overwriting firmware variables from <code>nvram.plist</code>.</p>
-<p> <em>Note</em>: Only variables accessible from the operating system will be overwritten.</p>
+<p> <em>注</em>：Only variables accessible from the operating system will be overwritten.</p>
 <h3 id="5-LegacySchema"><a href="#5-LegacySchema" class="headerlink" title="5. LegacySchema"></a>5. <code>LegacySchema</code></h3><p> <strong>Type</strong>: <code>plist dict</code><br> <strong>Description</strong>: Allows setting select NVRAM variables from a map (<code>plist dict</code>) of GUIDs to an array (<code>plist array</code>) of variable names in <code>plist string</code> format.</p>
 <p> You can use <code>*</code> value to accept all variables for select GUID.</p>
 <p> <strong>WARNING</strong>: Choose variables very carefully, as nvram.plist is not vaulted. For instance, do not put <code>boot-args</code> or <code>csr-active-config</code>, as this can bypass SIP.</p>
 <h3 id="6-WriteFlash"><a href="#6-WriteFlash" class="headerlink" title="6. WriteFlash"></a>6. <code>WriteFlash</code></h3><p> <strong>Type</strong>: <code>plist boolean</code><br> <strong>Failsafe</strong>: <code>false</code><br> <strong>Description</strong>: Enables writing to flash memory for all added variables.</p>
-<p> <em>Note</em>: This value is recommended to be enabled on most firmwares, but is left configurable for firmwares that may have issues with NVRAM variable storage garbage collection or alike.</p>
+<p> <em>注</em>：This value is recommended to be enabled on most firmwares, but is left configurable for firmwares that may have issues with NVRAM variable storage garbage collection or alike.</p>
 <p>To read NVRAM variable value from macOS one could use <code>nvram</code> by concatenating variable GUID and name separated by <code>:</code> symbol. For example, <code>nvram 7C436110-AB2A-4BBB-A880-FE41995C9F82:boot-args</code>.</p>
 <p>A continuously updated variable list can be found in a corresponding document: <a href="https://docs.google.com/spreadsheets/d/1HTCBwfOBkXsHiK7os3b2CUc6k68axdJYdGl-TyXqLu0" target="_blank" rel="noopener">NVRAM Variables</a>.</p>
 <h2 id="9-3-Mandatory-Variables"><a href="#9-3-Mandatory-Variables" class="headerlink" title="9.3 Mandatory Variables"></a>9.3 Mandatory Variables</h2><p><em>Warning</em>: These variables may be added by <a href="">PlatformNVRAM</a> or <a href="">Generic</a> subsections of <a href="">PlatformInfo</a> section. Using <code>PlatformInfo</code> is the recommend way of setting these variables.</p>
@@ -309,7 +309,7 @@
 <li><p><code>kc-read-size=VALUE</code> — Chunk size used for buffered I/O from network or disk for prelinkedkernel reading and related. Set to 1MB (0x100000) by default, can be tuned for faster booting.</p>
 </li>
 </ul>
-<p><em>Note</em>: To quickly see verbose output from <code>boot.efi</code> set this to <code>log=1</code> (currently this is broken in 10.15).</p>
+<p><em>注</em>：To quickly see verbose output from <code>boot.efi</code> set this to <code>log=1</code> (currently this is broken in 10.15).</p>
 </li>
 <li><p><code>7C436110-AB2A-4BBB-A880-FE41995C9F82:bootercfg-once</code><br>Booter arguments override removed after first launch. Otherwise equivalent to <code>bootercfg</code>.</p>
 <ul>

@@ -213,7 +213,7 @@
 <h3 id="5-Security"><a href="#5-Security" class="headerlink" title="5. Security"></a>5. <code>Security</code></h3><p><strong>Type</strong>: <code>plist dict</code><br><strong>Description</strong>: Apply security configuration described in <a href="">Security Properties</a> section below.</p>
 <h3 id="6-Tools"><a href="#6-Tools" class="headerlink" title="6. Tools"></a>6. <code>Tools</code></h3><p><strong>Type</strong>: <code>plist array</code><br><strong>Description</strong>: Add tool entries to boot picker.</p>
 <p>Designed to be filled with <code>plist dict</code> values, describing each load entry. See <a href="">Entry Properties</a> section below.</p>
-<p><em>Note</em>: Select tools, for example, <a href="https://github.com/acidanthera/OpenCoreShell" target="_blank" rel="noopener">UEFI Shell</a> are very dangerous and <strong>MUST NOT</strong> appear in production configurations, especially in vaulted ones and protected with secure boot, as they may be used to easily bypass secure boot chain.</p>
+<p><em>注</em>：Select tools, for example, <a href="https://github.com/acidanthera/OpenCoreShell" target="_blank" rel="noopener">UEFI Shell</a> are very dangerous and <strong>MUST NOT</strong> appear in production configurations, especially in vaulted ones and protected with secure boot, as they may be used to easily bypass secure boot chain.</p>
 <h2 id="8-3-Boot-Properties"><a href="#8-3-Boot-Properties" class="headerlink" title="8.3 Boot Properties"></a>8.3 Boot Properties</h2><h3 id="1-HibernateMode"><a href="#1-HibernateMode" class="headerlink" title="1. HibernateMode"></a>1. <code>HibernateMode</code></h3><p><strong>Type</strong>: <code>plist string</code><br><strong>Failsafe</strong>: <code>None</code><br><strong>Description</strong>: 休眠检测模式。 支持以下模式：</p>
 <ul>
 <li><code>None</code> — 禁用休眠</li>
@@ -250,7 +250,7 @@
 <li><code>0x60</code> — <code>EFI_BACKGROUND_BROWN</code></li>
 <li><code>0x70</code> — <code>EFI_BACKGROUND_LIGHTGRAY</code></li>
 </ul>
-<p><em>Note</em>: This option may not work well with <code>System</code> text renderer.<br>Setting a background different from black could help testing proper GOP functioning.</p>
+<p><em>注</em>：This option may not work well with <code>System</code> text renderer.<br>Setting a background different from black could help testing proper GOP functioning.</p>
 <h3 id="4-PollAppleHotKeys"><a href="#4-PollAppleHotKeys" class="headerlink" title="4. PollAppleHotKeys"></a>4. <code>PollAppleHotKeys</code></h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: <code>false</code><br><strong>Description</strong>: 在开机引导菜单中启用 <code>modifier hotkey</code>。</p>
 <p>In addition to <code>action hotkeys</code>, which are partially described in <code>PickerMode</code> section and are normally handled by Apple BDS, there exist modifier keys, which are handled by operating system bootloader, namely <code>boot.efi</code>. These keys allow to change operating system behaviour by providing different boot modes.</p>
 <p>On some firmwares it may be problematic to use modifier keys due to driver incompatibilities. To workaround this problem this option allows registering select hotkeys in a more permissive manner from within boot picker. Such extensions include the support of tapping on keys in addition to holding and pressing <code>Shift</code> along with other keys instead of just <code>Shift</code> alone, which is not detectible on many PS/2 keyboards. This list of known <code>modifier hotkeys</code> includes:</p>
@@ -390,7 +390,7 @@
 <li><code>0x00400000</code> (bit <code>22</code>) — <code>OC_SCAN_ALLOW_DEVICE_FIREWIRE</code>, allow scanning FireWire devices.</li>
 <li><code>0x00800000</code> (bit <code>23</code>) — <code>OC_SCAN_ALLOW_DEVICE_SDCARD</code>, allow scanning card reader devices.</li>
 </ul>
-<p><em>Note</em>: Given the above description, <code>0xF0103</code> value is expected to allow scanning of SATA, SAS, SCSI, and NVMe devices with APFS file system, and prevent scanning of any devices with HFS or FAT32 file systems in addition to not scanning APFS file systems on USB, CD, and FireWire drives. The combination reads as:</p>
+<p><em>注</em>：Given the above description, <code>0xF0103</code> value is expected to allow scanning of SATA, SAS, SCSI, and NVMe devices with APFS file system, and prevent scanning of any devices with HFS or FAT32 file systems in addition to not scanning APFS file systems on USB, CD, and FireWire drives. The combination reads as:</p>
 <ul>
 <li><code>OC_SCAN_FILE_SYSTEM_LOCK</code></li>
 <li><code>OC_SCAN_DEVICE_LOCK</code></li>
