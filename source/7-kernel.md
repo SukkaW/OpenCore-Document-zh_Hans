@@ -2,7 +2,8 @@
 title: 7. Kernel
 description: OpenCore 安全配置，Kext 加载顺序以及屏蔽（待翻译）
 type: docs
-author_info: 由 Sukka 整理
+author_info: 由 Sukka 整理，由 Sukka 翻译。
+last_updated: 2020-02-14
 ---
 
 ## 7.1 简介
@@ -52,25 +53,29 @@ Designed to be filled with plist dictionary values, describing each patch. See P
 
 **Type**: `plist string`
 **Failsafe**: Empty string
-**Description**: Kext bundle path (e.g. `Lilu.kext` or `MyKext.kext/Contents/PlugIns/MySubKext.kext`).
+**Description**: Kext 相对于 `EFI/OC/kexts/Other/` 的路径 (e.g. `Lilu.kext` or `MyKext.kext/Contents/PlugIns/MySubKext.kext`).
+
+> 注，如 `VoodooPS2Controller.kext` 这种包括其他 kext 驱动的，需要分别单独添加，如 `VoodooPS2Controller.kext/Contents/PlugIns/VoodooPS2Keyboard.kext`。
 
 ### 7.3.2 `Comment`
 
 **Type**: `plist string`
 **Failsafe**: Empty string
-**Description**: Arbitrary ASCII string used to provide human readable reference for the entry. It is implementation defined whether this value is used.
+**Description**: 用于为条目提供人类可读参考的任意 ASCII 字符串（译者注：即注释）。
 
 ### 7.3.3 `Enabled`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
-**Description**: This kernel driver will not be added unless set to `true`.
+**Description**: 是否加载该驱动.
 
 ### 7.3.4 `ExecutablePath`
 
 **Type**: `plist string`
 **Failsafe**: Empty string
-**Description**: Kext executable path relative to bundle (e.g. `Contents/MacOS/Lilu`).
+**Description**: Kext 中实际可执行文件的路径（如 `Lilu.kext` 中的可执行文件路径是 `Contents/MacOS/Lilu`）。
+
+> 译者注：空壳 Kext 没有可执行文件（如 `USBPorts.kext`），此项留空即可
 
 ### 7.3.5 `MaxKernel`
 **Type**: `plist string`
@@ -100,7 +105,7 @@ matching logic.
 
 **Type**: `plist string`
 **Failsafe**: Empty string
-**Description**: Kext `Info.plist` path relative to bundle (e.g. `Contents/Info.plist`).
+**Description**: Kext 中 `Info.plist` 文件的路径。一般为 `Contents/Info.plist`。
 
 ## 7.4 Block 属性
 
@@ -108,7 +113,7 @@ matching logic.
 
 **Type**: `plist string`
 **Failsafe**: Empty string
-**Description**: Arbitrary ASCII string used to provide human readable reference for the entry. It is implementation defined whether this value is used.
+**Description**: 用于为条目提供人类可读参考的任意 ASCII 字符串（译者注：即注释）。
 
 ### 7.4.2 `Enabled`
 
@@ -263,7 +268,7 @@ otherwise set bits take the value of `Cpuid1Data`.
 
 ## 7.7 Quirks 属性
 
-### 7.7.1 `AppleCpuPmCfgLock`
+### `AppleCpuPmCfgLock`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
@@ -291,9 +296,10 @@ directly:
 but even to its firmware version. Never ever try to use an offset
 without checking.
 
-\- `AppleXcpmCfgLock`  
-**Type**: `plist boolean`  
-**Failsafe**: `false`  
+### `AppleXcpmCfgLock`
+
+**Type**: `plist boolean`
+**Failsafe**: `false`
 **Description**: Disables `PKG_CST_CONFIG_CONTROL` (`0xE2`) MSR
 modification in XNU kernel, commonly causing early kernel panic, when it
 is locked from writing (XCPM power management).
@@ -301,7 +307,7 @@ is locked from writing (XCPM power management).
 *Note*: This option should be avoided whenever possible. See
 `AppleCpuPmCfgLock` description for more details.
 
-### 7.7.2 `AppleXcpmExtraMsrs`
+### `AppleXcpmExtraMsrs`
 **Type**: `plist boolean`
 **Failsafe**: `false`
 **Description**: Disables multiple MSR access critical for select CPUs, which have no native XCPM support.
@@ -310,23 +316,23 @@ This is normally used in conjunction with `Emulate` section on Haswell-E, Broadw
 
 *Note*: Additional not provided patches will be required for Ivy Bridge or Pentium CPUs. It is recommended to use `AppleIntelCpuPowerManagement.kext` for the former.
 
-### 7.7.3 `AppleXcpmForceBoost`
+### `AppleXcpmForceBoost`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
-**Description**: Forces maximum performance in XCPM mode.
+**Description**: 在 XCPM 模式下强制使用最大性能。
 
 This patch writes `0xFF00` to `MSR_IA32_PERF_CONTROL` (`0x199`), effectively setting maximum multiplier for all the time.
 
 *Note*: While this may increase the performance, this patch is strongly discouraged on all systems but those explicitly dedicated to scientific or media calculations. In general only certain Xeon models benefit from the patch.
 
-### 7.7.3 `CustomSMBIOSGuid`
+### `CustomSMBIOSGuid`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
-**Description**: Performs GUID patching for `UpdateSMBIOSMode` `Custom` mode. Usually relevant for Dell laptops.
+**Description**: 对 UpdateSMBIOSMode 自定义模式执行 GUID 修补，通常用于戴尔笔记本电脑。
 
-### 7.7.4 `DisableIoMapper`
+### `DisableIoMapper`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
@@ -334,7 +340,7 @@ This patch writes `0xFF00` to `MSR_IA32_PERF_CONTROL` (`0x199`), effectively set
 
 *Note*: This option is a preferred alternative to dropping `DMAR` ACPI table and disabling VT-d in firmware preferences, which does not break VT-d support in other systems in case they need it.
 
-### 7.7.5 `DummyPowerManagement`
+### `DummyPowerManagement`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
@@ -342,55 +348,56 @@ This patch writes `0xFF00` to `MSR_IA32_PERF_CONTROL` (`0x199`), effectively set
 
 *Note*: This option is a preferred alternative to `NullCpuPowerManagement.kext` for CPUs without native power management driver in macOS.
 
-### 7.7.6 `ExternalDiskIcons`
+### `ExternalDiskIcons`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
-**Description**: Apply icon type patches to `AppleAHCIPort.kext` to force internal disk icons for all AHCI disks.
+**Description**: 修补 `AppleAHCIPort.kext` 图标，使 macOS 将所有 AHCI 存储设备显示为内部硬盘。
 
-*Note*: This option should be avoided whenever possible. Modern firmwares usually have compatible AHCI controllers.
+*Note*: 这一选项应尽量避免使用。现代固件通常情况下都是兼容的。
 
-### 7.7.7 `IncreasePciBarSize`
+### `IncreasePciBarSize`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
-**Description**: Increases 32-bit PCI bar size in IOPCIFamily from 1 to 4 GBs.
+**Description**: 将 IOPCIFamily 中 32 位 PCI Bar 的大小从 1 GB 增加到 4 GB。
 
-*Note*: This option should be avoided whenever possible. In general the necessity of this option means misconfigured or broken firmware.
+*Note*: 你应该尽可能避免使用这一选项。通常这一选项只需要在配置错误或损坏的固件上开启。
 
-### 7.7.8 `LapicKernelPanic`
+> 译者注：如果你的 BIOS 中存在 Above4GDecoding 选项，请直接在 BIOS 中启用。
+
+### `LapicKernelPanic`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
 **Description**: Disables kernel panic on LAPIC interrupts.
 
-### 7.7.9 `PanicNoKextDump`
+### `PanicNoKextDump`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
-**Description**: Prevent kernel from printing kext dump in the panic log preventing from observing panic details. Affects 10.13 and above.
+**Description**: 在发生内核崩溃时阻止输出 Kext 列表，提供可供排错参考的崩溃日志。
 
-### 7.7.10 `PowerTimeoutKernelPanic`
+### `PowerTimeoutKernelPanic`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
-**Description**: Disables kernel panic on setPowerState timeout.
+**Description**: 修复 macOS Catalina 中由于设备电源状态变化超时而导致的内核崩溃。
 
 An additional security measure was added to macOS Catalina (10.15) causing kernel panic on power change timeout for Apple drivers. Sometimes it may cause issues on misconfigured hardware, notably digital audio, which sometimes fails to wake up. For debug kernels `setpowerstate_panic=0` boot argument should be used, which is otherwise equivalent to this quirk.
 
-### 7.7.11 `ThirdPartyDrives`
+### `ThirdPartyDrives`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
-**Description**: Apply vendor patches to IOAHCIBlockStorage.kext to enable native features for third-party drives, such as TRIM on SSDs or hibernation support on 10.15 and newer.
+**Description**: 修补 `IOAHCIBlockStorage.kext`，以在第三方驱动器启用 TRIM、硬盘休眠等功能。
 
-*Note*: This option may be avoided on user preference. NVMe SSDs are compatible without the change. For AHCI SSDs on modern macOS version there is a dedicated built-in utility called `trimforce`. Starting from 10.15 this utility creates `EnableTRIM` variable in `APPLE_BOOT_VARIABLE_GUID` namespace with `01 00 00 00` value.
+*Note*: NVMe SSD 通常无需这一修改。对于 AHCI SSD（如 SATA SSD），macOS 从 10.15 开始提供 `trimforce`，可以将 `01 00 00 00` 值写入 `APPLE_BOOT_VARIABLE_GUID` 命名空间中的 `EnableTRIM` 变量。
 
-### 7.7.12 `XhciPortLimit`
+### `XhciPortLimit`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
-**Description**: Patch various kexts (AppleUSBXHCI.kext, AppleUSBXHCIPCI.kext, IOUSBHostFamily.kext) to remove USB port count
-limit of 15 ports.
+**Description**: 修补 `AppleUSBXHCI.kext`、`AppleUSBXHCIPCI.kext`、`IOUSBHostFamily.kext` 以移除 15 端口限制。
 
-*Note*: This option should be avoided whenever possible. USB port limit is imposed by the amount of used bits in locationID format and there is no possible way to workaround this without heavy OS modification. The only valid solution is to limit the amount of used ports to 15 (discarding some). More details can be found on [AppleLife.ru](https://applelife.ru/posts/550233).
+*Note*: 请尽可能避免使用这一选项。USB port limit is imposed by the amount of used bits in locationID format and there is no possible way to workaround this without heavy OS modification. The only valid solution is to limit the amount of used ports to 15 (discarding some). More details can be found on [AppleLife.ru](https://applelife.ru/posts/550233).
