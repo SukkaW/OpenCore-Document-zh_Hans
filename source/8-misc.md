@@ -2,7 +2,7 @@
 title: 8. Misc
 description: 杂项（待翻译）
 type: docs
-author_info: 由 xMuu、Sukka 整理
+author_info: 由 xMuu、Sukka 整理、由 Sukka 翻译。
 last_updated: 2020-02-14
 ---
 
@@ -20,7 +20,7 @@ This section contains miscellaneous configuration entries for OpenCore behaviour
 ### 2. `BlessOverride`
 
 **Type**: `plist array`
-**Description**: Add custom scanning paths through bless model.
+**Description**: 通过 Bless Model 添加自定义扫描路径。
 
 Designed to be filled with `plist string` entries containing absolute UEFI paths to customised bootloaders, for example, `\EFI\Microsoft\Boot\bootmgfw.efi` for Microsoft bootloader. This allows unusual boot paths to be automaticlly discovered by the boot picker. Designwise they are equivalent to predefined blessed path, such as `\System\Library\CoreServices\boot.efi`, but unlike predefined bless paths they have highest priority.
 
@@ -52,21 +52,24 @@ Designed to be filled with `plist dict` values, describing each load entry. See 
 ## 8.3 Boot Properties
 
 ### 1. `HibernateMode`
+
 **Type**: `plist string`
 **Failsafe**: `None`
-**Description**: Hibernation detection mode. The following modes are supported:
+**Description**: 休眠检测模式。 支持以下模式：
 
-- `None` --- Avoid hibernation for your own good.
-- `Auto` --- Use RTC and NVRAM detection.
-- `RTC` --- Use RTC detection.
-- `NVRAM` --- Use NVRAM detection.
+- `None` --- 禁用休眠
+- `Auto` --- 从 RTC 或 NVRAM 中检测
+- `RTC` --- 从 RTC 检测
+- `NVRAM` --- 从 NVRAM 检测
 
 ### 2. `HideSelf`
+
 **Type**: `plist boolean`
 **Failsafe**: `false`
-**Description**: Hides own boot entry from boot picker. This may potentially hide other entries, for instance, when another UEFI OS is installed on the same volume and driver boot is used.
+**Description**: 在 OpenCore 的启动选择中隐藏自身 EFI 分区内的其它启动项，如 UEFI OS 等。
 
 ### 3. `PickerAttributes`
+
 **Type**: `plist integer`
 **Failsafe**: `0`
 **Description**: Sets specific attributes for picker.
@@ -102,9 +105,10 @@ Builtin picker supports colour arguments as a sum of foreground and background c
 Setting a background different from black could help testing proper GOP functioning.
 
 ### 4. `PollAppleHotKeys`
+
 **Type**: `plist boolean`
 **Failsafe**: `false`
-**Description**: Enable `modifier hotkey` handling in boot picker.
+**Description**: 在开机引导菜单中启用 `modifier hotkey`。
 
 In addition to `action hotkeys`, which are partially described in `PickerMode` section and are normally handled by Apple BDS, there exist modifier keys, which are handled by operating system bootloader, namely `boot.efi`. These keys allow to change operating system behaviour by providing different boot modes.
 
@@ -112,23 +116,28 @@ On some firmwares it may be problematic to use modifier keys due to driver incom
 
 - `CMD+C+MINUS` --- disable board compatibility checking.
 - `CMD+K` --- boot release kernel, similar to `kcsuffix=release`.
-- `CMD+S` --- single user mode.
+- `CMD+R` --- 从恢复分区启动。
+- `CMD+S` --- 启动至单用户模式。
 - `CMD+S+MINUS` --- disable KASLR slide, requires disabled SIP.
-- `CMD+V` --- verbose mode.
-- `Shift` --- safe mode.
+- `CMD+V` --- 启用 `-v`。
+- `Shift` --- 启用安全模式。
 
 ### 5. `ShowPicker`
+
 **Type**: `plist boolean`
 **Failsafe**: `false`
-**Description**: Show simple boot picker to allow boot entry selection.
+**Description**: 是否显示开机引导项。
 
 ### 6. `TakeoffDelay`
+
 **Type**: `plist integer`, 32 bit
 **Failsafe**: `0`
 **Description**: Delay in microseconds performed before handling
 picker startup and `action hotkeys`.
 
 Introducing a delay may give extra time to hold the right `action hotkey` sequence to e.g. boot to recovery mode. On some platforms setting this option to at least `5000-10000` microseconds may be necessary to access `action hotkeys` at all due to the nature of the keyboard driver.
+
+> 译者注：`0` 为关闭倒计时而非跳过倒计时，相当于 Clover 的 `-1`。
 
 ### 7. `Timeout`
 **Type**: `plist integer`, 32 bit
@@ -165,20 +174,23 @@ OpenCore built-in boot picker contains a set of actions chosen during the boot p
 
 *Note 3*: On Macs with problematic GOP it may be difficult to access Apple BootPicker. To workaround this problem even without loading OpenCore `BootKicker` utility can be blessed.
 
- 
+
 ## 8.4 Debug Properties
 
 ### 1. `DisableWatchDog`
+
 **Type**: `plist boolean`
 **Failsafe**: `false`
 **Description**: Select firmwares may not succeed in quickly booting the operating system, especially in debug mode, which results in watch dog timer aborting the process. This option turns off watch dog timer.
 
 ### 2. `DisplayDelay`
+
 **Type**: `plist integer`
 **Failsafe**: `0`
 **Description**: Delay in microseconds performed after every printed line visible onscreen (i.e. console).
 
 ### 3.`DisplayLevel`
+
 **Type**: `plist integer`, 64 bit
 **Failsafe**: `0`
 **Description**: EDK II debug level bitmask (sum) showed onscreen. Unless `Target` enables console (onscreen) printing, onscreen debug output will not be visible. The following levels are supported (discover more in [DebugLib.h](https://github.com/tianocore/edk2/blob/UDK2018/MdePkg/Include/Library/DebugLib.h)):
@@ -228,16 +240,19 @@ File logging will create a file named `opencore-YYYY-MM-DD-HHMMSS.txt` at EFI vo
 ## 8.5 Security Properties
 
 ### 1. `AllowNvramReset`
+
 **Type**: `plist boolean`
 **Failsafe**: `false`
-**Description**: Allow `CMD+OPT+P+R` handling and enable showing `NVRAM Reset` entry in boot picker.
+**Description**: 启用这一选项后将允许使用 `CMD+OPT+P+R` 快捷键重置 NVRAM，同时 `NVRAM Reset` 条目也会出现在开机引导菜单中。
 
 ### 2. `AllowSetDefault`
+
 **Type**: `plist boolean`
 **Failsafe**: `false`
-**Description**: Allow `CTRL+Enter` and `CTRL+Index` handling to set the default boot option in boot picker.
+**Description**: 允许使用 `CTRL+Enter` 和 `CTRL+[数字]` 设置默认启动项。
 
 ### 3. `AuthRestart`
+
 **Type**: `plist boolean`
 **Failsafe**: `false`
 **Description**: Enable `VirtualSMC`-compatible authenticated restart.
@@ -247,6 +262,7 @@ Authenticated restart is a way to reboot FileVault 2 enabled macOS without enter
 VirtualSMC performs authenticated restart by saving disk encryption key split in NVRAM and RTC, which despite being removed as soon as OpenCore starts, may be considered a security risk and thus is optional.
 
 ### 4. `ExposeSensitiveData`
+
 **Type**: `plist integer`
 **Failsafe**: `0x6`
 **Description**: Sensitive data exposure bitmask (sum) to operating system.
