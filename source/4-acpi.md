@@ -66,7 +66,7 @@ ACPI（Advanced Configuration and Power Interface，高级配置和电源接口�
 
 所有 ACPI 表都从 `OC/ACPI` 目录加载，加载顺序遵循数组中的项目顺序。
 
-**Note**: 除具有 DSDT 表标识符（由解析得到的数据、而非由其文件名决定）的表外，所有表都将作为新表插入 ACPI 栈。而 DSDT 表与其余的表不同，将会执行 DSDT 表的替换。
+**注**： 除具有 DSDT 表标识符（由解析得到的数据、而非由其文件名决定）的表外，所有表都将作为新表插入 ACPI 栈。而 DSDT 表与其余的表不同，将会执行 DSDT 表的替换。
 
 ## 4.4 Block 属性
 
@@ -106,7 +106,7 @@ ACPI（Advanced Configuration and Power Interface，高级配置和电源接口�
 **Failsafe**: All zero
 **Description**:  Match table signature to be equal to this value unless all zero.
 
-**Note**: Make sure not to specify table signature when the sequence needs to be replaced in multiple places. Especially when performing different kinds of renames.
+**注**： Make sure not to specify table signature when the sequence needs to be replaced in multiple places. Especially when performing different kinds of renames.
 
 ## 4.5 Patch 属性
 

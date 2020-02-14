@@ -17,7 +17,7 @@ Each NVRAM variable consists of its name, value, attributes (refer to UEFI speci
 - `4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102` (`OC_VENDOR_VARIABLE_GUID`)
 
 
-*Note*: Some of the variables may be added by [PlatformNVRAM]() or [Generic]() subsections of [PlatformInfo]() section. Please ensure that variables of this section never collide with them, as behaviour is undefined otherwise.
+*注*：Some of the variables may be added by [PlatformNVRAM]() or [Generic]() subsections of [PlatformInfo]() section. Please ensure that variables of this section never collide with them, as behaviour is undefined otherwise.
 
 For proper macOS functioning it is often required to use `OC_FIRMWARE_RUNTIME` protocol implementation currently offered as a part of `FwRuntimeServices` driver. While it brings any benefits, there are certain limitations which arise depending on the use.
 
@@ -34,7 +34,7 @@ For proper macOS functioning it is often required to use `OC_FIRMWARE_RUNTIME` p
 
  Created variables get `EFI_VARIABLE_BOOTSERVICE_ACCESS` and `EFI_VARIABLE_RUNTIME_ACCESS` attributes set. Variables will only be set if not present and not blocked. To overwrite a variable add it to `Block` section. This approach enables to provide default values till the operating system takes the lead.
 
- *Note*: If `plist key` does not conform to GUID format, behaviour is undefined.
+ *注*：If `plist key` does not conform to GUID format, behaviour is undefined.
 
 ### 2. `Block`
  **Type**: `plist dict`
@@ -59,7 +59,7 @@ For proper macOS functioning it is often required to use `OC_FIRMWARE_RUNTIME` p
  **Failsafe**: `false`
  **Description**: Permits overwriting firmware variables from `nvram.plist`.
 
- *Note*: Only variables accessible from the operating system will be overwritten.
+ *注*：Only variables accessible from the operating system will be overwritten.
 
 ### 5. `LegacySchema`
  **Type**: `plist dict`
@@ -74,7 +74,7 @@ For proper macOS functioning it is often required to use `OC_FIRMWARE_RUNTIME` p
  **Failsafe**: `false`
  **Description**: Enables writing to flash memory for all added variables.
 
- *Note*: This value is recommended to be enabled on most firmwares, but is left configurable for firmwares that may have issues with NVRAM variable storage garbage collection or alike.
+ *注*：This value is recommended to be enabled on most firmwares, but is left configurable for firmwares that may have issues with NVRAM variable storage garbage collection or alike.
 
 
 
@@ -171,7 +171,7 @@ The following variables may be useful for certain configurations or troubleshoot
   - `level=VALUE` --- Verbosity level of DEBUG output. Everything but `0x80000000` is stripped from the binary, and this is the default value.
   - `kc-read-size=VALUE` --- Chunk size used for buffered I/O from network or disk for prelinkedkernel reading and related. Set to 1MB (0x100000) by default, can be tuned for faster booting.
  
- *Note*: To quickly see verbose output from `boot.efi` set this to `log=1` (currently this is broken in 10.15).
+ *注*：To quickly see verbose output from `boot.efi` set this to `log=1` (currently this is broken in 10.15).
 - `7C436110-AB2A-4BBB-A880-FE41995C9F82:bootercfg-once`
  Booter arguments override removed after first launch. Otherwise equivalent to `bootercfg`.
  -  `7C436110-AB2A-4BBB-A880-FE41995C9F82:fmm-computer-name`

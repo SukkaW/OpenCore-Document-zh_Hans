@@ -46,7 +46,7 @@ Designed to be filled with `plist dict` values, describing each load entry. See 
 
 Designed to be filled with `plist dict` values, describing each load entry. See [Entry Properties]() section below.
 
-*Note*: Select tools, for example, [UEFI Shell](https://github.com/acidanthera/OpenCoreShell) are very dangerous and **MUST NOT** appear in production configurations, especially in vaulted ones and protected with secure boot, as they may be used to easily bypass secure boot chain.
+*注*：Select tools, for example, [UEFI Shell](https://github.com/acidanthera/OpenCoreShell) are very dangerous and **MUST NOT** appear in production configurations, especially in vaulted ones and protected with secure boot, as they may be used to easily bypass secure boot chain.
 
 
 ## 8.3 Boot Properties
@@ -101,7 +101,7 @@ Builtin picker supports colour arguments as a sum of foreground and background c
 - `0x60` --- `EFI_BACKGROUND_BROWN`
 - `0x70` --- `EFI_BACKGROUND_LIGHTGRAY`
 
-*Note*: This option may not work well with `System` text renderer.
+*注*：This option may not work well with `System` text renderer.
 Setting a background different from black could help testing proper GOP functioning.
 
 ### 4. `PollAppleHotKeys`
@@ -369,7 +369,7 @@ Third party drivers may introduce additional security (and performance) measures
 - `0x00400000` (bit `22`) --- `OC_SCAN_ALLOW_DEVICE_FIREWIRE`, allow scanning FireWire devices.
 - `0x00800000` (bit `23`) --- `OC_SCAN_ALLOW_DEVICE_SDCARD`, allow scanning card reader devices.
 
-*Note*: Given the above description, `0xF0103` value is expected to allow scanning of SATA, SAS, SCSI, and NVMe devices with APFS file system, and prevent scanning of any devices with HFS or FAT32 file systems in addition to not scanning APFS file systems on USB, CD, and FireWire drives. The combination reads as:
+*注*：Given the above description, `0xF0103` value is expected to allow scanning of SATA, SAS, SCSI, and NVMe devices with APFS file system, and prevent scanning of any devices with HFS or FAT32 file systems in addition to not scanning APFS file systems on USB, CD, and FireWire drives. The combination reads as:
 
 - `OC_SCAN_FILE_SYSTEM_LOCK`
 - `OC_SCAN_DEVICE_LOCK`

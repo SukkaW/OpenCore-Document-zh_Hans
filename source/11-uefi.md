@@ -2,7 +2,8 @@
 title: 11. UEFI
 description: UEFI 驱动以及加载顺序（待翻译）
 type: docs
-author_info: 由 xMuu 整理
+author_info: 由 xMuu 整理，由 Sukka 翻译
+last_updated: 2020-02-14
 ---
 
   ## 11.1 Introduction
@@ -11,138 +12,146 @@ author_info: 由 xMuu 整理
 
 ## 11.2 Properties
 
-### 1.  `ConnectDrivers`
-  **Type**: `plist boolean`
-  **Failsafe**: `false`
-  **Description**: Perform UEFI controller connection after driver loading.
+### `ConnectDrivers`
 
-  This option is useful for loading filesystem drivers, which  usually follow UEFI driver model, and may not start by themselves. While effective, this option may not be necessary for drivers performing automatic connection, and may slightly slowdown the boot.
+**Type**: `plist boolean`
+**Failsafe**: `false`
+**Description**: 驱动程序加载后执行 UEFI 控制器连接操作。
 
-  *Note*: Some firmwares, made by Apple in particular, only connect the boot drive to speedup the boot process. Enable this option to be able to see all the boot options when having multiple drives.
+此选项对于加载文件系统驱动很有用，因为文件系统驱动通常遵循 UEFI 驱动模型（并且可能无法自行启动）。此选项对会自动连接的驱动程序来说是不必要的，并且可能会稍微减慢启动速度。
 
-### 2.  `Drivers`
-  **Type**: `plist array`
-  **Failsafe**: None
-  **Description**: Load selected drivers from `OC/Drivers` directory.
+*注*：某些固件（特别是 Apple 的）仅连接包含操作系统的驱动器以加快启动过程。启用此选项可以在拥有多个驱动器时查看所有引导选项。
 
-  Designed to be filled with string filenames meant to be loaded as UEFI drivers. Depending on the firmware a different set of drivers may be required. Loading an incompatible driver may lead your system to unbootable state or even cause permanent firmware damage. Some of the known drivers include:
+### `Drivers`
 
-  - [`ApfsDriverLoader`](https://github.com/acidanthera/AppleSupportPkg) --- APFS file system bootstrap driver adding the support of embedded APFS drivers in bootable APFS containers in UEFI firmwares.
-  - [`FwRuntimeServices`](https://github.com/acidanthera/OcSupportPkg) --- `OC_FIRMWARE_RUNTIME` protocol implementation that increases the security  of OpenCore and Lilu by supporting read-only and write-only NVRAM variables. Some  quirks, like `RequestBootVarRouting`, require this driver for proper function.
-  Due to the nature of being a runtime driver, i.e. functioning in parallel with the target operating system, it cannot be mplemented within OpenCore itself, but is bundled with OpenCore releases.
-  - [`EnhancedFatDxe`](https://github.com/acidanthera/audk) --- FAT filesystem driver from `FatPkg`. This driver is embedded in all  UEFI firmwares, and cannot be used from OpenCore. It is known that multiple firmwares have a bug in their FAT support mplementation, which leads to corrupted filesystems on write attempt. Embedding this driver within the firmware may be required in case writing to EFI partition is needed during the boot process.
-  - [`NvmExpressDxe`](https://github.com/acidanthera/audk) --- NVMe support driver from `MdeModulePkg`. This driver is included in most firmwares starting with Broadwell generation. For Haswell and earlier embedding it within the firmware may be more favourable in case a NVMe SSD drive is installed.
-  - [`AppleUsbKbDxe`](https://github.com/acidanthera/OcSupportPkg) --- USB keyboard driver adding the support of `AppleKeyMapAggregator` protocols on top of a custom USB keyboard driver implementation. This is an alternative to builtin `KeySupport`, which may work better or worse depending on the firmware.
-  -  [`VBoxHfs`](https://github.com/acidanthera/AppleSupportPkg) --- HFS file system driver with bless support. This driver is an alternative to a closed source `HFSPlus` driver commonly found in Apple firmwares. While it is feature complete, it is approximately 3~times slower and is yet to undergo a security audit.
-  -  [`XhciDxe`](https://github.com/acidanthera/audk) --- XHCI USB controller support driver from `MdeModulePkg`. This driver is included in most firmwares starting with Sandy Bridge generation. For earlier firmwares or legacy systems it may be used to support external USB 3.0 PCI cards.
+**Type**: `plist array`
+**Failsafe**: None
+**Description**: 从 `OC/Drivers` 目录下加载选择的驱动。
 
-  To compile the drivers from UDK (EDK II) use the same command you do normally use  for OpenCore compilation, but choose a corresponding package:
+设计为填充要作为 UEFI 驱动程序加载的文件名。根据固件不同、可能需要不同的驱动程序。加载不兼容的驱动程序可能会导致无法启动系统，甚至导致固件永久性损坏。OpenCore 可以使用的驱动程序包括：
 
-  > ```
-  > git clone https://github.com/acidanthera/audk UDK
-  > cd UDK
-  > source edksetup.sh
-  > make -C BaseTools
-  > build -a X64 -b RELEASE -t XCODE5 -p FatPkg/FatPkg.dsc
-  > build -a X64 -b RELEASE -t XCODE5 -p MdeModulePkg/MdeModulePkg.dsc
-  > ```
+- [`ApfsDriverLoader`](https://github.com/acidanthera/AppleSupportPkg) --- APFS 文件系统引导驱动程序在 UEFI 固件的可启动 APFS 容器中添加了对嵌入式 APFS 驱动程序的支持。
+- [`FwRuntimeServices`](https://github.com/acidanthera/OcSupportPkg) --- `OC_FIRMWARE_RUNTIME` 协议通过支持只读、只写 NVRAM 变量，提升了 OpenCore 和 Lilu 的安全性。有些 Quirks 如 `RequestBootVarRouting` 依赖此驱动程序。
+由于 runtime 驱动饿性质（与目标操作系统并行运行），因此它不能在 OpenCore 本身实现，而是与 OpenCore 捆绑在一起。
+- [`EnhancedFatDxe`](https://github.com/acidanthera/audk) --- 来自 `FatPkg` 的 FAT 文件系统驱动程序。这个驱动程序已经被嵌入到所有 UEFI 固件中，无法为 OpenCore 使用。众所周知，许多固件的 FAT 支持实现都有错误，导致在尝试写操作时损坏文件系统。如果在引导过程中需要写入 EFI 分区，则可能组要将此驱动程序嵌入固件中。
+- [`NvmExpressDxe`](https://github.com/acidanthera/audk) --- 来自`MdeModulePkg` 的 NVMe 驱动程序。从 Broadwell 一代开始的大多数固件都包含此驱动程序。对于 Haswell 以及更早的版本，如果安装了 NVMe SSD 驱动器，则将其嵌入固件中可能会更理想。
+- [`AppleUsbKbDxe`](https://github.com/acidanthera/OcSupportPkg) --- USB 键盘驱动在自定义 USB 键盘驱动程序的基础上新增了对 `AppleKeyMapAggregator` 协议的支持。这是内置的 `KeySupport` 的替代方案。根据固件不同，可能会更好或者更糟。
+- [`VBoxHfs`](https://github.com/acidanthera/AppleSupportPkg) --- 带有 bless 支持的 HFS 文件系统驱动。是 Apple 固件中 `HFSPlus` 驱动的开源替代。虽然功能完善，但是比 `HFSPlus` 慢三倍，并且尚未经过安全审核。
+- [`XhciDxe`](https://github.com/acidanthera/audk) --- 来自 `MdeModulePkg` 的 XHCI USB controller 驱动程序。从 Sandy Bridge 代开始的大多数固件中都包含此驱动程序。 对于较早的固件或旧系统，它可以用于支持外部 USB 3.0 PCI 卡。
+
+要从 UDK（EDK II）编译驱动程序，可以使用编译 OpenCore 类似的命令。
+
+```bash
+git clone https://github.com/acidanthera/audk UDK
+cd UDK
+source edksetup.sh
+make -C BaseTools
+build -a X64 -b RELEASE -t XCODE5 -p FatPkg/FatPkg.dsc
+build -a X64 -b RELEASE -t XCODE5 -p MdeModulePkg/MdeModulePkg.dsc
+```
 
 ### 3. `Input`
-  **Type**: `plist dict`
-  **Failsafe**: None
-  **Description**: Apply individual settings designed for input (keyboard and mouse) in [Input Properties]() section below.
+
+**Type**: `plist dict`
+**Failsafe**: None
+**Description**: Apply individual settings designed for input (keyboard and mouse) in [Input Properties]() section below.
 
 ### 4. `Output`
-  **Type**: `plist dict`
-  **Failsafe**: None
-  **Description**: Apply individual settings designed for output (text and graphics) in [Output Properties]() section below.
+**Type**: `plist dict`
+**Failsafe**: None
+**Description**: Apply individual settings designed for output (text and graphics) in [Output Properties]() section below.
 
 ### 5. `Protocols`
-  **Type**: `plist dict`
-  **Failsafe**: None
-  **Description**: Force builtin versions of select protocols described in [Protocols Properties]() section below.
-  *Note*: all protocol instances are installed prior to driver loading.
+**Type**: `plist dict`
+**Failsafe**: None
+**Description**: Force builtin versions of select protocols described in [Protocols Properties]() section below.
+*注*：all protocol instances are installed prior to driver loading.
 
 ### 6. `Quirks`
-  **Type**: `plist dict`
-  **Failsafe**: None
-  **Description**: Apply individual firmware quirks described in [Quirks Properties]() section below.
+**Type**: `plist dict`
+**Failsafe**: None
+**Description**: Apply individual firmware quirks described in [Quirks Properties]() section below.
 
 
 ## 11.3 Input Properties
 
 ### 1. `KeyForgetThreshold`
-  **Type**: `plist integer`
-  **Failsafe**: `0`
-  **Description**: Remove key unless it was submitted during this timeout in milliseconds.
 
-  `AppleKeyMapAggregator` protocol is supposed to contain a fixed length buffer of currently pressed keys. However, the majority of the drivers only report key presses as interrupts and pressing and holding the key on the keyboard results in subsequent submissions of this key with some defined time interval. As a result we use a timeout to remove once pressed keys from the buffer once the timeout expires and no new submission of this key happened.
+**Type**: `plist integer`
+**Failsafe**: `0`
+**Description**: 两次按键之间的间隔时间，单位为毫秒。
 
-  This option allows to set this timeout based on your platform. The recommended value that works on the majority of the platforms is `5` milliseconds. For reference, holding one key on VMware will repeat it roughly every `2` milliseconds and the same value for APTIO V is `3-4` milliseconds. Thus it is possible to set a slightly lower value on faster platforms and slightly higher value on slower platforms for more responsive input.
+`AppleKeyMapAggregator` 协议应该包含当前按下的键的固定长度的缓冲。但是大部分驱动程序仅将按键按下报告为中断、并且按住按键会导致在一定的时间间隔后再提交按下行为。一旦超时到期，我们就是用超时从缓冲区中删除一次按下的键，并且没有新提交。
+
+此选项允许根据你的平台设置此超时。在大多数平台上有效的推荐值为 `5` 毫秒。作为参考，在 VMWare 上按住一个键大约每 2 毫秒就会重复一次，而在 APTIO V 上是 3 - 4 毫秒。因此，可以在较快的平台上设置稍低的值、在较慢的平台设置稍高的值，以提高响应速度。
 
 ### 2. `KeyMergeThreshold`
-  **Type**: `plist integer`
-  **Failsafe**: `0`
-  **Description**: Assume simultaneous combination for keys submitted within this timeout in milliseconds.
 
-  Similarly to `KeyForgetThreshold`, this option works around the sequential nature of key submission. To be able to recognise simultaneously pressed keys in the situation when all keys arrive sequentially, we are required to set a timeout within which we assume the keys were pressed together.
+**Type**: `plist integer`
+**Failsafe**: `0`
+**Description**: 按住按键被重置的间隔时间，单位为毫秒。
 
-  Holding multiple keys results in reports every `2` and `1` milliseconds for VMware and APTIO V respectively. Pressing keys one after the other results in delays of at least `6` and `10` milliseconds for the same platforms. The recommended value for this option is `2` milliseconds, but it may be decreased for faster platforms and increased for slower.
+与 `KeyForgetThreshold` 类似，这一选项适用于按键提交的顺序。为了能够识别同时按下的按键，我们需要设置一个超时时间，在这个时间内可以假定这两个按键是同时按下的。
+
+对于 VMWare，同时按下多个键的间隔是 2 毫秒。对于 APTIO V 平台为 1 毫毛。一个接一个地按下按键会导致 6 毫秒和 10 毫秒的延迟。此选项的建议值为 2 毫秒，但对于较快的平台可以选取较小的值，反之亦然。
 
 ### 3. `KeySupport`
-  **Type**: `plist boolean`
-  **Failsafe**: `false`
-  **Description**: Enable internal keyboard input translation to `AppleKeyMapAggregator` protocol.
 
-  This option activates the internal keyboard interceptor driver, based on `AppleGenericInput` aka (`AptioInputFix`), to fill `AppleKeyMapAggregator` database for input functioning. In case a separate driver is used, such as `AppleUsbKbDxe`, this option should never be enabled.
+**Type**: `plist boolean`
+**Failsafe**: `false`
+**Description**: 启用这一选项后将会开启内置键盘支持。
+
+这一选项基于 `AppleGenericInput`（`AptioInputFix`），激活内部键盘拦截器驱动程序以填充 `AppleKeyMapAggregator` 数据库以实现输入功能。如果使用了单独的驱动程序（如 `AppleUsbKbDxe`），则永远不要开启这一选项。
 
 ### 4. `KeySupportMode`
-  **Type**: `plist string`
-  **Failsafe**: empty string
-  **Description**: Set internal keyboard input translation to `AppleKeyMapAggregator` protocol mode.
 
-   -  `Auto` --- Performs automatic choice as available with the following preference: `AMI`, `V2`, `V1`.
-   -  `V1` --- Uses UEFI standard legacy input protocol `EFI_SIMPLE_TEXT_INPUT_PROTOCOL`.
-   -  `V2` --- Uses UEFI standard modern input protocol `EFI_SIMPLE_TEXT_INPUT_EX_PROTOCOL`.
-   -  `AMI` --- Uses APTIO input protocol `AMI_EFIKEYCODE_PROTOCOL`.
+**Type**: `plist string`
+**Failsafe**: empty string
+**Description**: 将内部键盘的输入转换设置为 `AppleKeyMapAggregator` 协议模式。
+
+- `Auto` --- 从下述选项中自动选择
+- `V1` --- UEFI 传统输入协议 `EFI_SIMPLE_TEXT_INPUT_PROTOCOL`.
+- `V2` --- UEFI 现代标准输入协议 `EFI_SIMPLE_TEXT_INPUT_EX_PROTOCOL`.
+- `AMI` --- APTIO 输入协议 `AMI_EFIKEYCODE_PROTOCOL`.
 
 ### 5. `KeySwap`
-  **Type**: `plist boolean`
-  **Failsafe**: `false`
-  **Description**: Swap `Command` and `Option` keys during submission.
 
-  This option may be useful for keyboard layouts with `Option` key situated to the right of `Command` key.
+**Type**: `plist boolean`
+**Failsafe**: `false`
+**Description**: 启用后将交换 `Command` 和 `Option`。
+
+此选项对于 `Option` 键位于 `Command` 右侧的键盘来说会很有用。
 
 ### 6. `PointerSupport`
-  **Type**: `plist boolean`
-  **Failsafe**: `false`
-  **Description**: Enable internal pointer driver.
 
-  This option implements standard UEFI pointer protocol (`EFI_SIMPLE_POINTER_PROTOCOL`) through select OEM protocols. The option may be useful on Z87 ASUS boards, where `EFI_SIMPLE_POINTER_PROTOCOL` is broken.
+**Type**: `plist boolean`
+**Failsafe**: `false`
+**Description**: 启用后将试图修复 UEFI 选择器协议。
+
+该选项通过选择 OEM 协议实现标准 UEFI 指针协议 `EFI_SIMPLE_POINTER_PROTOCOL`。该选项在 Z87 华硕主板可能有用（该主板的 `EFI_SIMPLE_POINTER_PROTOCOL` 存在问题）。
 
 ### 7. `PointerSupportMode`
-  **Type**: `plist string`
-  **Failsafe**: empty string
-  **Description**: Set OEM protocol used for internal pointer driver.
 
-  Currently the only supported variant is `ASUS`, using specialised protocol available on select Z87 and Z97 ASUS boards. More details can be found in [`LongSoft/UefiTool#116`](https://github.com/LongSoft/UEFITool/pull/116).
+**Type**: `plist string`
+**Failsafe**: empty string
+**Description**: 设置用于内部指针驱动程序的 OEM 协议。
+
+目前只支持 `ASUS` 值，使用的是 Z87 和 Z97主板上的特殊协议。更多详情请参考 [`LongSoft/UefiTool#116`](https://github.com/LongSoft/UEFITool/pull/116)。
 
 ### 8. `TimerResolution`
-  **Type**: `plist integer`
-  **Failsafe**: `0`
-  **Description**: Set architecture timer resolution.
 
-  This option allows to update firmware architecture timer period with the specified value in `100` nanosecond units. Setting a lower value generally improves performance and responsiveness of the interface and input handling.
+**Type**: `plist integer`
+**Failsafe**: `0`
+**Description**: 固件始终刷新的频率（单位 100 纳秒）
 
-  The recommended value is `50000` (`5` milliseconds) or slightly higher. Select ASUS Z87 boards use `60000` for the interface. Apple boards use `100000`. You may leave it as `0` in case there are issues.
-
+设置较低的值可以提高界面和输入处理性能的响应能力。建议值为 `50000`（即 5 毫秒）或稍高一些。选择 ASUS Z87 主板时，请使用 `60000`，苹果主板请使用 `100000`。你也可以将此值保留为 0，由 OpenCore 自动计算。
 
 ## 11.4 Output Properties
 
 ### 1. `TextRenderer`
-  **Type**: `plist string`
-  **Failsafe**: `BuiltinGraphics`
-  **Description**: Chooses renderer for text going through standard
+**Type**: `plist string`
+**Failsafe**: `BuiltinGraphics`
+**Description**: Chooses renderer for text going through standard
   console output.
 
   Currently two renderers are supported: `Builtin` and `System`. `System` renderer uses firmware services for text rendering. `Builtin` bypassing firmware services and performs text rendering on its own. Different renderers support a different set of options. It is recommended to use `Builtin` renderer, as it supports HiDPI mode and uses full screen resolution.
@@ -160,22 +169,22 @@ author_info: 由 xMuu 整理
 
   The use of `System` protocols is more complicated. In general the preferred setting is `SystemGraphics` or `SystemText`. Enabling `ProvideConsoleGop`, setting `Resolution` to `Max`, enabling `ReplaceTabWithSpace` is useful on almost all platforms. `SanitiseClearScreen`, `IgnoreTextInGraphics`, and `ClearScreenOnModeSwitch` are more specific, and their use depends on the firmware.
 
-  *Note*: Some Macs, namely `MacPro5,1`, may have broken console output with newer GPUs, and thus only `BuiltinGraphics` may work for them.
+*注*：Some Macs, namely `MacPro5,1`, may have broken console output with newer GPUs, and thus only `BuiltinGraphics` may work for them.
 
 ### 2. `ConsoleMode`
-  **Type**: `plist string`
-  **Failsafe**: Empty string
-  **Description**: Sets console output mode as specified
+**Type**: `plist string`
+**Failsafe**: Empty string
+**Description**: Sets console output mode as specified
   with the `WxH` (e.g. `80x24`) formatted string.
 
   Set to empty string not to change console mode. Set to `Max` to try to use largest available console mode. Currently `Builtin` text renderer supports only one console mode, so this option is ignored.
 
-  *Note*: This field is best to be left empty on most firmwares.
+*注*：This field is best to be left empty on most firmwares.
 
 ### 3. `Resolution`
-  **Type**: `plist string`
-  **Failsafe**: Empty string
-  **Description**: Sets console output screen resolution.
+**Type**: `plist string`
+**Failsafe**: Empty string
+**Description**: Sets console output screen resolution.
 
   - Set to `WxH@Bpp` (e.g. `1920x1080@32`) or `WxH` (e.g. `1920x1080`) formatted string to request custom resolution from GOP if available.
   - Set to empty string not to change screen resolution.
@@ -183,165 +192,177 @@ author_info: 由 xMuu 整理
 
   On HiDPI screens `APPLE_VENDOR_VARIABLE_GUID` `UIScale` NVRAM variable may need to be set to `02` to enable HiDPI scaling in FileVault 2 UEFI password interface and boot screen logo. Refer to [Recommended Variables]() section for more details.
 
-  *Note*: This will fail when console handle has no GOP protocol. When the firmware does not provide it, it can be added with `ProvideConsoleGop` set to `true`.
+*注*：This will fail when console handle has no GOP protocol. When the firmware does not provide it, it can be added with `ProvideConsoleGop` set to `true`.
 
 ### 4. `ClearScreenOnModeSwitch`
-  **Type**: `plist boolean`
-  **Failsafe**: `false`
-  **Description**: Some firmwares clear only part of screen when switching from graphics to text mode, leaving a fragment of previously drawn image visible. This option fills the entire graphics screen with black color before switching to text mode.
+**Type**: `plist boolean`
+**Failsafe**: `false`
+**Description**: Some firmwares clear only part of screen when switching from graphics to text mode, leaving a fragment of previously drawn image visible. This option fills the entire graphics screen with black color before switching to text mode.
 
-  *Note*: This option only applies to `System` renderer.
+*注*：This option only applies to `System` renderer.
 
 ### 5. `DirectGopRendering`
-  **Type**: `plist boolean`
-  **Failsafe**: `false`
-  **Description**: Use builtin graphics output protocol renderer for console.
+**Type**: `plist boolean`
+**Failsafe**: `false`
+**Description**: Use builtin graphics output protocol renderer for console.
 
   On some firmwares this may provide better performance or even fix rendering issues,
   but in general it is recommended not to use this option unless there is obvious
   benefit.
 
 ### 6. `IgnoreTextInGraphics`
-  **Type**: `plist boolean`
-  **Failsafe**: `false`
-  **Description**: Select firmwares output text onscreen in both graphics and text mode. This is normally unexpected, because random text may appear over graphical images and cause UI corruption. Setting this option to `true` will discard all text output when console control is in mode different from `Text`.
+**Type**: `plist boolean`
+**Failsafe**: `false`
+**Description**: Select firmwares output text onscreen in both graphics and text mode. This is normally unexpected, because random text may appear over graphical images and cause UI corruption. Setting this option to `true` will discard all text output when console control is in mode different from `Text`.
 
-  *Note*: This option only applies to `System` renderer.
+*注*：This option only applies to `System` renderer.
 
 ### 7. `ReplaceTabWithSpace`
-  **Type**: `plist boolean`
-  **Failsafe**: `false`
-  **Description**: Some firmwares do not print tab characters or even everything that follows them, causing difficulties or inability to use the UEFI Shell builtin text editor to edit property lists and other documents. This option makes the console output spaces instead of tabs.
+**Type**: `plist boolean`
+**Failsafe**: `false`
+**Description**: Some firmwares do not print tab characters or even everything that follows them, causing difficulties or inability to use the UEFI Shell builtin text editor to edit property lists and other documents. This option makes the console output spaces instead of tabs.
 
-  *Note*: This option only applies to `System` renderer.
+*注*：This option only applies to `System` renderer.
 
 ### 8. `ProvideConsoleGop`
-  **Type**: `plist boolean`
-  **Failsafe**: `false`
-  **Description**: Ensure GOP (Graphics Output Protocol) on console handle.
+**Type**: `plist boolean`
+**Failsafe**: `false`
+**Description**: Ensure GOP (Graphics Output Protocol) on console handle.
 
   macOS bootloader requires GOP to be present on console handle, yet the exact location of GOP is not covered by the UEFI specification. This option will ensure GOP is installed on console handle if it is present.
 
-  *Note*: This option will also replace broken GOP protocol on console handle, which may be the case on `MacPro5,1` with newer GPUs.
+*注*：This option will also replace broken GOP protocol on console handle, which may be the case on `MacPro5,1` with newer GPUs.
 
 ### 9. `ReconnectOnResChange`
-  **Type**: `plist boolean`
-  **Failsafe**: `false`
-  **Description**: Reconnect console controllers after changing screen resolution.
+**Type**: `plist boolean`
+**Failsafe**: `false`
+**Description**: Reconnect console controllers after changing screen resolution.
 
   On some firmwares when screen resolution is changed via GOP, it is required to reconnect the controllers, which produce the console protocols (simple text out). Otherwise they will not produce text based on the new resolution.
 
-  *Note*: On several boards this logic may result in black screen when launching OpenCore from Shell and thus it is optional. In versions prior to 0.5.2 this option was mandatory and not configurable. Please do not use this unless required.
+*注*：On several boards this logic may result in black screen when launching OpenCore from Shell and thus it is optional. In versions prior to 0.5.2 this option was mandatory and not configurable. Please do not use this unless required.
 
 ### 10. `SanitiseClearScreen`
-  **Type**: `plist boolean`
-  **Failsafe**: `false`
-  **Description**: Some firmwares reset screen resolution to a failsafe value (like `1024x768`) on the attempts to clear screen contents when large display (e.g. 2K or 4K) is used. This option attempts to apply a workaround.
+**Type**: `plist boolean`
+**Failsafe**: `false`
+**Description**: Some firmwares reset screen resolution to a failsafe value (like `1024x768`) on the attempts to clear screen contents when large display (e.g. 2K or 4K) is used. This option attempts to apply a workaround.
 
-  *Note*: This option only applies to `System` renderer. On all known affected systems `ConsoleMode` had to be set to empty string for this to work.
+*注*：This option only applies to `System` renderer. On all known affected systems `ConsoleMode` had to be set to empty string for this to work.
 
 ### 10. `Scale`
-  **Type**: `plist integer`
-  **Failsafe**: `100`
-  **Description**: Sets text renderer HiDPI scaling in percents.
+**Type**: `plist integer`
+**Failsafe**: `100`
+**Description**: Sets text renderer HiDPI scaling in percents.
 
   Currently only `100` and `200` values are supported.
 
-  *Note*: This option only applies to `Builtin` renderer.
+*注*：This option only applies to `Builtin` renderer.
 
 
 ## 11.5 Protocols Properties
 
 ### 1. `AppleBootPolicy`
-  **Type**: `plist boolean`
-  **Failsafe**: `false`
-  **Description**: Reinstalls Apple Boot Policy protocol with a builtin version. This may be used to ensure APFS compatibility on VMs or legacy Macs.
 
-  *Note*: Some Macs, namely `MacPro5,1`, do have APFS compatibility, but their Apple Boot Policy protocol contains recovery detection issues, thus using this option is advised on them as well.
+**Type**: `plist boolean`
+**Failsafe**: `false`
+**Description**: 重新安装内置的 Apple Boot Policy 协议，可用于确保 VM 或旧版 Mac 设备上的 APFS 兼容性。
+
+*注*：某些 Mac 设备（如 `MacPro5,1`）虽然兼容 APFS，但是其 Apple Boot Policy 协议包含了恢复分区检测问题，因此也建议启用这一选项。
 
 ### 2. `AppleEvent`
-  **Type**: `plist boolean`
-  **Failsafe**: `false`
-  **Description**: Reinstalls Apple Event protocol with a builtin version. This may be used to ensure File Vault 2 compatibility on VMs or legacy Macs.
+
+**Type**: `plist boolean`
+**Failsafe**: `false`
+**Description**: 重新安装内置的 Apple Event 协议，可以确保在 VM 或旧版 Mac 设备上的 Faile Vault V2 兼容性。
 
 ### 3. `AppleImageConversion`
-  **Type**: `plist boolean`
-  **Failsafe**: `false`
-  **Description**: Reinstalls Apple Image Conversion protocol with a builtin version.
+
+**Type**: `plist boolean`
+**Failsafe**: `false`
+**Description**: 重新安装内置的 Apple Image Conservation 协议。
 
 ### 4. `AppleKeyMap`
-  **Type**: `plist boolean`
-  **Failsafe**: `false`
-  **Description**: Reinstalls Apple Key Map protocols with builtin versions.
+
+**Type**: `plist boolean`
+**Failsafe**: `false`
+**Description**: 重新安装内置的 Apple Key Map 协议
 
 ### 5. `AppleSmcIo`
-  **Type**: `plist boolean`
-  **Failsafe**: `false`
-  **Description**: Reinstalls Apple SMC I/O protocol with a builtin version.
 
-  This protocol replaces legacy `VirtualSmc` UEFI driver, and is compatible with any SMC kernel extension. However, in case `FakeSMC` kernel extension is used, manual NVRAM key variable addition may be needed.
+**Type**: `plist boolean`
+**Failsafe**: `false`
+**Description**: 重新安装内置的 SMC I/O 协议。
+
+这一协议代替了传统的 `VirtualSmc.efi`，并与所有 SMC kext 驱动兼容。如果你在用 FakeSMC，可能需要手动往 NVRAM 中添加键值对。
 
 ### 6. `AppleUserInterfaceTheme`
-  **Type**: `plist boolean`
-  **Failsafe**: `false`
-  **Description**: Reinstalls Apple User Interface Theme protocol with a builtin version.
+
+**Type**: `plist boolean`
+**Failsafe**: `false`
+**Description**: 重新安装内置的 Apple User Interface Theme 协议。
 
 ### 7. `DataHub`
-  **Type**: `plist boolean`
-  **Failsafe**: `false`
-  **Description**: Reinstalls Data Hub protocol with a builtin version. This will drop all previous properties if the protocol was already installed.
+
+**Type**: `plist boolean`
+**Failsafe**: `false`
+**Description**: 重新安装具有内置版本的 Data Hub 协议。如果已经安装了协议，这将删除所有先前的属性。
 
 ### 8. `DeviceProperties`
-  **Type**: `plist boolean`
-  **Failsafe**: `false`
-  **Description**: Reinstalls Device Property protocol with a builtin version. This will drop all previous properties if it was already installed. This may be used to ensure full compatibility on VMs or legacy Macs.
+
+**Type**: `plist boolean`
+**Failsafe**: `false`
+**Description**: 重新安装内置版本的 Device Property 协议。 如果已经安装，它将删除所有以前的属性。这一选项可用于确保在 VM 或旧版 Mac 设备上的兼容性。
 
 ### 9. `FirmwareVolume`
-  **Type**: `plist boolean`
-  **Failsafe**: `false`
-  **Description**: Forcibly wraps Firmware Volume protocols or installs new to support custom cursor images for File Vault 2. Should be set to `true` to ensure File Vault 2 compatibility on everything but VMs and legacy Macs.
+
+**Type**: `plist boolean`
+**Failsafe**: `false`
+**Description**: 强制包装固件卷协议或安装新版本以支持 File Vault 2 的自定义光标图像。建议启用这一选项以确保 File Vault 2 在除 VM 和传统 Mac 设备之外的兼容性。
 
 ### 10. `HashServices`
-  **Type**: `plist boolean`
-  **Failsafe**: `false`
-  **Description**: Forcibly reinstalls Hash Services protocols with builtin versions. Should be set to `true` to ensure File Vault 2 compatibility on platforms providing broken SHA-1 hashing. Can be diagnosed by invalid cursor size with `UIScale` set to `02`, in general platforms prior to APTIO V (Haswell and older) are affected.
+
+**Type**: `plist boolean`
+**Failsafe**: `false`
+**Description**: Forcibly reinstalls Hash Services protocols with builtin versions. Should be set to `true` to ensure File Vault 2 compatibility on platforms providing broken SHA-1 hashing. Can be diagnosed by invalid cursor size with `UIScale` set to `02`, in general platforms prior to APTIO V (Haswell and older) are affected.
 
 ### 11. `OSInfo`
-  **Type**: `plist boolean`
-  **Failsafe**: `false`
-  **Description**: Forcibly reinstalls OS Info protocol with builtin versions. This protocol is generally used to receive notifications from macOS bootloader, by the firmware or by other applications.
+
+**Type**: `plist boolean`
+**Failsafe**: `false`
+**Description**: 强制使用内置版本重新安装 OS Info 协议。该协议通常用于通过固件或其他应用程序从 macOS 引导加载程序接收通知。
 
 ### 12. `UnicodeCollation`
-  **Type**: `plist boolean`
-  **Failsafe**: `false`
-  **Description**: Forcibly reinstalls unicode collation services with builtin version. Should be set to `true` to ensure UEFI Shell compatibility on platforms providing broken unicode collation. In general legacy Insyde and APTIO platforms on Ivy Bridge and earlier are affected.
 
+**Type**: `plist boolean`
+**Failsafe**: `false`
+**Description**: Forcibly reinstalls unicode collation services with builtin version. 建议启用这一选项以确保 UEFI Shell 的兼容性。一些较旧的固件破坏了 Unicode 排序规则, 设置为 YES 可以修复这些系统上 UEFI Shell 的兼容性 (通常为用于 IvyBridge 或更旧的设备)
 
 ## 11.6 Quirks Properties
 
 ### 1. `ExitBootServicesDelay`
-  **Type**: `plist integer`
-  **Failsafe**: `0`
-  **Description**: Adds delay in microseconds after `EXIT_BOOT_SERVICES` event.
 
-  This is a very ugly quirk to circumvent "Still waiting for root device" message on select APTIO IV firmwares, namely ASUS Z87-Pro, when using FileVault 2 in particular. It seems that for some reason they execute code in parallel to `EXIT_BOOT_SERVICES`, which results in SATA controller being inaccessible from macOS. A better approach should be found in some future. Expect 3-5 seconds to be enough in case the quirk is needed.
+**Type**: `plist integer`
+**Failsafe**: `0`
+**Description**: 在 `EXIT_BOOT_SERVICES` 事件后添加延迟，单位为毫秒。
+
+This is a very ugly quirk to circumvent "Still waiting for root device" message on select APTIO IV firmwares, namely ASUS Z87-Pro, when using FileVault 2 in particular. It seems that for some reason they execute code in parallel to `EXIT_BOOT_SERVICES`, which results in SATA controller being inaccessible from macOS. A better approach should be found in some future. Expect 3-5 seconds to be enough in case the quirk is needed.
 
 ### 2. `IgnoreInvalidFlexRatio`
-  **Type**: `plist boolean`
-  **Failsafe**: `false`
-  **Description**: Select firmwares, namely APTIO IV, may contain invalid values in `MSR_FLEX_RATIO` (`0x194`) MSR register. These values may cause macOS boot failure on Intel platforms.
+**Type**: `plist boolean`
+**Failsafe**: `false`
+**Description**: Select firmwares, namely APTIO IV, may contain invalid values in `MSR_FLEX_RATIO` (`0x194`) MSR register. These values may cause macOS boot failure on Intel platforms.
 
-  *Note*: While the option is not supposed to induce harm on unaffected firmwares, its usage is not recommended when it is not required.
+*注*：While the option is not supposed to induce harm on unaffected firmwares, its usage is not recommended when it is not required.
 
 ### 3. `ReleaseUsbOwnership`
-  **Type**: `plist boolean`
-  **Failsafe**: `false`
-  **Description**: Attempt to detach USB controller ownership from the firmware driver. While most firmwares manage to properly do that, or at least have an option for, select firmwares do not. As a result, operating system may freeze upon boot. Not recommended unless required.
+**Type**: `plist boolean`
+**Failsafe**: `false`
+**Description**: Attempt to detach USB controller ownership from the firmware driver. While most firmwares manage to properly do that, or at least have an option for, select firmwares do not. As a result, operating system may freeze upon boot. Not recommended unless required.
 
 ### 4. `RequestBootVarFallback`
-  **Type**: `plist boolean`
-  **Failsafe**: `false`
-  **Description**: Request fallback of some `Boot` prefixed variables from `OC_VENDOR_VARIABLE_GUID` to newline `EFI_GLOBAL_VARIABLE_GUID`.
+**Type**: `plist boolean`
+**Failsafe**: `false`
+**Description**: Request fallback of some `Boot` prefixed variables from `OC_VENDOR_VARIABLE_GUID` to newline `EFI_GLOBAL_VARIABLE_GUID`.
 
   This quirk requires `RequestBootVarRouting` to be enabled and therefore `OC_FIRMWARE_RUNTIME` protocol implemented in `FwRuntimeServices.efi`.
 
@@ -357,15 +378,16 @@ author_info: 由 xMuu 整理
   This quirk forwards all UEFI specification valid boot options, that are not related to macOS, to the firmware into `BootF###` and `BootOrder` variables upon write. As the entries are added to the end of `BootOrder`, this does not break boot priority, but ensures that the firmware does not try to append a new option on its own after Windows installation for instance.
 
 ### 5. `RequestBootVarRouting`
-  **Type**: `plist boolean`
-  **Failsafe**: `false`
-  **Description**: Request redirect of all `Boot` prefixed variables from `EFI_GLOBAL_VARIABLE_GUID` to newline `OC_VENDOR_VARIABLE_GUID`.
+**Type**: `plist boolean`
+**Failsafe**: `false`
+**Description**: Request redirect of all `Boot` prefixed variables from `EFI_GLOBAL_VARIABLE_GUID` to newline `OC_VENDOR_VARIABLE_GUID`.
 
   This quirk requires `OC_FIRMWARE_RUNTIME` protocol implemented in `FwRuntimeServices.efi`. The quirk lets default boot entry preservation at times when firmwares delete incompatible boot entries. Simply said, you are required to enable this quirk to be able to reliably use [Startup Disk](https://support.apple.com/HT202796) preference pane in a firmware that is not compatible with macOS boot entries by design.
 
 ### 6. `UnblockFsConnect`
-  **Type**: `plist boolean`
-  **Failsafe**: `false`
-  **Description**: Some firmwares block partition handles by opening them in By Driver mode, which results in File System protocols being unable to install.
 
-  *Note*: The quirk is mostly relevant for select HP laptops with no drives listed.
+**Type**: `plist boolean`
+**Failsafe**: `false`
+**Description**: 某些固件通过「按驱动程序」模式下来阻止引导项加载。
+
+*注*：如果惠普笔记本在 OpenCore 界面没有看到引导项时启用这一选项。

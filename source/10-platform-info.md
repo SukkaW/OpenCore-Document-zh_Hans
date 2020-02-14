@@ -185,7 +185,7 @@ To inspect SMBIOS contents [dmidecode](http://www.nongnu.org/dmidecode) utility 
 
   Sets CPU FSB frequency. This value equals to CPU nominal frequency divided by CPU maximum bus ratio and is specified in Hz. Refer to `MSR_NEHALEM_PLATFORM_INFO`(`CEh`) MSR value to determine maximum bus ratio on modern Intel CPUs.
 
-  *Note*: This value is not used on Skylake and newer but is still provided to follow suit.
+  *注*：This value is not used on Skylake and newer but is still provided to follow suit.
 
 ### 10. `ARTFrequency`
   **Type**: `plist integer`, 64-bit
@@ -194,7 +194,7 @@ To inspect SMBIOS contents [dmidecode](http://www.nongnu.org/dmidecode) utility 
 
   This value contains CPU ART frequency, also known as crystal clock frequency. Its existence is exclusive to Skylake generation and newer. The value is specified in Hz, and is normally 24 MHz for client Intel segment, 25 MHz for server Intel segment, and 19.2 MHz for Intel Atom CPUs. macOS till 10.15 inclusive assumes 24 MHz by default.
 
-  *Note*: On Intel Skylake X ART frequency may be a little less (approx. 0.25%) than 24 or 25 MHz due to special EMI-reduction circuit as described in [Acidanthera Bugtracker](https://github.com/acidanthera/bugtracker/issues/448#issuecomment-524914166).
+  *注*：On Intel Skylake X ART frequency may be a little less (approx. 0.25%) than 24 or 25 MHz due to special EMI-reduction circuit as described in [Acidanthera Bugtracker](https://github.com/acidanthera/bugtracker/issues/448#issuecomment-524914166).
 
 ### 11. `DevicePathsSupported`
   **Type**: `plist integer`, 32-bit
@@ -299,7 +299,7 @@ To inspect SMBIOS contents [dmidecode](http://www.nongnu.org/dmidecode) utility 
   **SMBIOS**: System Information (Type 1), Product Name
   **Description**: Preferred Mac model used to mark the device as supported by the operating system. This value must be specified by any configuration for later automatic generation of the related values in this and other SMBIOS tables and related configuration parameters. If `SystemProductName` is not compatible with the target operating system, `-no_compat_check` boot argument may be used as an override.
 
-  *Note*: If `SystemProductName` is unknown, and related fields are unspecified, default values should be assumed as being set to `MacPro6,1` data. The list of known products can be found in `MacInfoPkg`.
+  *注*：If `SystemProductName` is unknown, and related fields are unspecified, default values should be assumed as being set to `MacPro6,1` data. The list of known products can be found in `MacInfoPkg`.
 
 ### 6. `SystemVersion`
   **Type**: `plist string`

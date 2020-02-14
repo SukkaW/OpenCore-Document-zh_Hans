@@ -34,7 +34,7 @@ sudo pmset powernap 0
 sudo pmset standby 0
 ```
 
-**Note**: These settings may reset at hardware change and in certain other circumstances.
+**注**： These settings may reset at hardware change and in certain other circumstances.
 To view their current state use `pmset -g` command in Terminal.
 
 ## 5.2 属性列表
@@ -142,7 +142,7 @@ defined whether this value is used.
 
 This option bypasses `RX̂` permissions in code pages of UEFI runtime services by removing write protection (`WP`) bit from `CR0` register during their execution. This quirk requires `OC_FIRMWARE_RUNTIME` protocol implemented in `FwRuntimeServices.efi`.
 
-*Note*: The necessity of this quirk is determined by early boot crashes
+*注*：The necessity of this quirk is determined by early boot crashes
 of the firmware.
 
 ### 5.4.8 `ForceExitBootServices`
@@ -153,7 +153,7 @@ of the firmware.
 
 Try to ensure that `ExitBootServices` call succeeds even with outdated MemoryMap key argument by obtaining current memory map and retrying `ExitBootServices` call.
 
-*Note*: The necessity of this quirk is determined by early boot crashes of the firmware. 请勿启用这一选项，除非你详细了解这一选项可能导致的后果。
+*注*：The necessity of this quirk is determined by early boot crashes of the firmware. 请勿启用这一选项，除非你详细了解这一选项可能导致的后果。
 
 ### 5.4.9 `ProtectCsmRegion`
 
@@ -163,7 +163,7 @@ Try to ensure that `ExitBootServices` call succeeds even with outdated MemoryMap
 
 确保将 CSM 内存区域标记为 ACPI NVS，以防止 boot.efi 或 XNU 重新定位或使用这一区域。
 
-*Note*: 是否启用这一 Quirk 取决于你是否遇到了休眠或其他问题。`AvoidRuntimeDefrag` 理应能够解决所有类似的问题，所以已知的固件都不需要启用这一选项。除非你完全了解这一选项及其后果，否则请勿使用。
+*注*：是否启用这一 Quirk 取决于你是否遇到了休眠或其他问题。`AvoidRuntimeDefrag` 理应能够解决所有类似的问题，所以已知的固件都不需要启用这一选项。除非你完全了解这一选项及其后果，否则请勿使用。
 
 
 ### 5.4.10 `ProtectSecureBoot`
@@ -174,7 +174,7 @@ Try to ensure that `ExitBootServices` call succeeds even with outdated MemoryMap
 
 尝试从操作系统写入 `db`、`dbx`、`PK` 和 `KEK` 时生成报告。
 
-*Note*: 这个 Quirk 主要试图避免碎片整理导致的 NVRAM 相关问题，如 Insyde 或 `MacPro5,1`。
+*注*：这个 Quirk 主要试图避免碎片整理导致的 NVRAM 相关问题，如 Insyde 或 `MacPro5,1`。
 
 ### 5.4.11 `ProvideCustomSlide`
 
@@ -194,7 +194,7 @@ Try to ensure that `ExitBootServices` call succeeds even with outdated MemoryMap
 
 Select firmwares access memory by virtual addresses after `SetVirtualAddresses` call, which results in early boot crashes. This quirk workarounds the problem by performing early boot identity mapping of assigned virtual addresses to physical memory.
 
-*Note*: 是否启用这个 Quirks 取决于你是否遇到了 Early Boot 故障。
+*注*：是否启用这个 Quirks 取决于你是否遇到了 Early Boot 故障。
 
 ### 5.4.13 `ShrinkMemoryMap`
 

@@ -25,7 +25,7 @@ ioreg -lw0 -p IODeviceTree -n efi -r -x | grep device-properties |
 
 **Type**: plist dict
 **Description**: Sets device properties from a map (plist dict) of deivce paths to a map (plist dict) of variable names and their values in plist metadata format. Device paths must be provided in canonic string format (e.g. `PciRoot(0x0)/Pci(0x1,0x0)/Pci(0x0,0x0)`). Properties will only be set if not present and not blocked.
-**Note**: 目前，属性只能通过原始驱动程序添加。因此除非安装了单独的驱动程序，否则没有理由 Block 变量。
+**注**： 目前，属性只能通过原始驱动程序添加。因此除非安装了单独的驱动程序，否则没有理由 Block 变量。
 
 ### 6.2.2 Block
 

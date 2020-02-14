@@ -98,7 +98,7 @@ Here `ParseDarwinVersion` argument is assumed to be 3 integers obtained by split
 **Failsafe**: Empty string
 **Description**: Adds kernel driver on specified macOS version or newer.
 
-*Note*: Refer to [`Add` `MaxKernel` description](#kernmatch) for
+*注*：Refer to [`Add` `MaxKernel` description](#kernmatch) for
 matching logic.
 
 ### 7.3.7 `PlistPath`
@@ -134,7 +134,7 @@ matching logic.
 **Failsafe**: Empty string
 **Description**: Blocks kernel driver on specified macOS version or older.
 
-*Note*: Refer to [`Add` `MaxKernel` description](#kernmatch) for matching logic.
+*注*：Refer to [`Add` `MaxKernel` description](#kernmatch) for matching logic.
 
 ### 7.4.5 `MinKernel`
 
@@ -142,7 +142,7 @@ matching logic.
 **Failsafe**: Empty string
 **Description**: Blocks kernel driver on specified macOS version or newer.
 
-*Note*: Refer to [`Add` `MaxKernel` description](#kernmatch) for
+*注*：Refer to [`Add` `MaxKernel` description](#kernmatch) for
 matching logic.
 
 ## 7.5 Emulate 属性
@@ -239,7 +239,7 @@ otherwise set bits take the value of `Cpuid1Data`.
 **Failsafe**: Empty string
 **Description**: Patches data on specified macOS version or older.
 
-*Note*: Refer to [`Add` `MaxKernel` description](#kernmatch) for matching logic.
+*注*：Refer to [`Add` `MaxKernel` description](#kernmatch) for matching logic.
 
 ### 7.6.10 `MinKernel`
 
@@ -247,7 +247,7 @@ otherwise set bits take the value of `Cpuid1Data`.
 **Failsafe**: Empty string
 **Description**: Patches data on specified macOS version or newer.
 
-*Note*: Refer to [`Add` `MaxKernel` description](#kernmatch) for matching logic.
+*注*：Refer to [`Add` `MaxKernel` description](#kernmatch) for matching logic.
 
 ### 7.6.11 `Replace`
 
@@ -304,7 +304,7 @@ without checking.
 modification in XNU kernel, commonly causing early kernel panic, when it
 is locked from writing (XCPM power management).
 
-*Note*: This option should be avoided whenever possible. See
+*注*：This option should be avoided whenever possible. See
 `AppleCpuPmCfgLock` description for more details.
 
 ### `AppleXcpmExtraMsrs`
@@ -314,7 +314,7 @@ is locked from writing (XCPM power management).
 
 This is normally used in conjunction with `Emulate` section on Haswell-E, Broadwell-E, Skylake-X, and similar CPUs. More details on the XCPM patches are outlined in [acidanthera/bugtracker#365](https://github.com/acidanthera/bugtracker/issues/365).
 
-*Note*: Additional not provided patches will be required for Ivy Bridge or Pentium CPUs. It is recommended to use `AppleIntelCpuPowerManagement.kext` for the former.
+*注*：Additional not provided patches will be required for Ivy Bridge or Pentium CPUs. It is recommended to use `AppleIntelCpuPowerManagement.kext` for the former.
 
 ### `AppleXcpmForceBoost`
 
@@ -324,7 +324,7 @@ This is normally used in conjunction with `Emulate` section on Haswell-E, Broadw
 
 This patch writes `0xFF00` to `MSR_IA32_PERF_CONTROL` (`0x199`), effectively setting maximum multiplier for all the time.
 
-*Note*: While this may increase the performance, this patch is strongly discouraged on all systems but those explicitly dedicated to scientific or media calculations. In general only certain Xeon models benefit from the patch.
+*注*：While this may increase the performance, this patch is strongly discouraged on all systems but those explicitly dedicated to scientific or media calculations. In general only certain Xeon models benefit from the patch.
 
 ### `CustomSMBIOSGuid`
 
@@ -338,7 +338,7 @@ This patch writes `0xFF00` to `MSR_IA32_PERF_CONTROL` (`0x199`), effectively set
 **Failsafe**: `false`
 **Description**: Disables `IOMapper` support in XNU (VT-d), which may conflict with the firmware implementation.
 
-*Note*: This option is a preferred alternative to dropping `DMAR` ACPI table and disabling VT-d in firmware preferences, which does not break VT-d support in other systems in case they need it.
+*注*：This option is a preferred alternative to dropping `DMAR` ACPI table and disabling VT-d in firmware preferences, which does not break VT-d support in other systems in case they need it.
 
 ### `DummyPowerManagement`
 
@@ -346,7 +346,7 @@ This patch writes `0xFF00` to `MSR_IA32_PERF_CONTROL` (`0x199`), effectively set
 **Failsafe**: `false`
 **Description**: Disables `AppleIntelCpuPowerManagement`.
 
-*Note*: This option is a preferred alternative to `NullCpuPowerManagement.kext` for CPUs without native power management driver in macOS.
+*注*：This option is a preferred alternative to `NullCpuPowerManagement.kext` for CPUs without native power management driver in macOS.
 
 ### `ExternalDiskIcons`
 
@@ -354,7 +354,7 @@ This patch writes `0xFF00` to `MSR_IA32_PERF_CONTROL` (`0x199`), effectively set
 **Failsafe**: `false`
 **Description**: 修补 `AppleAHCIPort.kext` 图标，使 macOS 将所有 AHCI 存储设备显示为内部硬盘。
 
-*Note*: 这一选项应尽量避免使用。现代固件通常情况下都是兼容的。
+*注*：这一选项应尽量避免使用。现代固件通常情况下都是兼容的。
 
 ### `IncreasePciBarSize`
 
@@ -362,7 +362,7 @@ This patch writes `0xFF00` to `MSR_IA32_PERF_CONTROL` (`0x199`), effectively set
 **Failsafe**: `false`
 **Description**: 将 IOPCIFamily 中 32 位 PCI Bar 的大小从 1 GB 增加到 4 GB。
 
-*Note*: 你应该尽可能避免使用这一选项。通常这一选项只需要在配置错误或损坏的固件上开启。
+*注*：你应该尽可能避免使用这一选项。通常这一选项只需要在配置错误或损坏的固件上开启。
 
 > 译者注：如果你的 BIOS 中存在 Above4GDecoding 选项，请直接在 BIOS 中启用。
 
@@ -392,7 +392,7 @@ An additional security measure was added to macOS Catalina (10.15) causing kerne
 **Failsafe**: `false`
 **Description**: 修补 `IOAHCIBlockStorage.kext`，以在第三方驱动器启用 TRIM、硬盘休眠等功能。
 
-*Note*: NVMe SSD 通常无需这一修改。对于 AHCI SSD（如 SATA SSD），macOS 从 10.15 开始提供 `trimforce`，可以将 `01 00 00 00` 值写入 `APPLE_BOOT_VARIABLE_GUID` 命名空间中的 `EnableTRIM` 变量。
+*注*：NVMe SSD 通常无需这一修改。对于 AHCI SSD（如 SATA SSD），macOS 从 10.15 开始提供 `trimforce`，可以将 `01 00 00 00` 值写入 `APPLE_BOOT_VARIABLE_GUID` 命名空间中的 `EnableTRIM` 变量。
 
 ### `XhciPortLimit`
 
@@ -400,4 +400,4 @@ An additional security measure was added to macOS Catalina (10.15) causing kerne
 **Failsafe**: `false`
 **Description**: 修补 `AppleUSBXHCI.kext`、`AppleUSBXHCIPCI.kext`、`IOUSBHostFamily.kext` 以移除 15 端口限制。
 
-*Note*: 请尽可能避免使用这一选项。USB port limit is imposed by the amount of used bits in locationID format and there is no possible way to workaround this without heavy OS modification. The only valid solution is to limit the amount of used ports to 15 (discarding some). More details can be found on [AppleLife.ru](https://applelife.ru/posts/550233).
+*注*：请尽可能避免使用这一选项。USB port limit is imposed by the amount of used bits in locationID format and there is no possible way to workaround this without heavy OS modification. The only valid solution is to limit the amount of used ports to 15 (discarding some). More details can be found on [AppleLife.ru](https://applelife.ru/posts/550233).
