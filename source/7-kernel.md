@@ -1,6 +1,6 @@
 ---
 title: 7. Kernel
-description: Kernel（待翻译）
+description: OpenCore 安全配置，Kext 加载顺序以及屏蔽（待翻译）
 type: docs
 author_info: 由 Sukka 整理
 ---

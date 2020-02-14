@@ -1,6 +1,6 @@
 ---
 title: 5. Booter
-description: Booter（待翻译）
+description: 配置 FwRuntimeServices.efi（Slide 值计算、KASLR）
 type: docs
 author_info: 由 Sukka 整理，由 Sukka 翻译。
 last_updated: 2020-02-13
@@ -43,6 +43,8 @@ To view their current state use `pmset -g` command in Terminal.
 
 **Type**: plist array
 **Description**: Designed to be filled with `plist dict` values, describing addresses critical for particular firmware functioning when `DevirtualiseMmio` quirk is in use. See MmioWhitelist Properties section below.
+
+> 译者注：如果开机卡在 `PCI...` 可以尝试开启 Item 1 下的 Patch
 
 ### 5.2.2 Quirks
 

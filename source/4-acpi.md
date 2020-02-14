@@ -1,8 +1,8 @@
 ---
 title: 4. ACPI
-description: ACPI（待翻译）
+description: 加载、屏蔽、修补 ACPI（DSDT/SSDT）表（待翻译）
 type: docs
-author_info: 由 Sukka 整理、由 Sukka 翻译
+author_info: 由 Sukka 整理、由 Sukka 翻译。感谢黑果小兵提供的参考资料
 last_updated: 2020-02-13
 ---
 
@@ -201,27 +201,26 @@ Tianocore [AcpiAml.h](https://github.com/tianocore/edk2/blob/UDK2018/MdePkg/Incl
 
 **Type**: `plist boolean`
 **Failsafe**: false
-**Description**: Provide reset register and flag in FADT table to enable reboot and shutdown on legacy hardware. Not recommended unless required.
+**Description**: 在 FADT 表中提供寄存器复位标志，用于修复旧硬件的重启和关机。除非需要，否则不建议启用。
 
 ### 4.6.2 NormalizeHeaders
 
 **Type**: `plist boolean`
 **Failsafe**: false
-**Description**: : Cleanup ACPI header fields to workaround macOS ACPI implementation bug causing boot crashes.
-*Reference*: Debugging AppleACPIPlatform on 10.13 by Alex James aka theracermaster. The issue is fixed in macOS Mojave (10.14).
+**Description**: 清理 ACPI 表头字段以解决 macOS ACPI 实现错误导致的引导崩溃
+*参考*: 由 Alex James（theracermaster）在调试 AppleACPIPlatform 时发现。从 macOS Mojave (10.14) 开始，这个错误已经被修复。
 
 ### 4.6.3 RebaseRegions
 
 **Type**: `plist boolean`
 **Failsafe**: false
-**Description**: Attempt to heuristically relocate ACPI memory regions. Not recommended.
+**Description**: 尝试试探性地重定位 ACPI 内存区域。不建议启用这一选项，除非你需要自定义 DSDT。
 
-ACPI tables are often generated dynamically by underlying firmware implementation. Among the positionindependent code, ACPI tables may contain physical addresses of MMIO areas used for device configuration, usually grouped in regions (e.g. OperationRegion). Changing firmware settings or hardware configuration, upgrading or patching the firmware inevitably leads to changes in dynamically generated ACPI code, which sometimes lead to the shift of the addresses in aforementioned OperationRegion constructions.
+ACPI 表通常由底层固件动态生成。在与位置无关的代码中，ACPI 表可能包含用于设备配置的 MMIO 区域的物理地址，通常按区域（例如 OperationRegion）分组。 更改固件设置或硬件配置，升级或修补固件不可避免地会导致动态生成的 ACPI 代码发生变化，这有时会导致上述 OperationRegion 结构中的地址发生变化。
 
-For this reason it is very dangerous to apply any kind of modifications to ACPI tables. The most reasonable approach is to make as few as possible changes to ACPI and try to not replace any tables, especially DSDT.
+因此，对 ACPI 表进行任何形式的修改都是非常危险的。最合理的方法是对 ACPI 进行尽可能少的更改，并尝试不替换任何表，尤其是 DSDT。
 
-When this is not possible, then at least attempt to ensure that custom DSDT is based on the most recent DSDT or remove writes and reads for the affected areas. When nothing else helps this option could be tried to avoid stalls at PCI Configuration Begin phase of macOS booting by attempting to fix the ACPI addresses. It does not do magic, and only works with most common cases.
-Do not use unless absolutely required.
+如果无法不得不替换 DSDT，则至少应尝试确保自定义 DSDT 基于最新的 DSDT 或避免对受影响区域的读写。如果没有其他帮助，可以尝试通过尝试修复 ACPI 地址来避免在 macOS 引导的 PCI Configuration Begin 阶段出现停顿的情况。
 
 ### 4.6.4 ResetHwSig
 
@@ -229,13 +228,12 @@ Do not use unless absolutely required.
 **Failsafe**: false
 **Description**: Reset `FACS` table `HardwareSignature` value to 0.
 
-This works around firmwares that fail to maintain hardware signature across the reboots and cause issues with
-waking from hibernation.
+启用这一选项可以解决固件无法在重新启动过程中保持硬件签名导致的休眠唤醒问题。
 
-### 4.6.5 ResetLogoStatusesetHwSig
+### 4.6.5 ResetLogoStatus
 
 **Type**: `plist boolean`
 **Failsafe**: false
-**Description**: Reset `BGRT` table `Displayed` status field to `false`.
+**Description**: 将 `BGRT` 表中 `Displayed` 状态字段重置为 `false`.
 
-This works around firmwares that provide `BGRT` table but fail to handle screen updates afterwards.
+这适用于提供 `BGRT` 表、但随后无法处理屏幕更新的固件。如果在开机时无法显示 OEM Windows 标志的硬件可以尝试开启开启。

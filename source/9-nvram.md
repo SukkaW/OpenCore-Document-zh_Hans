@@ -1,6 +1,6 @@
 ---
 title: 9. NVRAM
-description: NVRAM（待翻译）
+description: NVRAM 注入（如引导标识符和 SIP）（待翻译）
 type: docs
 author_info: 由 xMuu 整理
 ---
@@ -10,8 +10,6 @@ author_info: 由 xMuu 整理
 Has `plist dict` type and allows to set volatile UEFI variables commonly referred as NVRAM variables. Refer to `man nvram` for more details. macOS extensively uses NVRAM variables for OS --- Bootloader --- Firmware intercommunication, and thus supplying several NVRAM is required for proper macOS functioning.
 
 Each NVRAM variable consists of its name, value, attributes (refer to UEFI specification), and its [GUID](https://en.wikipedia.org/wiki/Universally_unique_identifier), representing which `section' NVRAM variable belongs to. macOS uses several GUIDs, including but not limited to:
-
-
 
 - `4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14` (`APPLE_VENDOR_VARIABLE_GUID`)
 - `7C436110-AB2A-4BBB-A880-FE41995C9F82` (`APPLE_BOOT_VARIABLE_GUID`)

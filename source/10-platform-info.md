@@ -1,6 +1,6 @@
 ---
 title: 10. PlatformInfo
-description: PlatformInfo（待翻译）
+description: SMBIOS 机型信息配置（待翻译）
 type: docs
 author_info: 由 xMuu 整理
 ---

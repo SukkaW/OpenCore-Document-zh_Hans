@@ -1,6 +1,6 @@
 ---
 title: 11. UEFI
-description: UEFI（待翻译）
+description: UEFI 驱动以及加载顺序（待翻译）
 type: docs
 author_info: 由 xMuu 整理
 ---
