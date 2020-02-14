@@ -112,6 +112,8 @@ defined whether this value is used.
 
 *注*: 这个 Quirk 也可以避免由于无法将变量写入 NVRAM 而导致的对操作系统的破坏。
 
+> 译者注：在 Z390/HM370 等没有原生 macOS 支持 NVRAM 的主板上需要开启。
+
 ### 5.4.5 `DiscardHibernateMap`
 
 **Type**: `plist boolean`
@@ -136,7 +138,7 @@ defined whether this value is used.
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
-**Description**: Permit write access to UEFI runtime services code.
+**Description**: 关闭 CR0 寄存器中的写入保护
 
 This option bypasses `RX̂` permissions in code pages of UEFI runtime services by removing write protection (`WP`) bit from `CR0` register during their execution. This quirk requires `OC_FIRMWARE_RUNTIME` protocol implemented in `FwRuntimeServices.efi`.
 
@@ -147,11 +149,11 @@ of the firmware.
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
-**Description**: Retry `ExitBootServices` with new memory map on failure.
+**Description**: 开启后会确保 `ExitBootServices` 即使在 MemoryMap 发生更改时也能调用成功
 
 Try to ensure that `ExitBootServices` call succeeds even with outdated MemoryMap key argument by obtaining current memory map and retrying `ExitBootServices` call.
 
-*Note*: The necessity of this quirk is determined by early boot crashes of the firmware. Do not use this unless you fully understand the consequences.
+*Note*: The necessity of this quirk is determined by early boot crashes of the firmware. 请勿启用这一选项，除非你详细了解这一选项可能导致的后果。
 
 ### 5.4.9 `ProtectCsmRegion`
 
@@ -188,7 +190,7 @@ Try to ensure that `ExitBootServices` call succeeds even with outdated MemoryMap
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
-**Description**: Setup virtual memory at `SetVirtualAddresses`.
+**Description**: 将 `SetVirtualAddresses` 调用修复为虚拟地址.
 
 Select firmwares access memory by virtual addresses after `SetVirtualAddresses` call, which results in early boot crashes. This quirk workarounds the problem by performing early boot identity mapping of assigned virtual addresses to physical memory.
 

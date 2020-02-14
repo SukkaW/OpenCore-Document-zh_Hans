@@ -30,7 +30,9 @@ ioreg -lw0 -p IODeviceTree -n efi -r -x | grep device-properties |
 ### 6.2.2 Block
 
 **Type**: plist dict
-**Description**: Removes device properties from a map (plist dict) of deivce paths to an array (plist array) of variable names in plist string format.
+**Description**: 从设备路径的映射（数据类型 plist dict）到 plist 字符串格式的变量名数组（数据类型 plist array）中删除设备属性。
+
+> 译者注：这里的设置等同于 Clover 里的 ACPI 重命名 `_DSM → XDSM => TgtBridge`
 
 ## 6.3 常见属性
 
