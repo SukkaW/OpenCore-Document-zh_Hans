@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+<title>附录 1. OpenCore 兼容 Kext 列表 | OpenCore 简体中文参考手册(非官方)</title>
+<meta name="generator" content="Hexo 4.2.0">
+<meta http-equiv="x-dns-prefetch-control" content="on">
+<meta name="description" content="由 Sukka 和黑苹果爱好者们维护的 OpenCore 文档简体中文翻译，实时更新 OpenCore 上游文档改动。努力提供权威的 OpenCore 简体中文参考资料。">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="shortcut icon" href="/logo/favicon.ico">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.8.0/css/bulma.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.11.2/css/all.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.16.2/styles/github.min.css">
+<link rel="stylesheet" href="/theme-doku/css/doku.css">
+
+</head>
+
+<body>
+    
+
+<nav id="doku-navbar" class="navbar is-spaced has-shadow">
+    <div class="container">
+        <div class="navbar-brand">
+            <!-- burger btn -->
+            <a role="button" class="navbar-burger burger" id="doku-sidebar-toggle">
+                <span aria-hidden="true"></span>
+                <span aria-hidden="true"></span>
+                <span aria-hidden="true"></span>
+            </a>
+
+            <a class="navbar-item" href="https://oc.skk.moe">
+                <h1 class="doku-navbar-title">
+                    <img src="/logo/navbar.png" height="28">
+                    <span class="is-size-4"></span>
+                </h1>
+            </a>
+        </div>
+        <div class="navbar-menu">
+            <div class="navbar-start">
+                
+                    <a class="navbar-item" href="/">
+                        
+                        
+                            <span>OpenCore 参考手册(简体中文)</span>
+                        
+                    </a>
+                
+                    <a class="navbar-item" href="/search.html">
+                        
+                            <span class="icon">
+                                <i class="fas fa-search"></i>
+                            </span>
+                        
+                        
+                            <span>站内搜索</span>
+                        
+                    </a>
+                
+                    <a class="navbar-item" href="https://github.com/SukkaW/OpenCore-Document-zh_Hans" target="_blank" rel="noopener">
+                        
+                            <span class="icon">
+                                <i class="fab fa-github"></i>
+                            </span>
+                        
+                        
+                            <span>GitHub</span>
+                        
+                    </a>
+                
+                <!-- navbar link -->
+                <!--<a class="navbar-item">
+                Home
+            </a>-->
+            </div>
+            <!-- i18n switch -->
+            <div class="navbar-end">
+                <!--<div class="navbar-item">
+                    <div class="dropdown is-right is-hoverable">
+                        <div class="dropdown-trigger">
+                            <button class="button" id="navbar-i18n-btn">
+                                <span class="icon is-small">
+                                    <i class="fas fa-globe-americas" aria-hidden="true"></i>
+                                </span>
+                                <span>Language</span>
+                                <span class="icon is-small">
+                                    <i class="fas fa-angle-down" aria-hidden="true"></i>
+                                </span>
+                            </button>
+                        </div>
+                        <div class="dropdown-menu">
+                            <div class="dropdown-content">
+                                <a href="#" class="dropdown-item">
+                                    Dropdown item
+                                </a>
+                                <a class="dropdown-item">
+                                    Other dropdown item
+                                </a>
+                                <a href="#" class="dropdown-item">
+                                    Active dropdown item
+                                </a>
+                                <a href="#" class="dropdown-item">
+                                    Other dropdown item
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>-->
+            </div>
+        </div>
+    </div>
+</nav>
+
+
+    <div class="container-fluid">
+        <section class="main-content">
+            
+
+
+<aside class="doku-sidebar" id="doku-sidebar">
+    <div class="doku-sidebar-content">
+        <div class="menu">
+            
+                <ul class="menu-list is-hidden-desktop">
+                    
+                        
+                            <li><a href="/">OpenCore 参考手册(简体中文)</span></a></li>
+                        
+                    
+                        
+                            <li><a href="/search.html">站内搜索</span></a></li>
+                        
+                    
+                        
+                            <li><a href="https://github.com/SukkaW/OpenCore-Document-zh_Hans" target="_blank" rel="noopener">GitHub</span></a></li>
+                        
+                    
+                </ul>
+            
+            <hr class="is-hidden-desktop">
+            
+                
+                    <ul class="menu-list">
+                        
+                            <li><a  href="/">0. 首页</a></li>
+                        
+                            <li><a  href="/1-introduction.html">1. 简介</a></li>
+                        
+                            <li><a  href="/2-configuration.html">2. 配置</a></li>
+                        
+                            <li><a  href="/3-setup.html">3. Setup</a></li>
+                        
+                            <li><a  href="/4-acpi.html">4. ACPI</a></li>
+                        
+                            <li><a  href="/5-booter.html">5. Booter</a></li>
+                        
+                            <li><a  href="/6-device-properties.html">6. DeviceProperties</a></li>
+                        
+                            <li><a  href="/7-kernel.html">7. Kernel</a></li>
+                        
+                            <li><a  href="/8-misc.html">8. Misc</a></li>
+                        
+                            <li><a  href="/9-nvram.html">9. NVRAM</a></li>
+                        
+                            <li><a  href="/10-platform-info.html">10. PlatformInfo</a></li>
+                        
+                            <li><a  href="/11-uefi.html">11. UEFI</a></li>
+                        
+                            <li><a  href="/12-troubleshooting.html">12. 排错</a></li>
+                        
+                            <li><a class="is-current" href="/kextlist.html">附录 1. OpenCore 兼容 Kext 列表</a></li>
+                        
+                    </ul>
+                
+            
+        </div>
+    </div>
+</aside>
+
+            <main class="is-paddingless doku-main-wrapper" id="doku-main">
+                
+
+<article class="doku-document-container clearfix">
+    <header class="hero is-light" id="doku-document-hero">
+        <div class="hero-body">
+            <h1 class="title">附录 1. OpenCore 兼容 Kext 列表</h1>
+            
+                <p class="subtitle">OpenCore 支持的内核驱动 (Kext) 及其用途</p>
+            
+            
+                
+                    <p><small>由 Sukka 整理，感谢黑果小兵的博客提供的资料。</small></p>
+                
+                
+                    <p><small>本页面最后更新于 2020 年 02 月 15 日</small></p>
+                
+                <br>
+            
+            
+                <a href="https://github.com/sukkaw/OpenCore-Document-zh_Hans/tree/master/source/kextlist.md" target="_blank" rel="external nofollow noreferrer noopener" class="button is-small is-rounded is-black"><span class="icon is-small"><i class="fab fa-github"></i></span><span>在 GitHub 上编辑</span></a>
+            
+        </div>
+    </header>
+    <div class="columns">
+        <div class="column is-9-tablet doku-document-wrapper">
+            <div class="content">
+                <h2 id="有线网卡"><a href="#有线网卡" class="headerlink" title="有线网卡"></a>有线网卡</h2><ul>
+<li><a href="https://www.realtek.com/en/directly-download" target="_blank" rel="noopener">AppleRTL8169Ethernet</a> — Realtek RTL8169 官方驱动，通过电子邮件发送下载链接</li>
+<li><a href="https://github.com/Mieze/AtherosE2200Ethernet" target="_blank" rel="noopener">AtherosE2200Ethernet.kext</a> — 高通 Atheros Killer E2200 系列驱动</li>
+<li><a href="https://github.com/al3xtjames/AtherosL1cEthernet" target="_blank" rel="noopener">AtherosL1cEthernet.kext</a> — 高通 Atheros AR813x/815x 驱动</li>
+<li><a href="https://github.com/acidanthera/IntelMausi" target="_blank" rel="noopener">IntelMausi.kext</a> — 由 Acidanthera 维护的英特尔有线网卡驱动</li>
+<li><a href="https://github.com/Mieze/IntelMausiEthernet" target="_blank" rel="noopener">IntelMausiEthernet.kext</a> — 由原作者（Mieze）英特尔有线网卡</li>
+<li><a href="https://github.com/RehabMan/OS-X-Null-Ethernet" target="_blank" rel="noopener">NullEthernetInjector.kext</a> — RehabMan 提供的仿冒内建网卡</li>
+<li><a href="https://github.com/SergeySlice/RealtekLANv3" target="_blank" rel="noopener">RealtekR1000SL.kext</a> — Realtek 8111B/C/D/E/EP/F/G/GU/8411B 系列驱动</li>
+<li><a href="https://github.com/Mieze/RealtekRTL8100" target="_blank" rel="noopener">RealtekRTL8100.kext</a> — Realtek RTL810X 系列驱动</li>
+<li><a href="https://github.com/Mieze/RTL8111_driver_for_OS_X" target="_blank" rel="noopener">RealtekRTL8111.kext</a> — Realtek RTL8111/8168 系列驱动</li>
+</ul>
+<h2 id="Wi-Fi-和蓝牙"><a href="#Wi-Fi-和蓝牙" class="headerlink" title="Wi-Fi 和蓝牙"></a>Wi-Fi 和蓝牙</h2><ul>
+<li><a href="https://i.applelife.ru/2018/12/442854_AirPortAtheros40.kext.zip" target="_blank" rel="noopener">AirPortAtheros40.kext</a> — 高通 Atheros AR92xx/AR93xx 驱动，仅适用于 macOS 10.13.6 和 macOS 10.14+</li>
+<li><a href="https://github.com/acidanthera/AirportBrcmFixup" target="_blank" rel="noopener">AirportBrcmFixup.kext</a> — 非苹果官方博通网卡修复</li>
+<li><a href="https://github.com/chunnann/ATH9KFixup" target="_blank" rel="noopener">ATH9KFixup.kext</a> — 高通 Atheros AR9xxx 无线网卡修复</li>
+<li><a href="https://github.com/acidanthera/BrcmPatchRAM" target="_blank" rel="noopener">BrcmPatchRAM.kext</a> — 博通网卡蓝牙固件</li>
+<li><a href="https://github.com/acidanthera/BT4LEContinuityFixup" target="_blank" rel="noopener">BT4LEContinuityFixup.kext</a> — IOBluetoothFamily 修补</li>
+<li><a href="https://d86o2zu8ugzlg.cloudfront.net/mediatek-craft/drivers/MT7612_7610U_D5.0.1.25_SDK1.0.2.18_UI5.0.0.27_20151209.zip" target="_blank" rel="noopener">MT7610</a> — 联发科 MT7610 官方驱动</li>
+<li><a href="https://d86o2zu8ugzlg.cloudfront.net/mediatek-craft/drivers/RTUSB_D2870-4.2.9.2_UI-4.0.9.6_2013_11_29.zip" target="_blank" rel="noopener">RT5370</a> — 联发科 RT5370 官方驱动</li>
+<li><a href="https://drive.google.com/file/d/1ZtdMqlvKBbHULJhl1u9omuLOy6j0vx48/view?usp=sharing" target="_blank" rel="noopener">RTL8192CU</a> — Realtek RTL8192CU 驱动</li>
+</ul>
+<blockquote>
+<p>译者注：上述链接为 Google Drive 分享，直链下载地址：</p>
+<ul>
+<li><a href="/download/RTL8192CU/10.6/RTL8192CUs.kext.zip">macOS 10.6</a></li>
+<li><a href="/download/RTL8192CU/10.9/RTL8192CU9.kext.zip">macOS 10.9</a></li>
+</ul>
+</blockquote>
+<h2 id="键盘、鼠标和触摸设备"><a href="#键盘、鼠标和触摸设备" class="headerlink" title="键盘、鼠标和触摸设备"></a>键盘、鼠标和触摸设备</h2><ul>
+<li><a href="https://osxlatitude.com/forums/topic/1948-elan-focaltech-and-synaptics-smart-touchpad-driver-mac-os-x/" target="_blank" rel="noopener">ApplePS2SmartTouchPad.kext</a> — 触摸板和键盘</li>
+<li><a href="https://github.com/osy86/GK701HIDDevice" target="_blank" rel="noopener">GK701HIDDevice.kext</a> — 华硕 Fn 键、键盘背光灯和环境光传感器 驱动</li>
+<li><a href="https://github.com/al3xtjames/NoTouchID" target="_blank" rel="noopener">NoTouchID.kext</a> — 禁用 Touch ID 检测</li>
+<li><a href="https://github.com/Goldfish64/SerialMouse" target="_blank" rel="noopener">SerialMouse.kext</a> — 使用 Microsoft 串行鼠标协议的串行鼠标驱动</li>
+<li><a href="https://github.com/alexandred/VoodooI2C" target="_blank" rel="noopener">VoodooI2C.kext</a> — I2C 触摸板/屏 驱动</li>
+<li><a href="https://github.com/acidanthera/VoodooPS2" target="_blank" rel="noopener">VoodooPS2Controller.kext</a> — PS2 键盘/触摸板 驱动</li>
+<li><a href="https://github.com/acidanthera/VoodooInput" target="_blank" rel="noopener">VoodooInput.kext</a> — 为 PS2 键盘/触摸板 提供模拟 Magic TrackPad 2 触控模拟</li>
+</ul>
+<h2 id="Video-and-audio"><a href="#Video-and-audio" class="headerlink" title="Video and audio"></a>Video and audio</h2><ul>
+<li><a href="https://github.com/acidanthera/AppleALC" target="_blank" rel="noopener">AppleALC.kext</a> — 定制万能声卡驱动</li>
+<li><a href="https://github.com/Wouter1/EMU-driver" target="_blank" rel="noopener">EMUUSBAudio.kext</a> — 适用于 Creative Labs EMU USB 的驱动程序</li>
+<li><a href="https://github.com/kxproject/kx-audio-driver" target="_blank" rel="noopener">kXAudioDriver.kext</a> — 适用于 kX 音频设备的驱动</li>
+<li><a href="https://www.nvidia.com/object/mac-driver-archive.html" target="_blank" rel="noopener">Nvidia CUDA drivers</a> — NVIDIA CUDA 官方驱动</li>
+<li><a href="https://gfe.nvidia.com/mac-update" target="_blank" rel="noopener">Nvidia Web-drivers</a> — NVIDIA 显卡官方驱动</li>
+<li><a href="https://github.com/Andrej-Antipov/SNBGraphicsMojaveInstaller" target="_blank" rel="noopener">SNBGraphicsMojaveInstaller</a> — 二代酷睿核显驱动，仅适用于 macOS 10.13.6 和 macOS 10.14+</li>
+<li><a href="https://sourceforge.net/projects/voodoohda/" target="_blank" rel="noopener">VoodooHDA.kext</a> — 万能声卡驱动</li>
+<li><a href="https://github.com/acidanthera/WhateverGreen" target="_blank" rel="noopener">WhateverGreen.kext</a> — 显卡补丁驱动</li>
+<li><a href="https://github.com/osy86/Polaris22Fixup" target="_blank" rel="noopener">Polaris22Fixup.kext</a> — Polaris22/VegaM 显卡修复</li>
+</ul>
+<h2 id="CPU-和-SMC"><a href="#CPU-和-SMC" class="headerlink" title="CPU 和 SMC"></a>CPU 和 SMC</h2><ul>
+<li><a href="https://github.com/acidanthera/bugtracker/issues/424#issuecomment-535624313" target="_blank" rel="noopener">AppleMCEReporterDisabler.kext</a></li>
+<li><a href="https://github.com/hieplpvip/AsusSMC" target="_blank" rel="noopener">AsusSMC.kext</a> — 为 ASUS 笔记本电脑上的 ALS、键盘背光、Fn 键提供支持 VirtualSMC 插件</li>
+<li><a href="https://github.com/acidanthera/CPUFriend" target="_blank" rel="noopener">CPUFriend.kext</a> - CPU 变频管理</li>
+<li><a href="https://github.com/CloverHackyColor/FakeSMC3_with_plugins" target="_blank" rel="noopener">FakeSMC.kext 以及配套传感器驱动</a> — Clover 官方的 FakeSMC</li>
+<li><a href="https://github.com/headkaze/HWPEnable" target="_blank" rel="noopener">HWPEnabler.kext</a> — 启用 HWP 驱动</li>
+<li><a href="https://www.insanelymac.com/forum/topic/329704-opcode-emulator-opemu-plug-in-project/" target="_blank" rel="noopener">OpcodeEmulator.kext</a> — Opcode 模拟驱动</li>
+<li><a href="https://github.com/interferenc/TSCAdjustReset" target="_blank" rel="noopener">TSCAdjustReset.kext</a> — TSC 频率同步驱动</li>
+<li><a href="https://github.com/acidanthera/VirtualSMC" target="_blank" rel="noopener">VirtualSMC.kext 以及配套传感器驱动</a></li>
+<li><a href="https://github.com/RehabMan/VoodooTSCSync" target="_blank" rel="noopener">VoodooTSCSync.kext</a> — 由 Rehabman 提供的 TSC 频率同步驱动</li>
+</ul>
+<h2 id="USB-and-other-ports"><a href="#USB-and-other-ports" class="headerlink" title="USB and other ports"></a>USB and other ports</h2><ul>
+<li><a href="https://github.com/the-darkvoid/macOS-IOElectrify" target="_blank" rel="noopener">IOElectrify.kext</a> — 在雷电 3 设备上启用常开电源</li>
+<li><a href="https://applelife.ru/posts/537459" target="_blank" rel="noopener">Legacy_InternalHub-EHCx.kext</a></li>
+<li><a href="https://applelife.ru/posts/537459" target="_blank" rel="noopener">Legacy_USB3.kext</a></li>
+<li><a href="https://github.com/acidanthera/NVMeFix" target="_blank" rel="noopener">NVMeFix.kext</a> — 由 acidanthera 提供的改善第三方 SSD 兼容性的驱动程序</li>
+<li><a href="https://github.com/osy86/USBWakeFixup" target="_blank" rel="noopener">USBWakeFixup.kext</a> — 修复 Skylake 平台 USB 唤醒黑屏</li>
+<li><a href="https://github.com/dukzcry/osx-goodies" target="_blank" rel="noopener">SASMegaRAID.kext</a> — LSI MegaRAID SAS 系列 RAID 控制器驱动</li>
+<li><a href="https://www.insanelymac.com/forum/topic/321080-sineteks-driver-for-realtek-rtsx-sdhc-card-readers/?do=findComment&comment=2376387" target="_blank" rel="noopener">Sinetek-rtsx.kext</a> — Realtek RTSX SDHC 读卡器驱动</li>
+<li><a href="https://github.com/lvs1974/VoodooSDHCMod" target="_blank" rel="noopener">VoodooSDHC.kext</a> — SDHC 读卡器驱动</li>
+</ul>
+<h2 id="Other-kexts"><a href="#Other-kexts" class="headerlink" title="Other kexts"></a>Other kexts</h2><ul>
+<li><a href="https://github.com/headkaze/AppleIntelInfo" target="_blank" rel="noopener">AppleIntelInfo.kext</a> — CPU / 核显 变频测试</li>
+<li><a href="https://github.com/acidanthera/DebugEnhancer" target="_blank" rel="noopener">DebugEnhancer.kext</a> — macOS 内核调试输出驱动</li>
+<li><a href="https://github.com/acidanthera/HibernationFixup" target="_blank" rel="noopener">HibernationFixup.kext</a> — 修复因 RTC 变量和 NVRAM 造成的睡眠问题</li>
+<li><a href="https://github.com/acidanthera/Lilu" target="_blank" rel="noopener">Lilu.kext</a> — SDK &amp; Library</li>
+<li><a href="https://github.com/PMheart/LiluFriend" target="_blank" rel="noopener">LiluFriend.kext</a> — 用于确保 Lilu 在 L/E 下正常加载</li>
+<li><a href="https://github.com/lvs1974/RTCMemoryFixup" target="_blank" rel="noopener">RTCMemoryFixup.kext</a> — 修复 BIOS CMOS (RTC) 内存和 AppleRTC 之间的冲突问题</li>
+<li><a href="https://github.com/0xFireWolf/NightShiftUnlocker" target="_blank" rel="noopener">NightShiftUnlocker.kext</a> — 解锁 NightShift</li>
+<li><a href="https://www.applelife.ru/threads/asus-x550vc-i-asus-x550cc.41752/page-130#post-593586" target="_blank" rel="noopener">WebCamera.kext</a> — 某些旧设备的摄像头驱动</li>
+</ul>
+
+            </div>
+
+            <ul class="doku-pagination">
+            <li class="page-item page-prev">
+                <a href="/12-troubleshooting.html">
+                    <div class="page-item-subtitle"><span class="icon is-small"><i class="fas fa-arrow-left"></i></span> <span>前一页</span></div>
+                    <div class="page-item-title h5">12. 排错</div>
+                </a>
+            </li></ul>
+        </div>
+        
+        <div class="column is-3 is-narrow-touch is-hidden-mobile">
+            <aside class="doku-document-toc" id="doku-document-toc">
+                <div class="doku-document-toc-content">
+                    <p class="doku-document-toc-title">目录</p>
+                    <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#有线网卡"><span class="post-toc-text">有线网卡</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#Wi-Fi-和蓝牙"><span class="post-toc-text">Wi-Fi 和蓝牙</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#键盘、鼠标和触摸设备"><span class="post-toc-text">键盘、鼠标和触摸设备</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#Video-and-audio"><span class="post-toc-text">Video and audio</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#CPU-和-SMC"><span class="post-toc-text">CPU 和 SMC</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#USB-and-other-ports"><span class="post-toc-text">USB and other ports</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#Other-kexts"><span class="post-toc-text">Other kexts</span></a></li></ol>
+                </div>
+            </aside>
+        </div>
+        
+    </div>
+</article>
+
+                <footer>
+    <div class="doku-footer-container is-clearfix">
+        <div class="doku-footer-item is-pulled-left">&copy; <span id="doku-copyrght-year"></span> <a href="/">OpenCore 简体中文参考手册(非官方)</a></div>
+
+        <div class="doku-footer-item is-pulled-right">Powered by <a href="https://hexo.io" target="_blank" rel="external noopenner nofollow">Hexo</a> & <a href="https://github.com/SukkaW/hexo-theme-doku" target="_blank" rel="external noopenner nofollow">Doku</a></div>
+    </div>
+</footer>
+
+            </main>
+        </section>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/stickyfilljs@2.1.0/dist/stickyfill.min.js"></script>
+    <script src="/theme-doku/js/doku.js"></script>
+</body>
+
+</html>

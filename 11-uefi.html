@@ -169,6 +169,8 @@
                         
                             <li><a  href="/12-troubleshooting.html">12. 排错</a></li>
                         
+                            <li><a  href="/kextlist.html">附录 1. OpenCore 兼容 Kext 列表</a></li>
+                        
                     </ul>
                 
             
@@ -191,7 +193,7 @@
                     <p><small>由 xMuu 整理，由 Sukka 翻译</small></p>
                 
                 
-                    <p><small>本页面最后更新于 2020 年 02 月 14 日</small></p>
+                    <p><small>本页面最后更新于 2020 年 02 月 15 日</small></p>
                 
                 <br>
             
@@ -214,9 +216,9 @@
 <li><a href="https://github.com/acidanthera/OcSupportPkg" target="_blank" rel="noopener"><code>FwRuntimeServices</code></a> — <code>OC_FIRMWARE_RUNTIME</code> 协议通过支持只读、只写 NVRAM 变量，提升了 OpenCore 和 Lilu 的安全性。有些 Quirks 如 <code>RequestBootVarRouting</code> 依赖此驱动程序。<br>由于 runtime 驱动饿性质（与目标操作系统并行运行），因此它不能在 OpenCore 本身实现，而是与 OpenCore 捆绑在一起。</li>
 <li><a href="https://github.com/acidanthera/audk" target="_blank" rel="noopener"><code>EnhancedFatDxe</code></a> — 来自 <code>FatPkg</code> 的 FAT 文件系统驱动程序。这个驱动程序已经被嵌入到所有 UEFI 固件中，无法为 OpenCore 使用。众所周知，许多固件的 FAT 支持实现都有错误，导致在尝试写操作时损坏文件系统。如果在引导过程中需要写入 EFI 分区，则可能组要将此驱动程序嵌入固件中。</li>
 <li><a href="https://github.com/acidanthera/audk" target="_blank" rel="noopener"><code>NvmExpressDxe</code></a> — 来自<code>MdeModulePkg</code> 的 NVMe 驱动程序。从 Broadwell 一代开始的大多数固件都包含此驱动程序。对于 Haswell 以及更早的版本，如果安装了 NVMe SSD 驱动器，则将其嵌入固件中可能会更理想。</li>
-<li><a href="https://github.com/acidanthera/OcSupportPkg" target="_blank" rel="noopener"><code>AppleUsbKbDxe</code></a> — USB 键盘驱动在自定义 USB 键盘驱动程序的基础上新增了对 <code>AppleKeyMapAggregator</code> 协议的支持。这是内置的 <code>KeySupport</code> 的替代方案。根据固件不同，可能会更好或者更糟。</li>
-<li><a href="https://github.com/acidanthera/AppleSupportPkg" target="_blank" rel="noopener"><code>VBoxHfs</code></a> — 带有 bless 支持的 HFS 文件系统驱动。是 Apple 固件中 <code>HFSPlus</code> 驱动的开源替代。虽然功能完善，但是比 <code>HFSPlus</code> 慢三倍，并且尚未经过安全审核。</li>
-<li><a href="https://github.com/acidanthera/audk" target="_blank" rel="noopener"><code>XhciDxe</code></a> — 来自 <code>MdeModulePkg</code> 的 XHCI USB controller 驱动程序。从 Sandy Bridge 代开始的大多数固件中都包含此驱动程序。 对于较早的固件或旧系统，它可以用于支持外部 USB 3.0 PCI 卡。</li>
+<li><a href="https://github.com/acidanthera/OcSupportPkg" target="_blank" rel="noopener"><code>AppleUsbKbDxe</code></a> — USB 键盘驱动在自定义 USB 键盘驱动程序的基础上新增了对 <code>AppleKeyMapAggregator</code> 协议的支持。这是内置的 <code>KeySupport</code> 的等效替代方案。根据固件不同，效果可能会更好或者更糟。</li>
+<li><a href="https://github.com/acidanthera/AppleSupportPkg" target="_blank" rel="noopener"><code>VBoxHfs</code></a> — 带有 bless 支持的 HFS 文件系统驱动。是 Apple 固件中 <code>HFSPlus</code> 驱动的开源替代。虽然功能完善，但是启动速度比 <code>HFSPlus</code> 慢三倍，并且尚未经过安全审核。</li>
+<li><a href="https://github.com/acidanthera/audk" target="_blank" rel="noopener"><code>XhciDxe</code></a> — 来自 <code>MdeModulePkg</code> 的 XHCI USB controller 驱动程序。从 Sandy Bridge 代开始的大多数固件中都包含此驱动程序。在较早的固件或旧系统可以用于支持外部 USB 3.0 PCI 卡。</li>
 </ul>
 <p>要从 UDK（EDK II）编译驱动程序，可以使用编译 OpenCore 类似的命令。</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs bash">git <span class="hljs-built_in">clone</span> https://github.com/acidanthera/audk UDK<br><span class="hljs-built_in">cd</span> UDK<br><span class="hljs-built_in">source</span> edksetup.sh<br>make -C BaseTools<br>build -a X64 -b RELEASE -t XCODE5 -p FatPkg/FatPkg.dsc<br>build -a X64 -b RELEASE -t XCODE5 -p MdeModulePkg/MdeModulePkg.dsc<br></code></pre></td></tr></table></figure>
