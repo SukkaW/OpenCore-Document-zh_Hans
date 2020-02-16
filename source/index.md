@@ -38,6 +38,9 @@ type: docs
 
 - [OpenCore 官方文档](https://github.com/acidanthera/OpenCorePkg/blob/master/Docs/Configuration.pdf)
 - [OpenCore 官方文档迭代](https://github.com/acidanthera/OpenCorePkg/blob/master/Docs/Differences/Differences.pdf)
+- [OpenCore Vanilla Guide](https://khronokernel.github.io/Opencore-Vanilla-Desktop-Guide/) --- 从零开始的 OpenCore 台式机安装指南。本网站由考虑提供对该指南的简体中文翻译
+- [精解 OpenCore | 黑果小兵](https://blog.daliansky.net/OpenCore-BootLoader.html) --- 本网站的部分翻译参考的就是黑果小兵的这篇文章
+- [使用 OpenCore 引导黑苹果 | Xjn's Blog](https://blog.xjn819.com/?p=543) --- 提供了很多排错和完善的指南
 
 ## 维护者
 

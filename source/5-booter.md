@@ -194,7 +194,7 @@ Try to ensure that `ExitBootServices` call succeeds even with outdated MemoryMap
 
 Select firmwares access memory by virtual addresses after `SetVirtualAddresses` call, which results in early boot crashes. This quirk workarounds the problem by performing early boot identity mapping of assigned virtual addresses to physical memory.
 
-*注*：是否启用这个 Quirks 取决于你是否遇到了 Early Boot 故障。
+*注*：是否启用这个 Quirks 取决于你是否遇到了 Early Boot 故障。目前具有内存保护支持的新固件（例如 OVMF ）由于一些原因不支持此 Quirks：[acidanthera/bugtracker#719](https://github.com/acidanthera/bugtracker/issues/719)。
 
 ### 5.4.13 `ShrinkMemoryMap`
 

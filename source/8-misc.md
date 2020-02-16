@@ -51,7 +51,7 @@ Designed to be filled with `plist dict` values, describing each load entry. See 
 
 ## 8.3 Boot Properties
 
-### 1. `HibernateMode`
+### `HibernateMode`
 
 **Type**: `plist string`
 **Failsafe**: `None`
@@ -62,13 +62,31 @@ Designed to be filled with `plist dict` values, describing each load entry. See 
 - `RTC` --- 从 RTC 检测
 - `NVRAM` --- 从 NVRAM 检测
 
-### 2. `HideSelf`
+### `HideAuxiliary`
+
+**Type**: `plist boolean`
+**Failsafe**: `false`
+**Description**: 默认情况下，隐藏开机引导项菜单中的辅助条目。
+
+满足任一以下条件的引导项条目即会被视为「辅助项目」
+
+- 该引导项是 macOS Recovery 分区
+- 该引导项被标记为 `Auxiliary`
+- 该引导项是一个系统（如 `Clean NVRAM`）
+
+即使被隐藏，你仍然可以通过以下任一的方法查看所有条目（引导项菜单会被重新加载）：
+
+- 使用 `Esc`、`0` 或 `空格` 键
+
+一般的，隐藏这些辅助条目有助于加快启动速度。
+
+### `HideSelf`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
 **Description**: 在 OpenCore 的启动选择中隐藏自身 EFI 分区内的其它启动项，如 UEFI OS 等。
 
-### 3. `PickerAttributes`
+### `PickerAttributes`
 
 **Type**: `plist integer`
 **Failsafe**: `0`
@@ -104,7 +122,7 @@ Builtin picker supports colour arguments as a sum of foreground and background c
 *注*：This option may not work well with `System` text renderer.
 Setting a background different from black could help testing proper GOP functioning.
 
-### 4. `PollAppleHotKeys`
+### `PollAppleHotKeys`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
@@ -122,13 +140,13 @@ On some firmwares it may be problematic to use modifier keys due to driver incom
 - `CMD+V` --- 启用 `-v`。
 - `Shift` --- 启用安全模式。
 
-### 5. `ShowPicker`
+### `ShowPicker`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
 **Description**: 是否显示开机引导项。
 
-### 6. `TakeoffDelay`
+### `TakeoffDelay`
 
 **Type**: `plist integer`, 32 bit
 **Failsafe**: `0`
@@ -139,12 +157,12 @@ Introducing a delay may give extra time to hold the right `action hotkey` sequen
 
 > 译者注：`0` 为关闭倒计时而非跳过倒计时，相当于 Clover 的 `-1`。
 
-### 7. `Timeout`
+### `Timeout`
 **Type**: `plist integer`, 32 bit
 **Failsafe**: `0`
 **Description**: Timeout in seconds in boot picker before automatic booting of the default boot entry. Use 0 to disable timer.
 
-### 8. `PickerMode`
+### `PickerMode`
 **Type**: `plist string`
 **Failsafe**: `Builtin`
 **Description**: Choose boot picker used for boot management.
@@ -382,23 +400,28 @@ Third party drivers may introduce additional security (and performance) measures
 
 ## 8.6 Entry Properties
 
-### 1. `Arguments`
+### `Arguments`
 **Type**: `plist string`
 **Failsafe**: Empty string
 **Description**: Arbitrary ASCII string used as boot arguments (load options) of the specified entry.
 
-### 2. `Comment`
+### Auxiliary
+**Type**: `plist boolean`
+**Failsafe**: false
+**Description**: This entry will not be listed by default when `HideAuxiliary` is set to `true`.
+
+### `Comment`
 **Type**: `plist string`
 **Failsafe**: Empty string
 **Description**: Arbitrary ASCII string used to provide human readable reference for the entry. It is implementation defined whether this value is used.
 
-### 3. `Enabled`
+### `Enabled`
 **Type**: `plist boolean`
 **Failsafe**: `false`
 **Description**: This entry will not be listed unless set to
 `true`.
 
-### 4. `Name`
+### `Name`
 **Type**: `plist string`
 **Failsafe**: Empty string
 **Description**: Human readable entry name displayed in boot picker.

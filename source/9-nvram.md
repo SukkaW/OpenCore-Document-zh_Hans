@@ -120,6 +120,7 @@ The following variables are recommended for faster startup or other improvements
  ASCII string defining FireWire security mode. Legacy, can be found in IOFireWireFamily source code in [IOFireWireController.cpp](https://opensource.apple.com/source/IOFireWireFamily/IOFireWireFamily-473/IOFireWireFamily.kmodproj/IOFireWireController.cpp.auto.html). It is recommended not to set this variable, which may speedup system startup. Setting to `full` is equivalent to not setting the variable and `none` disables FireWire security.
 - `4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14:UIScale`
  One-byte data defining boot.efi user interface scaling. Should be **01** for normal screens and **02** for HiDPI screens.
+- `4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14:DefaultBackgroundColor` Four-byte `RGBA` data defining boot.efi user interface background colour. Standard colours include `BF BF BF 00` (Light Gray) and `00 00 00 00}` (Syrah Black). Other colours may be set at user's preference.
 
 
 ## 9.5 Other Variables
