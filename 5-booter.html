@@ -268,7 +268,7 @@
 <p><em>注</em>: OpenCore 会自动检查是否需要启用这一选项。如果 OpenCore 的调试日志中出现 <code>OCABC: Only N/256 slide values are usable!</code> 则请启用这一选项。</p>
 <h3 id="5-4-12-SetupVirtualMap"><a href="#5-4-12-SetupVirtualMap" class="headerlink" title="5.4.12 SetupVirtualMap"></a>5.4.12 <code>SetupVirtualMap</code></h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: <code>false</code><br><strong>Description</strong>: 将 <code>SetVirtualAddresses</code> 调用修复为虚拟地址.</p>
 <p>Select firmwares access memory by virtual addresses after <code>SetVirtualAddresses</code> call, which results in early boot crashes. This quirk workarounds the problem by performing early boot identity mapping of assigned virtual addresses to physical memory.</p>
-<p><em>注</em>：是否启用这个 Quirks 取决于你是否遇到了 Early Boot 故障。</p>
+<p><em>注</em>：是否启用这个 Quirks 取决于你是否遇到了 Early Boot 故障。目前具有内存保护支持的新固件（例如 OVMF ）由于一些原因不支持此 Quirks：<a href="https://github.com/acidanthera/bugtracker/issues/719" target="_blank" rel="noopener">acidanthera/bugtracker#719</a>。</p>
 <h3 id="5-4-13-ShrinkMemoryMap"><a href="#5-4-13-ShrinkMemoryMap" class="headerlink" title="5.4.13 ShrinkMemoryMap"></a>5.4.13 <code>ShrinkMemoryMap</code></h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: <code>false</code><br><strong>Description</strong>: 尝试合并相似的内存映射条目。</p>
 <p>Select firmwares have very large memory maps, which do not fit Apple kernel, permitting up to <code>64</code> slots for runtime memory. This quirk attempts to unify contiguous slots of similar types to prevent boot failures.</p>
 <p><em>注</em>: 是否启用这个 Quirks 取决于你是否遇到了 Early Boot 故障。Haswell 及更新版本一般都不需要启用。除非你完全了解这一选项及其后果，否则请勿使用。</p>
