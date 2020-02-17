@@ -3,7 +3,7 @@ title: 8. Misc
 description: 杂项（待翻译）
 type: docs
 author_info: 由 xMuu、Sukka 整理、由 Sukka 翻译。
-last_updated: 2020-02-14
+last_updated: 2020-02-17
 ---
 
 ## 8.1 Introduction
@@ -74,11 +74,9 @@ Designed to be filled with `plist dict` values, describing each load entry. See 
 - 该引导项被标记为 `Auxiliary`
 - 该引导项是一个系统（如 `Clean NVRAM`）
 
-即使被隐藏，你仍然可以通过以下任一的方法查看所有条目（引导项菜单会被重新加载）：
+即使被隐藏，你仍然可以通过 `空格` 进入「扩展模式」查看所有条目（引导项菜单会被重新加载）：
 
-- 使用 `Esc`、`0` 或 `空格` 键
-
-一般的，隐藏这些辅助条目有助于加快启动速度。
+一般的，隐藏辅助条目有助于加快启动速度。
 
 ### `HideSelf`
 

@@ -2,8 +2,8 @@
 title: 11. UEFI
 description: UEFI 驱动以及加载顺序（待翻译）
 type: docs
-author_info: 由 xMuu 整理，由 Sukka 翻译
-last_updated: 2020-02-15
+author_info: 由 xMuu、Sukka 整理，由 Sukka 翻译
+last_updated: 2020-02-17
 ---
 
   ## 11.1 Introduction
@@ -203,13 +203,12 @@ build -a X64 -b RELEASE -t XCODE5 -p MdeModulePkg/MdeModulePkg.dsc
 *注*：This option only applies to `System` renderer.
 
 ### 5. `DirectGopRendering`
+
 **Type**: `plist boolean`
 **Failsafe**: `false`
 **Description**: Use builtin graphics output protocol renderer for console.
 
-  On some firmwares this may provide better performance or even fix rendering issues,
-  but in general it is recommended not to use this option unless there is obvious
-  benefit.
+On some firmwares this may provide better performance or even fix rendering issues, like on `MacPro5,1`. However it is recommended not to use this option unless there is an obvious benefit as it may even result in slower scrolling.
 
 ### 6. `IgnoreTextInGraphics`
 **Type**: `plist boolean`
