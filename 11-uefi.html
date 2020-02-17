@@ -190,10 +190,10 @@
             
             
                 
-                    <p><small>由 xMuu 整理，由 Sukka 翻译</small></p>
+                    <p><small>由 xMuu、Sukka 整理，由 Sukka 翻译</small></p>
                 
                 
-                    <p><small>本页面最后更新于 2020 年 02 月 15 日</small></p>
+                    <p><small>本页面最后更新于 2020 年 02 月 17 日</small></p>
                 
                 <br>
             
@@ -285,7 +285,7 @@
 <h3 id="4-ClearScreenOnModeSwitch"><a href="#4-ClearScreenOnModeSwitch" class="headerlink" title="4. ClearScreenOnModeSwitch"></a>4. <code>ClearScreenOnModeSwitch</code></h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: <code>false</code><br><strong>Description</strong>: Some firmwares clear only part of screen when switching from graphics to text mode, leaving a fragment of previously drawn image visible. This option fills the entire graphics screen with black color before switching to text mode.</p>
 <p><em>注</em>：This option only applies to <code>System</code> renderer.</p>
 <h3 id="5-DirectGopRendering"><a href="#5-DirectGopRendering" class="headerlink" title="5. DirectGopRendering"></a>5. <code>DirectGopRendering</code></h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: <code>false</code><br><strong>Description</strong>: Use builtin graphics output protocol renderer for console.</p>
-<p>  On some firmwares this may provide better performance or even fix rendering issues,<br>  but in general it is recommended not to use this option unless there is obvious<br>  benefit.</p>
+<p>On some firmwares this may provide better performance or even fix rendering issues, like on <code>MacPro5,1</code>. However it is recommended not to use this option unless there is an obvious benefit as it may even result in slower scrolling.</p>
 <h3 id="6-IgnoreTextInGraphics"><a href="#6-IgnoreTextInGraphics" class="headerlink" title="6. IgnoreTextInGraphics"></a>6. <code>IgnoreTextInGraphics</code></h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: <code>false</code><br><strong>Description</strong>: Select firmwares output text onscreen in both graphics and text mode. This is normally unexpected, because random text may appear over graphical images and cause UI corruption. Setting this option to <code>true</code> will discard all text output when console control is in mode different from <code>Text</code>.</p>
 <p><em>注</em>：This option only applies to <code>System</code> renderer.</p>
 <h3 id="7-ReplaceTabWithSpace"><a href="#7-ReplaceTabWithSpace" class="headerlink" title="7. ReplaceTabWithSpace"></a>7. <code>ReplaceTabWithSpace</code></h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: <code>false</code><br><strong>Description</strong>: Some firmwares do not print tab characters or even everything that follows them, causing difficulties or inability to use the UEFI Shell builtin text editor to edit property lists and other documents. This option makes the console output spaces instead of tabs.</p>
