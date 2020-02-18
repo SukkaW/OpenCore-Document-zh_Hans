@@ -194,7 +194,7 @@
                     <p><small>由 Sukka 整理，由 Sukka 翻译。</small></p>
                 
                 
-                    <p><small>本页面最后更新于 2020 年 02 月 14 日</small></p>
+                    <p><small>本页面最后更新于 2020 年 02 月 18 日</small></p>
                 
                 <br>
             
@@ -274,32 +274,32 @@
 <h3 id="7-6-11-Replace"><a href="#7-6-11-Replace" class="headerlink" title="7.6.11 Replace"></a>7.6.11 <code>Replace</code></h3><p><strong>Type</strong>: <code>plist data</code><br><strong>Failsafe</strong>: Empty data<br><strong>Description</strong>: Replacement data of one or more bytes.</p>
 <h3 id="7-6-12-ReplaceMask"><a href="#7-6-12-ReplaceMask" class="headerlink" title="7.6.12 ReplaceMask"></a>7.6.12 <code>ReplaceMask</code></h3><p><strong>Type</strong>: <code>plist data</code><br><strong>Failsafe</strong>: Empty data<br><strong>Description</strong>: Data bitwise mask used during replacement. Allows fuzzy replacement by updating masked (set to non-zero) bits. Can be set to empty data to be ignored. Must equal to <code>Replace</code> in size otherwise.</p>
 <h3 id="7-6-13-Skip"><a href="#7-6-13-Skip" class="headerlink" title="7.6.13 Skip"></a>7.6.13 <code>Skip</code></h3><p><strong>Type</strong>: <code>plist integer</code><br><strong>Failsafe</strong>: <code>0</code><br><strong>Description</strong>: Number of found occurrences to be skipped before replacement is done.</p>
-<h2 id="7-7-Quirks-属性"><a href="#7-7-Quirks-属性" class="headerlink" title="7.7 Quirks 属性"></a>7.7 Quirks 属性</h2><h3 id="AppleCpuPmCfgLock"><a href="#AppleCpuPmCfgLock" class="headerlink" title="AppleCpuPmCfgLock"></a><code>AppleCpuPmCfgLock</code></h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: <code>false</code><br><strong>Description</strong>: Disables <code>PKG_CST_CONFIG_CONTROL</code> (<code>0xE2</code>) MSR modification in AppleIntelCPUPowerManagement.kext, commonly causing early kernel panic, when it is locked from writing.</p>
-<p>Certain firmwares lock <code>PKG_CST_CONFIG_CONTROL</code> MSR register. To check<br>its state one can use bundled <code>VerifyMsrE2</code> tool. Select firmwares have<br>this register locked on some cores only.</p>
-<p>As modern firmwares provide <code>CFG Lock</code> setting, which allows configuring<br><code>PKG_CST_CONFIG_CONTROL</code> MSR register lock, this option should be<br>avoided whenever possible. For several APTIO firmwares not displaying<br><code>CFG Lock</code> setting in the GUI it is possible to access the option<br>directly:</p>
+<h2 id="7-7-Quirks-属性"><a href="#7-7-Quirks-属性" class="headerlink" title="7.7 Quirks 属性"></a>7.7 Quirks 属性</h2><h3 id="AppleCpuPmCfgLock"><a href="#AppleCpuPmCfgLock" class="headerlink" title="AppleCpuPmCfgLock"></a><code>AppleCpuPmCfgLock</code></h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: <code>false</code><br><strong>Description</strong>: 禁用 <code>AppleIntelCPUPowerManagement.kext</code> 中的 <code>PKG_CST_CONFIG_CONTROL</code> (<code>0xE2</code>) 修改，从而避免早期 Kernel Panic。</p>
+<p>某些固件会锁定 <code>PKG_CST_CONFIG_CONTROL</code> MSR 寄存器。可以使用捆绑的 <code>VerifyMsrE2</code> 工具检查其状态。</p>
+<p>由于现代固件已经提供了 <code>CFG Lock</code> 相关设置、从而可以配置 <code>PKG_CST_CONFIG_CONTROL</code> 寄存器锁定，此选项应该尽可能避免。对于一些不显示 <code>CFG Lock</code> 配置的固件，可以按照下述配置进行修改：</p>
 <ol>
-<li>Download <a href="https://github.com/LongSoft/UEFITool/releases" target="_blank" rel="noopener">UEFITool</a> and <a href="https://github.com/LongSoft/Universal-IFR-Extractor/releases" target="_blank" rel="noopener">IFR-Extractor</a>.</li>
-<li>Open your firmware image in UEFITool and find CFG Lock unicode string. If it is not present, your firmware may not have this option and you should stop.</li>
-<li>Extract the Setup.bin PE32 Image Section (the one UEFITool found) through Extract Body menu option.</li>
-<li>Run IFR-Extractor on the extracted file (e.g. ./ifrextract Setup.bin Setup.txt).</li>
-<li>Find CFG Lock, VarStoreInfo (VarOffset/VarName): in Setup.txt and remember the offset right after it (e.g. <code>0x123</code>).</li>
-<li>Download and run <a href="http://brains.by/posts/bootx64.7z" target="_blank" rel="noopener">Modified GRUB Shell</a> compiled by <a href="https://geektimes.com/post/258090" target="_blank" rel="noopener">brainsucker</a> or use <a href="https://github.com/datasone/grub-mod-setup_var" target="_blank" rel="noopener">a newer version</a> by <a href="https://github.com/datasone" target="_blank" rel="noopener">datasone</a>.</li>
-<li>Enter setup_var 0x123 0x00 command, where 0x123 should be replaced by your actual offset, and reboot.</li>
+<li>下载 <a href="https://github.com/LongSoft/UEFITool/releases" target="_blank" rel="noopener">UEFITool</a> 和 <a href="https://github.com/LongSoft/Universal-IFR-Extractor/releases" target="_blank" rel="noopener">IFR-Extractor</a></li>
+<li>使用 UEFITool 中打开固件镜像文件，找到 CFG Lock 的 Unicode 字符串。如果你没有找到，意味着你的固件可能不支持 CFG Lock 解锁，那么你现在可以停下来了。</li>
+<li>从 UEFITool 菜单中的 <code>Extract Body</code> 选项提取 <code>Setup.bin</code> 中的 PE32 镜像部分。</li>
+<li>对提取出来的文件执行 IFR-Extractor（<code>./ifrextract Setup.bin Setup.txt</code>）。</li>
+<li>从 Setup.txt 中找到 CFG Lock，VarStoreInfo（或者 VarOffset、VarName），记住紧随其后的偏移量值（例如 <code>0x123</code>）。</li>
+<li>下载并执行由 <a href="https://geektimes.com/post/258090" target="_blank" rel="noopener">brainsucker</a> 编译的 <a href="http://brains.by/posts/bootx64.7z" target="_blank" rel="noopener">修改版 GRUB Shell</a>。你也可以是使用 <a href="https://github.com/datasone" target="_blank" rel="noopener">datasone</a> 制作的 <a href="https://github.com/datasone/grub-mod-setup_var" target="_blank" rel="noopener">新版本 GRUB Shell</a>。</li>
+<li>在 GRUB Shell 中，使用 <code>setup_var 0x123 0x00</code>（其中 <code>0x123</code> 应该被替换为你在前几步找到的偏移值），然后重启电脑。</li>
 </ol>
-<p><strong>WARNING</strong>: Variable offsets are unique not only to each motherboard<br>but even to its firmware version. Never ever try to use an offset<br>without checking.</p>
-<h3 id="AppleXcpmCfgLock"><a href="#AppleXcpmCfgLock" class="headerlink" title="AppleXcpmCfgLock"></a><code>AppleXcpmCfgLock</code></h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: <code>false</code><br><strong>Description</strong>: Disables <code>PKG_CST_CONFIG_CONTROL</code> (<code>0xE2</code>) MSR<br>modification in XNU kernel, commonly causing early kernel panic, when it<br>is locked from writing (XCPM power management).</p>
-<p><em>注</em>：This option should be avoided whenever possible. See<br><code>AppleCpuPmCfgLock</code> description for more details.</p>
-<h3 id="AppleXcpmExtraMsrs"><a href="#AppleXcpmExtraMsrs" class="headerlink" title="AppleXcpmExtraMsrs"></a><code>AppleXcpmExtraMsrs</code></h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: <code>false</code><br><strong>Description</strong>: Disables multiple MSR access critical for select CPUs, which have no native XCPM support.</p>
-<p>This is normally used in conjunction with <code>Emulate</code> section on Haswell-E, Broadwell-E, Skylake-X, and similar CPUs. More details on the XCPM patches are outlined in <a href="https://github.com/acidanthera/bugtracker/issues/365" target="_blank" rel="noopener">acidanthera/bugtracker#365</a>.</p>
-<p><em>注</em>：Additional not provided patches will be required for Ivy Bridge or Pentium CPUs. It is recommended to use <code>AppleIntelCpuPowerManagement.kext</code> for the former.</p>
+<p><strong>警告</strong>: 可变偏移量对于每个主板乃至每一个固件版本都是唯一的。永远不要尝试使用别人的偏移量！</p>
+<h3 id="AppleXcpmCfgLock"><a href="#AppleXcpmCfgLock" class="headerlink" title="AppleXcpmCfgLock"></a><code>AppleXcpmCfgLock</code></h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: <code>false</code><br><strong>Description</strong>: 禁用 XNU 内核对 <code>PKG_CST_CONFIG_CONTROL</code> (<code>0xE2</code>) 修改，从而避免早期 Kernel Panic。</p>
+<p><em>注</em>：这一选项应该避免被使用，请参考上文中关于 <code>AppleCpuPmCfgLock</code> 的介绍。</p>
+<h3 id="AppleXcpmExtraMsrs"><a href="#AppleXcpmExtraMsrs" class="headerlink" title="AppleXcpmExtraMsrs"></a><code>AppleXcpmExtraMsrs</code></h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: <code>false</code><br><strong>Description</strong>: 对于没有 XCMP 支持的设备，禁用对选定 CPU 的多 MSR 访问。</p>
+<p>通常将其与 Haswell-E，Broadwell-E，Skylake-X和类似 CPU 的 <code>Emulate</code> 结合使用。更多关于 XCPM 修补的信息可以在 <a href="https://github.com/acidanthera/bugtracker/issues/365" target="_blank" rel="noopener">acidanthera/bugtracker#365</a> 找到。</p>
+<p><em>注</em>：Ivy Bridge 或 Pentium CPU 将需要其他未提供的补丁。建议对前者使用 <code>AppleIntelCpuPowerManagement.kext</code>。</p>
 <h3 id="AppleXcpmForceBoost"><a href="#AppleXcpmForceBoost" class="headerlink" title="AppleXcpmForceBoost"></a><code>AppleXcpmForceBoost</code></h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: <code>false</code><br><strong>Description</strong>: 在 XCPM 模式下强制使用最大性能。</p>
 <p>This patch writes <code>0xFF00</code> to <code>MSR_IA32_PERF_CONTROL</code> (<code>0x199</code>), effectively setting maximum multiplier for all the time.</p>
-<p><em>注</em>：While this may increase the performance, this patch is strongly discouraged on all systems but those explicitly dedicated to scientific or media calculations. In general only certain Xeon models benefit from the patch.</p>
+<p><em>注</em>：尽管有助于提高性能，但是在所有操作系统上都强烈建议不要启用这一选项。只有在某些 Xeon 型号的 CPU 才有可能从这个选项中受益。</p>
 <h3 id="CustomSMBIOSGuid"><a href="#CustomSMBIOSGuid" class="headerlink" title="CustomSMBIOSGuid"></a><code>CustomSMBIOSGuid</code></h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: <code>false</code><br><strong>Description</strong>: 对 UpdateSMBIOSMode 自定义模式执行 GUID 修补，通常用于戴尔笔记本电脑。</p>
-<h3 id="DisableIoMapper"><a href="#DisableIoMapper" class="headerlink" title="DisableIoMapper"></a><code>DisableIoMapper</code></h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: <code>false</code><br><strong>Description</strong>: Disables <code>IOMapper</code> support in XNU (VT-d), which may conflict with the firmware implementation.</p>
-<p><em>注</em>：This option is a preferred alternative to dropping <code>DMAR</code> ACPI table and disabling VT-d in firmware preferences, which does not break VT-d support in other systems in case they need it.</p>
-<h3 id="DummyPowerManagement"><a href="#DummyPowerManagement" class="headerlink" title="DummyPowerManagement"></a><code>DummyPowerManagement</code></h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: <code>false</code><br><strong>Description</strong>: Disables <code>AppleIntelCpuPowerManagement</code>.</p>
-<p><em>注</em>：This option is a preferred alternative to <code>NullCpuPowerManagement.kext</code> for CPUs without native power management driver in macOS.</p>
+<h3 id="DisableIoMapper"><a href="#DisableIoMapper" class="headerlink" title="DisableIoMapper"></a><code>DisableIoMapper</code></h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: <code>false</code><br><strong>Description</strong>: 禁用 XNU (VT-d) 中的 <code>IOMapper</code> 支持，这可能与固件的实现相冲突。</p>
+<p><em>注</em>：相比直接在 ACPI 表中删除 <code>DMAR</code>，我们更推荐大家使用这一选项。这样不会破坏其他操作系统中的 VT-d 支持（总会有人需要用到的，对吧？）。</p>
+<h3 id="DummyPowerManagement"><a href="#DummyPowerManagement" class="headerlink" title="DummyPowerManagement"></a><code>DummyPowerManagement</code></h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: <code>false</code><br><strong>Description</strong>: 禁用 <code>AppleIntelCpuPowerManagement</code>。</p>
+<p><em>注</em>：这一选项旨在替代 <code>NullCpuPowerManagement.kext</code>，用于 macOS 中没有电源管理驱动程序的 CPU。</p>
 <h3 id="ExternalDiskIcons"><a href="#ExternalDiskIcons" class="headerlink" title="ExternalDiskIcons"></a><code>ExternalDiskIcons</code></h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: <code>false</code><br><strong>Description</strong>: 修补 <code>AppleAHCIPort.kext</code> 图标，使 macOS 将所有 AHCI 存储设备显示为内部硬盘。</p>
 <p><em>注</em>：这一选项应尽量避免使用。现代固件通常情况下都是兼容的。</p>
 <h3 id="IncreasePciBarSize"><a href="#IncreasePciBarSize" class="headerlink" title="IncreasePciBarSize"></a><code>IncreasePciBarSize</code></h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: <code>false</code><br><strong>Description</strong>: 将 IOPCIFamily 中 32 位 PCI Bar 的大小从 1 GB 增加到 4 GB。</p>
@@ -307,7 +307,10 @@
 <blockquote>
 <p>译者注：如果你的 BIOS 中存在 Above4GDecoding 选项，请直接在 BIOS 中启用。</p>
 </blockquote>
-<h3 id="LapicKernelPanic"><a href="#LapicKernelPanic" class="headerlink" title="LapicKernelPanic"></a><code>LapicKernelPanic</code></h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: <code>false</code><br><strong>Description</strong>: Disables kernel panic on LAPIC interrupts.</p>
+<h3 id="LapicKernelPanic"><a href="#LapicKernelPanic" class="headerlink" title="LapicKernelPanic"></a><code>LapicKernelPanic</code></h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: <code>false</code><br><strong>Description</strong>: 禁用 LAPIC 中断导致的 Kernal Panic。</p>
+<blockquote>
+<p>译者注：惠普电脑可能需要启用这一选项。</p>
+</blockquote>
 <h3 id="PanicNoKextDump"><a href="#PanicNoKextDump" class="headerlink" title="PanicNoKextDump"></a><code>PanicNoKextDump</code></h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: <code>false</code><br><strong>Description</strong>: 在发生内核崩溃时阻止输出 Kext 列表，提供可供排错参考的崩溃日志。</p>
 <h3 id="PowerTimeoutKernelPanic"><a href="#PowerTimeoutKernelPanic" class="headerlink" title="PowerTimeoutKernelPanic"></a><code>PowerTimeoutKernelPanic</code></h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: <code>false</code><br><strong>Description</strong>: 修复 macOS Catalina 中由于设备电源状态变化超时而导致的内核崩溃。</p>
 <p>An additional security measure was added to macOS Catalina (10.15) causing kernel panic on power change timeout for Apple drivers. Sometimes it may cause issues on misconfigured hardware, notably digital audio, which sometimes fails to wake up. For debug kernels <code>setpowerstate_panic=0</code> boot argument should be used, which is otherwise equivalent to this quirk.</p>
