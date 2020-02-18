@@ -191,10 +191,10 @@
             
             
                 
-                    <p><small>由 xMuu、Sukka 整理</small></p>
+                    <p><small>由 xMuu、Sukka 整理，由 Sukka 翻译</small></p>
                 
                 
-                    <p><small>本页面最后更新于 2020 年 02 月 17 日</small></p>
+                    <p><small>本页面最后更新于 2020 年 02 月 18 日</small></p>
                 
                 <br>
             
@@ -220,30 +220,28 @@
 <li>Not all tools may be aware of protected namespaces. When <code>RequestBootVarRouting</code> is used <code>Boot</code>-prefixed variable access is restricted and protected in a separate namespace. To access the original variables tools have to be aware of <code>OC_FIRMWARE_RUNTIME</code> logic.</li>
 <li>Assigned NVRAM variables are not always allowed to exceed 512 bytes. This is true for <code>Boot</code>-prefixed variables when <code>RequestBootVarFallback</code> is used, and for overwriting volatile variables with non-volatile on UEFI 2.8 non-conformant firmwares.</li>
 </ul>
-<h2 id="9-2-Properties"><a href="#9-2-Properties" class="headerlink" title="9.2 Properties"></a>9.2 Properties</h2><h3 id="1-Add"><a href="#1-Add" class="headerlink" title="1. Add"></a>1. <code>Add</code></h3><p> <strong>Type</strong>: <code>plist dict</code><br> <strong>Description</strong>: Sets NVRAM variables from a map (<code>plist dict</code>) of GUIDs to a map (<code>plist dict</code>) of variable names and their values in <code>plist metadata</code> format. GUIDs must be provided in canonic string format in upper or lower case (e.g. <code>8BE4DF61-93CA-11D2-AA0D-00E098032B8C</code>).</p>
-<p> Created variables get <code>EFI_VARIABLE_BOOTSERVICE_ACCESS</code> and <code>EFI_VARIABLE_RUNTIME_ACCESS</code> attributes set. Variables will only be set if not present and not blocked. To overwrite a variable add it to <code>Block</code> section. This approach enables to provide default values till the operating system takes the lead.</p>
-<p> <em>注</em>：If <code>plist key</code> does not conform to GUID format, behaviour is undefined.</p>
-<h3 id="2-Block"><a href="#2-Block" class="headerlink" title="2. Block"></a>2. <code>Block</code></h3><p> <strong>Type</strong>: <code>plist dict</code><br> <strong>Description</strong>: Removes NVRAM variables from a map (<code>plist dict</code>) of GUIDs to an array (<code>plist array</code>) of variable names in <code>plist string</code> format.</p>
-<h3 id="3-LegacyEnable"><a href="#3-LegacyEnable" class="headerlink" title="3. LegacyEnable"></a>3. <code>LegacyEnable</code></h3><p> <strong>Type</strong>: <code>plist boolean</code><br> <strong>Failsafe</strong>: <code>false</code><br> <strong>Description</strong>: Enables loading of NVRAM variable file named <code>nvram.plist</code> from EFI volume root.</p>
-<p> This file must have root <code>plist dictionary</code> type and contain two fields:</p>
+<h2 id="9-2-Properties"><a href="#9-2-Properties" class="headerlink" title="9.2 Properties"></a>9.2 Properties</h2><h3 id="1-Add"><a href="#1-Add" class="headerlink" title="1. Add"></a>1. <code>Add</code></h3><p><strong>Type</strong>: <code>plist dict</code><br><strong>Description</strong>: Sets NVRAM variables from a map (<code>plist dict</code>) of GUIDs to a map (<code>plist dict</code>) of variable names and their values in <code>plist metadata</code> format. GUIDs must be provided in canonic string format in upper or lower case (e.g. <code>8BE4DF61-93CA-11D2-AA0D-00E098032B8C</code>).</p>
+<p>Created variables get <code>EFI_VARIABLE_BOOTSERVICE_ACCESS</code> and <code>EFI_VARIABLE_RUNTIME_ACCESS</code> attributes set. Variables will only be set if not present and not blocked. To overwrite a variable add it to <code>Block</code> section. This approach enables to provide default values till the operating system takes the lead.</p>
+<p><em>注</em>：If <code>plist key</code> does not conform to GUID format, behaviour is undefined.</p>
+<h3 id="2-Block"><a href="#2-Block" class="headerlink" title="2. Block"></a>2. <code>Block</code></h3><p><strong>Type</strong>: <code>plist dict</code><br><strong>Description</strong>: Removes NVRAM variables from a map (<code>plist dict</code>) of GUIDs to an array (<code>plist array</code>) of variable names in <code>plist string</code> format.</p>
+<h3 id="3-LegacyEnable"><a href="#3-LegacyEnable" class="headerlink" title="3. LegacyEnable"></a>3. <code>LegacyEnable</code></h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: <code>false</code><br><strong>Description</strong>: 允许从 ESP 分区的根目录中的 <code>nvram.plist</code> 文件读取 NVRAM 变量。</p>
+<p>This file must have root <code>plist dictionary</code> type and contain two fields:</p>
 <ul>
-<li><p><code>Version</code> — <code>plist integer</code>, file version, must be set to 1.</p>
-</li>
-<li><p><code>Add</code> — <code>plist dictionary</code>, equivalent to <code>Add</code> from <code>config.plist</code>.</p>
-<p>Variable loading happens prior to <code>Block</code> (and <code>Add</code>) phases. Unless <code>LegacyOverwrite</code> is enabled, it will not overwrite any existing variable. Variables allowed to be set must be specified in <code>LegacySchema</code>. Third-party scripts may be used to create <code>nvram.plist</code> file. An example of such script can be found in <code>Utilities</code>. The use of third-party scripts may require <code>ExposeSensitiveData</code> set to <code>0x3</code> to provide <code>boot-path</code> variable with OpenCore EFI partition UUID.</p>
-<p><strong>WARNING</strong>: This feature is very dangerous as it passes unprotected data to your firmware variable services. Use it only when no hardware NVRAM implementation is provided by the firmware or it is incompatible.</p>
-</li>
+<li><code>Version</code> — <code>plist integer</code>, file version, must be set to 1.</li>
+<li><code>Add</code> — <code>plist dictionary</code>, equivalent to <code>Add</code> from <code>config.plist</code>.</li>
 </ul>
-<h3 id="4-LegacyOverwrite"><a href="#4-LegacyOverwrite" class="headerlink" title="4. LegacyOverwrite"></a>4. <code>LegacyOverwrite</code></h3><p> <strong>Type</strong>: <code>plist boolean</code><br> <strong>Failsafe</strong>: <code>false</code><br> <strong>Description</strong>: Permits overwriting firmware variables from <code>nvram.plist</code>.</p>
-<p> <em>注</em>：Only variables accessible from the operating system will be overwritten.</p>
-<h3 id="5-LegacySchema"><a href="#5-LegacySchema" class="headerlink" title="5. LegacySchema"></a>5. <code>LegacySchema</code></h3><p> <strong>Type</strong>: <code>plist dict</code><br> <strong>Description</strong>: Allows setting select NVRAM variables from a map (<code>plist dict</code>) of GUIDs to an array (<code>plist array</code>) of variable names in <code>plist string</code> format.</p>
-<p> You can use <code>*</code> value to accept all variables for select GUID.</p>
-<p> <strong>WARNING</strong>: Choose variables very carefully, as nvram.plist is not vaulted. For instance, do not put <code>boot-args</code> or <code>csr-active-config</code>, as this can bypass SIP.</p>
+<p>Variable loading happens prior to <code>Block</code> (and <code>Add</code>) phases. Unless <code>LegacyOverwrite</code> is enabled, it will not overwrite any existing variable. Variables allowed to be set must be specified in <code>LegacySchema</code>. Third-party scripts may be used to create <code>nvram.plist</code> file. An example of such script can be found in <code>Utilities</code>. The use of third-party scripts may require <code>ExposeSensitiveData</code> set to <code>0x3</code> to provide <code>boot-path</code> variable with OpenCore EFI partition UUID.</p>
+<p><strong>警告</strong>: 这一功能非常危险，因为这将不受保护的数据传递给固件中的变量服务。只有你的硬件不提供硬件 NVRAM 或与之不兼容时才使用。</p>
+<h3 id="4-LegacyOverwrite"><a href="#4-LegacyOverwrite" class="headerlink" title="4. LegacyOverwrite"></a>4. <code>LegacyOverwrite</code></h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: <code>false</code><br><strong>Description</strong>: 允许用 <code>nvram.plist</code> 文件中的变量覆盖现有 NVRAM 中的变量。</p>
+<p><em>注</em>：只有操作系统访问的到的变量会被覆盖。</p>
+<h3 id="5-LegacySchema"><a href="#5-LegacySchema" class="headerlink" title="5. LegacySchema"></a>5. <code>LegacySchema</code></h3><p><strong>Type</strong>: <code>plist dict</code><br><strong>Description</strong>: Allows setting select NVRAM variables from a map (<code>plist dict</code>) of GUIDs to an array (<code>plist array</code>) of variable names in <code>plist string</code> format.</p>
+<p>You can use <code>*</code> value to accept all variables for select GUID.</p>
+<p><strong>警告</strong>: Choose variables very carefully, as nvram.plist is not vaulted. For instance, do not put <code>boot-args</code> or <code>csr-active-config</code>, as this can bypass SIP.</p>
 <h3 id="6-WriteFlash"><a href="#6-WriteFlash" class="headerlink" title="6. WriteFlash"></a>6. <code>WriteFlash</code></h3><p> <strong>Type</strong>: <code>plist boolean</code><br> <strong>Failsafe</strong>: <code>false</code><br> <strong>Description</strong>: Enables writing to flash memory for all added variables.</p>
 <p> <em>注</em>：This value is recommended to be enabled on most firmwares, but is left configurable for firmwares that may have issues with NVRAM variable storage garbage collection or alike.</p>
 <p>To read NVRAM variable value from macOS one could use <code>nvram</code> by concatenating variable GUID and name separated by <code>:</code> symbol. For example, <code>nvram 7C436110-AB2A-4BBB-A880-FE41995C9F82:boot-args</code>.</p>
 <p>A continuously updated variable list can be found in a corresponding document: <a href="https://docs.google.com/spreadsheets/d/1HTCBwfOBkXsHiK7os3b2CUc6k68axdJYdGl-TyXqLu0" target="_blank" rel="noopener">NVRAM Variables</a>.</p>
-<h2 id="9-3-Mandatory-Variables"><a href="#9-3-Mandatory-Variables" class="headerlink" title="9.3 Mandatory Variables"></a>9.3 Mandatory Variables</h2><p><em>Warning</em>: These variables may be added by <a href="">PlatformNVRAM</a> or <a href="">Generic</a> subsections of <a href="">PlatformInfo</a> section. Using <code>PlatformInfo</code> is the recommend way of setting these variables.</p>
+<h2 id="9-3-Mandatory-Variables"><a href="#9-3-Mandatory-Variables" class="headerlink" title="9.3 Mandatory Variables"></a>9.3 Mandatory Variables</h2><p><em>警告</em>: These variables may be added by <a href="">PlatformNVRAM</a> or <a href="">Generic</a> subsections of <a href="">PlatformInfo</a> section. Using <code>PlatformInfo</code> is the recommend way of setting these variables.</p>
 <p>The following variables are mandatory for macOS functioning:</p>
 <ul>
 <li><code>4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14:FirmwareFeatures</code><br>32-bit <code>FirmwareFeatures</code>. Present on all Macs to avoid extra parsing of SMBIOS tables</li>
