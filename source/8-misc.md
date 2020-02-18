@@ -2,7 +2,7 @@
 title: 8. Misc
 description: 杂项（待翻译）
 type: docs
-author_info: 由 xMuu、Sukka 整理、由 Sukka 翻译。
+author_info: 由 xMuu、Sukka 整理、由 Sukka 翻译。部分翻译参考黑果小兵的「精解 OpenCore」
 last_updated: 2020-02-17
 ---
 
@@ -197,13 +197,13 @@ OpenCore built-in boot picker contains a set of actions chosen during the boot p
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
-**Description**: Select firmwares may not succeed in quickly booting the operating system, especially in debug mode, which results in watch dog timer aborting the process. This option turns off watch dog timer.
+**Description**: 某些固件可能无法成功快速启动操作系统，尤其是在调试模式下，这会导致看门狗定时器中止引导过程。此选项关闭看门狗定时器，用于排错。
 
 ### 2. `DisplayDelay`
 
 **Type**: `plist integer`
 **Failsafe**: `0`
-**Description**: Delay in microseconds performed after every printed line visible onscreen (i.e. console).
+**Description**: 屏幕上打印每行输出之间的延迟。
 
 ### 3.`DisplayLevel`
 
@@ -217,6 +217,7 @@ OpenCore built-in boot picker contains a set of actions chosen during the boot p
 - `0x80000000` (bit `31`) --- `DEBUG_ERROR` in `DEBUG`, `NOOPT`, `RELEASE`.
 
 ### 4. `Target`
+
 **Type**: `plist integer`
 **Failsafe**: `0`
 **Description**: A bitmask (sum) of enabled logging targets. By default all the logging output is hidden, so this option is required to be set when debugging is necessary.
@@ -224,16 +225,16 @@ OpenCore built-in boot picker contains a set of actions chosen during the boot p
 The following logging targets are supported:
 
 - `0x01` (bit `0`) --- Enable logging, otherwise all log is discarded.
-- `0x02` (bit `1`) --- Enable basic console (onscreen) logging.
+- `0x02` (bit `1`) --- 在屏幕上输出日志
 - `0x04` (bit `2`) --- Enable logging to Data Hub.
 - `0x08` (bit `3`) --- Enable serial port logging.
 - `0x10` (bit `4`) --- Enable UEFI variable logging.
 - `0x20` (bit `5`) --- Enable non-volatile UEFI variable logging.
-- `0x40` (bit `6`) --- Enable logging to file.
+- `0x40` (bit `6`) --- 启用在 ESP 分区生成日志文件
 
 Console logging prints less than all the other variants. Depending on the build type (`RELEASE`, `DEBUG`, or `NOOPT`) different amount of logging may be read (from least to most).
 
-Data Hub log will not log kernel and kext patches. To obtain Data Hub log use the following command in macOS:
+Data Hub 日志中不包括 Kernel 和 Kext 的日志。要获取 Data Hub 日志，请使用 ioreg：
 
 ```
 ioreg -lw0 -p IODeviceTree | grep boot-log | sort | sed 's/.*<\(.*\)>.*/\1/' | xxd -r -p
@@ -246,7 +247,7 @@ in macOS:
 nvram 4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102:boot-log | awk '{gsub(/%0d%0a%00/,"");gsub(/%0d%0a/,"\n")}1'
 ```
 
-*Warning*: Some firmwares are reported to have broken NVRAM garbage collection. This means that they may not be able to always free space after variable deletion. Do not use non-volatile NVRAM logging without extra need on such devices.
+*警告*: Some firmwares are reported to have broken NVRAM garbage collection. This means that they may not be able to always free space after variable deletion. Do not use non-volatile NVRAM logging without extra need on such devices.
 
 While OpenCore boot log already contains basic version information with build type and date, this data may also be found in NVRAM in `opencore-version` variable even with boot log disabled.
 
@@ -271,11 +272,11 @@ File logging will create a file named `opencore-YYYY-MM-DD-HHMMSS.txt` at EFI vo
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
-**Description**: Enable `VirtualSMC`-compatible authenticated restart.
+**Description**: 启用与 `VirtualSMC` 兼容的 authenticated restart.
 
-Authenticated restart is a way to reboot FileVault 2 enabled macOS without entering the password. To perform authenticated restart one can use a dedicated terminal command: `sudo fdesetup authrestart`. It is also used when installing operating system updates.
+authenticated restart 可以在重启 FileVault2 分区时不用再次输入密码。你可以使用下述指令执行一次 authenticated restart：`sudo fdesetup authrestart`。macOS 在安装系统更新使用的也是 authenticated restart。
 
-VirtualSMC performs authenticated restart by saving disk encryption key split in NVRAM and RTC, which despite being removed as soon as OpenCore starts, may be considered a security risk and thus is optional.
+VirtualSMC 通过将磁盘加密密钥拆分保存在 NVRAM 和 RTC 中来执行 authenticated restart。虽然 OpenCore 在启动系统后立刻删除密钥，但是这仍然可能被视为安全隐患。
 
 ### 4. `ExposeSensitiveData`
 
@@ -315,11 +316,13 @@ nvram 4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102:oem-board # SMBIOS Type2 ProductName
 ```
 
 ### 5. `HaltLevel`
+
 **Type**: `plist integer`, 64 bit
 **Failsafe**: `0x80000000` (`DEBUG_ERROR`)
 **Description**: EDK II debug level bitmask (sum) causing CPU to halt (stop execution) after obtaining a message of `HaltLevel`. Possible values match `DisplayLevel` values.
 
 ### 6. `Vault`
+
 **Type**: `plist string`
 **Failsafe**: `Secure`
 **Description**: Enables vaulting mechanism in OpenCore.
@@ -361,6 +364,7 @@ rm vault.pub
 *Note 2*: `vault.plist` and `vault.sig` are used regardless of this option when `vault.plist` is present or public key is embedded into `OpenCore.efi`. Setting this option will only ensure configuration sanity, and abort the boot process otherwise.
 
 ### 7. `ScanPolicy`
+
 **Type**: `plist integer`, 32 bit
 **Failsafe**: `0xF0103`
 **Description**: Define operating system detection policy.
@@ -399,35 +403,39 @@ Third party drivers may introduce additional security (and performance) measures
 ## 8.6 Entry Properties
 
 ### `Arguments`
+
 **Type**: `plist string`
 **Failsafe**: Empty string
-**Description**: Arbitrary ASCII string used as boot arguments (load options) of the specified entry.
+**Description**: 对该引导条目使用的引导参数。
 
-### Auxiliary
+### `Auxiliary`
+
 **Type**: `plist boolean`
 **Failsafe**: false
-**Description**: This entry will not be listed by default when `HideAuxiliary` is set to `true`.
+**Description**: 当 `HideAuxiliary` 被启用时，这一值为 `true` 的引导条目将不会显示在开机引导菜单中。
 
 ### `Comment`
+
 **Type**: `plist string`
 **Failsafe**: Empty string
-**Description**: Arbitrary ASCII string used to provide human readable reference for the entry. It is implementation defined whether this value is used.
+**Description**: 用于为条目提供人类可读参考的任意 ASCII 字符串（译者注：即注释）。
 
 ### `Enabled`
+
 **Type**: `plist boolean`
 **Failsafe**: `false`
-**Description**: This entry will not be listed unless set to
-`true`.
+**Description**: 除非设置为 `true`，否则该引导条目不会显示在开机引导菜单中。
 
 ### `Name`
 **Type**: `plist string`
 **Failsafe**: Empty string
-**Description**: Human readable entry name displayed in boot picker.
+**Description**: 引导条目在开机引导菜单中显示的名字。
 
-- `Path`
+### `Path`
+
 **Type**: `plist string`
 **Failsafe**: Empty string
-**Description**: Entry location depending on entry type.
+**Description**: 引导入口。
 
 - `Entries` specify external boot options, and therefore take device paths in `Path` key. These values are not checked, thus be extremely careful. Example: `PciRoot(0x0)/Pci(0x1,0x1)/.../\EFI\COOL.EFI`
 - `Tools` specify internal boot options, which are part of bootloader vault, and therefore take file paths relative to `OC/Tools` directory. Example: `Shell.efi`.

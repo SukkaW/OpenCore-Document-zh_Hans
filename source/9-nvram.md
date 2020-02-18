@@ -2,8 +2,8 @@
 title: 9. NVRAM
 description: NVRAM 注入（如引导标识符和 SIP）（待翻译）
 type: docs
-author_info: 由 xMuu、Sukka 整理
-last_updated: 2020-02-17
+author_info: 由 xMuu、Sukka 整理，由 Sukka 翻译
+last_updated: 2020-02-18
 ---
 
 ## 9.1 Introduction
@@ -30,45 +30,50 @@ For proper macOS functioning it is often required to use `OC_FIRMWARE_RUNTIME` p
 ## 9.2 Properties
 
 ### 1. `Add`
- **Type**: `plist dict`
- **Description**: Sets NVRAM variables from a map (`plist dict`) of GUIDs to a map (`plist dict`) of variable names and their values in `plist metadata` format. GUIDs must be provided in canonic string format in upper or lower case (e.g. `8BE4DF61-93CA-11D2-AA0D-00E098032B8C`).
 
- Created variables get `EFI_VARIABLE_BOOTSERVICE_ACCESS` and `EFI_VARIABLE_RUNTIME_ACCESS` attributes set. Variables will only be set if not present and not blocked. To overwrite a variable add it to `Block` section. This approach enables to provide default values till the operating system takes the lead.
+**Type**: `plist dict`
+**Description**: Sets NVRAM variables from a map (`plist dict`) of GUIDs to a map (`plist dict`) of variable names and their values in `plist metadata` format. GUIDs must be provided in canonic string format in upper or lower case (e.g. `8BE4DF61-93CA-11D2-AA0D-00E098032B8C`).
 
- *注*：If `plist key` does not conform to GUID format, behaviour is undefined.
+Created variables get `EFI_VARIABLE_BOOTSERVICE_ACCESS` and `EFI_VARIABLE_RUNTIME_ACCESS` attributes set. Variables will only be set if not present and not blocked. To overwrite a variable add it to `Block` section. This approach enables to provide default values till the operating system takes the lead.
+
+*注*：If `plist key` does not conform to GUID format, behaviour is undefined.
 
 ### 2. `Block`
- **Type**: `plist dict`
- **Description**: Removes NVRAM variables from a map (`plist dict`) of GUIDs to an array (`plist array`) of variable names in `plist string` format.
+
+**Type**: `plist dict`
+**Description**: Removes NVRAM variables from a map (`plist dict`) of GUIDs to an array (`plist array`) of variable names in `plist string` format.
 
 ### 3. `LegacyEnable`
- **Type**: `plist boolean`
- **Failsafe**: `false`
- **Description**: Enables loading of NVRAM variable file named `nvram.plist` from EFI volume root.
 
- This file must have root `plist dictionary` type and contain two fields:
+**Type**: `plist boolean`
+**Failsafe**: `false`
+**Description**: 允许从 ESP 分区的根目录中的 `nvram.plist` 文件读取 NVRAM 变量。
 
-  - `Version` --- `plist integer`, file version, must be set to 1.
-  - `Add` --- `plist dictionary`, equivalent to `Add` from `config.plist`.
- 
- Variable loading happens prior to `Block` (and `Add`) phases. Unless `LegacyOverwrite` is enabled, it will not overwrite any existing variable. Variables allowed to be set must be specified in `LegacySchema`. Third-party scripts may be used to create `nvram.plist` file. An example of such script can be found in `Utilities`. The use of third-party scripts may require `ExposeSensitiveData` set to `0x3` to provide `boot-path` variable with OpenCore EFI partition UUID.
+This file must have root `plist dictionary` type and contain two fields:
 
- **WARNING**: This feature is very dangerous as it passes unprotected data to your firmware variable services. Use it only when no hardware NVRAM implementation is provided by the firmware or it is incompatible.
+- `Version` --- `plist integer`, file version, must be set to 1.
+- `Add` --- `plist dictionary`, equivalent to `Add` from `config.plist`.
+
+Variable loading happens prior to `Block` (and `Add`) phases. Unless `LegacyOverwrite` is enabled, it will not overwrite any existing variable. Variables allowed to be set must be specified in `LegacySchema`. Third-party scripts may be used to create `nvram.plist` file. An example of such script can be found in `Utilities`. The use of third-party scripts may require `ExposeSensitiveData` set to `0x3` to provide `boot-path` variable with OpenCore EFI partition UUID.
+
+**警告**: 这一功能非常危险，因为这将不受保护的数据传递给固件中的变量服务。只有你的硬件不提供硬件 NVRAM 或与之不兼容时才使用。
 
 ### 4. `LegacyOverwrite`
- **Type**: `plist boolean`
- **Failsafe**: `false`
- **Description**: Permits overwriting firmware variables from `nvram.plist`.
 
- *注*：Only variables accessible from the operating system will be overwritten.
+**Type**: `plist boolean`
+**Failsafe**: `false`
+**Description**: 允许用 `nvram.plist` 文件中的变量覆盖现有 NVRAM 中的变量。
+
+*注*：只有操作系统访问的到的变量会被覆盖。
 
 ### 5. `LegacySchema`
- **Type**: `plist dict`
- **Description**: Allows setting select NVRAM variables from a map (`plist dict`) of GUIDs to an array (`plist array`) of variable names in `plist string` format.
 
- You can use `*` value to accept all variables for select GUID.
+**Type**: `plist dict`
+**Description**: Allows setting select NVRAM variables from a map (`plist dict`) of GUIDs to an array (`plist array`) of variable names in `plist string` format.
 
- **WARNING**: Choose variables very carefully, as nvram.plist is not vaulted. For instance, do not put `boot-args` or `csr-active-config`, as this can bypass SIP.
+You can use `*` value to accept all variables for select GUID.
+
+**警告**: Choose variables very carefully, as nvram.plist is not vaulted. For instance, do not put `boot-args` or `csr-active-config`, as this can bypass SIP.
 
 ### 6. `WriteFlash`
  **Type**: `plist boolean`
@@ -85,7 +90,7 @@ A continuously updated variable list can be found in a corresponding document: [
 
 ## 9.3 Mandatory Variables
 
-*Warning*: These variables may be added by [PlatformNVRAM]() or [Generic]() subsections of [PlatformInfo]() section. Using `PlatformInfo` is the recommend way of setting these variables.
+*警告*: These variables may be added by [PlatformNVRAM]() or [Generic]() subsections of [PlatformInfo]() section. Using `PlatformInfo` is the recommend way of setting these variables.
 
 The following variables are mandatory for macOS functioning:
 
