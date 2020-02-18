@@ -311,7 +311,7 @@ To inspect SMBIOS contents [dmidecode](http://www.nongnu.org/dmidecode) utility 
   **Type**: `plist string`
   **Failsafe**: OEM specified
   **SMBIOS**: System Information (Type 1) --- Serial Number
-  **Description**: Product serial number in defined format. Known formats are described in [macserial](https://github.com/acidanthera/macserial/blob/master/FORMAT.md).
+  **Description**: Product serial number in defined format. Known formats are described in [macserial](https://github.com/acidanthera/MacInfoPkg/blob/master/macserial/FORMAT.md).
 
 ### 8. `SystemUUID`
   **Type**: `plist string`, GUID
@@ -353,7 +353,7 @@ To inspect SMBIOS contents [dmidecode](http://www.nongnu.org/dmidecode) utility 
   **Type**: `plist string`
   **Failsafe**: OEM specified
   **SMBIOS**: Baseboard (or Module) Information (Type 2) --- Serial Number
-  **Description**: Board serial number in defined format. Known formats are described in [macserial](https://github.com/acidanthera/macserial/blob/master/FORMAT.md).
+  **Description**: Board serial number in defined format. Known formats are described in [macserial](https://github.com/acidanthera/MacInfoPkg/blob/master/macserial/FORMAT.md).
 
 ### 15. `BoardAssetTag`
   **Type**: `plist string`
