@@ -3,7 +3,7 @@ title: 7. Kernel
 description: OpenCore 安全配置，Kext 加载顺序以及屏蔽（待翻译）
 type: docs
 author_info: 由 Sukka 整理，由 Sukka 翻译。
-last_updated: 2020-02-14
+last_updated: 2020-02-18
 ---
 
 ## 7.1 简介
@@ -272,49 +272,39 @@ otherwise set bits take the value of `Cpuid1Data`.
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
-**Description**: Disables `PKG_CST_CONFIG_CONTROL` (`0xE2`) MSR modification in AppleIntelCPUPowerManagement.kext, commonly causing early kernel panic, when it is locked from writing.
+**Description**: 禁用 `AppleIntelCPUPowerManagement.kext` 中的 `PKG_CST_CONFIG_CONTROL` (`0xE2`) 修改，从而避免早期 Kernel Panic。
 
-Certain firmwares lock `PKG_CST_CONFIG_CONTROL` MSR register. To check
-its state one can use bundled `VerifyMsrE2` tool. Select firmwares have
-this register locked on some cores only.
+某些固件会锁定 `PKG_CST_CONFIG_CONTROL` MSR 寄存器。可以使用捆绑的 `VerifyMsrE2` 工具检查其状态。
 
-As modern firmwares provide `CFG Lock` setting, which allows configuring
-`PKG_CST_CONFIG_CONTROL` MSR register lock, this option should be
-avoided whenever possible. For several APTIO firmwares not displaying
-`CFG Lock` setting in the GUI it is possible to access the option
-directly:
+由于现代固件已经提供了 `CFG Lock` 相关设置、从而可以配置 `PKG_CST_CONFIG_CONTROL` 寄存器锁定，此选项应该尽可能避免。对于一些不显示 `CFG Lock` 配置的固件，可以按照下述配置进行修改：
 
-1. Download [UEFITool](https://github.com/LongSoft/UEFITool/releases) and [IFR-Extractor](https://github.com/LongSoft/Universal-IFR-Extractor/releases).
-2. Open your firmware image in UEFITool and find CFG Lock unicode string. If it is not present, your firmware may not have this option and you should stop.
-3. Extract the Setup.bin PE32 Image Section (the one UEFITool found) through Extract Body menu option.
-4. Run IFR-Extractor on the extracted file (e.g. ./ifrextract Setup.bin Setup.txt).
-5. Find CFG Lock, VarStoreInfo (VarOffset/VarName): in Setup.txt and remember the offset right after it (e.g. `0x123`).
-6. Download and run [Modified GRUB Shell](http://brains.by/posts/bootx64.7z) compiled by [brainsucker](https://geektimes.com/post/258090) or use [a newer version](https://github.com/datasone/grub-mod-setup_var) by [datasone](https://github.com/datasone).
-7. Enter setup_var 0x123 0x00 command, where 0x123 should be replaced by your actual offset, and reboot.
+1. 下载 [UEFITool](https://github.com/LongSoft/UEFITool/releases) 和 [IFR-Extractor](https://github.com/LongSoft/Universal-IFR-Extractor/releases)
+2. 使用 UEFITool 中打开固件镜像文件，找到 CFG Lock 的 Unicode 字符串。如果你没有找到，意味着你的固件可能不支持 CFG Lock 解锁，那么你现在可以停下来了。
+3. 从 UEFITool 菜单中的 `Extract Body` 选项提取 `Setup.bin` 中的 PE32 镜像部分。
+4. 对提取出来的文件执行 IFR-Extractor（`./ifrextract Setup.bin Setup.txt`）。
+5. 从 Setup.txt 中找到 CFG Lock，VarStoreInfo（或者 VarOffset、VarName），记住紧随其后的偏移量值（例如 `0x123`）。
+6. 下载并执行由 [brainsucker](https://geektimes.com/post/258090) 编译的 [修改版 GRUB Shell](http://brains.by/posts/bootx64.7z)。你也可以是使用 [datasone](https://github.com/datasone) 制作的 [新版本 GRUB Shell](https://github.com/datasone/grub-mod-setup_var)。
+7. 在 GRUB Shell 中，使用 `setup_var 0x123 0x00`（其中 `0x123` 应该被替换为你在前几步找到的偏移值），然后重启电脑。
 
-**WARNING**: Variable offsets are unique not only to each motherboard
-but even to its firmware version. Never ever try to use an offset
-without checking.
+**警告**: 可变偏移量对于每个主板乃至每一个固件版本都是唯一的。永远不要尝试使用别人的偏移量！
 
 ### `AppleXcpmCfgLock`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
-**Description**: Disables `PKG_CST_CONFIG_CONTROL` (`0xE2`) MSR
-modification in XNU kernel, commonly causing early kernel panic, when it
-is locked from writing (XCPM power management).
+**Description**: 禁用 XNU 内核对 `PKG_CST_CONFIG_CONTROL` (`0xE2`) 修改，从而避免早期 Kernel Panic。
 
-*注*：This option should be avoided whenever possible. See
-`AppleCpuPmCfgLock` description for more details.
+*注*：这一选项应该避免被使用，请参考上文中关于 `AppleCpuPmCfgLock` 的介绍。
 
 ### `AppleXcpmExtraMsrs`
+
 **Type**: `plist boolean`
 **Failsafe**: `false`
-**Description**: Disables multiple MSR access critical for select CPUs, which have no native XCPM support.
+**Description**: 对于没有 XCMP 支持的设备，禁用对选定 CPU 的多 MSR 访问。
 
-This is normally used in conjunction with `Emulate` section on Haswell-E, Broadwell-E, Skylake-X, and similar CPUs. More details on the XCPM patches are outlined in [acidanthera/bugtracker#365](https://github.com/acidanthera/bugtracker/issues/365).
+通常将其与 Haswell-E，Broadwell-E，Skylake-X和类似 CPU 的 `Emulate` 结合使用。更多关于 XCPM 修补的信息可以在 [acidanthera/bugtracker#365](https://github.com/acidanthera/bugtracker/issues/365) 找到。
 
-*注*：Additional not provided patches will be required for Ivy Bridge or Pentium CPUs. It is recommended to use `AppleIntelCpuPowerManagement.kext` for the former.
+*注*：Ivy Bridge 或 Pentium CPU 将需要其他未提供的补丁。建议对前者使用 `AppleIntelCpuPowerManagement.kext`。
 
 ### `AppleXcpmForceBoost`
 
@@ -324,7 +314,7 @@ This is normally used in conjunction with `Emulate` section on Haswell-E, Broadw
 
 This patch writes `0xFF00` to `MSR_IA32_PERF_CONTROL` (`0x199`), effectively setting maximum multiplier for all the time.
 
-*注*：While this may increase the performance, this patch is strongly discouraged on all systems but those explicitly dedicated to scientific or media calculations. In general only certain Xeon models benefit from the patch.
+*注*：尽管有助于提高性能，但是在所有操作系统上都强烈建议不要启用这一选项。只有在某些 Xeon 型号的 CPU 才有可能从这个选项中受益。
 
 ### `CustomSMBIOSGuid`
 
@@ -336,17 +326,17 @@ This patch writes `0xFF00` to `MSR_IA32_PERF_CONTROL` (`0x199`), effectively set
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
-**Description**: Disables `IOMapper` support in XNU (VT-d), which may conflict with the firmware implementation.
+**Description**: 禁用 XNU (VT-d) 中的 `IOMapper` 支持，这可能与固件的实现相冲突。
 
-*注*：This option is a preferred alternative to dropping `DMAR` ACPI table and disabling VT-d in firmware preferences, which does not break VT-d support in other systems in case they need it.
+*注*：相比直接在 ACPI 表中删除 `DMAR`，我们更推荐大家使用这一选项。这样不会破坏其他操作系统中的 VT-d 支持（总会有人需要用到的，对吧？）。
 
 ### `DummyPowerManagement`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
-**Description**: Disables `AppleIntelCpuPowerManagement`.
+**Description**: 禁用 `AppleIntelCpuPowerManagement`。
 
-*注*：This option is a preferred alternative to `NullCpuPowerManagement.kext` for CPUs without native power management driver in macOS.
+*注*：这一选项旨在替代 `NullCpuPowerManagement.kext`，用于 macOS 中没有电源管理驱动程序的 CPU。
 
 ### `ExternalDiskIcons`
 
@@ -370,7 +360,9 @@ This patch writes `0xFF00` to `MSR_IA32_PERF_CONTROL` (`0x199`), effectively set
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
-**Description**: Disables kernel panic on LAPIC interrupts.
+**Description**: 禁用 LAPIC 中断导致的 Kernal Panic。
+
+> 译者注：惠普电脑可能需要启用这一选项。
 
 ### `PanicNoKextDump`
 
