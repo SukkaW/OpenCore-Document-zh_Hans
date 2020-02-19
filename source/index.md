@@ -27,7 +27,7 @@ type: docs
 
 > 本网站提供的翻译基于如下描述的 OpenCore 官方文档：
 > - **OpenCore 文档释出日期**：2020.02.18
-> - **OpenCore 文档版本**：[`c6bb1b57c88034b7e2ca9df9fa74588dc435caaf`](https://github.com/acidanthera/OpenCorePkg/commit/c6bb1b57c88034b7e2ca9df9fa74588dc435caaf)
+> - **OpenCore 文档版本**：[`70e920d95f0b13dfe899b4b7c8ba46506a0aaef8`](https://github.com/acidanthera/OpenCorePkg/commit/70e920d95f0b13dfe899b4b7c8ba46506a0aaef8)
 >
 > 本网站提供的翻译适用于如下描述的 OpenCore 版本：
 > - **OpenCore 版本**：0.5.6

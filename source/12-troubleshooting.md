@@ -58,7 +58,7 @@ last_updated: 2020-02-12
 > Reg add HKLM\SYSTEM\CurrentControlSet\Control\TimeZoneInformation /v RealTimeIsUniversal /t REG_DWORD /d 1
 > ```
 
-- 如果要访问 Apple 的文件系统（APFS、HFS），你可能需要安装单独的软件。已知的工具有 [Apple HFS+ driver](https://forums.macrumors.com/threads/apple-hfs-windows-driver-download.1368010/) ([hack for Windows 10](https://forums.macrumors.com/threads/apple-hfs-windows-driver-download.1368010/page-4#post-24180079))、[HFSExplorer](http://www.catacombae.org/hfsexplorer)、MacDrive、Paragon APFS、Paragon HFS+、TransMac，等等。
+- 如果要访问 Apple 的文件系统（APFS、HFS），你可能需要安装单独的软件。已知的工具有 [Apple HFS+ driver](https://forums.macrumors.com/threads/apple-hfs-windows-driver-download.1368010/) ([hack for Windows 10](https://forums.macrumors.com/threads/apple-hfs-windows-driver-download.1368010/post-24180079))、[HFSExplorer](http://www.catacombae.org/hfsexplorer)、MacDrive、Paragon APFS、Paragon HFS+、TransMac，等等。
 
 > 译者注：**切记不要在 Windows 下写入 APFS 或 HFS，十有八九你会导致分区表错误和无法恢复的数据丢失。别怪我们没有警告过你！！**
 
