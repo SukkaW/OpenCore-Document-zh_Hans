@@ -13,8 +13,8 @@ last_updated: 2020-02-13
 - `valid value` --- valid plist object of OC config described in this document that matches all the additional requirements in specific plist object description if any.
 - `invalid value` --- valid plist object of OC config described in this document that is of other plist type, does not conform to additional requirements found in specific plist object description (e.g. value range), or missing from the corresponding collection. Invalid value is read with or without an error message as any possible value of this plist object in an undetermined manner (i.e. the values may not be same across the reboots). Whilst reading an invalid value is equivalent to reading certain defined valid value, applying incompatible value to the host system may yield to undefined behaviour.
 - `optional value` --- valid value of OC config described in this document that reads in a certain defined manner provided in specific plist object description (instead of invalid value) when not present in OC config. All other cases of invalid value do still apply. Unless explicitly marked as optional value, any other value is required to be present and reads to invalid value if missing.
-- `fatal behaviour` --- behaviour leading to boot termination. Implementation must stop the boot process from going any further until next host system boot. It is allowed but not required to perform cold reboot or show any warning message.
-- `undefined behaviour` --- behaviour not prescribed by this document. Implementation is allowed to take any measures including but not limited to fatal behaviour, assuming any states or values, or ignoring, unless these measures negatively affect system security in general.
+- `fatal behaviour` --- 导致引导终止的行为。对 `fatal behaviour` 的实现要求必须停止引导过程，直到下一次主机系统引导为止。允许，但不强制要求执行冷重启或显示任何警告消息。
+- `undefined behaviour` --- 本文档中未定义的行为，通常是因为某一选项的特定配置、或某些值被忽略导致的。在这种情况下，其实现可能会采取包括 `fatal behaviour`，而这些行为一般都会对系统安全性产生负面影响。
 
 ## 2.2 配置处理
 
