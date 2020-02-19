@@ -3,12 +3,12 @@ title: 11. UEFI
 description: UEFI 驱动以及加载顺序（待翻译）
 type: docs
 author_info: 由 xMuu、Sukka 整理，由 Sukka 翻译
-last_updated: 2020-02-17
+last_updated: 2020-02-19
 ---
 
-  ## 11.1 Introduction
+## 11.1 Introduction
 
-[UEFI](https://uefi.org/specifications) (Unified Extensible Firmware Interface) is a specification that defines a software interface between an operating system and platform firmware. This section allows to load additional UEFI modules and/or apply tweaks for the onboard firmware. To inspect firmware contents, apply modifications and perform upgrades [UEFITool](https://github.com/LongSoft/UEFITool/releases) and supplementary utilities can be used.
+[UEFI](https://uefi.org/specifications)（统一可扩展固件接口）是一种规范，用于定义操作系统和平台固件之间的软件接口。本部分允许加载其他 UEFI 模块 和/或 对板载固件进行调整。要检查固件内容，应用修改并执行升级，可以使用 [UEFITool](https://github.com/LongSoft/UEFITool/releases) 和其他实用程序。
 
 ## 11.2 Properties
 
