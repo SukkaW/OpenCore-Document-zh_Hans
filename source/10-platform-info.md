@@ -12,9 +12,9 @@ last_updated: 2020-02-18
 - [DataHub](https://github.com/acidanthera/EfiPkg/blob/master/Include/Protocol/DataHub.h)
 - NVRAM
 
-Most of the fields specify the overrides in SMBIOS, and their fieldnames conform to EDK2 [SmBios.h](https://github.com/tianocore/edk2/blob/UDK2018/MdePkg/Include/IndustryStandard/SmBios.h) header file. However, several important fields reside in Data Hub and NVRAM. Some of the values can be found in more than one field and/or destination, so there are two ways to control their update process: manual, where one specifies all the values (the default), and semi-automatic, where (`Automatic`) only select values are specified, and later used for system configuration.
+大多数字段在 SMBIOS 中指定覆盖，并且这些字段的名称符合 EDK2 [SmBios.h](https://github.com/tianocore/edk2/blob/UDK2018/MdePkg/Include/IndustryStandard/SmBios.h) 头文件。但是，在 Data Hub 和 NVRAM 中有几个重要的字段。有些值可以在多个字段 和/或 目标中找到，因此有两种方法可以控制它们的更新过程：手动指定所有值（默认方法）；半自动。
 
-To inspect SMBIOS contents [dmidecode](http://www.nongnu.org/dmidecode) utility can be used. Version with macOS specific enhancements can be downloaded from [Acidanthera/dmidecode](https://github.com/acidanthera/dmidecode/releases).
+可以使用 [dmidecode](http://www.nongnu.org/dmidecode) 工具来检查 SMBIOS 内容。你可以从 [Acidanthera/dmidecode](https://github.com/acidanthera/dmidecode/releases) 下载 Acidanthera 制作的增强版。
 
 ## 10.1 Properties
 
@@ -30,7 +30,7 @@ To inspect SMBIOS contents [dmidecode](http://www.nongnu.org/dmidecode) utility 
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
-**Description**: Update Data Hub fields. These fields are read from `Generic` or `DataHub` sections depending on `Automatic` value.
+**Description**: 更新 Data Hub 字段。根据 `Automatic` 的值，这些字段会从 `Generic` 或 `DataHub` 中读取。
 
 ### 3. `UpdateNVRAM`
 
@@ -38,15 +38,15 @@ To inspect SMBIOS contents [dmidecode](http://www.nongnu.org/dmidecode) utility 
 **Failsafe**: `false`
 **Description**: 是否更新 NVRAM 中关于机型信息的相关字段。
 
-These fields are read from `Generic` or `PlatformNVRAM` sections depending on `Automatic` value. All the other fields are to be specified with `NVRAM` section.
+根据 `Automatic` 的值，这些字段会从 `Generic` 或 `PlatformNVRAM` 中读取。所有其他字段都将在 ` NVRAM` 部分中指定。
 
-If `UpdateNVRAM` is set to `false` the aforementioned variables can be updated with \hyperref[nvram]{`NVRAM`} section. If `UpdateNVRAM` is set to `true` the behaviour is undefined when any of the fields are present in `NVRAM` section.
+如果将此值设置为 `false`，则可以使用 `nvram` 部分更新上述变量；反之若将此值设置为 `true`，而同时 `nvram` 部分存在任何字段，会产生意料之外的行为。
 
 ### 4. `UpdateSMBIOS`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
-**Description**: Update SMBIOS fields. These fields are read from `Generic` or `SMBIOS` sections depending on `Automatic` value.
+**Description**: 更新 SMBIOS 字段。根据 `Automatic` 的值，这些字段会从 `Generic` 或 `SMBIOS` 中读取。
 
 ### 5. `UpdateSMBIOSMode`
 
@@ -60,21 +60,25 @@ If `UpdateNVRAM` is set to `false` the aforementioned variables can be updated w
 - `Custom` --- Write first SMBIOS table (`gEfiSmbiosTableGuid`) to `gOcCustomSmbiosTableGuid` to workaround firmwares overwriting SMBIOS contents at ExitBootServices. Otherwise equivalent to `Create`. Requires patching AppleSmbios.kext and AppleACPIPlatform.kext to read from another GUID: `"EB9D2D31"` - `"EB9D2D35"` (in ASCII), done automatically by `CustomSMBIOSGuid` quirk.
 
 ### 6. `Generic`
+
 **Type**: `plist dictonary`
 **Optional**: When `Automatic` is `false`
 **Description**: Update all fields. This section is read only when `Automatic` is active.
 
 ### 7. `DataHub`
+
 **Type**: `plist dictonary`
 **Optional**: When `Automatic` is `true`
 **Description**: Update Data Hub fields. This section is read only when `Automatic` is not active.
 
 ### 8. `PlatformNVRAM`
+
 **Type**: `plist dictonary`
 **Optional**: When `Automatic` is `true`
 **Description**: Update platform NVRAM fields. This section is read only when `Automatic` is not active.
 
 ### 9. `SMBIOS`
+
 **Type**: `plist dictonary`
 **Optional**: When `Automatic` is `true`
 **Description**: Update SMBIOS fields. This section is read only when `Automatic` is not active.
@@ -83,43 +87,49 @@ If `UpdateNVRAM` is set to `false` the aforementioned variables can be updated w
 ## 10.2 Generic Properties
 
 ### 1. `SpoofVendor`
+
 **Type**: `plist boolean`
 **Failsafe**: `false`
-**Description**: Sets SMBIOS vendor fields to `Acidanthera`.
+**Description**: 将 SMBIOS 中的 vendor 字段设置为 `Acidanthera`.
 
-It is dangerous to use Apple in SMBIOS vendor fields for reasons given in `SystemManufacturer` description. However, certain firmwares may not provide valid values otherwise, which could break some software.
+由于在 `SystemManufacturer` 相关介绍中介绍的原因，在 SMBIOS 的 vendor 字段中使用 `Apple` 是危险的。但是，某些固件可能无法提供有效值，可能会导致某些软件的破坏。
 
 ### 2. `AdviseWindows`
 **Type**: `plist boolean`
 **Failsafe**: `false`
-**Description**: Forces Windows support in `FirmwareFeatures`.
+**Description**: 在 `FirmwareFeatures` 中强制提供 Windows 支持。
 
-Added bits to `FirmwareFeatures`:
+向 `FirmwareFeatures` 中添加如下比特：
 
-- `FW_FEATURE_SUPPORTS_CSM_LEGACY_MODE` (`0x1`) - Without this bit it is not possible to reboot to Windows installed on a drive with EFI partition being not the first partition on the disk.
-- `FW_FEATURE_SUPPORTS_UEFI_WINDOWS_BOOT` (`0x20000000`) - Without this bit it is not possible to reboot to Windows installed on a drive with EFI partition being the first partition on the disk.
+- `FW_FEATURE_SUPPORTS_CSM_LEGACY_MODE` (`0x1`) - 如果没有此比特，且 EFI 分区不是硬盘中的第一个分区，那么则无法重新启动到硬盘里的 Windows 系统。
+- `FW_FEATURE_SUPPORTS_UEFI_WINDOWS_BOOT` (`0x20000000`) - 如果没有此比特，且 EFI 分区是硬盘中的第一个分区，那么则无法重新启动到硬盘里的 Windows 系统。
 
 ### 3. `SystemProductName`
+
 **Type**: `plist string`
 **Failsafe**: `MacPro6,1`
-**Description**: Refer to SMBIOS `SystemProductName`.
+**Description**: 请参考下文 SMBIOS 章节中的 中的 `SystemProductName`.
 
 ### 4. `SystemSerialNumber`
+
 **Type**: `plist string`
 **Failsafe**: `OPENCORE_SN1`
-**Description**: Refer to SMBIOS `SystemSerialNumber`.
+**Description**: 请参考下文 SMBIOS 章节中的 中的 `SystemSerialNumber`.
 
 ### 5. `SystemUUID`
+
 **Type**: `plist string`, GUID
 **Failsafe**: OEM specified
-**Description**: Refer to SMBIOS `SystemUUID`.
+**Description**: 请参考下文 SMBIOS 章节中的 中的 `SystemUUID`.
 
 ### 6. `MLB`
+
 **Type**: `plist string`
 **Failsafe**: `OPENCORE_MLB_SN11`
-**Description**: Refer to SMBIOS `BoardSerialNumber`.
+**Description**: 请参考下文 SMBIOS 章节中的 中的 `BoardSerialNumber`.
 
 ### 7. `ROM`
+
 **Type**: `plist data`, 6 bytes
 **Failsafe**: all zero
 **Description**: Refer to `4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14:ROM`.
@@ -261,12 +271,14 @@ This value contains CPU ART frequency, also known as crystal clock frequency. It
 ## 10.5 SMBIOS Properties
 
 ### 1. `BIOSVendor`
+
 **Type**: `plist string`
 **Failsafe**: OEM specified
 **SMBIOS**: BIOS Information (Type 0) --- Vendor
-**Description**: BIOS Vendor. All rules of `SystemManufacturer` do apply.
+**Description**: BIOS Vendor. `SystemManufacturer` 的所有规则都适用。
 
 ### 2. `BIOSVersion`
+
 **Type**: `plist string`
 **Failsafe**: OEM specified
 **SMBIOS**: BIOS Information (Type 0) --- BIOS Version
@@ -300,6 +312,7 @@ This value contains CPU ART frequency, also known as crystal clock frequency. It
 **Description**: OEM manufacturer of the particular board. Shall not be specified unless strictly required. Should *not* contain `Apple Inc.`, as this confuses numerous services present in the operating system, such as firmware updates, eficheck, as well as kernel extensions developed in Acidanthera, such as Lilu and its plugins. In addition it will also make some operating systems like Linux unbootable.
 
 ### 5. `SystemProductName`
+
 **Type**: `plist string`
 **Failsafe**: OEM specified
 **SMBIOS**: System Information (Type 1), Product Name
@@ -308,22 +321,25 @@ This value contains CPU ART frequency, also known as crystal clock frequency. It
 *注*：If `SystemProductName` is unknown, and related fields are unspecified, default values should be assumed as being set to `MacPro6,1` data. The list of known products can be found in `MacInfoPkg`.
 
 ### 6. `SystemVersion`
+
 **Type**: `plist string`
 **Failsafe**: OEM specified
 **SMBIOS**: System Information (Type 1) --- Version
-**Description**: Product iteration version number. May look like `1.1`.
+**Description**: 产品迭代版本号。可能与 `1.1` 类似。
 
 ### 7. `SystemSerialNumber`
+
 **Type**: `plist string`
 **Failsafe**: OEM specified
 **SMBIOS**: System Information (Type 1) --- Serial Number
-**Description**: Product serial number in defined format. Known formats are described in [macserial](https://github.com/acidanthera/MacInfoPkg/blob/master/macserial/FORMAT.md).
+**Description**: 按照格式定义的产品序列号。已知的序列号的格式在 [macserial](https://github.com/acidanthera/MacInfoPkg/blob/master/macserial/FORMAT.md) 中。
 
 ### 8. `SystemUUID`
+
 **Type**: `plist string`, GUID
 **Failsafe**: OEM specified
 **SMBIOS**: System Information (Type 1) --- UUID
-**Description**: A UUID is an identifier that is designed to be unique across both time and space. It requires no central registration process.
+**Description**: UUID 被设计为在时间和空间上都是唯一的标识符。It requires no central registration process.
 
 ### 9. `SystemSKUNumber`
 **Type**: `plist string`
@@ -401,7 +417,7 @@ This value contains CPU ART frequency, also known as crystal clock frequency. It
 **Type**: `plist string`
 **Failsafe**: OEM specified
 **SMBIOS**: System Enclosure or Chassis (Type 3) --- Version
-**Description**: Should match `SystemSerialNumber`.
+**Description**: 应和 `SystemSerialNumber` 符合。
 
 ### 22. `ChassisAssetTag`
 **Type**: `plist string`
@@ -416,10 +432,11 @@ This value contains CPU ART frequency, also known as crystal clock frequency. It
 **Description**: Platform features bitmask. Refer to [AppleFeatures.h](https://github.com/acidanthera/EfiPkg/blob/master/Include/IndustryStandard/AppleFeatures.h) for more details. Use `0xFFFFFFFF` value to not provide this table.
 
 ### 24. `SmcVersion`
+
 **Type**: `plist data`, 16 bytes
 **Failsafe**: All zero
 **SMBIOS**: `APPLE_SMBIOS_TABLE_TYPE134` - `Version`
-**Description**: ASCII string containing SMC version in upper case. Missing on T2 based Macs. Ignored when zero.
+**Description**: ASCII 字符串，包含 SMC 版本号（大写）。在基于 T2 芯片的 Mac 设备上缺少这一字段。当此值设置为零时，这一选项会被忽略。
 
 ### 25. `FirmwareFeatures`
 **Type**: `plist data`, 8 bytes
@@ -434,12 +451,14 @@ This value contains CPU ART frequency, also known as crystal clock frequency. It
 **Description**: Supported bits of extended firmware features bitmask. Refer to [AppleFeatures.h](https://github.com/acidanthera/EfiPkg/blob/master/Include/IndustryStandard/AppleFeatures.h) for more details. Lower 32 bits match `FirmwareFeaturesMask`. Upper 64 bits match `ExtendedFirmwareFeaturesMask`.
 
 ### 27. `ProcessorType`
+
 **Type**: `plist integer`, 16-bit
 **Failsafe**: Automatic
 **SMBIOS**: `APPLE_SMBIOS_TABLE_TYPE131` - `ProcessorType`
 **Description**: Combined of Processor Major and Minor types.
 
 ### 28. `MemoryFormFactor`
+
 **Type**: `plist integer`, 8-bit
 **Failsafe**: OEM specified
 **SMBIOS**: Memory Device (Type 17) --- Form Factor
