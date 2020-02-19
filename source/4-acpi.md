@@ -3,7 +3,7 @@ title: 4. ACPI
 description: 加载、屏蔽、修补 ACPI（DSDT/SSDT）表（待翻译）
 type: docs
 author_info: 由 Sukka 整理、由 Sukka 翻译。感谢黑果小兵提供的参考资料
-last_updated: 2020-02-13
+last_updated: 2020-02-19
 ---
 
 ## 4.1 简介
@@ -104,7 +104,7 @@ ACPI（Advanced Configuration and Power Interface，高级配置和电源接口�
 
 **Type**: `plist data, 4 bytes`
 **Failsafe**: All zero
-**Description**:  Match table signature to be equal to this value unless all zero.
+**Description**: Match table signature to be equal to this value unless all zero.
 
 **注**： Make sure not to specify table signature when the sequence needs to be replaced in multiple places. Especially when performing different kinds of renames.
 
@@ -114,13 +114,13 @@ ACPI（Advanced Configuration and Power Interface，高级配置和电源接口�
 
 **Type**: `plist string`
 **Failsafe**: Empty string
-**Description**: Arbitrary ASCII string used to provide human readable reference for the entry. It is implementation defined whether this value is used.
+**Description**: 用于为条目提供人类可读参考的任意 ASCII 字符串（译者注：即注释）。
 
 ### 4.5.2 Count
 
 **Type**: `plist integer`
 **Failsafe**: 0
-**Description**: Number of patch occurrences to apply. 0 applies the patch to all occurrences found.
+**Description**: 补丁应用的次数。如果将此值设置为 0，补丁将会被应用于所有匹配。
 
 ### 4.5.3 Enabled
 
@@ -132,19 +132,19 @@ ACPI（Advanced Configuration and Power Interface，高级配置和电源接口�
 
 **Type**: `plist data`
 **Failsafe**: Empty data
-**Description**: Data to find. Must equal to `Replace` in size.
+**Description**: 需要寻找的 Data，长度必须和 `Replace` 相等。
 
 ### 4.5.5 Limit
 
 **Type**: `plist integer`
 **Failsafe**: 0
-**Description**: Maximum number of bytes to search for. Can be set to 0 to look through the whole ACPI table.
+**Description**: 要搜索的最大字节数。当此值为 0 时会遍历整个 ACPI 表。
 
 ### 4.5.6 Mask
 
 **Type**: `plist data`
 **Failsafe**: Empty data
-**Description**: Data bitwise mask used during find comparison. Allows fuzzy search by ignoring not masked (set to zero) bits. Can be set to empty data to be ignored. Must equal to Replace in size otherwise.
+**Description**: 查找比较期间使用的数据按位掩码。 通过忽略未屏蔽（设置为零）位来进行模糊搜索。可以设置为空数据以忽略，否则此值的长度必须和 `Replace` 的长度相等。
 
 ### 4.5.7 OemTableId
 
@@ -156,19 +156,19 @@ ACPI（Advanced Configuration and Power Interface，高级配置和电源接口�
 
 **Type**: `plist data`
 **Failsafe**: Empty data
-**Description**: Replacement data of one or more bytes.
+**Description**: 一个或多个字节的替换数据。
 
 ### 4.5.9 ReplaceMark
 
 **Type**: `plist data`
 **Failsafe**: Empty data
-**Description**: Data bitwise mask used during replacement. Allows fuzzy replacement by updating masked (set to non-zero) bits. Can be set to empty data to be ignored. Must equal to Replace in size otherwise.
+**Description**: 替换数据期间使用的数据按位掩码。 通过忽略未屏蔽（设置为零）位来进行模糊搜索。可以设置为空数据以忽略，否则此值的长度必须和 `Replace` 的长度相等。
 
 ### 4.5.10 Skip
 
 **Type**: `plist integer`
 **Failsafe**: 0
-**Description**: Number of found occurrences to be skipped before replacement is done.
+**Description**: 完成替换之前要跳过的匹配数。
 
 ### 4.5.11 TableLength
 

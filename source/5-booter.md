@@ -8,25 +8,22 @@ last_updated: 2020-02-14
 
 ## 5.1 简介
 
-This section allows to apply different kinds of UEFI modifications on Apple bootloader (`boot.efi`). The modifications currently provide various patches and environment alterations for different firmwares. Some of these features were originally implemented as a part of [AptioMemoryFix.efi](https://github.com/acidanthera/AptioFixPkg), which is no longer maintained. See `Tips and Tricks` section for migration steps.
+本部分允许在 Apple BootLoader（`boot.efi`）上应用不同种类的 UEFI 修改。目前，这些修改为不同的固件提供了各种补丁和环境更改。其中一些功能最初是作为 [AptioMemoryFix.efi](https://github.com/acidanthera/AptioFixPkg) 的一部分，如今 `AptioMemoryFix.efi` 已经不再维护。如果你还在使用，请参考 `Tips and Tricks` 章节提供的迁移步骤。
 
-If you are using this for the first time on a customised firmware, there is a
-list of checks to do first. Prior to starting please ensure that you have:
+如果您是第一次在自定义固件上使用此功能，则首先需要执行一系列检查。开始之前，请确保您具有：
 
-
-- Most up-to-date UEFI firmware (check your motherboard vendor website).
-- `Fast Boot` and `Hardware Fast Boot` disabled in firmware settings if present.
+- 最新版本的 UEFI 固件（去主板厂家的官网上看看）
+- 禁用了 `Fast Boot` 和 `Hardware Fast Boot`。如果 BIOS 里有相关选项，禁用掉。
 - `Above 4G Decoding` or similar enabled in firmware settings if present. Note, that on some motherboards (notably ASUS WS-X299-PRO) this option causes adverse effects, and must be disabled. While no other motherboards with the same issue are known, consider this option to be first to check if you have erratic boot failures.
-- `DisableIoMapper` quirk enabled, or `VT-d` disabled in firmware settings if present, or ACPI DMAR table dropped.
-- **No** `slide` boot argument present in NVRAM or anywhere else. It is not necessary unless you cannot boot at all or see `No slide values are usable! Use custom slide!` message in the log.
-- `CFG Lock` (MSR `0xE2` write protection) disabled in firmware settings if present. Cconsider [patching it](https://github.com/LongSoft/UEFITool/blob/master/UEFIPatch/patches.txt) if you have enough skills and no option is available. See [VerifyMsrE2](https://github.com/acidanthera/AppleSupportPkg#verifymsre2) nots for more details.
-- `CSM` (Compatibility Support Module) disabled in firmware settings if present. You may need to flash GOP ROM on NVIDIA 6xx/AMD 2xx or older. Use [GopUpdate](https://www.win-raid.com/t892f16-AMD-and-Nvidia-GOP-update-No-requests-DIY.html) or [AMD UEFI GOP MAKER](http://www.insanelymac.com/forum/topic/299614-asus-eah6450-video-bios-uefi-gop-upgrade-and-gop-uefi-binary-in-efi-for-many-ati-cards/page-1#entry2042163) in case you are not sure how.
-- `EHCI/XHCI Hand-off` enabled in firmware settings `only` if boot stalls unless USB devices are disconnected.
-- `VT-x`, `Hyper Threading`, `Execute Disable Bit` enabled in firmware settings if present.
-- While it may not be required, sometimes you have to disable `Thunderbolt support`, `Intel SGX`, and `Intel Platform Trust` in firmware settings present.
+- 启用了 `DisableIoMapper` quirk、或者在 BIOS 中禁用 `VT-d`、或者删去了 ACPI DMAR 表。
+- 启动参数中 **没有** `slide`。 除非你没法开机、并且在日志里看见了 `No slide values are usable! Use custom slide!`，否则不论如何也不要使用这个启动参数。
+- `CFG Lock` (MSR `0xE2` 写保护) 在 BIOS 中被禁用。如果 BIOS 中没有、而且你心灵手巧，你可以考虑 [手动打补丁将其禁用](https://github.com/LongSoft/UEFITool/blob/master/UEFIPatch/patches.txt) 。更多细节请参考 [VerifyMsrE2](https://github.com/acidanthera/AppleSupportPkg#verifymsre2)。
+- 在 BIOS 中禁用 `CSM` (Compatibility Support Module)。You may need to flash GOP ROM on NVIDIA 6xx/AMD 2xx or older. Use [GopUpdate](https://www.win-raid.com/t892f16-AMD-and-Nvidia-GOP-update-No-requests-DIY.html) or [AMD UEFI GOP MAKER](http://www.insanelymac.com/forum/topic/299614-asus-eah6450-video-bios-uefi-gop-upgrade-and-gop-uefi-binary-in-efi-for-many-ati-cards/page-1#entry2042163) in case you are not sure how.
+- 除非 USB 设备断开连接，否则如果引导停止，则仅在 BIOS 中启用 `EHCI / XHCI Hand-off`。
+- 在 BIOS 中启用 `VT-x`、`Hyper Threading`、`Execute Disable Bit`。
+- 有时你还可能需要在 BIOS 中禁用 `Thunderbolt support`、`Intel SGX` 和 `Intel Platform Trust`。但是这一操作不是必须的。
 
-When debugging sleep issues you may want to (temporarily) disable Power Nap and automatic power off, which appear to sometimes cause wake to black screen or boot loop issues on older platforms. The particular issues may vary, but in general you should
-check ACPI tables first. Here is an example of a bug found in some [Z68 motherboards](http://www.insanelymac.com/forum/topic/329624-need-cmos-reset-after-sleep-only-after-login/#entry2534645). To turn Power Nap and the others off run the following commands in Terminal:
+在调试睡眠问题时，您可能希望（临时）禁用 Power Nap 和自动关闭电源，这似乎有时会导致在旧平台上唤醒黑屏或循环启动的问题。具体问题可能因人而异，但通常你应首先检查 ACPI 表，比如这是在 [Z68 主板](http://www.insanelymac.com/forum/topic/329624-need-cmos-reset-after-sleep-only-after-login/#entry2534645) 上找到的一些 Bug。要关闭 Power Nap 和其他功能，请在终端中运行以下命令：
 
 ```bash
 sudo pmset autopoweroff 0
@@ -34,8 +31,7 @@ sudo pmset powernap 0
 sudo pmset standby 0
 ```
 
-**注**： These settings may reset at hardware change and in certain other circumstances.
-To view their current state use `pmset -g` command in Terminal.
+**注**：这些设置可能会在硬件更改、操作系统更新和某些其他情况下重置。要查看它们的当前状态，请在终端中使用 `pmset -g` 命令。
 
 ## 5.2 属性列表
 
@@ -49,7 +45,7 @@ To view their current state use `pmset -g` command in Terminal.
 ### 5.2.2 Quirks
 
 **Type**: plist dict
-**Description**: Apply individual booter quirks described in Quirks Properties section below.
+**Description**: 应用下面的 Quirks 属性部分中所述的各个引导 Quirk。
 
 ## 5.3 MmioWhitelist 属性
 
@@ -63,8 +59,7 @@ To view their current state use `pmset -g` command in Terminal.
 
 **Type**: plist string
 **Failsafe**: Empty string
-**Description**: Arbitrary ASCII string used to provide human readable reference for the entry. It is implementation
-defined whether this value is used.
+**Description**: 用于为条目提供人类可读参考的任意 ASCII 字符串（译者注：即注释）。
 
 ### 5.3.3 Enabled
 
@@ -204,7 +199,7 @@ Select firmwares access memory by virtual addresses after `SetVirtualAddresses` 
 
 Select firmwares have very large memory maps, which do not fit Apple kernel, permitting up to `64` slots for runtime memory. This quirk attempts to unify contiguous slots of similar types to prevent boot failures.
 
-*注*: 是否启用这个 Quirks 取决于你是否遇到了 Early Boot 故障。Haswell 及更新版本一般都不需要启用。除非你完全了解这一选项及其后果，否则请勿使用。
+*注*：是否启用这个 Quirks 取决于你是否遇到了 Early Boot 故障。Haswell 及更新版本一般都不需要启用。除非你完全了解这一选项及其后果，否则请勿使用。
 
 ### 5.4.14 `SignalAppleOS`
 

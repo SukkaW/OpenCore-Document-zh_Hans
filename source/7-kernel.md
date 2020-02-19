@@ -194,7 +194,7 @@ otherwise set bits take the value of `Cpuid1Data`.
 
 **Type**: `plist string`
 **Failsafe**: Empty string
-**Description**: Arbitrary ASCII string used to provide human readable reference for the entry. It is implementation defined whether this value is used.
+**Description**: 用于为条目提供人类可读参考的任意 ASCII 字符串（译者注：即注释）。
 
 ### 7.6.3 `Count`
 
