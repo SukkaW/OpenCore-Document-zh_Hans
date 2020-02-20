@@ -89,6 +89,8 @@ sudo pmset standby 0
 
 该选项通常对所有固件都有用，除了一些非常古老的固件（例如 Sandy Bridge）。 在某些固件上，它可能需要一个例外映射列表。为了使 NVRAM 和休眠功能正常工作，获取其虚拟地址仍然是必要的。 请参考 `MmioWhitelist` 章节来实现这个。
 
+> 译者注：对于某些 300 系列主板是必须的
+
 ### 5.4.3 `DisableSingleUser`
 
 **Type**: `plist boolean`

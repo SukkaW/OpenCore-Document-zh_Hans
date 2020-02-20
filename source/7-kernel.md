@@ -3,7 +3,7 @@ title: 7. Kernel
 description: OpenCore 安全配置，Kext 加载顺序以及屏蔽（待翻译）
 type: docs
 author_info: 由 Sukka 整理，由 Sukka 翻译。
-last_updated: 2020-02-18
+last_updated: 2020-02-20
 ---
 
 ## 7.1 简介
@@ -16,36 +16,36 @@ This section allows to apply different kinds of kernelspace modifications on App
 
 **Type**: plist array
 **Failsafe**: Empty
-**Description**: Load selected kernel drivers from `OC/Kexts` directory.
+**Description**: 从 `OC/Kexts` 目录加载选定的 Kext 驱动。
 
-Designed to be filled with plist dict values, describing each driver. See Add Properties section below. Kernel driver load order follows the item order in the array, thus the dependencies should be written prior to their
-consumers.
+设计为使用 plist dict 数据填充以描述每个驱动程序。请参阅下述 Add 属性章节。Kext 驱动程序加载的顺序遵照数组中项目的顺序，因此如 Lilu 这种其他驱动程序的依赖驱动应该位于前面。
 
 ### 7.2.2 Block
 
 **Type**: plist array
 **Failsafe**: Empty
-**Description**: Remove selected kernel drivers from prelinked kernel.
+**Description**: 从内核中删除选定的内核驱动程序。
 
-Designed to be filled with plist dictionary values, describing each blocked driver. See Block Properties section below.
+设计为使用 plist dict 数据填充以描述每个驱动程序。请参阅下述 Block 属性章节。Kext 驱动程序加载的顺序遵照数组中项目的顺序，因此如 Lilu 这种其他驱动程序的依赖驱动应该位于前面。
+
 
 ### 7.2.3 Emulate
 
 **Type**: plist dict
-**Description**: Emulate select hardware in kernelspace via parameters described in Emulate Properties section below.
+**Description**: 在内核空间中仿真选定的硬件。请参考下文 Emulate 属性。
 
 ### 7.2.4 Patch
 
 **Type**: plist array
 **Failsafe**: Empty
-**Description**: Perform binary patches in kernel and drivers prior to driver addition and removal.
+**Description**: 在添加和删除驱动程序步骤之前执行的对现有 Kext 驱动程序的二进制修补。
 
-Designed to be filled with plist dictionary values, describing each patch. See Patch Properties section below.
+设计为使用 plist dictionary 数据填充以描述每个驱动程序。请参阅下述 Patch 属性章节。
 
 ### 7.2.5 Quirks
 
 **Type**: plist dict
-**Description**: Apply individual kernel and driver quirks described in Quirks Properties section below.
+**Description**: 应用下面的 Quirks 属性章节中描述的各个内核和驱动程序 Quirk。
 
 ## 7.3 Add 属性
 
@@ -80,26 +80,28 @@ Designed to be filled with plist dictionary values, describing each patch. See P
 ### 7.3.5 `MaxKernel`
 **Type**: `plist string`
 **Failsafe**: Empty string
-**Description**: Adds kernel driver on specified macOS version or older.
+**Description**: 在小于等于指定的 macOS 版本中添加该 Kext 驱动程序。
 
-Kernel version can be obtained with `uname -r` command, and should look like 3 numbers separated by dots, for example `18.7.0` is the kernel version for `10.14.6`. Kernel version interpretation is implemented as follows:
+你可以使用 `uname -r` 指令获取当前内核版本，一般为三个整数、中间由半角局点分隔，如 `18.7.0` 代表的是 `10.14.6`。OpenCore 对内核版本解释的实现方式如下图所示：
 
 ![7-1.png](/img/7-1.png)
 
-Kernel version comparison is implemented as follows:
+内核版本比较的实现如下图所示：
 
 ![7-2.png](/img/7-2.png)
 
-Here `ParseDarwinVersion` argument is assumed to be 3 integers obtained by splitting Darwin kernel version string from left to right by the `.` symbol. `FindDarwinVersion` function looks up Darwin kernel version by locating ![](/img/7-3.png) string in the kernel image.
+将 Darwin 内核版本号字符串从左到右以 `.` 符号作为分隔符分割成三个整数，即为 `ParseDarwinVersion` 的三个参数。`FindDarwinVersion` 函数将会通过在内核镜像中查找形如 ![](/img/7-3.png) 的字符串来定位 Darwin 内核版本号。
 
 ### 7.3.6 `MinKernel`
 
 **Type**: `plist string`
 **Failsafe**: Empty string
-**Description**: Adds kernel driver on specified macOS version or newer.
+**Description**: 在大于等于指定的 macOS 版本中添加该 Kext 驱动程序。
 
 *注*：Refer to [`Add` `MaxKernel` description](#kernmatch) for
 matching logic.
+
+> 译者注：以上两个属性定义了这个驱动将在什么版本范围的 macOS 中加载。留空表示在所有的 macOS 版本下都加载。
 
 ### 7.3.7 `PlistPath`
 
@@ -132,7 +134,7 @@ matching logic.
 
 **Type**: `plist string`
 **Failsafe**: Empty string
-**Description**: Blocks kernel driver on specified macOS version or older.
+**Description**: 在小于等于指定的 macOS 版本中阻止 Kext 驱动程序。
 
 *注*：Refer to [`Add` `MaxKernel` description](#kernmatch) for matching logic.
 
@@ -140,7 +142,7 @@ matching logic.
 
 **Type**: `plist string`
 **Failsafe**: Empty string
-**Description**: Blocks kernel driver on specified macOS version or newer.
+**Description**: 在大于等于指定的 macOS 版本中阻止 Kext 驱动程序。
 
 *注*：Refer to [`Add` `MaxKernel` description](#kernmatch) for
 matching logic.

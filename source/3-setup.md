@@ -11,30 +11,30 @@ last_updated: 2020-02-11
 ```
 ESP
 ├── EFI
-|    |
-|    ├── BOOT
-|    |    └── BOOTx64.efi
-|    └── OC
-|        └── ACPI
-|        |    ├── DSDT.aml
-|        |    ├── SSDT-1.aml
-|        |    └── MYTABLE.aml
-|        ├── Drivers
-|        |    ├── MyDriver.efi
-|        |    └── OtherDriver.efi
-|        ├── Kexts
-|        |    ├── MyKext.kext
-|        |    └── OtherKext.kext
-|        ├── Tools
-|        |    └── Tool.efi
-|        ├── OpenCore.efi
-|        ├── vault.plist
-|        ├── config.plist
-|        └── vault.sig
+│    │
+│    ├── BOOT
+│    │    └── BOOTx64.efi
+│    └── OC
+│        ├── ACPI
+│        │    ├── DSDT.aml
+│        │    ├── SSDT-1.aml
+│        │    └── MYTABLE.aml
+│        ├── Drivers
+│        │    ├── MyDriver.efi
+│        │    └── OtherDriver.efi
+│        ├── Kexts
+│        │    ├── MyKext.kext
+│        │    └── OtherKext.kext
+│        ├── Tools
+│        │    └── Tool.efi
+│        ├── OpenCore.efi
+│        ├── vault.plist
+│        ├── config.plist
+│        └── vault.sig
 ├── nvram.plist
 └── opencore-YYYY-MM-DD-HHMMSS.txt
 
-# Figure 1. Directory Structure
+# Figure 1. 目录结构
 ```
 
 使用目录引导时，使用的目录结构应该遵循上述目录结构。可用的条目有：
@@ -60,6 +60,8 @@ OpenCore 的配置文件可以使用任何常规的文本编辑器（如 nano、
 如果要通过 BIOS 进行开机，你必须使用第三方 UEFI 环境提供程序。`DuetPkg` 是一个常用的为旧操作系统提供 Legacy 引导的 UEFI 环境提供程序。要在这样的旧操作系统上运行 OpenCore，你可以使用 [BootInstall](https://github.com/acidanthera/OcSupportPkg/tree/master/Utilities/BootInstall) 安装 `DuetPkg`。
 
 如果要升级 OpenCore，[`Differences.pdf`](https://github.com/acidanthera/OpenCorePkg/blob/master/Docs/Differences/Differences.pdf) 提供了 OpenCore 配置文件变更的相关信息，[`Changelog.md`](https://github.com/acidanthera/OpenCorePkg/blob/master/Changelog.md) 提供了 OpenCore 的更新日志。
+
+> 译者注：以下两个章节是为准备为参与 OpenCore 开发准备的。
 
 ## 3.3 贡献代码
 

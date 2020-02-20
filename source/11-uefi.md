@@ -3,7 +3,7 @@ title: 11. UEFI
 description: UEFI 驱动以及加载顺序（待翻译）
 type: docs
 author_info: 由 xMuu、Sukka 整理，由 Sukka 翻译
-last_updated: 2020-02-19
+last_updated: 2020-02-20
 ---
 
 ## 11.1 Introduction
@@ -347,11 +347,13 @@ This is a very ugly quirk to circumvent "Still waiting for root device" message 
 *注*：While the option is not supposed to induce harm on unaffected firmwares, its usage is not recommended when it is not required.
 
 ### 3. `ReleaseUsbOwnership`
+
 **Type**: `plist boolean`
 **Failsafe**: `false`
-**Description**: Attempt to detach USB controller ownership from the firmware driver. While most firmwares manage to properly do that, or at least have an option for, select firmwares do not. As a result, operating system may freeze upon boot. Not recommended unless required.
+**Description**: 尝试从固件驱动程序中分离 USB 控制器所有权。尽管大多数固件都设法正确执行了该操作或者提供有一个选项，但某些固件没有，从而导致操作系统可能会在启动时冻结。除非需要，否则不建议启用这一选项。
 
 ### 4. `RequestBootVarFallback`
+
 **Type**: `plist boolean`
 **Failsafe**: `false`
 **Description**: Request fallback of some `Boot` prefixed variables from `OC_VENDOR_VARIABLE_GUID` to newline `EFI_GLOBAL_VARIABLE_GUID`.
@@ -370,9 +372,10 @@ This is a very ugly quirk to circumvent "Still waiting for root device" message 
   This quirk forwards all UEFI specification valid boot options, that are not related to macOS, to the firmware into `BootF###` and `BootOrder` variables upon write. As the entries are added to the end of `BootOrder`, this does not break boot priority, but ensures that the firmware does not try to append a new option on its own after Windows installation for instance.
 
 ### 5. `RequestBootVarRouting`
+
 **Type**: `plist boolean`
 **Failsafe**: `false`
-**Description**: Request redirect of all `Boot` prefixed variables from `EFI_GLOBAL_VARIABLE_GUID` to newline `OC_VENDOR_VARIABLE_GUID`.
+**Description**: 请求将所有带有 `Boot` 前缀的变量从 `EFI_GLOBAL_VARIABLE_GUID` 重定向到 `OC_VENDOR_VARIABLE_GUID`。
 
   This quirk requires `OC_FIRMWARE_RUNTIME` protocol implemented in `FwRuntimeServices.efi`. The quirk lets default boot entry preservation at times when firmwares delete incompatible boot entries. Simply said, you are required to enable this quirk to be able to reliably use [Startup Disk](https://support.apple.com/HT202796) preference pane in a firmware that is not compatible with macOS boot entries by design.
 
