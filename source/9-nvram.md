@@ -3,14 +3,14 @@ title: 9. NVRAM
 description: NVRAM 注入（如引导标识符和 SIP）（待翻译）
 type: docs
 author_info: 由 xMuu、Sukka 整理，由 Sukka 翻译
-last_updated: 2020-02-18
+last_updated: 2020-02-20
 ---
 
 ## 9.1 Introduction
 
-Has `plist dict` type and allows to set volatile UEFI variables commonly referred as NVRAM variables. Refer to `man nvram` for more details. macOS extensively uses NVRAM variables for OS --- Bootloader --- Firmware intercommunication, and thus supplying several NVRAM is required for proper macOS functioning.
+设置易失性 UEFI 变量（通常被称作 NVRAM 变量），数据类型为 `plist dict`。使用 `man nvram` 获取详细信息。macOS 广泛使用 NVRAM 变量使 操作系统、BootLoader、固件 之间互通，因此需要提供多个 NVRAM 变量才能正常运行 macOS。
 
-Each NVRAM variable consists of its name, value, attributes (refer to UEFI specification), and its [GUID](https://en.wikipedia.org/wiki/Universally_unique_identifier), representing which `section' NVRAM variable belongs to. macOS uses several GUIDs, including but not limited to:
+每个 NVRAM 变量均由其名称、值、属性（参考 UEFI 规范）以及 [GUID](https://en.wikipedia.org/wiki/Universally_unique_identifier) 组成，表示 NVRAM 变量属于哪一区域。macOS 使用如下（包括但不限于）几种 GUID：
 
 - `4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14` (`APPLE_VENDOR_VARIABLE_GUID`)
 - `7C436110-AB2A-4BBB-A880-FE41995C9F82` (`APPLE_BOOT_VARIABLE_GUID`)
@@ -18,14 +18,12 @@ Each NVRAM variable consists of its name, value, attributes (refer to UEFI speci
 - `4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102` (`OC_VENDOR_VARIABLE_GUID`)
 
 
-*注*：Some of the variables may be added by [PlatformNVRAM]() or [Generic]() subsections of [PlatformInfo]() section. Please ensure that variables of this section never collide with them, as behaviour is undefined otherwise.
+*注*：某些变量可以通过 `PlatformNVRAM` 或 `PlatformInfo` 节的 `Generic` 子节添加。请确保本节中的变量不会与它们发生冲突，否则可能导致未定义的行为。
 
-For proper macOS functioning it is often required to use `OC_FIRMWARE_RUNTIME` protocol implementation currently offered as a part of `FwRuntimeServices` driver. While it brings any benefits, there are certain limitations which arise depending on the use.
+为了使macOS正常运行，通常需要使用 `OC_FIRMWARE_RUNTIME` 协议。该协议的实现目前是 `FwRuntimeServices` 驱动程序的一部分。虽然可能带来一些好处，但根据用途不同也会存在某些限制。
 
-
-- Not all tools may be aware of protected namespaces. When `RequestBootVarRouting` is used `Boot`-prefixed variable access is restricted and protected in a separate namespace. To access the original variables tools have to be aware of `OC_FIRMWARE_RUNTIME` logic.
-- Assigned NVRAM variables are not always allowed to exceed 512 bytes. This is true for `Boot`-prefixed variables when `RequestBootVarFallback` is used, and for overwriting volatile variables with non-volatile on UEFI 2.8 non-conformant firmwares.
-
+- 并非所有工具都可能知道受保护的名称空间。当使用 `RequestBootVarRouting` 时，在独立的命名空间中会限制对 `Boot` 前缀的变量访问。要访问原始变量，工具必须了解 `OC_FIRMWARE_RUNTIME` 协议的工作原理。
+- 分配的 NVRAM 变量并非总是允许超过 512 个字节。当使用 `RequestBootVarFallback` 时，对于带有 `Boot` 前缀的变量，以及不符合 UEFI 2.8 规范的固件上使用非易失性覆盖变量，都存在 512 字节限制。
 
 ## 9.2 Properties
 
@@ -131,34 +129,33 @@ The following variables are recommended for faster startup or other improvements
 
 ## 9.5 Other Variables
 
-The following variables may be useful for certain configurations or troubleshooting:
+以下变量对于某些特定的配置或进行故障排除可能会很有用：
 
-- `7C436110-AB2A-4BBB-A880-FE41995C9F82:boot-args`
- Kernel arguments, used to pass configuration to Apple kernel and drivers. There are many arguments, which may be found by looking for the use of `PE_parse_boot_argn` function in the kernel or driver code. Some of the known boot arguments include:
+- `7C436110-AB2A-4BBB-A880-FE41995C9F82:boot-args` 内核参数，用于将配置传递给 Apple 内核和驱动程序。很多参数可以通过在内核或驱动程序代码中寻找 `PE_parse_boot_argn` 函数找到。已知的引导参数包括：
 
   - `acpi_layer=0xFFFFFFFF`
-  - `acpi_level=0xFFFF5F` (implies [`ACPI_ALL_COMPONENTS`](https://github.com/acpica/acpica/blob/master/source/include/acoutput.h)) 
-  - `batman=VALUE` (`AppleSmartBatteryManager` debug mask)
-  - `batman-nosmc=1` (disable `AppleSmartBatteryManager` SMC interface)
-  - `cpus=VALUE` (maximum number of CPUs used)
-  - `debug=VALUE` (debug mask)
-  - `io=VALUE` (`IOKit` debug mask)
+  - `acpi_level=0xFFFF5F` (implies [`ACPI_ALL_COMPONENTS`](https://github.com/acpica/acpica/blob/master/source/include/acoutput.h))
+  - `batman=VALUE` --- `AppleSmartBatteryManager` 调试掩码
+  - `batman-nosmc=1` --- 禁用 `AppleSmartBatteryManager` SMC 表面
+  - `cpus=VALUE` --- 最大可用 CPU 数量
+  - `debug=VALUE` --- Debug 掩码
+  - `io=VALUE` --- `IOKit` 调试掩码
   - `keepsyms=1` (show panic log debug symbols)
-  - `kextlog=VALUE` (kernel extension loading debug mask)
-  - `nv_disable=1` (disables NVIDIA GPU acceleration)
-  - `nvda_drv=1` (legacy way to enable NVIDIA web driver, removed in 10.12)
+  - `kextlog=VALUE` --- Kext 调试掩码
+  - `nv_disable=1` --- 禁用 NVIDIA GPU 加速
+  - `nvda_drv=1` --- 启用 NVIDIA web driver 的传统方法，这一参数在 macOS 10.12 中被去除
   - `npci=0x2000` ([legacy](https://www.insanelymac.com/forum/topic/260539-1068-officially-released/?do=findComment&comment=1707972), disables `kIOPCIConfiguratorPFM64`)
   - `lapic_dont_panic=1`
-  - `slide=VALUE` (manually set KASLR slide)
-  - `smcdebug=VALUE` (`AppleSMC` debug mask)
+  - `slide=VALUE` --- 手动设置 KASLR 偏移值
+  - `smcdebug=VALUE` --- `AppleSMC` 调试掩码
   - `-amd_no_dgpu_accel` (alternative to [WhateverGreen](https://github.com/acidanthera/WhateverGreen)'s `-radvesa` for new GPUs)
   - `-nehalem_error_disable`
   - `-no_compat_check` (disable model checking)
-  - `-s` (single mode)
-  - `-v` (verbose mode)
-  - `-x` (safe mode)
- 
- There are multiple external places summarising macOS argument lists: [example 1](https://osxeon.wordpress.com/2015/08/10/boot-argument-options-in-os-x), [example 2](https://superuser.com/questions/255176/is-there-a-list-of-available-boot-args-for-darwin-os-x).
+  - `-s` --- 单用户模式
+  - `-v` --- 啰嗦模式
+  - `-x` --- 安全模式
+
+  这里有一些网站收集了 macOS 内置的启动参数列表：[列表 1](https://osxeon.wordpress.com/2015/08/10/boot-argument-options-in-os-x)、[列表 2](https://superuser.com/questions/255176/is-there-a-list-of-available-boot-args-for-darwin-os-x).
 
 - `7C436110-AB2A-4BBB-A880-FE41995C9F82:bootercfg`
  Booter arguments, similar to `boot-args` but for boot.efi. Accepts a set of arguments, which are hexadecimal 64-bit values with or without 0x prefix primarily for logging control:
@@ -177,11 +174,11 @@ The following variables may be useful for certain configurations or troubleshoot
  
   - `level=VALUE` --- Verbosity level of DEBUG output. Everything but `0x80000000` is stripped from the binary, and this is the default value.
   - `kc-read-size=VALUE` --- Chunk size used for buffered I/O from network or disk for prelinkedkernel reading and related. Set to 1MB (0x100000) by default, can be tuned for faster booting.
- 
+
  *注*：To quickly see verbose output from `boot.efi` set this to `log=1` (currently this is broken in 10.15).
 - `7C436110-AB2A-4BBB-A880-FE41995C9F82:bootercfg-once`
  Booter arguments override removed after first launch. Otherwise equivalent to `bootercfg`.
- -  `7C436110-AB2A-4BBB-A880-FE41995C9F82:fmm-computer-name`
+ - `7C436110-AB2A-4BBB-A880-FE41995C9F82:fmm-computer-name`
  Current saved host name. ASCII string.
- -  `7C436110-AB2A-4BBB-A880-FE41995C9F82:nvda_drv`
+ - `7C436110-AB2A-4BBB-A880-FE41995C9F82:nvda_drv`
  NVIDIA Web Driver control variable. Takes ASCII digit `1` or `0` to enable or disable installed driver.
