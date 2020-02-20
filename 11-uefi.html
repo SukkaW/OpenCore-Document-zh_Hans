@@ -194,7 +194,7 @@
                     <p><small>由 xMuu、Sukka 整理，由 Sukka 翻译</small></p>
                 
                 
-                    <p><small>本页面最后更新于 2020 年 02 月 19 日</small></p>
+                    <p><small>本页面最后更新于 2020 年 02 月 20 日</small></p>
                 
                 <br>
             
@@ -318,7 +318,7 @@
 <p>This is a very ugly quirk to circumvent “Still waiting for root device” message on select APTIO IV firmwares, namely ASUS Z87-Pro, when using FileVault 2 in particular. It seems that for some reason they execute code in parallel to <code>EXIT_BOOT_SERVICES</code>, which results in SATA controller being inaccessible from macOS. A better approach should be found in some future. Expect 3-5 seconds to be enough in case the quirk is needed.</p>
 <h3 id="2-IgnoreInvalidFlexRatio"><a href="#2-IgnoreInvalidFlexRatio" class="headerlink" title="2. IgnoreInvalidFlexRatio"></a>2. <code>IgnoreInvalidFlexRatio</code></h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: <code>false</code><br><strong>Description</strong>: Select firmwares, namely APTIO IV, may contain invalid values in <code>MSR_FLEX_RATIO</code> (<code>0x194</code>) MSR register. These values may cause macOS boot failure on Intel platforms.</p>
 <p><em>注</em>：While the option is not supposed to induce harm on unaffected firmwares, its usage is not recommended when it is not required.</p>
-<h3 id="3-ReleaseUsbOwnership"><a href="#3-ReleaseUsbOwnership" class="headerlink" title="3. ReleaseUsbOwnership"></a>3. <code>ReleaseUsbOwnership</code></h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: <code>false</code><br><strong>Description</strong>: Attempt to detach USB controller ownership from the firmware driver. While most firmwares manage to properly do that, or at least have an option for, select firmwares do not. As a result, operating system may freeze upon boot. Not recommended unless required.</p>
+<h3 id="3-ReleaseUsbOwnership"><a href="#3-ReleaseUsbOwnership" class="headerlink" title="3. ReleaseUsbOwnership"></a>3. <code>ReleaseUsbOwnership</code></h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: <code>false</code><br><strong>Description</strong>: 尝试从固件驱动程序中分离 USB 控制器所有权。尽管大多数固件都设法正确执行了该操作或者提供有一个选项，但某些固件没有，从而导致操作系统可能会在启动时冻结。除非需要，否则不建议启用这一选项。</p>
 <h3 id="4-RequestBootVarFallback"><a href="#4-RequestBootVarFallback" class="headerlink" title="4. RequestBootVarFallback"></a>4. <code>RequestBootVarFallback</code></h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: <code>false</code><br><strong>Description</strong>: Request fallback of some <code>Boot</code> prefixed variables from <code>OC_VENDOR_VARIABLE_GUID</code> to newline <code>EFI_GLOBAL_VARIABLE_GUID</code>.</p>
 <p>  This quirk requires <code>RequestBootVarRouting</code> to be enabled and therefore <code>OC_FIRMWARE_RUNTIME</code> protocol implemented in <code>FwRuntimeServices.efi</code>.</p>
 <p>  By redirecting <code>Boot</code> prefixed variables to a separate GUID namespace we achieve multiple goals:</p>
@@ -333,7 +333,7 @@
 <p>This quirk forwards all UEFI specification valid boot options, that are not related to macOS, to the firmware into <code>BootF###</code> and <code>BootOrder</code> variables upon write. As the entries are added to the end of <code>BootOrder</code>, this does not break boot priority, but ensures that the firmware does not try to append a new option on its own after Windows installation for instance.</p>
 </li>
 </ul>
-<h3 id="5-RequestBootVarRouting"><a href="#5-RequestBootVarRouting" class="headerlink" title="5. RequestBootVarRouting"></a>5. <code>RequestBootVarRouting</code></h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: <code>false</code><br><strong>Description</strong>: Request redirect of all <code>Boot</code> prefixed variables from <code>EFI_GLOBAL_VARIABLE_GUID</code> to newline <code>OC_VENDOR_VARIABLE_GUID</code>.</p>
+<h3 id="5-RequestBootVarRouting"><a href="#5-RequestBootVarRouting" class="headerlink" title="5. RequestBootVarRouting"></a>5. <code>RequestBootVarRouting</code></h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: <code>false</code><br><strong>Description</strong>: 请求将所有带有 <code>Boot</code> 前缀的变量从 <code>EFI_GLOBAL_VARIABLE_GUID</code> 重定向到 <code>OC_VENDOR_VARIABLE_GUID</code>。</p>
 <p>  This quirk requires <code>OC_FIRMWARE_RUNTIME</code> protocol implemented in <code>FwRuntimeServices.efi</code>. The quirk lets default boot entry preservation at times when firmwares delete incompatible boot entries. Simply said, you are required to enable this quirk to be able to reliably use <a href="https://support.apple.com/HT202796" target="_blank" rel="noopener">Startup Disk</a> preference pane in a firmware that is not compatible with macOS boot entries by design.</p>
 <h3 id="6-UnblockFsConnect"><a href="#6-UnblockFsConnect" class="headerlink" title="6. UnblockFsConnect"></a>6. <code>UnblockFsConnect</code></h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: <code>false</code><br><strong>Description</strong>: 某些固件通过「按驱动程序」模式下来阻止引导项加载。</p>
 <p><em>注</em>：如果惠普笔记本在 OpenCore 界面没有看到引导项时启用这一选项。</p>

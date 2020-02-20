@@ -238,6 +238,9 @@
 <h3 id="5-4-2-DevirtualiseMmio"><a href="#5-4-2-DevirtualiseMmio" class="headerlink" title="5.4.2 DevirtualiseMmio"></a>5.4.2 <code>DevirtualiseMmio</code></h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: <code>false</code><br><strong>Description</strong>: 从选定的 MMIO 区域中删除 Runtime 属性。</p>
 <p>通过删除已知内存区域的 runtime bit，此选项可减少内存映射中 stolen memory footprint。 这个 Quirks 可能会导致可用的 KASLR slides 增加，但如果没有其他措施，不一定与目标主板兼容。 通常，这会释放 64 到 256 MB的内存（具体数值会显示在调试日志中）。在某些平台上这是引导 macOS 的唯一方法，否则在引导加载程序阶段会出现内存分配错误。</p>
 <p>该选项通常对所有固件都有用，除了一些非常古老的固件（例如 Sandy Bridge）。 在某些固件上，它可能需要一个例外映射列表。为了使 NVRAM 和休眠功能正常工作，获取其虚拟地址仍然是必要的。 请参考 <code>MmioWhitelist</code> 章节来实现这个。</p>
+<blockquote>
+<p>译者注：对于某些 300 系列主板是必须的</p>
+</blockquote>
 <h3 id="5-4-3-DisableSingleUser"><a href="#5-4-3-DisableSingleUser" class="headerlink" title="5.4.3 DisableSingleUser"></a>5.4.3 <code>DisableSingleUser</code></h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: <code>false</code><br><strong>Description</strong>: 禁用 Apple 单用户模式</p>
 <p>这个选项可以禁用 <code>CMD+S</code> 热键和 <code>-s</code> 启动参数来限制单用户模式。启用这一 Quirks 后预期行为应和 T2 的模型行为类似。请参考 Apple 的 <a href="https://support.apple.com/HT201573" target="_blank" rel="noopener">这篇文章</a> 以了解如何在启用这一 Quirks 后继续使用单用户模式。</p>
 <h3 id="5-4-4-DisableVariableWrite"><a href="#5-4-4-DisableVariableWrite" class="headerlink" title="5.4.4 DisableVariableWrite"></a>5.4.4 <code>DisableVariableWrite</code></h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: <code>false</code><br><strong>Description</strong>: 防止 macOS 获取 NVRAM 的写入权限。</p>

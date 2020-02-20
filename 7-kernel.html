@@ -194,7 +194,7 @@
                     <p><small>由 Sukka 整理，由 Sukka 翻译。</small></p>
                 
                 
-                    <p><small>本页面最后更新于 2020 年 02 月 18 日</small></p>
+                    <p><small>本页面最后更新于 2020 年 02 月 20 日</small></p>
                 
                 <br>
             
@@ -207,14 +207,14 @@
         <div class="column is-9-tablet doku-document-wrapper">
             <div class="content">
                 <h2 id="7-1-简介"><a href="#7-1-简介" class="headerlink" title="7.1 简介"></a>7.1 简介</h2><p>This section allows to apply different kinds of kernelspace modifications on Apple Kernel (<a href="https://opensource.apple.com/source/xnu" target="_blank" rel="noopener">XNU</a>). The modifications currently provide driver (kext) injection, kernel and driver patching, and driver blocking.</p>
-<h2 id="7-2-属性列表"><a href="#7-2-属性列表" class="headerlink" title="7.2 属性列表"></a>7.2 属性列表</h2><h3 id="7-2-1-Add"><a href="#7-2-1-Add" class="headerlink" title="7.2.1 Add"></a>7.2.1 Add</h3><p><strong>Type</strong>: plist array<br><strong>Failsafe</strong>: Empty<br><strong>Description</strong>: Load selected kernel drivers from <code>OC/Kexts</code> directory.</p>
-<p>Designed to be filled with plist dict values, describing each driver. See Add Properties section below. Kernel driver load order follows the item order in the array, thus the dependencies should be written prior to their<br>consumers.</p>
-<h3 id="7-2-2-Block"><a href="#7-2-2-Block" class="headerlink" title="7.2.2 Block"></a>7.2.2 Block</h3><p><strong>Type</strong>: plist array<br><strong>Failsafe</strong>: Empty<br><strong>Description</strong>: Remove selected kernel drivers from prelinked kernel.</p>
-<p>Designed to be filled with plist dictionary values, describing each blocked driver. See Block Properties section below.</p>
-<h3 id="7-2-3-Emulate"><a href="#7-2-3-Emulate" class="headerlink" title="7.2.3 Emulate"></a>7.2.3 Emulate</h3><p><strong>Type</strong>: plist dict<br><strong>Description</strong>: Emulate select hardware in kernelspace via parameters described in Emulate Properties section below.</p>
-<h3 id="7-2-4-Patch"><a href="#7-2-4-Patch" class="headerlink" title="7.2.4 Patch"></a>7.2.4 Patch</h3><p><strong>Type</strong>: plist array<br><strong>Failsafe</strong>: Empty<br><strong>Description</strong>: Perform binary patches in kernel and drivers prior to driver addition and removal.</p>
-<p>Designed to be filled with plist dictionary values, describing each patch. See Patch Properties section below.</p>
-<h3 id="7-2-5-Quirks"><a href="#7-2-5-Quirks" class="headerlink" title="7.2.5 Quirks"></a>7.2.5 Quirks</h3><p><strong>Type</strong>: plist dict<br><strong>Description</strong>: Apply individual kernel and driver quirks described in Quirks Properties section below.</p>
+<h2 id="7-2-属性列表"><a href="#7-2-属性列表" class="headerlink" title="7.2 属性列表"></a>7.2 属性列表</h2><h3 id="7-2-1-Add"><a href="#7-2-1-Add" class="headerlink" title="7.2.1 Add"></a>7.2.1 Add</h3><p><strong>Type</strong>: plist array<br><strong>Failsafe</strong>: Empty<br><strong>Description</strong>: 从 <code>OC/Kexts</code> 目录加载选定的 Kext 驱动。</p>
+<p>设计为使用 plist dict 数据填充以描述每个驱动程序。请参阅下述 Add 属性章节。Kext 驱动程序加载的顺序遵照数组中项目的顺序，因此如 Lilu 这种其他驱动程序的依赖驱动应该位于前面。</p>
+<h3 id="7-2-2-Block"><a href="#7-2-2-Block" class="headerlink" title="7.2.2 Block"></a>7.2.2 Block</h3><p><strong>Type</strong>: plist array<br><strong>Failsafe</strong>: Empty<br><strong>Description</strong>: 从内核中删除选定的内核驱动程序。</p>
+<p>设计为使用 plist dict 数据填充以描述每个驱动程序。请参阅下述 Block 属性章节。Kext 驱动程序加载的顺序遵照数组中项目的顺序，因此如 Lilu 这种其他驱动程序的依赖驱动应该位于前面。</p>
+<h3 id="7-2-3-Emulate"><a href="#7-2-3-Emulate" class="headerlink" title="7.2.3 Emulate"></a>7.2.3 Emulate</h3><p><strong>Type</strong>: plist dict<br><strong>Description</strong>: 在内核空间中仿真选定的硬件。请参考下文 Emulate 属性。</p>
+<h3 id="7-2-4-Patch"><a href="#7-2-4-Patch" class="headerlink" title="7.2.4 Patch"></a>7.2.4 Patch</h3><p><strong>Type</strong>: plist array<br><strong>Failsafe</strong>: Empty<br><strong>Description</strong>: 在添加和删除驱动程序步骤之前执行的对现有 Kext 驱动程序的二进制修补。</p>
+<p>设计为使用 plist dictionary 数据填充以描述每个驱动程序。请参阅下述 Patch 属性章节。</p>
+<h3 id="7-2-5-Quirks"><a href="#7-2-5-Quirks" class="headerlink" title="7.2.5 Quirks"></a>7.2.5 Quirks</h3><p><strong>Type</strong>: plist dict<br><strong>Description</strong>: 应用下面的 Quirks 属性章节中描述的各个内核和驱动程序 Quirk。</p>
 <h2 id="7-3-Add-属性"><a href="#7-3-Add-属性" class="headerlink" title="7.3 Add 属性"></a>7.3 Add 属性</h2><h3 id="7-3-1-BundlePath"><a href="#7-3-1-BundlePath" class="headerlink" title="7.3.1 BundlePath"></a>7.3.1 <code>BundlePath</code></h3><p><strong>Type</strong>: <code>plist string</code><br><strong>Failsafe</strong>: Empty string<br><strong>Description</strong>: Kext 相对于 <code>EFI/OC/kexts/Other/</code> 的路径 (e.g. <code>Lilu.kext</code> or <code>MyKext.kext/Contents/PlugIns/MySubKext.kext</code>).</p>
 <blockquote>
 <p>注，如 <code>VoodooPS2Controller.kext</code> 这种包括其他 kext 驱动的，需要分别单独添加，如 <code>VoodooPS2Controller.kext/Contents/PlugIns/VoodooPS2Keyboard.kext</code>。</p>
@@ -225,21 +225,24 @@
 <blockquote>
 <p>译者注：空壳 Kext 没有可执行文件（如 <code>USBPorts.kext</code>），此项留空即可</p>
 </blockquote>
-<h3 id="7-3-5-MaxKernel"><a href="#7-3-5-MaxKernel" class="headerlink" title="7.3.5 MaxKernel"></a>7.3.5 <code>MaxKernel</code></h3><p><strong>Type</strong>: <code>plist string</code><br><strong>Failsafe</strong>: Empty string<br><strong>Description</strong>: Adds kernel driver on specified macOS version or older.</p>
-<p>Kernel version can be obtained with <code>uname -r</code> command, and should look like 3 numbers separated by dots, for example <code>18.7.0</code> is the kernel version for <code>10.14.6</code>. Kernel version interpretation is implemented as follows:</p>
+<h3 id="7-3-5-MaxKernel"><a href="#7-3-5-MaxKernel" class="headerlink" title="7.3.5 MaxKernel"></a>7.3.5 <code>MaxKernel</code></h3><p><strong>Type</strong>: <code>plist string</code><br><strong>Failsafe</strong>: Empty string<br><strong>Description</strong>: 在小于等于指定的 macOS 版本中添加该 Kext 驱动程序。</p>
+<p>你可以使用 <code>uname -r</code> 指令获取当前内核版本，一般为三个整数、中间由半角局点分隔，如 <code>18.7.0</code> 代表的是 <code>10.14.6</code>。OpenCore 对内核版本解释的实现方式如下图所示：</p>
 <p><img src="/img/7-1.png" alt="7-1.png"></p>
-<p>Kernel version comparison is implemented as follows:</p>
+<p>内核版本比较的实现如下图所示：</p>
 <p><img src="/img/7-2.png" alt="7-2.png"></p>
-<p>Here <code>ParseDarwinVersion</code> argument is assumed to be 3 integers obtained by splitting Darwin kernel version string from left to right by the <code>.</code> symbol. <code>FindDarwinVersion</code> function looks up Darwin kernel version by locating <img src="/img/7-3.png" alt=""> string in the kernel image.</p>
-<h3 id="7-3-6-MinKernel"><a href="#7-3-6-MinKernel" class="headerlink" title="7.3.6 MinKernel"></a>7.3.6 <code>MinKernel</code></h3><p><strong>Type</strong>: <code>plist string</code><br><strong>Failsafe</strong>: Empty string<br><strong>Description</strong>: Adds kernel driver on specified macOS version or newer.</p>
+<p>将 Darwin 内核版本号字符串从左到右以 <code>.</code> 符号作为分隔符分割成三个整数，即为 <code>ParseDarwinVersion</code> 的三个参数。<code>FindDarwinVersion</code> 函数将会通过在内核镜像中查找形如 <img src="/img/7-3.png" alt=""> 的字符串来定位 Darwin 内核版本号。</p>
+<h3 id="7-3-6-MinKernel"><a href="#7-3-6-MinKernel" class="headerlink" title="7.3.6 MinKernel"></a>7.3.6 <code>MinKernel</code></h3><p><strong>Type</strong>: <code>plist string</code><br><strong>Failsafe</strong>: Empty string<br><strong>Description</strong>: 在大于等于指定的 macOS 版本中添加该 Kext 驱动程序。</p>
 <p><em>注</em>：Refer to <a href="#kernmatch"><code>Add</code> <code>MaxKernel</code> description</a> for<br>matching logic.</p>
+<blockquote>
+<p>译者注：以上两个属性定义了这个驱动将在什么版本范围的 macOS 中加载。留空表示在所有的 macOS 版本下都加载。</p>
+</blockquote>
 <h3 id="7-3-7-PlistPath"><a href="#7-3-7-PlistPath" class="headerlink" title="7.3.7 PlistPath"></a>7.3.7 <code>PlistPath</code></h3><p><strong>Type</strong>: <code>plist string</code><br><strong>Failsafe</strong>: Empty string<br><strong>Description</strong>: Kext 中 <code>Info.plist</code> 文件的路径。一般为 <code>Contents/Info.plist</code>。</p>
 <h2 id="7-4-Block-属性"><a href="#7-4-Block-属性" class="headerlink" title="7.4 Block 属性"></a>7.4 Block 属性</h2><h3 id="7-4-1-Comment"><a href="#7-4-1-Comment" class="headerlink" title="7.4.1 Comment"></a>7.4.1 <code>Comment</code></h3><p><strong>Type</strong>: <code>plist string</code><br><strong>Failsafe</strong>: Empty string<br><strong>Description</strong>: 用于为条目提供人类可读参考的任意 ASCII 字符串（译者注：即注释）。</p>
 <h3 id="7-4-2-Enabled"><a href="#7-4-2-Enabled" class="headerlink" title="7.4.2 Enabled"></a>7.4.2 <code>Enabled</code></h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: <code>false</code><br><strong>Description</strong>: This kernel driver will not be blocked unless set to <code>true</code>.</p>
 <h3 id="7-4-3-Identifier"><a href="#7-4-3-Identifier" class="headerlink" title="7.4.3 Identifier"></a>7.4.3 <code>Identifier</code></h3><p><strong>Type</strong>: <code>plist string</code><br><strong>Failsafe</strong>: Empty string<br><strong>Description</strong>: Kext bundle identifier (e.g.<br><code>com.apple.driver.AppleTyMCEDriver</code>).</p>
-<h3 id="7-4-4-MaxKernel"><a href="#7-4-4-MaxKernel" class="headerlink" title="7.4.4 MaxKernel"></a>7.4.4 <code>MaxKernel</code></h3><p><strong>Type</strong>: <code>plist string</code><br><strong>Failsafe</strong>: Empty string<br><strong>Description</strong>: Blocks kernel driver on specified macOS version or older.</p>
+<h3 id="7-4-4-MaxKernel"><a href="#7-4-4-MaxKernel" class="headerlink" title="7.4.4 MaxKernel"></a>7.4.4 <code>MaxKernel</code></h3><p><strong>Type</strong>: <code>plist string</code><br><strong>Failsafe</strong>: Empty string<br><strong>Description</strong>: 在小于等于指定的 macOS 版本中阻止 Kext 驱动程序。</p>
 <p><em>注</em>：Refer to <a href="#kernmatch"><code>Add</code> <code>MaxKernel</code> description</a> for matching logic.</p>
-<h3 id="7-4-5-MinKernel"><a href="#7-4-5-MinKernel" class="headerlink" title="7.4.5 MinKernel"></a>7.4.5 <code>MinKernel</code></h3><p><strong>Type</strong>: <code>plist string</code><br><strong>Failsafe</strong>: Empty string<br><strong>Description</strong>: Blocks kernel driver on specified macOS version or newer.</p>
+<h3 id="7-4-5-MinKernel"><a href="#7-4-5-MinKernel" class="headerlink" title="7.4.5 MinKernel"></a>7.4.5 <code>MinKernel</code></h3><p><strong>Type</strong>: <code>plist string</code><br><strong>Failsafe</strong>: Empty string<br><strong>Description</strong>: 在大于等于指定的 macOS 版本中阻止 Kext 驱动程序。</p>
 <p><em>注</em>：Refer to <a href="#kernmatch"><code>Add</code> <code>MaxKernel</code> description</a> for<br>matching logic.</p>
 <h2 id="7-5-Emulate-属性"><a href="#7-5-Emulate-属性" class="headerlink" title="7.5 Emulate 属性"></a>7.5 Emulate 属性</h2><h3 id="7-5-1-Cpuid1Data"><a href="#7-5-1-Cpuid1Data" class="headerlink" title="7.5.1 Cpuid1Data"></a>7.5.1 <code>Cpuid1Data</code></h3><p><strong>Type</strong>: <code>plist data</code>, 16 bytes<br><strong>Failsafe</strong>: All zero<br><strong>Description</strong>: Sequence of <code>EAX</code>, <code>EBX</code>, <code>ECX</code>, <code>EDX</code> values to replace <code>CPUID (1)</code> call in XNU kernel.</p>
 <p>This property serves for two needs:</p>
