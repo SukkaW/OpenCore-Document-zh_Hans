@@ -8,7 +8,7 @@ last_updated: 2020-02-14
 
 ## 6.1 简介
 
-设备相关配置通过专用的缓存区（`EfiDevicePropertyDatabase`）提供给 macOS，这个缓冲区是设备路径到属性名称与值的键值对的序列化映射。
+设备相关配置通过专用的缓存区（`EfiDevicePathPropertyDatabase`）提供给 macOS，这个缓冲区是设备路径到属性名称与值的键值对的序列化映射。
 
 属性相关数据可以使用 [gfxutil](https://github.com/acidanthera/gfxutil) 进行调试。在 macOS 下获取当前属性数据请使用 `ioreg`：
 

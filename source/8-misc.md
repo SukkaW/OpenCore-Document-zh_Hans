@@ -71,6 +71,7 @@ Designed to be filled with `plist dict` values, describing each load entry. See 
 满足任一以下条件的引导项条目即会被视为「辅助项目」
 
 - 该引导项是 macOS Recovery 分区
+- 该引导项是 macOS Time Machine 分区
 - 该引导项被标记为 `Auxiliary`
 - 该引导项是一个系统（如 `Clean NVRAM`）
 
@@ -119,6 +120,16 @@ Builtin picker supports colour arguments as a sum of foreground and background c
 
 *注*：This option may not work well with `System` text renderer.
 Setting a background different from black could help testing proper GOP functioning.
+
+### `PickerAudioAssist`
+
+**Type**: `plist boolean`
+**Failsafe**: `false`
+**Description**: 在开机引导菜单中启用 屏幕朗读。
+
+macOS Bootloader 屏幕朗读 的偏好设置是存在 `isVOEnabled.int32` 文件的 `preferences.efires` 中、并受操作系统控制。这里仅提供一个等效的开关。切换 OpenCore 开机引导菜单和 macOS BootLoader FileVault 2 登录界面也可以使用快捷键 `Command` + `F5`。
+
+*注*：屏幕朗读 依赖可以正常工作的音频设备。
 
 ### `PollAppleHotKeys`
 
@@ -174,7 +185,7 @@ if available. Otherwise `Builtin` mode is used.
 - `Apple` --- Apple boot management is used if available.
 Otherwise `Builtin` mode is used.
 
-Upon success `External` mode will entirely disable all boot management in OpenCore except policy enforcement. In `Apple` mode it may additionally bypass policy enforcement. To implement `External` mode a custom user interface may utilise [OcSupportPkg](https://github.com/acidanthera/OcSupportPkg) `OcBootManagementLib`. Reference example of external graphics interface is provided in [ExternalUi](https://github.com/acidanthera/OcSupportPkg/tree/master/Tests/ExternalUi) test driver.
+Upon success `External` mode will entirely disable all boot management in OpenCore except policy enforcement. In `Apple` mode it may additionally bypass policy enforcement. To implement `External` mode a custom user interface may utilise [OpenCorePkg](https://github.com/acidanthera/OpenCorePkg) `OcBootManagementLib`. Reference example of external graphics interface is provided in [ExternalUi](https://github.com/acidanthera/OpenCorePkg/tree/master/Tests/ExternalUi) test driver.
 
 OpenCore built-in boot picker contains a set of actions chosen during the boot process. The list of supported actions is similar to Apple BDS and in general can be accessed by holding `action hotkeys` during boot process. Currently the following actions are considered:
 
@@ -333,14 +344,14 @@ Valid values:
 - `Basic` --- require `vault.plist` file present in `OC` directory. This provides basic filesystem integrity verification and may protect from unintentional filesystem corruption.
 - `Secure` --- require `vault.sig` signature file for `vault.plist` in `OC` directory. This includes `Basic` integrity checking but also attempts to build a trusted bootchain.
 
-`vault.plist` file should contain SHA-256 hashes for all files used by OpenCore. Presence of this file is highly recommended to ensure that unintentional file modifications (including filesystem corruption) do not happen unnoticed. To create this file automatically use [`create_vault.sh`](https://github.com/acidanthera/OcSupportPkg/tree/master/Utilities/CreateVault) script. Regardless of the underlying filesystem, path name and case must match between `config.plist` and `vault.plist`.
+`vault.plist` file should contain SHA-256 hashes for all files used by OpenCore. Presence of this file is highly recommended to ensure that unintentional file modifications (including filesystem corruption) do not happen unnoticed. To create this file automatically use [`create_vault.sh`](https://github.com/acidanthera/OpenCorePkg/tree/master/Utilities/CreateVault) script. Regardless of the underlying filesystem, path name and case must match between `config.plist` and `vault.plist`.
 
 `vault.sig` file should contain a raw 256 byte RSA-2048 signature from SHA-256 hash of `vault.plist`. The signature is verified against the public key embedded into `OpenCore.efi`. To embed the public key you should do either of the following:
 
 - Provide public key during the `OpenCore.efi` compilation in [`OpenCoreVault.c`](https://github.com/acidanthera/OpenCorePkg/blob/master/Platform/OpenCore/OpenCoreVault.c) file.
 - Binary patch `OpenCore.efi` replacing zeroes with the public key between `=BEGIN OC VAULT=` and `==END OC VAULT==` ASCII markers.
 
-RSA public key 520 byte format description can be found in Chromium OS documentation. To convert public key from X.509 certificate or from PEM file use [RsaTool](https://github.com/acidanthera/OcSupportPkg/tree/master/Utilities/CreateVault).
+RSA public key 520 byte format description can be found in Chromium OS documentation. To convert public key from X.509 certificate or from PEM file use [RsaTool](https://github.com/acidanthera/OpenCorePkg/tree/master/Utilities/CreateVault).
 
 The complete set of commands to:
 

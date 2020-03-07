@@ -12,7 +12,7 @@ last_updated: 2020-02-12
 > 1. 此处以及之后的「本文档」都指代 OpenCore 的官方文档（而非你现在访问的网站）。
 > 2. 你应当使用英语在 Acidanthera Bugtracker 进行反馈。
 
-本文档仅作为规范结构、并非用于提供手把手的配置教程。这类材料（译者注：即「手把手的配置教程」）都容易收到其作者的喜好和品位、对本文档的误解、过时的理解等。如果您仍然在使用这些资料来源，例如 [OpenCore Vanilla Guide](https://khronokernel-2.gitbook.io/opencore-vanilla-desktop-guide/)，请务必在参考本文档后再作出每个决定、并判断其后果。无论使用哪种来源，你都必须全面了解每种专用工具。
+本文档仅作为规范结构、并非用于提供手把手的配置教程。这类材料（译者注：即「手把手的配置教程」）都容易收到其作者的喜好和品位、对本文档的误解、过时的理解等。如果您仍然在使用这些资料来源，例如 [OpenCore Vanilla Guide](https://khronokernel-2.gitbook.io/opencore-vanilla-desktop-guide/)（及其 [父页面](https://khronokernel-1.gitbook.io/getting-started-with-opencore)），请务必在参考本文档后再作出每个决定、并判断其后果。无论使用哪种来源，你都必须全面了解每种专用工具。
 
 在通过 Acidanthera Bugtracker 反馈任何问题之前，请确保你彻底理解了 OpenCore 的每个配置选项及其对应的概念。
 

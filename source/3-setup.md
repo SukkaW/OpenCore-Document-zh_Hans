@@ -25,6 +25,8 @@ ESP
 │        ├── Kexts
 │        │    ├── MyKext.kext
 │        │    └── OtherKext.kext
+│        ├── Resources
+│        │    └── Audio
 │        ├── Tools
 │        │    └── Tool.efi
 │        ├── OpenCore.efi
@@ -49,6 +51,7 @@ ESP
 - **config.plist** - OC Config（即 OpenCore 的配置文件，见「配置术语」）。
 - **vault.sig** - vault.plist 的签名文件。
 - **nvram.plist** - OpenCore 变量导入文件。
+- **Resources** - 媒体资源使用的目录，如 屏幕朗读 的语音文件（见「UEFI Audio 属性」章节）。
 - **opencore-YYYY-MM-DD-HHMMSS.txt** - OpenCore 日志文件。
 
 ## 3.2 安装和升级
@@ -57,7 +60,7 @@ ESP
 
 OpenCore 的配置文件可以使用任何常规的文本编辑器（如 nano、vim、VSCode）进行编辑，但是专用软件可以带来更好的体验。在 macOS 上我们推荐使用 [Xcode](https://developer.apple.com/xcode)。你也可以使用 [ProperTree](https://github.com/corpnewt/ProperTree) ，这是一个轻量级的跨平台的开源 plist 编辑器。
 
-如果要通过 BIOS 进行开机，你必须使用第三方 UEFI 环境提供程序。`DuetPkg` 是一个常用的为旧操作系统提供 Legacy 引导的 UEFI 环境提供程序。要在这样的旧操作系统上运行 OpenCore，你可以使用 [BootInstall](https://github.com/acidanthera/OcSupportPkg/tree/master/Utilities/BootInstall) 安装 `DuetPkg`。
+如果要通过 BIOS 进行开机，你必须使用第三方 UEFI 环境提供程序。`DuetPkg` 是一个常用的为旧操作系统提供 Legacy 引导的 UEFI 环境提供程序。要在这样的旧操作系统上运行 OpenCore，你可以使用 [BootInstall](https://github.com/acidanthera/OpenCorePkg/tree/master/Utilities/BootInstall) 安装 `DuetPkg`。
 
 如果要升级 OpenCore，[`Differences.pdf`](https://github.com/acidanthera/OpenCorePkg/blob/master/Docs/Differences/Differences.pdf) 提供了 OpenCore 配置文件变更的相关信息，[`Changelog.md`](https://github.com/acidanthera/OpenCorePkg/blob/master/Changelog.md) 提供了 OpenCore 的更新日志。
 
@@ -69,7 +72,7 @@ OpenCore can be compiled as an ordinary [EDK II](https://github.com/tianocore/ti
 
 The only officially supported toolchain is `XCODE5`. Other toolchains might work, but are neither supported, nor recommended. Contribution of clean patches is welcome. Please do follow [EDK II C Codestyle](https://github.com/tianocore/tianocore.github.io/wiki/Code-Style-C).
 
-Required external package dependencies include [EfiPkg](https://github.com/acidanthera/OcSupportPkg), [MacInfoPkg](https://github.com/acidanthera/OcSupportPkg), and [OcSupportPkg](https://github.com/acidanthera/OcSupportPkg).
+Required external package dependencies include [EfiPkg](https://github.com/acidanthera/EfiPkg), [MacInfoPkg](https://github.com/acidanthera/MacInfoPkg).
 
 To compile with `XCODE5`, besides [Xcode](https://developer.apple.com/xcode), one should also install [NASM](https://www.nasm.us) and [MTOC](https://github.com/acidanthera/ocbuild/raw/master/external/mtoc-mac64.zip). The latest Xcode version is recommended for use despite the toolchain name. Example
 command sequence may look as follows:
@@ -79,7 +82,6 @@ git clone https://github.com/acidanthera/audk UDK
 cd UDK
 git clone https://github.com/acidanthera/EfiPkg
 git clone https://github.com/acidanthera/MacInfoPkg
-git clone https://github.com/acidanthera/OcSupportPkg
 git clone https://github.com/acidanthera/OpenCorePkg
 source edksetup.sh
 make -C BaseTools
@@ -97,7 +99,6 @@ For IDE usage Xcode projects are available in the root of the repositories. Anot
 -I/UefiPackages/EfiPkg/Include/X64
 -I/UefiPackages/AppleSupportPkg/Include
 -I/UefiPackages/OpenCorePkg/Include
--I/UefiPackages/OcSupportPkg/Include
 -I/UefiPackages/MacInfoPkg/Include
 -I/UefiPackages/UefiCpuPkg/Include
 -IInclude
@@ -123,7 +124,7 @@ For IDE usage Xcode projects are available in the root of the repositories. Anot
 Just like any other project we have conventions that we follow during the development. All third-party contributors are highly recommended to read and follow the conventions listed below before submitting their patches. In general it is also recommended to firstly discuss the issue in [Acidanthera Bugtracker](https://github.com/acidanthera/bugtracker) before sending the patch to ensure no double work and to avoid your patch being rejected.
 
 **Organisation**. The codebase is structured in multiple repositories
-which contain separate EDK II packages. `AppleSupportPkg` and `OpenCorePkg` are primary packages, and `EfiPkg`, `OcSupportPkg`, `MacInfoPkg.dsc`) are dependent packages.
+which contain separate EDK II packages. `AppleSupportPkg` and `OpenCorePkg` are primary packages, and `EfiPkg`, `MacInfoPkg.dsc`) are dependent packages.
 
 - Whenever changes are required in multiple repositories, separate pull requests should be sent to each.
 - Committing the changes should happen firstly to dependent repositories, secondly to primary repositories to avoid automatic build errors.

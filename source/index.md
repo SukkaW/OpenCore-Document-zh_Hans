@@ -11,7 +11,7 @@ type: docs
 <p>
 <span style="margin-top: 1em; margin-bottom: .5em; font-size: 2em">OpenCore</span>
 <br><br>
-<span style="margin-top: 2.2857em; margin-bottom: .5714em; font-size: 1.25em">参考手册（v0.5.6）</span>
+<span style="margin-top: 2.2857em; margin-bottom: .5714em; font-size: 1.25em">参考手册（v0.5.7）</span>
 </div>
 <br><br><br>
 
@@ -26,11 +26,11 @@ type: docs
 由于 OpenCore 仍处于积极的维护之中，OpenCore 参考手册 仍然在高频率更新，本网站提供的内容 **仅可供参考**。本网站的内容和 OpenCore 官方的参考手册的任何出入，**请以 OpenCore 官方的参考手册为准**。
 
 > 本网站提供的翻译基于如下描述的 OpenCore 官方文档：
-> - **OpenCore 文档释出日期**：2020.02.18
-> - **OpenCore 文档版本**：[`70e920d95f0b13dfe899b4b7c8ba46506a0aaef8`](https://github.com/acidanthera/OpenCorePkg/commit/70e920d95f0b13dfe899b4b7c8ba46506a0aaef8)
+> - **OpenCore 文档释出日期**：2020.03.07
+> - **OpenCore 文档版本**：[`9684069ced6b4ab85576ecf1e8c54cb3712decf7`](https://github.com/acidanthera/OpenCorePkg/commit/9684069ced6b4ab85576ecf1e8c54cb3712decf7)
 >
 > 本网站提供的翻译适用于如下描述的 OpenCore 版本：
-> - **OpenCore 版本**：0.5.6
+> - **OpenCore 版本**：0.5.7
 
 本网站以及 `acidanthera` **不会对因本网站引起的任何损失负责**，包括但不限于 Kernel Panic、设备无法开机或正常使用、硬盘损坏或数据丢失、原子弹爆炸、第三次世界大战、[SCP 基金会](https://scp-wiki-cn.wikidot.com/) 无法阻止的全球 CK 级现实重构等。
 

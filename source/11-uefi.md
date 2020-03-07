@@ -12,13 +12,29 @@ last_updated: 2020-02-20
 
 ## 11.2 Properties
 
+### `Audio`
+
+**Type**: `plist dict`
+**Failsafe**: None
+**Description**: Configure audio backend support described in section below.
+
+Audio support provides a way for upstream protocols to interact with the selected hardware and audio resources. All audio resources should reside in `\EFI\OC\Resources\Audio` directory. Currently the only supported audio file format is WAVE PCM. While it is driver-dependent which audio stream format is supported, most common audio cards support 16-bit signed stereo audio at 44100 or 48000 Hz.
+
+Audio file path is determined by audio type, audio localisation, and audio path. Each filename looks as follows: `[audio type]_[audio localisation]_[audio path].wav`. For unlocalised files filename does not include the language code and looks as follows: `[audio type]_[audio path].wav`.
+
+  - Audio type can be `OCEFIAudio` for OpenCore audio files or `AXEFIAudio` for macOS bootloader audio files.
+  - Audio localisation is a two letter language code (e.g. `en`) with an exception for Chinese, Spanish, and Portuguese. Refer to [`APPLE_VOICE_OVER_LANGUAGE_CODE` definition](https://github.com/acidanthera/EfiPkg/blob/master/Include/Protocol/AppleVoiceOver.h) for the list of all supported localisations.
+  - Audio path is the base filename corresponding to a file identifier. For macOS bootloader audio paths refer to [`APPLE_VOICE_OVER_AUDIO_FILE` definition](https://github.com/acidanthera/EfiPkg/blob/master/Include/Protocol/AppleVoiceOver.h). For OpenCore audio paths refer to [`OC_VOICE_OVER_AUDIO_FILE` definition](https://github.com/acidanthera/OpenCorePkg/blob/master/Include/Protocol/OcAudio.h). The only exception is OpenCore boot chime file, which is `OCEFIAudio_VoiceOver_Boot.wav`.
+
+Audio localisation is determined separately for macOS bootloader and OpenCore. For macOS bootloader it is set in `preferences.efires` archive in `systemLanguage.utf8` file and is controlled by the operating system. For OpenCore the value of `prev-lang:kbd` variable is used. When native audio localisation of a particular file is missing, English language (`en`) localisation is used. Sample audio files can be found in [OcBinaryData repository](https://github.com/acidanthera/OcBinaryData).
+
 ### `ConnectDrivers`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
 **Description**: 驱动程序加载后执行 UEFI 控制器连接操作。
 
-此选项对于加载文件系统驱动很有用，因为文件系统驱动通常遵循 UEFI 驱动模型（并且可能无法自行启动）。此选项对会自动连接的驱动程序来说是不必要的，并且可能会稍微减慢启动速度。
+此选项对于加载某些遵循 UEFI 驱动模型的 驱动程序（如文件系统驱动、音频输出驱动）很有用，因为这些驱动可能无法自行启动。此选项对会自动连接的驱动程序来说是不必要的，并且可能会稍微减慢启动速度。
 
 *注*：某些固件（特别是 Apple 的）仅连接包含操作系统的驱动器以加快启动过程。启用此选项可以在拥有多个驱动器时查看所有引导选项。
 
@@ -31,14 +47,16 @@ last_updated: 2020-02-20
 设计为填充要作为 UEFI 驱动程序加载的文件名。根据固件不同、可能需要不同的驱动程序。加载不兼容的驱动程序可能会导致无法启动系统，甚至导致固件永久性损坏。OpenCore 可以使用的驱动程序包括：
 
 - [`ApfsDriverLoader`](https://github.com/acidanthera/AppleSupportPkg) --- APFS 文件系统引导驱动程序在 UEFI 固件的可启动 APFS 容器中添加了对嵌入式 APFS 驱动程序的支持。
-- [`FwRuntimeServices`](https://github.com/acidanthera/OcSupportPkg) --- `OC_FIRMWARE_RUNTIME` 协议通过支持只读、只写 NVRAM 变量，提升了 OpenCore 和 Lilu 的安全性。有些 Quirks 如 `RequestBootVarRouting` 依赖此驱动程序。
-由于 runtime 驱动饿性质（与目标操作系统并行运行），因此它不能在 OpenCore 本身实现，而是与 OpenCore 捆绑在一起。
+- [`FwRuntimeServices`](https://github.com/acidanthera/OpenCorePkg) --- `OC_FIRMWARE_RUNTIME` 协议通过支持只读、只写 NVRAM 变量，提升了 OpenCore 和 Lilu 的安全性。有些 Quirks 如 `RequestBootVarRouting` 依赖此驱动程序。由于 runtime 驱动饿性质（与目标操作系统并行运行），因此它不能在 OpenCore 本身实现，而是与 OpenCore 捆绑在一起。
 - [`HiiDatabase`](https://github.com/acidanthera/audk) --- 来自 `MdeModulePkg` 的 HII 服务驱动。Ivy Bridge 及其以后的大多数固件中都已内置此驱动程序。某些带有 GUI 的应用程序（例如 UEFI Shell）可能需要此驱动程序才能正常工作。
 - [`EnhancedFatDxe`](https://github.com/acidanthera/audk) --- 来自 `FatPkg` 的 FAT 文件系统驱动程序。这个驱动程序已经被嵌入到所有 UEFI 固件中，无法为 OpenCore 使用。众所周知，许多固件的 FAT 支持实现都有错误，导致在尝试写操作时损坏文件系统。如果在引导过程中需要写入 EFI 分区，则可能组要将此驱动程序嵌入固件中。
 - [`NvmExpressDxe`](https://github.com/acidanthera/audk) --- 来自`MdeModulePkg` 的 NVMe 驱动程序。从 Broadwell 一代开始的大多数固件都包含此驱动程序。对于 Haswell 以及更早的版本，如果安装了 NVMe SSD 驱动器，则将其嵌入固件中可能会更理想。
-- [`AppleUsbKbDxe`](https://github.com/acidanthera/OcSupportPkg) --- USB 键盘驱动在自定义 USB 键盘驱动程序的基础上新增了对 `AppleKeyMapAggregator` 协议的支持。这是内置的 `KeySupport` 的等效替代方案。根据固件不同，效果可能会更好或者更糟。
-- [`VBoxHfs`](https://github.com/acidanthera/AppleSupportPkg) --- 带有 bless 支持的 HFS 文件系统驱动。是 Apple 固件中 `HFSPlus` 驱动的开源替代。虽然功能完善，但是启动速度比 `HFSPlus` 慢三倍，并且尚未经过安全审核。
+- [`AppleUsbKbDxe`](https://github.com/acidanthera/OpenCorePkg) --- USB 键盘驱动在自定义 USB 键盘驱动程序的基础上新增了对 `AppleKeyMapAggregator` 协议的支持。这是内置的 `KeySupport` 的等效替代方案。根据固件不同，效果可能会更好或者更糟。
+- [`HfsPlus`](https://github.com/acidanthera/OcBinaryData) — Apple 固件中常见的具有祝福支持的专有 HFS 文件系统驱动程序。对于 `Sandy Bridge`和更早的 CPU，由于缺少 `RDRAND` 指令支持，应使用 `HfsPlusLegacy` 驱动程序。
+- [`VBoxHfs`](https://github.com/acidanthera/AppleSupportPkg) --- 带有 bless 支持的 HFS 文件系统驱动。是 Apple 固件中 `HfsPlus` 驱动的开源替代。虽然功能完善，但是启动速度比 `HFSPlus` 慢三倍，并且尚未经过安全审核。
 - [`XhciDxe`](https://github.com/acidanthera/audk) --- 来自 `MdeModulePkg` 的 XHCI USB controller 驱动程序。从 Sandy Bridge 代开始的大多数固件中都包含此驱动程序。在较早的固件或旧系统可以用于支持外部 USB 3.0 PCI 卡。
+- [`AudioDxe`](https://github.com/acidanthera/AppleSupportPkg) --- HDA audio support driver in UEFI firmwares for most Intel and some other analog audio controllers. Refer to [acidanthera/bugtracker#740](https://github.com/acidanthera/bugtracker/issues/740) for known issues in AudioDxe.
+- [`ExFatDxe`](https://github.com/acidanthera/OcBinaryData) --- Proprietary ExFAT file system driver for Bootcamp support commonly found in Apple firmwares. For Sandy Bridge and earlier CPUs `ExFatDxeLegacy` driver should be used due to the lack of `RDRAND` instruction support.
 
 要从 UDK（EDK II）编译驱动程序，可以使用编译 OpenCore 类似的命令。
 
@@ -73,8 +91,92 @@ build -a X64 -b RELEASE -t XCODE5 -p MdeModulePkg/MdeModulePkg.dsc
 **Failsafe**: None
 **Description**: Apply individual firmware quirks described in [Quirks Properties]() section below.
 
+## 11.3 Audio Properties
 
-## 11.3 Input Properties
+### `AudioCodec`
+
+**Type**: `plist integer`
+**Failsafe**: `0`
+**Description**: Codec address on the specified audio controller for audio support.
+
+Normally this contains first audio codec address on the builtin analog audio controller (`HDEF`). Audio codec addresses, e.g. `2`, can be found in the debug log (marked in bold):
+
+`OCAU: 1/3 PciRoot(0x0)/Pci(0x1,0x0)/Pci(0x0,0x1)/VenMsg(<redacted>,00000000) (4 outputs)`
+`OCAU: 2/3 PciRoot(0x0)/Pci(0x3,0x0)/VenMsg(<redacted>,00000000) (1 outputs)`
+`OCAU: 3/3 PciRoot(0x0)/Pci(0x1B,0x0)/VenMsg(<redacted>,02000000) (7 outputs)`
+
+As an alternative this value can be obtained from `IOHDACodecDevice` class in I/O Registry containing it in `IOHDACodecAddress` field.
+
+### `AudioDevice`
+
+**Type**: `plist string`
+**Failsafe**: empty string
+**Description**: Device path of the specified audio controller for audio support.
+
+Normally this contains builtin analog audio controller (`HDEF`) device path, e.g. `PciRoot(0x0)/Pci(0x1b,0x0)`. The list of recognised audio controllers can be found in the debug log (marked in bold):
+
+`OCAU: 1/3 PciRoot(0x0)/Pci(0x1,0x0)/Pci(0x0,0x1)/VenMsg(<redacted>,00000000) (4 outputs)`
+`OCAU: 2/3 PciRoot(0x0)/Pci(0x3,0x0)/VenMsg(<redacted>,00000000) (1 outputs)`
+`OCAU: 3/3 PciRoot(0x0)/Pci(0x1B,0x0)/VenMsg(<redacted>,02000000) (7 outputs)`
+
+As an alternative `gfxutil -f HDEF` command can be used in macOS. Specifying empty device path will result in the first available audio controller to be used.
+
+### `AudioOut`
+
+**Type**: `plist integer`
+**Failsafe**: `0`
+**Description**: Index of the output port of the specified codec starting from 0.
+
+Normally this contains the index of the green out of the builtin analog audio controller (`HDEF`). The number of output nodes in the debug log (marked in bold):
+
+`OCAU: 1/3 PciRoot(0x0)/Pci(0x1,0x0)/Pci(0x0,0x1)/VenMsg(<redacted>,00000000) (4 outputs)`
+`OCAU: 2/3 PciRoot(0x0)/Pci(0x3,0x0)/VenMsg(<redacted>,00000000) (1 outputs)`
+`OCAU: 3/3 PciRoot(0x0)/Pci(0x1B,0x0)/VenMsg(<redacted>,02000000) (7 outputs)`
+
+The quickest way to find the right port is to bruteforce the values from `0` to `N - 1`.
+
+### `AudioSupport`
+
+**Type**: `plist boolean`
+**Failsafe**: `false`
+**Description**: Activate audio support by connecting to a backend driver.
+
+Enabling this setting routes audio playback from builtin protocols to a dedicated audio port (`AudioOut`) of the specified codec (`AudioCodec`) located on the audio controller (`AudioDevice`).
+
+### `MinimumVolume`
+
+**Type**: `plist integer`
+**Failsafe**: `0`
+**Description**: Minimal heard volume level from `0` to `100`.
+
+Screen reader will use this volume level, when the calculated volume level is less than `MinimumVolume`. Boot chime sound will not play if the calculated volume level is less than `MinimumVolume`.
+
+### `PlayChime`
+
+**Type**: `plist boolean`
+**Failsafe**: `false`
+**Description**: Play chime sound at startup.
+
+Enabling this setting plays boot chime through builtin audio support. Volume level is determined by `MinimumVolume` and `VolumeAmplifier` settings and `SystemAudioVolume` NVRAM variable.
+
+*Note*: this setting is separate from `StartupMute` NVRAM variable to avoid conflicts when the firmware is able to play boot chime.
+
+### `VolumeAmplifier`
+
+**Type**: `plist integer`
+**Failsafe**: `0`
+**Description**: Multiplication coefficient for system volume to raw volume linear translation from `0` to `1000`.
+
+Volume level range read from `SystemAudioVolume` varies depending on the codec. To transform read value in `[0, 127]` range into raw volume range
+`[0, 100]` the read value is scaled to `VolumeAmplifier` percents:
+
+```
+RawVolume = MIN{ [(SystemAudioVolume * VolumeAmplifier) / 100], 100 }
+```
+
+*Note*: the transformation used in macOS is not linear, but it is very close and this nuance is thus ignored.
+
+## 11.4 Input Properties
 
 ### 1. `KeyForgetThreshold`
 
@@ -147,7 +249,7 @@ build -a X64 -b RELEASE -t XCODE5 -p MdeModulePkg/MdeModulePkg.dsc
 
 设置较低的值可以提高界面和输入处理性能的响应能力。建议值为 `50000`（即 5 毫秒）或稍高一些。选择 ASUS Z87 主板时，请使用 `60000`，苹果主板请使用 `100000`。你也可以将此值保留为 0，由 OpenCore 自动计算。
 
-## 11.4 Output Properties
+## 11.5 Output Properties
 
 ### 1. `TextRenderer`
 **Type**: `plist string`
@@ -249,7 +351,20 @@ On some firmwares this may provide better performance or even fix rendering issu
 
 *注*：This option only applies to `System` renderer. On all known affected systems `ConsoleMode` had to be set to empty string for this to work.
 
-## 11.5 Protocols Properties
+## 11.6 Protocols Properties
+
+### 0. `AppleAudio`
+
+**Type**: `plist boolean`
+**Failsafe**: `false`
+**Description**: Reinstalls Apple audio protocols with builtin versions.
+
+Apple audio protocols allow macOS bootloader and OpenCore to play sounds and signals for screen reading or audible error reporting. Supported
+protocols are beep generation and VoiceOver. VoiceOver protocol is specific to Gibraltar machines (T2) and is not supported before macOS High Sierra (10.13). Instead older macOS versions use AppleHDA protocol, which is currently not implemented.
+
+Only one set of audio protocols can be available at a time, so in order to get audio playback in OpenCore user interface on Mac system implementing some of these protocols this setting should be enabled.
+
+*Note*: Backend audio driver needs to be configured in `UEFI Audio` section for these protocols to be able to stream audio.
 
 ### 1. `AppleBootPolicy`
 
@@ -329,7 +444,7 @@ On some firmwares this may provide better performance or even fix rendering issu
 **Failsafe**: `false`
 **Description**: Forcibly reinstalls unicode collation services with builtin version. 建议启用这一选项以确保 UEFI Shell 的兼容性。一些较旧的固件破坏了 Unicode 排序规则, 设置为 YES 可以修复这些系统上 UEFI Shell 的兼容性 (通常为用于 IvyBridge 或更旧的设备)
 
-## 11.6 Quirks Properties
+## 11.7 Quirks Properties
 
 ### 1. `ExitBootServicesDelay`
 

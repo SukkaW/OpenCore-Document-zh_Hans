@@ -119,7 +119,7 @@ The following variables are recommended for faster startup or other improvements
 - `4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14:HW_ROM`
  Hardware ROM. Override for ROM. Present on newer Macs (2013+ at least).
 - `7C436110-AB2A-4BBB-A880-FE41995C9F82:prev-lang:kbd`
- ASCII string defining default keyboard layout. Format is `lang-COUNTRY:keyboard`, e.g. `ru-RU:252` for Russian locale and ABC keyboard. Also accepts short forms: `ru:252` or `ru:0` (U.S. keyboard, compatible with 10.9). Full decoded keyboard list from `AppleKeyboardLayouts-L.dat` can be found [here](https://github.com/acidanthera/OcSupportPkg/tree/master/Utilities/AppleKeyboardLayouts). Using non-latin keyboard on 10.14 will not enable ABC keyboard, unlike previous and subsequent macOS versions, and is thus not recommended in case you need 10.14.
+ ASCII string defining default keyboard layout. Format is `lang-COUNTRY:keyboard`, e.g. `ru-RU:252` for Russian locale and ABC keyboard. Also accepts short forms: `ru:252` or `ru:0` (U.S. keyboard, compatible with 10.9). Full decoded keyboard list from `AppleKeyboardLayouts-L.dat` can be found [here](https://github.com/acidanthera/OpenCorePkg/tree/master/Utilities/AppleKeyboardLayouts). Using non-latin keyboard on 10.14 will not enable ABC keyboard, unlike previous and subsequent macOS versions, and is thus not recommended in case you need 10.14.
 - `7C436110-AB2A-4BBB-A880-FE41995C9F82:security-mode`
  ASCII string defining FireWire security mode. Legacy, can be found in IOFireWireFamily source code in [IOFireWireController.cpp](https://opensource.apple.com/source/IOFireWireFamily/IOFireWireFamily-473/IOFireWireFamily.kmodproj/IOFireWireController.cpp.auto.html). It is recommended not to set this variable, which may speedup system startup. Setting to `full` is equivalent to not setting the variable and `none` disables FireWire security.
 - `4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14:UIScale`
@@ -158,27 +158,78 @@ The following variables are recommended for faster startup or other improvements
   这里有一些网站收集了 macOS 内置的启动参数列表：[列表 1](https://osxeon.wordpress.com/2015/08/10/boot-argument-options-in-os-x)、[列表 2](https://superuser.com/questions/255176/is-there-a-list-of-available-boot-args-for-darwin-os-x).
 
 - `7C436110-AB2A-4BBB-A880-FE41995C9F82:bootercfg`
- Booter arguments, similar to `boot-args` but for boot.efi. Accepts a set of arguments, which are hexadecimal 64-bit values with or without 0x prefix primarily for logging control:
- 
-  - `log=VALUE`
- 
-  - `1` --- AppleLoggingConOutOrErrSet/AppleLoggingConOutOrErrPrint (classical ConOut/StdErr)
-  - `2` --- AppleLoggingStdErrSet/AppleLoggingStdErrPrint (StdErr or serial?)
-  - `4` --- AppleLoggingFileSet/AppleLoggingFilePrint (BOOTER.LOG/BOOTER.OLD file on EFI partition)
- 
-  - `debug=VALUE`
- 
-  - `1` --- enables print something to BOOTER.LOG (stripped code implies there may be a crash)
-  - `2` --- enables perf logging to /efi/debug-log in the device three
-  - `4` --- enables timestamp printing for styled printf calls
- 
-  - `level=VALUE` --- Verbosity level of DEBUG output. Everything but `0x80000000` is stripped from the binary, and this is the default value.
-  - `kc-read-size=VALUE` --- Chunk size used for buffered I/O from network or disk for prelinkedkernel reading and related. Set to 1MB (0x100000) by default, can be tuned for faster booting.
+ Booter arguments, similar to `boot-args` but for boot.efi. Accepts a set of arguments, which are hexadecimal 64-bit values with or without `0x`. At
+different stages boot.efi will request different debugging (logging)
+modes (e.g. after `ExitBootServices` it will only print to serial).
+Several booter arguments control whether these requests will succeed.
+The list of known requests is covered below:
 
- *注*：To quickly see verbose output from `boot.efi` set this to `log=1` (currently this is broken in 10.15).
+  - `0x00` – `INIT`.
+  - `0x01` – `VERBOSE` (e.g. `-v`, force console logging).
+  - `0x02` – `EXIT`.
+  - `0x03` – `RESET:OK`.
+  - `0x04` – `RESET:FAIL` (e.g. unknown `board-id`, hibernate mismatch, panic loop, etc.).
+  - `0x05` – `RESET:RECOVERY`.
+  - `0x06` – `RECOVERY`.
+  - `0x07` – `REAN:START`.
+  - `0x08` – `REAN:END`.
+  - `0x09` – `DT` (can no longer log to DeviceTree).
+  - `0x0A` – `EXITBS:START` (forced serial only).
+  - `0x0B` – `EXITBS:END` (forced serial only).
+  - `0x0C` – `UNKNOWN`.
+
+In 10.15 debugging support was mostly broken before 10.15.4 due to some kind of refactoring and introduction of a [new debug protocol](https://github.com/acidanthera/EfiPkg/blob/master/Include/Protocol/AppleDebugLog.h). Some of the arguments and their values below may not be valid for
+versions prior to 10.15.4. The list of known arguments is covered below:
+
+- `boot-save-log=VALUE` — debug log save mode for normal boot.
+  - `0`
+  - `1`
+  - `2` — (default).
+  - `3`
+  - `4` — (save to file).
+- `wake-save-log=VALUE` — debug log save mode for hibernation wake.
+  - `0` — disabled.
+  - `1`
+  - `2` — (default).
+  - `3` — (unavailable).
+  - `4` — (save to file, unavailable).
+- `breakpoint=VALUE` — enables debug breaks (missing in production
+`boot.efi`).
+  - `0` — disables debug breaks on errors (default).
+  - `1` — enables debug breaks on errors.
+- `console=VALUE` — enables console logging.
+  - `0` — disables console logging.
+  - `1` — enables console logging when debug protocol is missing
+(default).
+  - `2` — enables console logging unconditionally (unavailable).
+- `embed-log-dt=VALUE` — enables DeviceTree logging.
+  - `0` — disables DeviceTree logging (default).
+  - `1` — enables DeviceTree logging.
+- `kc-read-size=VALUE` — Chunk size used for buffered I/O from network
+or disk for prelinkedkernel reading and related. Set to 1MB
+(0x100000) by default, can be tuned for faster booting.
+- `log-level=VALUE` — log level bitmask.
+  - `0x01` — enables trace logging (default).
+- `serial=VALUE` — enables serial logging.
+  - `0` — disables serial logging (default).
+  - `1` — enables serial logging for `EXITBS:END` onwards.
+  - `1` — enables serial logging for `EXITBS:START` onwards.
+  - `3` — enables serial logging when debug protocol is missing.
+  - `4` — enables serial logging unconditionally.
+- `timestamps=VALUE` — enables timestamp logging.
+  - `0` — disables timestamp logging.
+  - `1` — enables timestamp logging (default).
+- `log=VALUE` — deprecated starting from 10.15.
+
+ *注*：To quickly see verbose output from `boot.efi` set this to `log=1` for before macOS 10.15, or set `bootercfg` to `log=1` for later.
+
 - `7C436110-AB2A-4BBB-A880-FE41995C9F82:bootercfg-once`
- Booter arguments override removed after first launch. Otherwise equivalent to `bootercfg`.
- - `7C436110-AB2A-4BBB-A880-FE41995C9F82:fmm-computer-name`
- Current saved host name. ASCII string.
- - `7C436110-AB2A-4BBB-A880-FE41995C9F82:nvda_drv`
- NVIDIA Web Driver control variable. Takes ASCII digit `1` or `0` to enable or disable installed driver.
+  Booter arguments override removed after first launch. Otherwise equivalent to `bootercfg`.
+- `7C436110-AB2A-4BBB-A880-FE41995C9F82:fmm-computer-name`
+  Current saved host name. ASCII string.
+- `7C436110-AB2A-4BBB-A880-FE41995C9F82:nvda_drv`
+  NVIDIA Web Driver control variable. Takes ASCII digit `1` or `0` to enable or disable installed driver.
+- `7C436110-AB2A-4BBB-A880-FE41995C9F82:StartupMute`
+  开机时禁用固件引导提示音。8 进制整数。`0x00` 指代不静音、其他任何值（或缺少该值）表示静音。这一选项只影响带 T2 的机器。
+- `7C436110-AB2A-4BBB-A880-FE41995C9F82:SystemAudioVolume`
+  System audio volume level for firmware audio support. 8-bit integer. The bit of `0x80` means muted. Lower bits are used to encode volume range specific to installed audio codec. The value is capped by `MaximumBootBeepVolume` AppleHDA layout value to avoid too loud audio playback in the firmware.
