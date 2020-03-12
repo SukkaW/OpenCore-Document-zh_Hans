@@ -1,14 +1,14 @@
 ---
 title: 8. Misc
-description: 杂项（待翻译）
+description: 关于 OpenCore 行为的其他配置（待翻译）
 type: docs
 author_info: 由 xMuu、Sukka 整理、由 Sukka 翻译。部分翻译参考黑果小兵的「精解 OpenCore」
-last_updated: 2020-02-17
+last_updated: 2020-03-12
 ---
 
 ## 8.1 Introduction
 
-This section contains miscellaneous configuration entries for OpenCore behaviour that does not go to any other sections.
+本部分包含关于 OpenCore 行为的其他配置。
 
 ## 8.2 Properties
 
@@ -22,12 +22,12 @@ This section contains miscellaneous configuration entries for OpenCore behaviour
 **Type**: `plist array`
 **Description**: 通过 Bless Model 添加自定义扫描路径。
 
-Designed to be filled with `plist string` entries containing absolute UEFI paths to customised bootloaders, for example, `\EFI\Microsoft\Boot\bootmgfw.efi` for Microsoft bootloader. This allows unusual boot paths to be automaticlly discovered by the boot picker. Designwise they are equivalent to predefined blessed path, such as `\System\Library\CoreServices\boot.efi`, but unlike predefined bless paths they have highest priority.
+设计为填充 `plist string` 条目，其中包含指向自定义引导程序的绝对 UEFI 路径，例如，用于 Microsoft 引导程序的 `\EFI\Microsoft\Boot\bootmgfw.efi`。这允许引导选择器自动发现异常的引导路径。在设计上它们等效于预定义的 Bless 路径（如 `\System\Library\CoreServices\boot.efi`），但与预定义的 Bless 路径不同，它们具有最高优先级。
 
 ### `Debug`
 
 **Type**: `plist dict`
-**Description**: Apply debug configuration described in [Debug Properties]() section below.
+**Description**: Apply debug configuration described in `Debug Properties` section below.
 
 ### `Entries`
 
@@ -83,7 +83,7 @@ Designed to be filled with `plist dict` values, describing each load entry. See 
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
-**Description**: 在 OpenCore 的启动选择中隐藏自身 EFI 分区内的其它启动项，如 UEFI OS 等。
+**Description**: 在 OpenCore 的启动选择中隐藏自身 EFI 分区内的其它启动项，如 UEFI OS 等、Recovery、Reset NVRAM 等。
 
 ### `PickerAttributes`
 
@@ -118,8 +118,7 @@ Builtin picker supports colour arguments as a sum of foreground and background c
 - `0x60` --- `EFI_BACKGROUND_BROWN`
 - `0x70` --- `EFI_BACKGROUND_LIGHTGRAY`
 
-*注*：This option may not work well with `System` text renderer.
-Setting a background different from black could help testing proper GOP functioning.
+*注*：This option may not work well with `System` text renderer. Setting a background different from black could help testing proper GOP functioning.
 
 ### `PickerAudioAssist`
 
@@ -153,23 +152,23 @@ On some firmwares it may be problematic to use modifier keys due to driver incom
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
-**Description**: 是否显示开机引导项。
+**Description**: 是否显示开机引导菜单。
 
 ### `TakeoffDelay`
 
 **Type**: `plist integer`, 32 bit
 **Failsafe**: `0`
-**Description**: Delay in microseconds performed before handling
-picker startup and `action hotkeys`.
+**Description**: Delay in microseconds performed before handling picker startup and `action hotkeys`.
 
 Introducing a delay may give extra time to hold the right `action hotkey` sequence to e.g. boot to recovery mode. On some platforms setting this option to at least `5000-10000` microseconds may be necessary to access `action hotkeys` at all due to the nature of the keyboard driver.
 
 > 译者注：`0` 为关闭倒计时而非跳过倒计时，相当于 Clover 的 `-1`。
 
 ### `Timeout`
+
 **Type**: `plist integer`, 32 bit
 **Failsafe**: `0`
-**Description**: Timeout in seconds in boot picker before automatic booting of the default boot entry. Use 0 to disable timer.
+**Description**: 开机引导菜单中，启动默认启动项之前超时时间（以秒为单位）。 使用 `0` 禁用倒计时。
 
 ### `PickerMode`
 **Type**: `plist string`

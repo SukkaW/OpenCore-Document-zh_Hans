@@ -3,7 +3,7 @@ title: 5. Booter
 description: 配置 FwRuntimeServices.efi（Slide 值计算、KASLR）
 type: docs
 author_info: 由 Sukka 整理，由 Sukka 翻译。
-last_updated: 2020-02-14
+last_updated: 2020-03-12
 ---
 
 ## 5.1 简介

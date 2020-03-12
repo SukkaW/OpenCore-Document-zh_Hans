@@ -3,12 +3,12 @@ title: 7. Kernel
 description: OpenCore 安全配置，Kext 加载顺序以及屏蔽（待翻译）
 type: docs
 author_info: 由 Sukka 整理，由 Sukka 翻译。
-last_updated: 2020-02-20
+last_updated: 2020-03-12
 ---
 
 ## 7.1 简介
 
-This section allows to apply different kinds of kernelspace modifications on Apple Kernel ([XNU](https://opensource.apple.com/source/xnu)). The modifications currently provide driver (kext) injection, kernel and driver patching, and driver blocking.
+本章节介绍了如何在 Apple Kernel（[XNU](https://opensource.apple.com/source/xnu)）上应用各种不同的内核空间修改，包括内核驱动程序（kext）注入、修补以及屏蔽。
 
 ## 7.2 属性列表
 
@@ -121,7 +121,7 @@ matching logic.
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
-**Description**: This kernel driver will not be blocked unless set to `true`.
+**Description**: 除非设置为 `true`，否则这个内核驱动不会被加载。
 
 ### 7.4.3 `Identifier`
 
