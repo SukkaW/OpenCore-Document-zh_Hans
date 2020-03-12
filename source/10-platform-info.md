@@ -12,7 +12,7 @@ last_updated: 2020-02-19
 - [DataHub](https://github.com/acidanthera/EfiPkg/blob/master/Include/Protocol/DataHub.h)
 - NVRAM
 
-大多数字段在 SMBIOS 中指定覆盖，并且这些字段的名称符合 EDK2 [SmBios.h](https://github.com/tianocore/edk2/blob/UDK2018/MdePkg/Include/IndustryStandard/SmBios.h) 头文件。但是，在 Data Hub 和 NVRAM 中有几个重要的字段。有些值可以在多个字段 和/或 目标中找到，因此有两种方法可以控制它们的更新过程：手动指定所有值（默认方法）；半自动。
+大多数字段在 SMBIOS 中指定覆盖，并且这些字段的名称符合 EDK2 [SmBios.h](https://github.com/acidanthera/audk/blob/master/MdePkg/Include/IndustryStandard/SmBios.h) 头文件。但是，在 Data Hub 和 NVRAM 中有几个重要的字段。有些值可以在多个字段 和/或 目标中找到，因此有两种方法可以控制它们的更新过程：手动指定所有值（默认方法）；半自动。
 
 可以使用 [dmidecode](http://www.nongnu.org/dmidecode) 工具来检查 SMBIOS 内容。你可以从 [Acidanthera/dmidecode](https://github.com/acidanthera/dmidecode/releases) 下载 Acidanthera 制作的增强版。
 

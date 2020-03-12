@@ -12,35 +12,35 @@ This section contains miscellaneous configuration entries for OpenCore behaviour
 
 ## 8.2 Properties
 
-### 1. `Boot`
+### `Boot`
 
 **Type**: `plist dict`
 **Description**: Apply boot configuration described in Boot Properties section below.
 
-### 2. `BlessOverride`
+### `BlessOverride`
 
 **Type**: `plist array`
 **Description**: 通过 Bless Model 添加自定义扫描路径。
 
 Designed to be filled with `plist string` entries containing absolute UEFI paths to customised bootloaders, for example, `\EFI\Microsoft\Boot\bootmgfw.efi` for Microsoft bootloader. This allows unusual boot paths to be automaticlly discovered by the boot picker. Designwise they are equivalent to predefined blessed path, such as `\System\Library\CoreServices\boot.efi`, but unlike predefined bless paths they have highest priority.
 
-### 3. `Debug`
+### `Debug`
 
 **Type**: `plist dict`
 **Description**: Apply debug configuration described in [Debug Properties]() section below.
 
-### 4. `Entries`
+### `Entries`
 
 **Type**: `plist array`
 **Description**: Add boot entries to boot picker.
 
 Designed to be filled with `plist dict` values, describing each load entry. See [Entry Properties]() section below.
 
-### 5. `Security`
+### `Security`
 **Type**: `plist dict`
 **Description**: Apply security configuration described in [Security Properties]() section below.
 
-### 6. `Tools`
+### `Tools`
 **Type**: `plist array`
 **Description**: Add tool entries to boot picker.
 
@@ -204,13 +204,21 @@ OpenCore built-in boot picker contains a set of actions chosen during the boot p
 
 ## 8.4 Debug Properties
 
-### 1. `DisableWatchDog`
+### `AppleDebug`
+
+**Type**: `plist boolean`
+**Failsafe**: `false`
+**Description**: Enable `boot.efi` debug log saving to OpenCore log.
+
+*Note*: This option only applies to 10.15.4 and newer.
+
+### `DisableWatchDog`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
 **Description**: 某些固件可能无法成功快速启动操作系统，尤其是在调试模式下，这会导致看门狗定时器中止引导过程。此选项关闭看门狗定时器，用于排错。
 
-### 2. `DisplayDelay`
+### `DisplayDelay`
 
 **Type**: `plist integer`
 **Failsafe**: `0`
@@ -220,14 +228,14 @@ OpenCore built-in boot picker contains a set of actions chosen during the boot p
 
 **Type**: `plist integer`, 64 bit
 **Failsafe**: `0`
-**Description**: EDK II debug level bitmask (sum) showed onscreen. Unless `Target` enables console (onscreen) printing, onscreen debug output will not be visible. The following levels are supported (discover more in [DebugLib.h](https://github.com/tianocore/edk2/blob/UDK2018/MdePkg/Include/Library/DebugLib.h)):
+**Description**: EDK II debug level bitmask (sum) showed onscreen. Unless `Target` enables console (onscreen) printing, onscreen debug output will not be visible. The following levels are supported (discover more in [DebugLib.h](https://github.com/acidanthera/audk/blob/master/MdePkg/Include/Library/DebugLib.h)):
 
 - `0x00000002` (bit `1`) --- `DEBUG_WARN` in `DEBUG`, `NOOPT`, `RELEASE`.
 - `0x00000040` (bit `6`) --- `DEBUG_INFO` in `DEBUG`, `NOOPT`.
 - `0x00400000` (bit `22`) --- `DEBUG_VERBOSE` in custom builds.
 - `0x80000000` (bit `31`) --- `DEBUG_ERROR` in `DEBUG`, `NOOPT`, `RELEASE`.
 
-### 4. `Target`
+### `Target`
 
 **Type**: `plist integer`
 **Failsafe**: `0`
@@ -267,19 +275,19 @@ File logging will create a file named `opencore-YYYY-MM-DD-HHMMSS.txt` at EFI vo
 
 ## 8.5 Security Properties
 
-### 1. `AllowNvramReset`
+### `AllowNvramReset`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
 **Description**: 启用这一选项后将允许使用 `CMD+OPT+P+R` 快捷键重置 NVRAM，同时 `NVRAM Reset` 条目也会出现在开机引导菜单中。
 
-### 2. `AllowSetDefault`
+### `AllowSetDefault`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
 **Description**: 允许使用 `CTRL+Enter` 和 `CTRL+[数字]` 设置默认启动项。
 
-### 3. `AuthRestart`
+### `AuthRestart`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
@@ -289,7 +297,7 @@ authenticated restart 可以在重启 FileVault2 分区时不用再次输入密�
 
 VirtualSMC 通过将磁盘加密密钥拆分保存在 NVRAM 和 RTC 中来执行 authenticated restart。虽然 OpenCore 在启动系统后立刻删除密钥，但是这仍然可能被视为安全隐患。
 
-### 4. `ExposeSensitiveData`
+### `ExposeSensitiveData`
 
 **Type**: `plist integer`
 **Failsafe**: `0x6`
@@ -326,13 +334,13 @@ nvram 4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102:oem-vendor # SMBIOS Type2 Manufacture
 nvram 4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102:oem-board # SMBIOS Type2 ProductName
 ```
 
-### 5. `HaltLevel`
+### `HaltLevel`
 
 **Type**: `plist integer`, 64 bit
 **Failsafe**: `0x80000000` (`DEBUG_ERROR`)
 **Description**: EDK II debug level bitmask (sum) causing CPU to halt (stop execution) after obtaining a message of `HaltLevel`. Possible values match `DisplayLevel` values.
 
-### 6. `Vault`
+### `Vault`
 
 **Type**: `plist string`
 **Failsafe**: `Secure`
@@ -374,7 +382,7 @@ rm vault.pub
 
 *Note 2*: `vault.plist` and `vault.sig` are used regardless of this option when `vault.plist` is present or public key is embedded into `OpenCore.efi`. Setting this option will only ensure configuration sanity, and abort the boot process otherwise.
 
-### 7. `ScanPolicy`
+### `ScanPolicy`
 
 **Type**: `plist integer`, 32 bit
 **Failsafe**: `0xF0103`

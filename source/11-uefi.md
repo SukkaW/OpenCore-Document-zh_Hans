@@ -69,24 +69,24 @@ build -a X64 -b RELEASE -t XCODE5 -p FatPkg/FatPkg.dsc
 build -a X64 -b RELEASE -t XCODE5 -p MdeModulePkg/MdeModulePkg.dsc
 ```
 
-### 3. `Input`
+### `Input`
 
 **Type**: `plist dict`
 **Failsafe**: None
 **Description**: Apply individual settings designed for input (keyboard and mouse) in [Input Properties]() section below.
 
-### 4. `Output`
+### `Output`
 **Type**: `plist dict`
 **Failsafe**: None
 **Description**: Apply individual settings designed for output (text and graphics) in [Output Properties]() section below.
 
-### 5. `Protocols`
+### `Protocols`
 **Type**: `plist dict`
 **Failsafe**: None
 **Description**: Force builtin versions of select protocols described in [Protocols Properties]() section below.
 *注*：all protocol instances are installed prior to driver loading.
 
-### 6. `Quirks`
+### `Quirks`
 **Type**: `plist dict`
 **Failsafe**: None
 **Description**: Apply individual firmware quirks described in [Quirks Properties]() section below.
@@ -178,7 +178,15 @@ RawVolume = MIN{ [(SystemAudioVolume * VolumeAmplifier) / 100], 100 }
 
 ## 11.4 Input Properties
 
-### 1. `KeyForgetThreshold`
+### `KeyFiltering`
+
+**Type**: `plist boolean`
+**Failsafe**: `false`
+**Description**: Enable keyboard input sanity checking.
+
+Apparently some boards like GA Z77P-D3 may return uninitialised data in `EFI_INPUT_KEY` with all input protocols. This option discards keys that are neither ASCII, nor are defined in the UEFI specification (see tables 107 and 108 in version 2.8).
+
+### `KeyForgetThreshold`
 
 **Type**: `plist integer`
 **Failsafe**: `0`
@@ -188,7 +196,7 @@ RawVolume = MIN{ [(SystemAudioVolume * VolumeAmplifier) / 100], 100 }
 
 此选项允许根据你的平台设置此超时。在大多数平台上有效的推荐值为 `5` 毫秒。作为参考，在 VMWare 上按住一个键大约每 2 毫秒就会重复一次，而在 APTIO V 上是 3 - 4 毫秒。因此，可以在较快的平台上设置稍低的值、在较慢的平台设置稍高的值，以提高响应速度。
 
-### 2. `KeyMergeThreshold`
+### `KeyMergeThreshold`
 
 **Type**: `plist integer`
 **Failsafe**: `0`
@@ -198,7 +206,7 @@ RawVolume = MIN{ [(SystemAudioVolume * VolumeAmplifier) / 100], 100 }
 
 对于 VMWare，同时按下多个键的间隔是 2 毫秒。对于 APTIO V 平台为 1 毫毛。一个接一个地按下按键会导致 6 毫秒和 10 毫秒的延迟。此选项的建议值为 2 毫秒，但对于较快的平台可以选取较小的值，反之亦然。
 
-### 3. `KeySupport`
+### `KeySupport`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
@@ -206,7 +214,7 @@ RawVolume = MIN{ [(SystemAudioVolume * VolumeAmplifier) / 100], 100 }
 
 这一选项基于 `AppleGenericInput`（`AptioInputFix`），激活内部键盘拦截器驱动程序以填充 `AppleKeyMapAggregator` 数据库以实现输入功能。如果使用了单独的驱动程序（如 `AppleUsbKbDxe`），则永远不要开启这一选项。
 
-### 4. `KeySupportMode`
+### `KeySupportMode`
 
 **Type**: `plist string`
 **Failsafe**: empty string
@@ -217,7 +225,9 @@ RawVolume = MIN{ [(SystemAudioVolume * VolumeAmplifier) / 100], 100 }
 - `V2` --- UEFI 现代标准输入协议 `EFI_SIMPLE_TEXT_INPUT_EX_PROTOCOL`.
 - `AMI` --- APTIO 输入协议 `AMI_EFIKEYCODE_PROTOCOL`.
 
-### 5. `KeySwap`
+*Note*: Currently `V1`, `V2`, and `AMI` unlike `Auto` only do filtering of the particular specified protocol. This may change in the future versions.
+
+### `KeySwap`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
@@ -225,7 +235,7 @@ RawVolume = MIN{ [(SystemAudioVolume * VolumeAmplifier) / 100], 100 }
 
 此选项对于 `Option` 键位于 `Command` 右侧的键盘来说会很有用。
 
-### 6. `PointerSupport`
+### `PointerSupport`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
@@ -233,7 +243,7 @@ RawVolume = MIN{ [(SystemAudioVolume * VolumeAmplifier) / 100], 100 }
 
 该选项通过选择 OEM 协议实现标准 UEFI 指针协议 `EFI_SIMPLE_POINTER_PROTOCOL`。该选项在 Z87 华硕主板可能有用（该主板的 `EFI_SIMPLE_POINTER_PROTOCOL` 存在问题）。
 
-### 7. `PointerSupportMode`
+### `PointerSupportMode`
 
 **Type**: `plist string`
 **Failsafe**: empty string
@@ -241,7 +251,7 @@ RawVolume = MIN{ [(SystemAudioVolume * VolumeAmplifier) / 100], 100 }
 
 目前只支持 `ASUS` 值，使用的是 Z87 和 Z97主板上的特殊协议。更多详情请参考 [`LongSoft/UefiTool#116`](https://github.com/LongSoft/UEFITool/pull/116)。
 
-### 8. `TimerResolution`
+### `TimerResolution`
 
 **Type**: `plist integer`
 **Failsafe**: `0`
@@ -251,7 +261,7 @@ RawVolume = MIN{ [(SystemAudioVolume * VolumeAmplifier) / 100], 100 }
 
 ## 11.5 Output Properties
 
-### 1. `TextRenderer`
+### `TextRenderer`
 **Type**: `plist string`
 **Failsafe**: `BuiltinGraphics`
 **Description**: Chooses renderer for text going through standard
@@ -274,7 +284,7 @@ RawVolume = MIN{ [(SystemAudioVolume * VolumeAmplifier) / 100], 100 }
 
 *注*：Some Macs, namely `MacPro5,1`, may have broken console output with newer GPUs, and thus only `BuiltinGraphics` may work for them.
 
-### 2. `ConsoleMode`
+### `ConsoleMode`
 **Type**: `plist string`
 **Failsafe**: Empty string
 **Description**: Sets console output mode as specified
@@ -284,7 +294,7 @@ RawVolume = MIN{ [(SystemAudioVolume * VolumeAmplifier) / 100], 100 }
 
 *注*：This field is best to be left empty on most firmwares.
 
-### 3. `Resolution`
+### `Resolution`
 **Type**: `plist string`
 **Failsafe**: Empty string
 **Description**: Sets console output screen resolution.
@@ -297,14 +307,25 @@ RawVolume = MIN{ [(SystemAudioVolume * VolumeAmplifier) / 100], 100 }
 
 *注*：This will fail when console handle has no GOP protocol. When the firmware does not provide it, it can be added with `ProvideConsoleGop` set to `true`.
 
-### 4. `ClearScreenOnModeSwitch`
+### `ClearScreenOnModeSwitch`
+
 **Type**: `plist boolean`
 **Failsafe**: `false`
 **Description**: Some firmwares clear only part of screen when switching from graphics to text mode, leaving a fragment of previously drawn image visible. This option fills the entire graphics screen with black color before switching to text mode.
 
 *注*：This option only applies to `System` renderer.
 
-### 5. `DirectGopRendering`
+### `DirectGopCacheMode`
+
+**Type**: `plist string`
+**Failsafe**: Empty string
+**Description**: Cache mode for builtin graphics output protocol framebuffer.
+
+Tuning cache mode may provide better rendering performance on some firmwares. Providing empty string leaves cache control settings to the firmware. Valid non-empty values are: `Uncacheable`, `WriteCombining`, and `WriteThrough`.
+
+*Note*: This option is not supported on most hardware (see [acidanthera/bugtracker#755](https://github.com/acidanthera/bugtracker/issues/755) for more details).
+
+### `DirectGopRendering`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
@@ -312,21 +333,21 @@ RawVolume = MIN{ [(SystemAudioVolume * VolumeAmplifier) / 100], 100 }
 
 On some firmwares this may provide better performance or even fix rendering issues, like on `MacPro5,1`. However it is recommended not to use this option unless there is an obvious benefit as it may even result in slower scrolling.
 
-### 6. `IgnoreTextInGraphics`
+### `IgnoreTextInGraphics`
 **Type**: `plist boolean`
 **Failsafe**: `false`
 **Description**: Select firmwares output text onscreen in both graphics and text mode. This is normally unexpected, because random text may appear over graphical images and cause UI corruption. Setting this option to `true` will discard all text output when console control is in mode different from `Text`.
 
 *注*：This option only applies to `System` renderer.
 
-### 7. `ReplaceTabWithSpace`
+### `ReplaceTabWithSpace`
 **Type**: `plist boolean`
 **Failsafe**: `false`
 **Description**: Some firmwares do not print tab characters or even everything that follows them, causing difficulties or inability to use the UEFI Shell builtin text editor to edit property lists and other documents. This option makes the console output spaces instead of tabs.
 
 *注*：This option only applies to `System` renderer.
 
-### 8. `ProvideConsoleGop`
+### `ProvideConsoleGop`
 **Type**: `plist boolean`
 **Failsafe**: `false`
 **Description**: Ensure GOP (Graphics Output Protocol) on console handle.
@@ -335,7 +356,7 @@ On some firmwares this may provide better performance or even fix rendering issu
 
 *注*：This option will also replace broken GOP protocol on console handle, which may be the case on `MacPro5,1` with newer GPUs.
 
-### 9. `ReconnectOnResChange`
+### `ReconnectOnResChange`
 **Type**: `plist boolean`
 **Failsafe**: `false`
 **Description**: Reconnect console controllers after changing screen resolution.
@@ -344,7 +365,7 @@ On some firmwares this may provide better performance or even fix rendering issu
 
 *注*：On several boards this logic may result in black screen when launching OpenCore from Shell and thus it is optional. In versions prior to 0.5.2 this option was mandatory and not configurable. Please do not use this unless required.
 
-### 10. `SanitiseClearScreen`
+### `SanitiseClearScreen`
 **Type**: `plist boolean`
 **Failsafe**: `false`
 **Description**: Some firmwares reset screen resolution to a failsafe value (like `1024x768`) on the attempts to clear screen contents when large display (e.g. 2K or 4K) is used. This option attempts to apply a workaround.
@@ -353,7 +374,7 @@ On some firmwares this may provide better performance or even fix rendering issu
 
 ## 11.6 Protocols Properties
 
-### 0. `AppleAudio`
+### `AppleAudio`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
@@ -366,7 +387,7 @@ Only one set of audio protocols can be available at a time, so in order to get a
 
 *Note*: Backend audio driver needs to be configured in `UEFI Audio` section for these protocols to be able to stream audio.
 
-### 1. `AppleBootPolicy`
+### `AppleBootPolicy`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
@@ -374,25 +395,31 @@ Only one set of audio protocols can be available at a time, so in order to get a
 
 *注*：某些 Mac 设备（如 `MacPro5,1`）虽然兼容 APFS，但是其 Apple Boot Policy 协议包含了恢复分区检测问题，因此也建议启用这一选项。
 
-### 2. `AppleEvent`
+### `AppleDebugLog`
+
+**Type**: `plist boolean`
+**Failsafe**: `false`
+**Description**: 重新安装内置的 Apple 调试日志输出协议。
+
+### `AppleEvent`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
 **Description**: 重新安装内置的 Apple Event 协议，可以确保在 VM 或旧版 Mac 设备上的 Faile Vault V2 兼容性。
 
-### 3. `AppleImageConversion`
+### `AppleImageConversion`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
 **Description**: 重新安装内置的 Apple Image Conservation 协议。
 
-### 4. `AppleKeyMap`
+### `AppleKeyMap`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
 **Description**: 重新安装内置的 Apple Key Map 协议
 
-### 5. `AppleSmcIo`
+### `AppleSmcIo`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
@@ -400,25 +427,25 @@ Only one set of audio protocols can be available at a time, so in order to get a
 
 这一协议代替了传统的 `VirtualSmc.efi`，并与所有 SMC kext 驱动兼容。如果你在用 FakeSMC，可能需要手动往 NVRAM 中添加键值对。
 
-### 6. `AppleUserInterfaceTheme`
+### `AppleUserInterfaceTheme`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
 **Description**: 重新安装内置的 Apple User Interface Theme 协议。
 
-### 7. `DataHub`
+### `DataHub`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
 **Description**: 重新安装具有内置版本的 Data Hub 协议。如果已经安装了协议，这将删除所有先前的属性。
 
-### 8. `DeviceProperties`
+### `DeviceProperties`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
 **Description**: 重新安装内置版本的 Device Property 协议。 如果已经安装，它将删除所有以前的属性。这一选项可用于确保在 VM 或旧版 Mac 设备上的兼容性。
 
-### 9. `FirmwareVolume`
+### `FirmwareVolume`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
@@ -426,19 +453,19 @@ Only one set of audio protocols can be available at a time, so in order to get a
 
 *注*：包括 VMWare 在内的多个虚拟机在 HiDPI 模式下光标会损坏，因此建议为所有虚拟机启用这一选项。
 
-### 10. `HashServices`
+### `HashServices`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
 **Description**: Forcibly reinstalls Hash Services protocols with builtin versions. Should be set to `true` to ensure File Vault 2 compatibility on platforms providing broken SHA-1 hashing. Can be diagnosed by invalid cursor size with `UIScale` set to `02`, in general platforms prior to APTIO V (Haswell and older) are affected.
 
-### 11. `OSInfo`
+### `OSInfo`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
 **Description**: 强制使用内置版本重新安装 OS Info 协议。该协议通常用于通过固件或其他应用程序从 macOS 引导加载程序接收通知。
 
-### 12. `UnicodeCollation`
+### `UnicodeCollation`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
@@ -446,7 +473,7 @@ Only one set of audio protocols can be available at a time, so in order to get a
 
 ## 11.7 Quirks Properties
 
-### 1. `ExitBootServicesDelay`
+### `ExitBootServicesDelay`
 
 **Type**: `plist integer`
 **Failsafe**: `0`
@@ -454,20 +481,20 @@ Only one set of audio protocols can be available at a time, so in order to get a
 
 This is a very ugly quirk to circumvent "Still waiting for root device" message on select APTIO IV firmwares, namely ASUS Z87-Pro, when using FileVault 2 in particular. It seems that for some reason they execute code in parallel to `EXIT_BOOT_SERVICES`, which results in SATA controller being inaccessible from macOS. A better approach should be found in some future. Expect 3-5 seconds to be enough in case the quirk is needed.
 
-### 2. `IgnoreInvalidFlexRatio`
+### `IgnoreInvalidFlexRatio`
 **Type**: `plist boolean`
 **Failsafe**: `false`
 **Description**: Select firmwares, namely APTIO IV, may contain invalid values in `MSR_FLEX_RATIO` (`0x194`) MSR register. These values may cause macOS boot failure on Intel platforms.
 
 *注*：While the option is not supposed to induce harm on unaffected firmwares, its usage is not recommended when it is not required.
 
-### 3. `ReleaseUsbOwnership`
+### `ReleaseUsbOwnership`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
 **Description**: 尝试从固件驱动程序中分离 USB 控制器所有权。尽管大多数固件都设法正确执行了该操作或者提供有一个选项，但某些固件没有，从而导致操作系统可能会在启动时冻结。除非需要，否则不建议启用这一选项。
 
-### 4. `RequestBootVarFallback`
+### `RequestBootVarFallback`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
@@ -486,7 +513,7 @@ This is a very ugly quirk to circumvent "Still waiting for root device" message 
 
   This quirk forwards all UEFI specification valid boot options, that are not related to macOS, to the firmware into `BootF###` and `BootOrder` variables upon write. As the entries are added to the end of `BootOrder`, this does not break boot priority, but ensures that the firmware does not try to append a new option on its own after Windows installation for instance.
 
-### 5. `RequestBootVarRouting`
+### `RequestBootVarRouting`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
@@ -494,7 +521,7 @@ This is a very ugly quirk to circumvent "Still waiting for root device" message 
 
   This quirk requires `OC_FIRMWARE_RUNTIME` protocol implemented in `FwRuntimeServices.efi`. The quirk lets default boot entry preservation at times when firmwares delete incompatible boot entries. Simply said, you are required to enable this quirk to be able to reliably use [Startup Disk](https://support.apple.com/HT202796) preference pane in a firmware that is not compatible with macOS boot entries by design.
 
-### 6. `UnblockFsConnect`
+### `UnblockFsConnect`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`

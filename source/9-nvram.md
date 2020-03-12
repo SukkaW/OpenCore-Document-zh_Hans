@@ -97,9 +97,9 @@ The following variables are mandatory for macOS functioning:
 - `4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14:FirmwareFeaturesMask`
  32-bit `FirmwareFeaturesMask`. Present on all Macs to avoid extra parsing of SMBIOS tables.
 - `4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14:MLB`
- `BoardSerialNumber`. Present on newer Macs (2013+ at least) to avoid extra parsing of SMBIOS tables, especially in boot.efi.
+ `BoardSerialNumber`. Present on newer Macs (2013+ at least) to avoid extra parsing of SMBIOS tables, especially in `boot.efi`.
 - `4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14:ROM`
- Primary network adapter MAC address or replacement value. Present on newer Macs (2013+ at least) to avoid accessing special memory region, especially in boot.efi.
+ Primary network adapter MAC address or replacement value. Present on newer Macs (2013+ at least) to avoid accessing special memory region, especially in `boot.efi`.
 
 
 ## 9.4 Recommended Variables
@@ -113,7 +113,7 @@ The following variables are recommended for faster startup or other improvements
 - `4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14:ExtendedFirmwareFeaturesMask`
  Combined `FirmwareFeaturesMask` and `ExtendedFirmwareFeaturesMask`. Present on newer Macs to avoid extra parsing of SMBIOS tables.
 - `4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14:HW_BID`
- Hardware `BoardProduct` (e.g. `Mac-35C1E88140C3E6CF`). Not present on real Macs, but used to avoid extra parsing of SMBIOS tables, especially in boot.efi.
+ Hardware `BoardProduct` (e.g. `Mac-35C1E88140C3E6CF`). Not present on real Macs, but used to avoid extra parsing of SMBIOS tables, especially in `boot.efi`.
 - `4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14:HW_MLB`
  Hardware `BoardSerialNumber`. Override for MLB. Present on newer Macs (2013+ at least).
 - `4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14:HW_ROM`
@@ -123,8 +123,8 @@ The following variables are recommended for faster startup or other improvements
 - `7C436110-AB2A-4BBB-A880-FE41995C9F82:security-mode`
  ASCII string defining FireWire security mode. Legacy, can be found in IOFireWireFamily source code in [IOFireWireController.cpp](https://opensource.apple.com/source/IOFireWireFamily/IOFireWireFamily-473/IOFireWireFamily.kmodproj/IOFireWireController.cpp.auto.html). It is recommended not to set this variable, which may speedup system startup. Setting to `full` is equivalent to not setting the variable and `none` disables FireWire security.
 - `4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14:UIScale`
- One-byte data defining boot.efi user interface scaling. Should be **01** for normal screens and **02** for HiDPI screens.
-- `4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14:DefaultBackgroundColor` Four-byte `RGBA` data defining boot.efi user interface background colour. Standard colours include `BF BF BF 00` (Light Gray) and `00 00 00 00}` (Syrah Black). Other colours may be set at user's preference.
+ One-byte data defining `boot.efi` user interface scaling. Should be **01** for normal screens and **02** for HiDPI screens.
+- `4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14:DefaultBackgroundColor` Four-byte `RGBA` data defining `boot.efi` user interface background colour. Standard colours include `BF BF BF 00` (Light Gray) and `00 00 00 00}` (Syrah Black). Other colours may be set at user's preference.
 
 
 ## 9.5 Other Variables
@@ -158,8 +158,8 @@ The following variables are recommended for faster startup or other improvements
   这里有一些网站收集了 macOS 内置的启动参数列表：[列表 1](https://osxeon.wordpress.com/2015/08/10/boot-argument-options-in-os-x)、[列表 2](https://superuser.com/questions/255176/is-there-a-list-of-available-boot-args-for-darwin-os-x).
 
 - `7C436110-AB2A-4BBB-A880-FE41995C9F82:bootercfg`
- Booter arguments, similar to `boot-args` but for boot.efi. Accepts a set of arguments, which are hexadecimal 64-bit values with or without `0x`. At
-different stages boot.efi will request different debugging (logging)
+ Booter arguments, similar to `boot-args` but for `boot.efi`. Accepts a set of arguments, which are hexadecimal 64-bit values with or without `0x`. At
+different stages `boot.efi` will request different debugging (logging)
 modes (e.g. after `ExitBootServices` it will only print to serial).
 Several booter arguments control whether these requests will succeed.
 The list of known requests is covered below:
@@ -221,8 +221,10 @@ or disk for prelinkedkernel reading and related. Set to 1MB
   - `1` — enables timestamp logging (default).
 - `log=VALUE` — deprecated starting from 10.15.
 
- *注*：To quickly see verbose output from `boot.efi` set this to `log=1` for before macOS 10.15, or set `bootercfg` to `log=1` for later.
+ *注*：To see verbose output from `boot.efi` on modern macOS versions enable `AppleDebug` option. This will save the log to general OpenCore log. For versions before 10.15.4 set `bootercfg` to `log=1`. This will print verbose output onscreen.
 
+- `7C436110-AB2A-4BBB-A880-FE41995C9F82:efiboot-perf-record`
+  Enable performance log saving in `boot.efi`. Performance log is saved to physical memory and is pointed by `efiboot-perf-record-data` and `efiboot-perf-record-size` variables. Starting from 10.15.4 it can also be saved to OpenCore log by `AppleDebug` option.
 - `7C436110-AB2A-4BBB-A880-FE41995C9F82:bootercfg-once`
   Booter arguments override removed after first launch. Otherwise equivalent to `bootercfg`.
 - `7C436110-AB2A-4BBB-A880-FE41995C9F82:fmm-computer-name`

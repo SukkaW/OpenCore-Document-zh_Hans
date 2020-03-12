@@ -69,17 +69,17 @@ sudo pmset standby 0
 
 ## 5.4 Quirks 属性
 
-### 5.4.1 `AvoidRuntimeDefrag`
+### `AvoidRuntimeDefrag`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
-**Description**: 防止 boot.efi 运行时执行内存碎片整理
+**Description**: 防止 `boot.efi` 运行时执行内存碎片整理
 
 这个选项通过提供对可变存储的支持，修复了包括日期、时间、NVRAM、电源控制等 UEFI Runtime 服务。
 
 *注*: 除 Apple 和 VMware 固件外，都需要启用此选项。
 
-### 5.4.2 `DevirtualiseMmio`
+### `DevirtualiseMmio`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
@@ -91,7 +91,7 @@ sudo pmset standby 0
 
 > 译者注：对于某些 300 系列主板是必须的
 
-### 5.4.3 `DisableSingleUser`
+### `DisableSingleUser`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
@@ -99,7 +99,7 @@ sudo pmset standby 0
 
 这个选项可以禁用 `CMD+S` 热键和 `-s` 启动参数来限制单用户模式。启用这一 Quirks 后预期行为应和 T2 的模型行为类似。请参考 Apple 的 [这篇文章](https://support.apple.com/HT201573) 以了解如何在启用这一 Quirks 后继续使用单用户模式。
 
-### 5.4.4 `DisableVariableWrite`
+### `DisableVariableWrite`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
@@ -111,7 +111,7 @@ sudo pmset standby 0
 
 > 译者注：在 Z390/HM370 等没有原生 macOS 支持 NVRAM 的主板上需要开启。
 
-### 5.4.5 `DiscardHibernateMap`
+### `DiscardHibernateMap`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
@@ -121,17 +121,17 @@ sudo pmset standby 0
 
 *注*: 这可能用于解决较旧硬件上的错误内存映射。如 Insyde 固件的 Ivy Bridge 笔记本电脑或者 Acer V3-571G。 除非您完全了解这一选项可能导致的后果，否则请勿使用此功能。
 
-### 5.4.6 `EnableSafeModeSlide`
+### `EnableSafeModeSlide`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
 **Description**: 修补引导加载程序以在安全模式下启用 KASLR。
 
-这个选与启动到安全模式（启动时按住 Shift 或受用了 `-x` 启动参数）有关。默认情况下，安全模式会使用 `slide=0`，这个 Quirks 试图通过修补 boot.efi 接触这一限制。只有当 `ProvideCustomSlide` 启用后才可以启用本 Quirks。
+这个选与启动到安全模式（启动时按住 Shift 或受用了 `-x` 启动参数）有关。默认情况下，安全模式会使用 `slide=0`，这个 Quirks 试图通过修补 `boot.efi` 接触这一限制。只有当 `ProvideCustomSlide` 启用后才可以启用本 Quirks。
 
 *注*: 除非启动到安全模式失败，否则不需要启用此选项。
 
-### 5.4.7 `EnableWriteUnprotector`
+### `EnableWriteUnprotector`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
@@ -142,7 +142,7 @@ This option bypasses `RX̂` permissions in code pages of UEFI runtime services b
 *注*：The necessity of this quirk is determined by early boot crashes
 of the firmware.
 
-### 5.4.8 `ForceExitBootServices`
+### `ForceExitBootServices`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
@@ -152,18 +152,18 @@ Try to ensure that `ExitBootServices` call succeeds even with outdated MemoryMap
 
 *注*：The necessity of this quirk is determined by early boot crashes of the firmware. 请勿启用这一选项，除非你详细了解这一选项可能导致的后果。
 
-### 5.4.9 `ProtectCsmRegion`
+### `ProtectCsmRegion`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
 **Description**: 保护 CSM 区域免于重新分配
 
-确保将 CSM 内存区域标记为 ACPI NVS，以防止 boot.efi 或 XNU 重新定位或使用这一区域。
+确保将 CSM 内存区域标记为 ACPI NVS，以防止 `boot.efi` 或 XNU 重新定位或使用这一区域。
 
 *注*：是否启用这一 Quirk 取决于你是否遇到了休眠或其他问题。`AvoidRuntimeDefrag` 理应能够解决所有类似的问题，所以已知的固件都不需要启用这一选项。除非你完全了解这一选项及其后果，否则请勿使用。
 
 
-### 5.4.10 `ProtectSecureBoot`
+### `ProtectSecureBoot`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
@@ -173,17 +173,27 @@ Try to ensure that `ExitBootServices` call succeeds even with outdated MemoryMap
 
 *注*：这个 Quirk 主要试图避免碎片整理导致的 NVRAM 相关问题，如 Insyde 或 `MacPro5,1`。
 
-### 5.4.11 `ProvideCustomSlide`
+### `ProtectUefiServices`
+
+**Type**: `plist boolean`
+**Failsafe**: `false`
+**Description**: Protect UEFI services from being overridden by the firmware.
+
+Some modern firmwares including both hardware and virtual machines, like VMware, may update pointers to UEFI services during driver loading and related actions. Consequentially this directly breaks other quirks that affect memory management, like `DevirtualiseMmio`, `ProtectCsmRegion`, or `ShrinkMemoryMap`, and may also break other quirks depending on the effects of these.
+
+*Note*: On VMware the need for this quirk may be diagnosed by “Your Mac OS guest might run unreliably with more than one virtual core.” message.
+
+### `ProvideCustomSlide`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
 **Description**: 为低内存设备提供自定义 KASLR slide 值。
 
-开启这个选项后，将会对固件进行内存映射分析，检查所有 slide（从 1 到 255）中是否有可用的。由于 boot.efi 私用 rdrand 或伪随机 rdtsc 随机生成此值，因此有可能出现冲突的 slide 值被使用并导致引导失败。如果出现潜在的冲突，这个选项将会强制为 macOS 选择一个伪随机值。这同时确保了 `slide=` 参数不会被传递给操作系统。
+开启这个选项后，将会对固件进行内存映射分析，检查所有 slide（从 1 到 255）中是否有可用的。由于 `boot.efi` 私用 rdrand 或伪随机 rdtsc 随机生成此值，因此有可能出现冲突的 slide 值被使用并导致引导失败。如果出现潜在的冲突，这个选项将会强制为 macOS 选择一个伪随机值。这同时确保了 `slide=` 参数不会被传递给操作系统。
 
 *注*: OpenCore 会自动检查是否需要启用这一选项。如果 OpenCore 的调试日志中出现 `OCABC: Only N/256 slide values are usable!` 则请启用这一选项。
 
-### 5.4.12 `SetupVirtualMap`
+### `SetupVirtualMap`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
@@ -193,7 +203,7 @@ Select firmwares access memory by virtual addresses after `SetVirtualAddresses` 
 
 *注*：是否启用这个 Quirks 取决于你是否遇到了 Early Boot 故障。目前具有内存保护支持的新固件（例如 OVMF ）由于一些原因不支持此 Quirks：[acidanthera/bugtracker#719](https://github.com/acidanthera/bugtracker/issues/719)。
 
-### 5.4.13 `ShrinkMemoryMap`
+### `ShrinkMemoryMap`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
@@ -203,7 +213,7 @@ Select firmwares have very large memory maps, which do not fit Apple kernel, per
 
 *注*：是否启用这个 Quirks 取决于你是否遇到了 Early Boot 故障。Haswell 及更新版本一般都不需要启用。除非你完全了解这一选项及其后果，否则请勿使用。
 
-### 5.4.14 `SignalAppleOS`
+### `SignalAppleOS`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
