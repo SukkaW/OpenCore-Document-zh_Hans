@@ -187,14 +187,14 @@
         <div class="hero-body">
             <h1 class="title">8. Misc</h1>
             
-                <p class="subtitle">杂项（待翻译）</p>
+                <p class="subtitle">关于 OpenCore 行为的其他配置（待翻译）</p>
             
             
                 
                     <p><small>由 xMuu、Sukka 整理、由 Sukka 翻译。部分翻译参考黑果小兵的「精解 OpenCore」</small></p>
                 
                 
-                    <p><small>本页面最后更新于 2020 年 02 月 17 日</small></p>
+                    <p><small>本页面最后更新于 2020 年 03 月 12 日</small></p>
                 
                 <br>
             
@@ -206,11 +206,11 @@
     <div class="columns">
         <div class="column is-9-tablet doku-document-wrapper">
             <div class="content">
-                <h2 id="8-1-Introduction"><a href="#8-1-Introduction" class="headerlink" title="8.1 Introduction"></a>8.1 Introduction</h2><p>This section contains miscellaneous configuration entries for OpenCore behaviour that does not go to any other sections.</p>
+                <h2 id="8-1-Introduction"><a href="#8-1-Introduction" class="headerlink" title="8.1 Introduction"></a>8.1 Introduction</h2><p>本部分包含关于 OpenCore 行为的其他配置。</p>
 <h2 id="8-2-Properties"><a href="#8-2-Properties" class="headerlink" title="8.2 Properties"></a>8.2 Properties</h2><h3 id="Boot"><a href="#Boot" class="headerlink" title="Boot"></a><code>Boot</code></h3><p><strong>Type</strong>: <code>plist dict</code><br><strong>Description</strong>: Apply boot configuration described in Boot Properties section below.</p>
 <h3 id="BlessOverride"><a href="#BlessOverride" class="headerlink" title="BlessOverride"></a><code>BlessOverride</code></h3><p><strong>Type</strong>: <code>plist array</code><br><strong>Description</strong>: 通过 Bless Model 添加自定义扫描路径。</p>
-<p>Designed to be filled with <code>plist string</code> entries containing absolute UEFI paths to customised bootloaders, for example, <code>\EFI\Microsoft\Boot\bootmgfw.efi</code> for Microsoft bootloader. This allows unusual boot paths to be automaticlly discovered by the boot picker. Designwise they are equivalent to predefined blessed path, such as <code>\System\Library\CoreServices\boot.efi</code>, but unlike predefined bless paths they have highest priority.</p>
-<h3 id="Debug"><a href="#Debug" class="headerlink" title="Debug"></a><code>Debug</code></h3><p><strong>Type</strong>: <code>plist dict</code><br><strong>Description</strong>: Apply debug configuration described in <a href="">Debug Properties</a> section below.</p>
+<p>设计为填充 <code>plist string</code> 条目，其中包含指向自定义引导程序的绝对 UEFI 路径，例如，用于 Microsoft 引导程序的 <code>\EFI\Microsoft\Boot\bootmgfw.efi</code>。这允许引导选择器自动发现异常的引导路径。在设计上它们等效于预定义的 Bless 路径（如 <code>\System\Library\CoreServices\boot.efi</code>），但与预定义的 Bless 路径不同，它们具有最高优先级。</p>
+<h3 id="Debug"><a href="#Debug" class="headerlink" title="Debug"></a><code>Debug</code></h3><p><strong>Type</strong>: <code>plist dict</code><br><strong>Description</strong>: Apply debug configuration described in <code>Debug Properties</code> section below.</p>
 <h3 id="Entries"><a href="#Entries" class="headerlink" title="Entries"></a><code>Entries</code></h3><p><strong>Type</strong>: <code>plist array</code><br><strong>Description</strong>: Add boot entries to boot picker.</p>
 <p>Designed to be filled with <code>plist dict</code> values, describing each load entry. See <a href="">Entry Properties</a> section below.</p>
 <h3 id="Security"><a href="#Security" class="headerlink" title="Security"></a><code>Security</code></h3><p><strong>Type</strong>: <code>plist dict</code><br><strong>Description</strong>: Apply security configuration described in <a href="">Security Properties</a> section below.</p>
@@ -234,7 +234,7 @@
 </ul>
 <p>即使被隐藏，你仍然可以通过 <code>空格</code> 进入「扩展模式」查看所有条目（引导项菜单会被重新加载）：</p>
 <p>一般的，隐藏辅助条目有助于加快启动速度。</p>
-<h3 id="HideSelf"><a href="#HideSelf" class="headerlink" title="HideSelf"></a><code>HideSelf</code></h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: <code>false</code><br><strong>Description</strong>: 在 OpenCore 的启动选择中隐藏自身 EFI 分区内的其它启动项，如 UEFI OS 等。</p>
+<h3 id="HideSelf"><a href="#HideSelf" class="headerlink" title="HideSelf"></a><code>HideSelf</code></h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: <code>false</code><br><strong>Description</strong>: 在 OpenCore 的启动选择中隐藏自身 EFI 分区内的其它启动项，如 UEFI OS 等、Recovery、Reset NVRAM 等。</p>
 <h3 id="PickerAttributes"><a href="#PickerAttributes" class="headerlink" title="PickerAttributes"></a><code>PickerAttributes</code></h3><p><strong>Type</strong>: <code>plist integer</code><br><strong>Failsafe</strong>: <code>0</code><br><strong>Description</strong>: Sets specific attributes for picker.</p>
 <p>Builtin picker supports colour arguments as a sum of foreground and background colors according to UEFI specification. The value of black background and black foreground (<code>0</code>) is reserved. List of colour names:</p>
 <ul>
@@ -263,7 +263,7 @@
 <li><code>0x60</code> — <code>EFI_BACKGROUND_BROWN</code></li>
 <li><code>0x70</code> — <code>EFI_BACKGROUND_LIGHTGRAY</code></li>
 </ul>
-<p><em>注</em>：This option may not work well with <code>System</code> text renderer.<br>Setting a background different from black could help testing proper GOP functioning.</p>
+<p><em>注</em>：This option may not work well with <code>System</code> text renderer. Setting a background different from black could help testing proper GOP functioning.</p>
 <h3 id="PickerAudioAssist"><a href="#PickerAudioAssist" class="headerlink" title="PickerAudioAssist"></a><code>PickerAudioAssist</code></h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: <code>false</code><br><strong>Description</strong>: 在开机引导菜单中启用 屏幕朗读。</p>
 <p>macOS Bootloader 屏幕朗读 的偏好设置是存在 <code>isVOEnabled.int32</code> 文件的 <code>preferences.efires</code> 中、并受操作系统控制。这里仅提供一个等效的开关。切换 OpenCore 开机引导菜单和 macOS BootLoader FileVault 2 登录界面也可以使用快捷键 <code>Command</code> + <code>F5</code>。</p>
 <p><em>注</em>：屏幕朗读 依赖可以正常工作的音频设备。</p>
@@ -279,13 +279,13 @@
 <li><code>CMD+V</code> — 启用 <code>-v</code>。</li>
 <li><code>Shift</code> — 启用安全模式。</li>
 </ul>
-<h3 id="ShowPicker"><a href="#ShowPicker" class="headerlink" title="ShowPicker"></a><code>ShowPicker</code></h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: <code>false</code><br><strong>Description</strong>: 是否显示开机引导项。</p>
-<h3 id="TakeoffDelay"><a href="#TakeoffDelay" class="headerlink" title="TakeoffDelay"></a><code>TakeoffDelay</code></h3><p><strong>Type</strong>: <code>plist integer</code>, 32 bit<br><strong>Failsafe</strong>: <code>0</code><br><strong>Description</strong>: Delay in microseconds performed before handling<br>picker startup and <code>action hotkeys</code>.</p>
+<h3 id="ShowPicker"><a href="#ShowPicker" class="headerlink" title="ShowPicker"></a><code>ShowPicker</code></h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: <code>false</code><br><strong>Description</strong>: 是否显示开机引导菜单。</p>
+<h3 id="TakeoffDelay"><a href="#TakeoffDelay" class="headerlink" title="TakeoffDelay"></a><code>TakeoffDelay</code></h3><p><strong>Type</strong>: <code>plist integer</code>, 32 bit<br><strong>Failsafe</strong>: <code>0</code><br><strong>Description</strong>: Delay in microseconds performed before handling picker startup and <code>action hotkeys</code>.</p>
 <p>Introducing a delay may give extra time to hold the right <code>action hotkey</code> sequence to e.g. boot to recovery mode. On some platforms setting this option to at least <code>5000-10000</code> microseconds may be necessary to access <code>action hotkeys</code> at all due to the nature of the keyboard driver.</p>
 <blockquote>
 <p>译者注：<code>0</code> 为关闭倒计时而非跳过倒计时，相当于 Clover 的 <code>-1</code>。</p>
 </blockquote>
-<h3 id="Timeout"><a href="#Timeout" class="headerlink" title="Timeout"></a><code>Timeout</code></h3><p><strong>Type</strong>: <code>plist integer</code>, 32 bit<br><strong>Failsafe</strong>: <code>0</code><br><strong>Description</strong>: Timeout in seconds in boot picker before automatic booting of the default boot entry. Use 0 to disable timer.</p>
+<h3 id="Timeout"><a href="#Timeout" class="headerlink" title="Timeout"></a><code>Timeout</code></h3><p><strong>Type</strong>: <code>plist integer</code>, 32 bit<br><strong>Failsafe</strong>: <code>0</code><br><strong>Description</strong>: 开机引导菜单中，启动默认启动项之前超时时间（以秒为单位）。 使用 <code>0</code> 禁用倒计时。</p>
 <h3 id="PickerMode"><a href="#PickerMode" class="headerlink" title="PickerMode"></a><code>PickerMode</code></h3><p><strong>Type</strong>: <code>plist string</code><br><strong>Failsafe</strong>: <code>Builtin</code><br><strong>Description</strong>: Choose boot picker used for boot management.</p>
 <p>Picker describes underlying boot management with an optional user interface responsible for handling boot options. The following values are supported:</p>
 <ul>

@@ -194,7 +194,7 @@
                     <p><small>由 xMuu、Sukka 整理，由 Sukka 翻译</small></p>
                 
                 
-                    <p><small>本页面最后更新于 2020 年 02 月 20 日</small></p>
+                    <p><small>本页面最后更新于 2020 年 03 月 12 日</small></p>
                 
                 <br>
             
@@ -231,8 +231,8 @@
 <li><a href="https://github.com/acidanthera/OcBinaryData" target="_blank" rel="noopener"><code>HfsPlus</code></a> — Apple 固件中常见的具有祝福支持的专有 HFS 文件系统驱动程序。对于 <code>Sandy Bridge</code>和更早的 CPU，由于缺少 <code>RDRAND</code> 指令支持，应使用 <code>HfsPlusLegacy</code> 驱动程序。</li>
 <li><a href="https://github.com/acidanthera/AppleSupportPkg" target="_blank" rel="noopener"><code>VBoxHfs</code></a> — 带有 bless 支持的 HFS 文件系统驱动。是 Apple 固件中 <code>HfsPlus</code> 驱动的开源替代。虽然功能完善，但是启动速度比 <code>HFSPlus</code> 慢三倍，并且尚未经过安全审核。</li>
 <li><a href="https://github.com/acidanthera/audk" target="_blank" rel="noopener"><code>XhciDxe</code></a> — 来自 <code>MdeModulePkg</code> 的 XHCI USB controller 驱动程序。从 Sandy Bridge 代开始的大多数固件中都包含此驱动程序。在较早的固件或旧系统可以用于支持外部 USB 3.0 PCI 卡。</li>
-<li><a href="https://github.com/acidanthera/AppleSupportPkg" target="_blank" rel="noopener"><code>AudioDxe</code></a> — HDA audio support driver in UEFI firmwares for most Intel and some other analog audio controllers. Refer to <a href="https://github.com/acidanthera/bugtracker/issues/740" target="_blank" rel="noopener">acidanthera/bugtracker#740</a> for known issues in AudioDxe.</li>
-<li><a href="https://github.com/acidanthera/OcBinaryData" target="_blank" rel="noopener"><code>ExFatDxe</code></a> — Proprietary ExFAT file system driver for Bootcamp support commonly found in Apple firmwares. For Sandy Bridge and earlier CPUs <code>ExFatDxeLegacy</code> driver should be used due to the lack of <code>RDRAND</code> instruction support.</li>
+<li><a href="https://github.com/acidanthera/AppleSupportPkg" target="_blank" rel="noopener"><code>AudioDxe</code></a> — UEFI 固件中的 HDA 音频驱动程序，适用于大多数 Intel 和其他一些模拟音频控制器。Refer to <a href="https://github.com/acidanthera/bugtracker/issues/740" target="_blank" rel="noopener">acidanthera/bugtracker#740</a> for known issues in AudioDxe.</li>
+<li><a href="https://github.com/acidanthera/OcBinaryData" target="_blank" rel="noopener"><code>ExFatDxe</code></a> — 用于 Bootcamp 支持的专有 ExFAT 文件系统驱动程序，通常可以在 Apple 固件中找到。 对于 <code>Sandy Bridge</code> 和更早的 CPU，由于缺少 <code>RDRAND</code> 指令支持，应使用 <code>ExFatDxeLegacy</code> 驱动程序。</li>
 </ul>
 <p>要从 UDK（EDK II）编译驱动程序，可以使用编译 OpenCore 类似的命令。</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs bash">git <span class="hljs-built_in">clone</span> https://github.com/acidanthera/audk UDK<br><span class="hljs-built_in">cd</span> UDK<br><span class="hljs-built_in">source</span> edksetup.sh<br>make -C BaseTools<br>build -a X64 -b RELEASE -t XCODE5 -p FatPkg/FatPkg.dsc<br>build -a X64 -b RELEASE -t XCODE5 -p MdeModulePkg/MdeModulePkg.dsc<br></code></pre></td></tr></table></figure>
@@ -291,36 +291,29 @@
 <p>目前只支持 <code>ASUS</code> 值，使用的是 Z87 和 Z97主板上的特殊协议。更多详情请参考 <a href="https://github.com/LongSoft/UEFITool/pull/116" target="_blank" rel="noopener"><code>LongSoft/UefiTool#116</code></a>。</p>
 <h3 id="TimerResolution"><a href="#TimerResolution" class="headerlink" title="TimerResolution"></a><code>TimerResolution</code></h3><p><strong>Type</strong>: <code>plist integer</code><br><strong>Failsafe</strong>: <code>0</code><br><strong>Description</strong>: 固件始终刷新的频率（单位 100 纳秒）</p>
 <p>设置较低的值可以提高界面和输入处理性能的响应能力。建议值为 <code>50000</code>（即 5 毫秒）或稍高一些。选择 ASUS Z87 主板时，请使用 <code>60000</code>，苹果主板请使用 <code>100000</code>。你也可以将此值保留为 0，由 OpenCore 自动计算。</p>
-<h2 id="11-5-Output-Properties"><a href="#11-5-Output-Properties" class="headerlink" title="11.5 Output Properties"></a>11.5 Output Properties</h2><h3 id="TextRenderer"><a href="#TextRenderer" class="headerlink" title="TextRenderer"></a><code>TextRenderer</code></h3><p><strong>Type</strong>: <code>plist string</code><br><strong>Failsafe</strong>: <code>BuiltinGraphics</code><br><strong>Description</strong>: Chooses renderer for text going through standard<br>  console output.</p>
-<p>  Currently two renderers are supported: <code>Builtin</code> and <code>System</code>. <code>System</code> renderer uses firmware services for text rendering. <code>Builtin</code> bypassing firmware services and performs text rendering on its own. Different renderers support a different set of options. It is recommended to use <code>Builtin</code> renderer, as it supports HiDPI mode and uses full screen resolution.</p>
-<p>  UEFI firmwares generally support <code>ConsoleControl</code> with two rendering modes: <code>Graphics</code> and <code>Text</code>. Some firmwares do not support <code>ConsoleControl</code> and rendering modes. OpenCore and macOS expect text to only be shown in <code>Graphics</code> mode and graphics to be drawn in any mode. Since this is not required by UEFI specification, exact behaviour varies.</p>
-<p>  Valid values are combinations of text renderer and rendering mode:</p>
+<h2 id="11-5-Output-Properties"><a href="#11-5-Output-Properties" class="headerlink" title="11.5 Output Properties"></a>11.5 Output Properties</h2><h3 id="TextRenderer"><a href="#TextRenderer" class="headerlink" title="TextRenderer"></a><code>TextRenderer</code></h3><p><strong>Type</strong>: <code>plist string</code><br><strong>Failsafe</strong>: <code>BuiltinGraphics</code><br><strong>Description</strong>: Chooses renderer for text going through standard console output.</p>
+<p>Currently two renderers are supported: <code>Builtin</code> and <code>System</code>. <code>System</code> renderer uses firmware services for text rendering. <code>Builtin</code> bypassing firmware services and performs text rendering on its own. Different renderers support a different set of options. It is recommended to use <code>Builtin</code> renderer, as it supports HiDPI mode and uses full screen resolution.</p>
+<p>UEFI firmwares generally support <code>ConsoleControl</code> with two rendering modes: <code>Graphics</code> and <code>Text</code>. Some firmwares do not support <code>ConsoleControl</code> and rendering modes. OpenCore and macOS expect text to only be shown in <code>Graphics</code> mode and graphics to be drawn in any mode. Since this is not required by UEFI specification, exact behaviour varies.</p>
+<p>Valid values are combinations of text renderer and rendering mode:</p>
 <ul>
-<li><p><code>BuiltinGraphics</code> — Switch to <code>Graphics</code> mode and use <code>Builtin</code> renderer with custom <code>ConsoleControl</code>.</p>
-</li>
-<li><p><code>SystemGraphics</code> — Switch to <code>Graphics</code> mode and use <code>System</code> renderer with custom <code>ConsoleControl</code>.</p>
-</li>
-<li><p><code>SystemText</code> — Switch to <code>Text</code> mode and use <code>System</code> renderer with custom <code>ConsoleControl</code>.</p>
-</li>
-<li><p><code>SystemGeneric</code> — Use <code>System</code> renderer with system <code>ConsoleControl</code> assuming it behaves correctly.</p>
+<li><code>BuiltinGraphics</code> — Switch to <code>Graphics</code> mode and use <code>Builtin</code> renderer with custom <code>ConsoleControl</code>.</li>
+<li><code>SystemGraphics</code> — Switch to <code>Graphics</code> mode and use <code>System</code> renderer with custom <code>ConsoleControl</code>.</li>
+<li><code>SystemText</code> — Switch to <code>Text</code> mode and use <code>System</code> renderer with custom <code>ConsoleControl</code>.</li>
+<li><code>SystemGeneric</code> — Use <code>System</code> renderer with system <code>ConsoleControl</code> assuming it behaves correctly.</li>
+</ul>
 <p>The use of <code>BuiltinGraphics</code> is generally straightforward. For most platforms it is necessary to enable <code>ProvideConsoleGop</code>, set <code>Resolution</code> to <code>Max</code>.</p>
 <p>The use of <code>System</code> protocols is more complicated. In general the preferred setting is <code>SystemGraphics</code> or <code>SystemText</code>. Enabling <code>ProvideConsoleGop</code>, setting <code>Resolution</code> to <code>Max</code>, enabling <code>ReplaceTabWithSpace</code> is useful on almost all platforms. <code>SanitiseClearScreen</code>, <code>IgnoreTextInGraphics</code>, and <code>ClearScreenOnModeSwitch</code> are more specific, and their use depends on the firmware.</p>
-</li>
-</ul>
 <p><em>注</em>：Some Macs, namely <code>MacPro5,1</code>, may have broken console output with newer GPUs, and thus only <code>BuiltinGraphics</code> may work for them.</p>
-<h3 id="ConsoleMode"><a href="#ConsoleMode" class="headerlink" title="ConsoleMode"></a><code>ConsoleMode</code></h3><p><strong>Type</strong>: <code>plist string</code><br><strong>Failsafe</strong>: Empty string<br><strong>Description</strong>: Sets console output mode as specified<br>  with the <code>WxH</code> (e.g. <code>80x24</code>) formatted string.</p>
-<p>  Set to empty string not to change console mode. Set to <code>Max</code> to try to use largest available console mode. Currently <code>Builtin</code> text renderer supports only one console mode, so this option is ignored.</p>
+<h3 id="ConsoleMode"><a href="#ConsoleMode" class="headerlink" title="ConsoleMode"></a><code>ConsoleMode</code></h3><p><strong>Type</strong>: <code>plist string</code><br><strong>Failsafe</strong>: Empty string<br><strong>Description</strong>: Sets console output mode as specified with the <code>WxH</code> (e.g. <code>80x24</code>) formatted string.</p>
+<p>Set to empty string not to change console mode. Set to <code>Max</code> to try to use largest available console mode. Currently <code>Builtin</code> text renderer supports only one console mode, so this option is ignored.</p>
 <p><em>注</em>：This field is best to be left empty on most firmwares.</p>
 <h3 id="Resolution"><a href="#Resolution" class="headerlink" title="Resolution"></a><code>Resolution</code></h3><p><strong>Type</strong>: <code>plist string</code><br><strong>Failsafe</strong>: Empty string<br><strong>Description</strong>: Sets console output screen resolution.</p>
 <ul>
-<li><p>Set to <code>WxH@Bpp</code> (e.g. <code>1920x1080@32</code>) or <code>WxH</code> (e.g. <code>1920x1080</code>) formatted string to request custom resolution from GOP if available.</p>
-</li>
-<li><p>Set to empty string not to change screen resolution.</p>
-</li>
-<li><p>Set to <code>Max</code> to try to use largest available screen resolution.</p>
-<p>On HiDPI screens <code>APPLE_VENDOR_VARIABLE_GUID</code> <code>UIScale</code> NVRAM variable may need to be set to <code>02</code> to enable HiDPI scaling in in <code>Builtin</code> text renderer, FileVault 2 UEFI password interface, FileVault 2 UEFI password interface and boot screen logo. Refer to <a href="">Recommended Variables</a> section for more details.</p>
-</li>
+<li>Set to <code>WxH@Bpp</code> (e.g. <code>1920x1080@32</code>) or <code>WxH</code> (e.g. <code>1920x1080</code>) formatted string to request custom resolution from GOP if available.</li>
+<li>Set to empty string not to change screen resolution.</li>
+<li>Set to <code>Max</code> to try to use largest available screen resolution.</li>
 </ul>
+<p>On HiDPI screens <code>APPLE_VENDOR_VARIABLE_GUID</code> <code>UIScale</code> NVRAM variable may need to be set to <code>02</code> to enable HiDPI scaling in in <code>Builtin</code> text renderer, FileVault 2 UEFI password interface, FileVault 2 UEFI password interface and boot screen logo. Refer to <a href="">Recommended Variables</a> section for more details.</p>
 <p><em>注</em>：This will fail when console handle has no GOP protocol. When the firmware does not provide it, it can be added with <code>ProvideConsoleGop</code> set to <code>true</code>.</p>
 <h3 id="ClearScreenOnModeSwitch"><a href="#ClearScreenOnModeSwitch" class="headerlink" title="ClearScreenOnModeSwitch"></a><code>ClearScreenOnModeSwitch</code></h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: <code>false</code><br><strong>Description</strong>: Some firmwares clear only part of screen when switching from graphics to text mode, leaving a fragment of previously drawn image visible. This option fills the entire graphics screen with black color before switching to text mode.</p>
 <p><em>注</em>：This option only applies to <code>System</code> renderer.</p>
@@ -334,10 +327,10 @@
 <h3 id="ReplaceTabWithSpace"><a href="#ReplaceTabWithSpace" class="headerlink" title="ReplaceTabWithSpace"></a><code>ReplaceTabWithSpace</code></h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: <code>false</code><br><strong>Description</strong>: Some firmwares do not print tab characters or even everything that follows them, causing difficulties or inability to use the UEFI Shell builtin text editor to edit property lists and other documents. This option makes the console output spaces instead of tabs.</p>
 <p><em>注</em>：This option only applies to <code>System</code> renderer.</p>
 <h3 id="ProvideConsoleGop"><a href="#ProvideConsoleGop" class="headerlink" title="ProvideConsoleGop"></a><code>ProvideConsoleGop</code></h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: <code>false</code><br><strong>Description</strong>: Ensure GOP (Graphics Output Protocol) on console handle.</p>
-<p>  macOS bootloader requires GOP to be present on console handle, yet the exact location of GOP is not covered by the UEFI specification. This option will ensure GOP is installed on console handle if it is present.</p>
+<p>macOS bootloader requires GOP to be present on console handle, yet the exact location of GOP is not covered by the UEFI specification. This option will ensure GOP is installed on console handle if it is present.</p>
 <p><em>注</em>：This option will also replace broken GOP protocol on console handle, which may be the case on <code>MacPro5,1</code> with newer GPUs.</p>
 <h3 id="ReconnectOnResChange"><a href="#ReconnectOnResChange" class="headerlink" title="ReconnectOnResChange"></a><code>ReconnectOnResChange</code></h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: <code>false</code><br><strong>Description</strong>: Reconnect console controllers after changing screen resolution.</p>
-<p>  On some firmwares when screen resolution is changed via GOP, it is required to reconnect the controllers, which produce the console protocols (simple text out). Otherwise they will not produce text based on the new resolution.</p>
+<p>On some firmwares when screen resolution is changed via GOP, it is required to reconnect the controllers, which produce the console protocols (simple text out). Otherwise they will not produce text based on the new resolution.</p>
 <p><em>注</em>：On several boards this logic may result in black screen when launching OpenCore from Shell and thus it is optional. In versions prior to 0.5.2 this option was mandatory and not configurable. Please do not use this unless required.</p>
 <h3 id="SanitiseClearScreen"><a href="#SanitiseClearScreen" class="headerlink" title="SanitiseClearScreen"></a><code>SanitiseClearScreen</code></h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: <code>false</code><br><strong>Description</strong>: Some firmwares reset screen resolution to a failsafe value (like <code>1024x768</code>) on the attempts to clear screen contents when large display (e.g. 2K or 4K) is used. This option attempts to apply a workaround.</p>
 <p><em>注</em>：This option only applies to <code>System</code> renderer. On all known affected systems <code>ConsoleMode</code> had to be set to empty string for this to work.</p>

@@ -194,7 +194,7 @@
                     <p><small>由 Sukka 整理，由 Sukka 翻译。</small></p>
                 
                 
-                    <p><small>本页面最后更新于 2020 年 02 月 20 日</small></p>
+                    <p><small>本页面最后更新于 2020 年 03 月 12 日</small></p>
                 
                 <br>
             
@@ -206,7 +206,7 @@
     <div class="columns">
         <div class="column is-9-tablet doku-document-wrapper">
             <div class="content">
-                <h2 id="7-1-简介"><a href="#7-1-简介" class="headerlink" title="7.1 简介"></a>7.1 简介</h2><p>This section allows to apply different kinds of kernelspace modifications on Apple Kernel (<a href="https://opensource.apple.com/source/xnu" target="_blank" rel="noopener">XNU</a>). The modifications currently provide driver (kext) injection, kernel and driver patching, and driver blocking.</p>
+                <h2 id="7-1-简介"><a href="#7-1-简介" class="headerlink" title="7.1 简介"></a>7.1 简介</h2><p>本章节介绍了如何在 Apple Kernel（<a href="https://opensource.apple.com/source/xnu" target="_blank" rel="noopener">XNU</a>）上应用各种不同的内核空间修改，包括内核驱动程序（kext）注入、修补以及屏蔽。</p>
 <h2 id="7-2-属性列表"><a href="#7-2-属性列表" class="headerlink" title="7.2 属性列表"></a>7.2 属性列表</h2><h3 id="7-2-1-Add"><a href="#7-2-1-Add" class="headerlink" title="7.2.1 Add"></a>7.2.1 Add</h3><p><strong>Type</strong>: plist array<br><strong>Failsafe</strong>: Empty<br><strong>Description</strong>: 从 <code>OC/Kexts</code> 目录加载选定的 Kext 驱动。</p>
 <p>设计为使用 plist dict 数据填充以描述每个驱动程序。请参阅下述 Add 属性章节。Kext 驱动程序加载的顺序遵照数组中项目的顺序，因此如 Lilu 这种其他驱动程序的依赖驱动应该位于前面。</p>
 <h3 id="7-2-2-Block"><a href="#7-2-2-Block" class="headerlink" title="7.2.2 Block"></a>7.2.2 Block</h3><p><strong>Type</strong>: plist array<br><strong>Failsafe</strong>: Empty<br><strong>Description</strong>: 从内核中删除选定的内核驱动程序。</p>
@@ -238,7 +238,7 @@
 </blockquote>
 <h3 id="7-3-7-PlistPath"><a href="#7-3-7-PlistPath" class="headerlink" title="7.3.7 PlistPath"></a>7.3.7 <code>PlistPath</code></h3><p><strong>Type</strong>: <code>plist string</code><br><strong>Failsafe</strong>: Empty string<br><strong>Description</strong>: Kext 中 <code>Info.plist</code> 文件的路径。一般为 <code>Contents/Info.plist</code>。</p>
 <h2 id="7-4-Block-属性"><a href="#7-4-Block-属性" class="headerlink" title="7.4 Block 属性"></a>7.4 Block 属性</h2><h3 id="7-4-1-Comment"><a href="#7-4-1-Comment" class="headerlink" title="7.4.1 Comment"></a>7.4.1 <code>Comment</code></h3><p><strong>Type</strong>: <code>plist string</code><br><strong>Failsafe</strong>: Empty string<br><strong>Description</strong>: 用于为条目提供人类可读参考的任意 ASCII 字符串（译者注：即注释）。</p>
-<h3 id="7-4-2-Enabled"><a href="#7-4-2-Enabled" class="headerlink" title="7.4.2 Enabled"></a>7.4.2 <code>Enabled</code></h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: <code>false</code><br><strong>Description</strong>: This kernel driver will not be blocked unless set to <code>true</code>.</p>
+<h3 id="7-4-2-Enabled"><a href="#7-4-2-Enabled" class="headerlink" title="7.4.2 Enabled"></a>7.4.2 <code>Enabled</code></h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: <code>false</code><br><strong>Description</strong>: 除非设置为 <code>true</code>，否则这个内核驱动不会被加载。</p>
 <h3 id="7-4-3-Identifier"><a href="#7-4-3-Identifier" class="headerlink" title="7.4.3 Identifier"></a>7.4.3 <code>Identifier</code></h3><p><strong>Type</strong>: <code>plist string</code><br><strong>Failsafe</strong>: Empty string<br><strong>Description</strong>: Kext bundle identifier (e.g.<br><code>com.apple.driver.AppleTyMCEDriver</code>).</p>
 <h3 id="7-4-4-MaxKernel"><a href="#7-4-4-MaxKernel" class="headerlink" title="7.4.4 MaxKernel"></a>7.4.4 <code>MaxKernel</code></h3><p><strong>Type</strong>: <code>plist string</code><br><strong>Failsafe</strong>: Empty string<br><strong>Description</strong>: 在小于等于指定的 macOS 版本中阻止 Kext 驱动程序。</p>
 <p><em>注</em>：Refer to <a href="#kernmatch"><code>Add</code> <code>MaxKernel</code> description</a> for matching logic.</p>
