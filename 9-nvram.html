@@ -246,21 +246,21 @@
 <ul>
 <li><code>4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14:FirmwareFeatures</code><br>32-bit <code>FirmwareFeatures</code>. Present on all Macs to avoid extra parsing of SMBIOS tables</li>
 <li><code>4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14:FirmwareFeaturesMask</code><br>32-bit <code>FirmwareFeaturesMask</code>. Present on all Macs to avoid extra parsing of SMBIOS tables.</li>
-<li><code>4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14:MLB</code><br><code>BoardSerialNumber</code>. Present on newer Macs (2013+ at least) to avoid extra parsing of SMBIOS tables, especially in boot.efi.</li>
-<li><code>4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14:ROM</code><br>Primary network adapter MAC address or replacement value. Present on newer Macs (2013+ at least) to avoid accessing special memory region, especially in boot.efi.</li>
+<li><code>4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14:MLB</code><br><code>BoardSerialNumber</code>. Present on newer Macs (2013+ at least) to avoid extra parsing of SMBIOS tables, especially in <code>boot.efi</code>.</li>
+<li><code>4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14:ROM</code><br>Primary network adapter MAC address or replacement value. Present on newer Macs (2013+ at least) to avoid accessing special memory region, especially in <code>boot.efi</code>.</li>
 </ul>
 <h2 id="9-4-Recommended-Variables"><a href="#9-4-Recommended-Variables" class="headerlink" title="9.4 Recommended Variables"></a>9.4 Recommended Variables</h2><p>The following variables are recommended for faster startup or other improvements:</p>
 <ul>
 <li><code>7C436110-AB2A-4BBB-A880-FE41995C9F82:csr-active-config</code><br>32-bit System Integrity Protection bitmask. Declared in XNU source code in <a href="https://opensource.apple.com/source/xnu/xnu-4570.71.2/bsd/sys/csr.h.auto.html" target="_blank" rel="noopener">csr.h</a>.</li>
 <li><code>4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14:ExtendedFirmwareFeatures</code><br>Combined <code>FirmwareFeatures</code> and <code>ExtendedFirmwareFeatures</code>. Present on newer Macs to avoid extra parsing of SMBIOS tables</li>
 <li><code>4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14:ExtendedFirmwareFeaturesMask</code><br>Combined <code>FirmwareFeaturesMask</code> and <code>ExtendedFirmwareFeaturesMask</code>. Present on newer Macs to avoid extra parsing of SMBIOS tables.</li>
-<li><code>4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14:HW_BID</code><br>Hardware <code>BoardProduct</code> (e.g. <code>Mac-35C1E88140C3E6CF</code>). Not present on real Macs, but used to avoid extra parsing of SMBIOS tables, especially in boot.efi.</li>
+<li><code>4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14:HW_BID</code><br>Hardware <code>BoardProduct</code> (e.g. <code>Mac-35C1E88140C3E6CF</code>). Not present on real Macs, but used to avoid extra parsing of SMBIOS tables, especially in <code>boot.efi</code>.</li>
 <li><code>4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14:HW_MLB</code><br>Hardware <code>BoardSerialNumber</code>. Override for MLB. Present on newer Macs (2013+ at least).</li>
 <li><code>4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14:HW_ROM</code><br>Hardware ROM. Override for ROM. Present on newer Macs (2013+ at least).</li>
 <li><code>7C436110-AB2A-4BBB-A880-FE41995C9F82:prev-lang:kbd</code><br>ASCII string defining default keyboard layout. Format is <code>lang-COUNTRY:keyboard</code>, e.g. <code>ru-RU:252</code> for Russian locale and ABC keyboard. Also accepts short forms: <code>ru:252</code> or <code>ru:0</code> (U.S. keyboard, compatible with 10.9). Full decoded keyboard list from <code>AppleKeyboardLayouts-L.dat</code> can be found <a href="https://github.com/acidanthera/OpenCorePkg/tree/master/Utilities/AppleKeyboardLayouts" target="_blank" rel="noopener">here</a>. Using non-latin keyboard on 10.14 will not enable ABC keyboard, unlike previous and subsequent macOS versions, and is thus not recommended in case you need 10.14.</li>
 <li><code>7C436110-AB2A-4BBB-A880-FE41995C9F82:security-mode</code><br>ASCII string defining FireWire security mode. Legacy, can be found in IOFireWireFamily source code in <a href="https://opensource.apple.com/source/IOFireWireFamily/IOFireWireFamily-473/IOFireWireFamily.kmodproj/IOFireWireController.cpp.auto.html" target="_blank" rel="noopener">IOFireWireController.cpp</a>. It is recommended not to set this variable, which may speedup system startup. Setting to <code>full</code> is equivalent to not setting the variable and <code>none</code> disables FireWire security.</li>
-<li><code>4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14:UIScale</code><br>One-byte data defining boot.efi user interface scaling. Should be <strong>01</strong> for normal screens and <strong>02</strong> for HiDPI screens.</li>
-<li><code>4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14:DefaultBackgroundColor</code> Four-byte <code>RGBA</code> data defining boot.efi user interface background colour. Standard colours include <code>BF BF BF 00</code> (Light Gray) and <code>00 00 00 00}</code> (Syrah Black). Other colours may be set at user’s preference.</li>
+<li><code>4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14:UIScale</code><br>One-byte data defining <code>boot.efi</code> user interface scaling. Should be <strong>01</strong> for normal screens and <strong>02</strong> for HiDPI screens.</li>
+<li><code>4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14:DefaultBackgroundColor</code> Four-byte <code>RGBA</code> data defining <code>boot.efi</code> user interface background colour. Standard colours include <code>BF BF BF 00</code> (Light Gray) and <code>00 00 00 00}</code> (Syrah Black). Other colours may be set at user’s preference.</li>
 </ul>
 <h2 id="9-5-Other-Variables"><a href="#9-5-Other-Variables" class="headerlink" title="9.5 Other Variables"></a>9.5 Other Variables</h2><p>以下变量对于某些特定的配置或进行故障排除可能会很有用：</p>
 <ul>
@@ -290,7 +290,7 @@
 </ul>
 <p>这里有一些网站收集了 macOS 内置的启动参数列表：<a href="https://osxeon.wordpress.com/2015/08/10/boot-argument-options-in-os-x" target="_blank" rel="noopener">列表 1</a>、<a href="https://superuser.com/questions/255176/is-there-a-list-of-available-boot-args-for-darwin-os-x" target="_blank" rel="noopener">列表 2</a>.</p>
 </li>
-<li><p><code>7C436110-AB2A-4BBB-A880-FE41995C9F82:bootercfg</code><br>Booter arguments, similar to <code>boot-args</code> but for boot.efi. Accepts a set of arguments, which are hexadecimal 64-bit values with or without <code>0x</code>. At<br>different stages boot.efi will request different debugging (logging)<br>modes (e.g. after <code>ExitBootServices</code> it will only print to serial).<br>Several booter arguments control whether these requests will succeed.<br>The list of known requests is covered below:</p>
+<li><p><code>7C436110-AB2A-4BBB-A880-FE41995C9F82:bootercfg</code><br>Booter arguments, similar to <code>boot-args</code> but for <code>boot.efi</code>. Accepts a set of arguments, which are hexadecimal 64-bit values with or without <code>0x</code>. At<br>different stages <code>boot.efi</code> will request different debugging (logging)<br>modes (e.g. after <code>ExitBootServices</code> it will only print to serial).<br>Several booter arguments control whether these requests will succeed.<br>The list of known requests is covered below:</p>
 <ul>
 <li><code>0x00</code> – <code>INIT</code>.</li>
 <li><code>0x01</code> – <code>VERBOSE</code> (e.g. <code>-v</code>, force console logging).</li>
@@ -370,7 +370,9 @@
 </ul>
 </li>
 <li><p><code>log=VALUE</code> — deprecated starting from 10.15.</p>
-<p><em>注</em>：To quickly see verbose output from <code>boot.efi</code> set this to <code>log=1</code> for before macOS 10.15, or set <code>bootercfg</code> to <code>log=1</code> for later.</p>
+<p><em>注</em>：To see verbose output from <code>boot.efi</code> on modern macOS versions enable <code>AppleDebug</code> option. This will save the log to general OpenCore log. For versions before 10.15.4 set <code>bootercfg</code> to <code>log=1</code>. This will print verbose output onscreen.</p>
+</li>
+<li><p><code>7C436110-AB2A-4BBB-A880-FE41995C9F82:efiboot-perf-record</code><br>Enable performance log saving in <code>boot.efi</code>. Performance log is saved to physical memory and is pointed by <code>efiboot-perf-record-data</code> and <code>efiboot-perf-record-size</code> variables. Starting from 10.15.4 it can also be saved to OpenCore log by <code>AppleDebug</code> option.</p>
 </li>
 <li><p><code>7C436110-AB2A-4BBB-A880-FE41995C9F82:bootercfg-once</code><br>Booter arguments override removed after first launch. Otherwise equivalent to <code>bootercfg</code>.</p>
 </li>
