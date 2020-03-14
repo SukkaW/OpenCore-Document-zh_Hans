@@ -194,7 +194,7 @@
                     <p><small>由 xMuu、Sukka 整理，由 Sukka 翻译</small></p>
                 
                 
-                    <p><small>本页面最后更新于 2020 年 03 月 12 日</small></p>
+                    <p><small>本页面最后更新于 2020 年 03 月 14 日</small></p>
                 
                 <br>
             
@@ -215,7 +215,7 @@
 <li><code>4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102</code> (<code>OC_VENDOR_VARIABLE_GUID</code>)</li>
 </ul>
 <p><em>注</em>：某些变量可以通过 <code>PlatformNVRAM</code> 或 <code>PlatformInfo</code> 节的 <code>Generic</code> 子节添加。请确保本节中的变量不会与它们发生冲突，否则可能导致未定义的行为。</p>
-<p>为了使macOS正常运行，通常需要使用 <code>OC_FIRMWARE_RUNTIME</code> 协议。该协议的实现目前是 <code>FwRuntimeServices</code> 驱动程序的一部分。虽然可能带来一些好处，但根据用途不同也会存在某些限制。</p>
+<p>为了使 macOS 正常运行，通常需要使用 <code>OC_FIRMWARE_RUNTIME</code> 协议。该协议的实现目前是 <code>FwRuntimeServices</code> 驱动程序的一部分。虽然可能带来一些好处，但根据用途不同也会存在某些限制。</p>
 <ul>
 <li>并非所有工具都可能知道受保护的名称空间。当使用 <code>RequestBootVarRouting</code> 时，在独立的命名空间中会限制对 <code>Boot</code> 前缀的变量访问。要访问原始变量，工具必须了解 <code>OC_FIRMWARE_RUNTIME</code> 协议的工作原理。</li>
 <li>分配的 NVRAM 变量并非总是允许超过 512 个字节。当使用 <code>RequestBootVarFallback</code> 时，对于带有 <code>Boot</code> 前缀的变量，以及不符合 UEFI 2.8 规范的固件上使用非易失性覆盖变量，都存在 512 字节限制。</li>

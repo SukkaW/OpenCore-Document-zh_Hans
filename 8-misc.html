@@ -194,7 +194,7 @@
                     <p><small>由 xMuu、Sukka 整理、由 Sukka 翻译。部分翻译参考黑果小兵的「精解 OpenCore」</small></p>
                 
                 
-                    <p><small>本页面最后更新于 2020 年 03 月 12 日</small></p>
+                    <p><small>本页面最后更新于 2020 年 03 月 14 日</small></p>
                 
                 <br>
             
@@ -216,7 +216,7 @@
 <h3 id="Security"><a href="#Security" class="headerlink" title="Security"></a><code>Security</code></h3><p><strong>Type</strong>: <code>plist dict</code><br><strong>Description</strong>: Apply security configuration described in <a href="">Security Properties</a> section below.</p>
 <h3 id="Tools"><a href="#Tools" class="headerlink" title="Tools"></a><code>Tools</code></h3><p><strong>Type</strong>: <code>plist array</code><br><strong>Description</strong>: Add tool entries to boot picker.</p>
 <p>Designed to be filled with <code>plist dict</code> values, describing each load entry. See <a href="">Entry Properties</a> section below.</p>
-<p><em>注</em>：Select tools, for example, <a href="https://github.com/acidanthera/OpenCoreShell" target="_blank" rel="noopener">UEFI Shell</a> are very dangerous and <strong>MUST NOT</strong> appear in production configurations, especially in vaulted ones and protected with secure boot, as they may be used to easily bypass secure boot chain.</p>
+<p><em>注</em>：Select tools, for example, UEFI shell, are very dangerous and <strong>MUST NOT</strong> appear in production configurations, especially in vaulted ones and protected with secure boot, as they may be used to easily bypass secure boot chain.</p>
 <h2 id="8-3-Boot-Properties"><a href="#8-3-Boot-Properties" class="headerlink" title="8.3 Boot Properties"></a>8.3 Boot Properties</h2><h3 id="HibernateMode"><a href="#HibernateMode" class="headerlink" title="HibernateMode"></a><code>HibernateMode</code></h3><p><strong>Type</strong>: <code>plist string</code><br><strong>Failsafe</strong>: <code>None</code><br><strong>Description</strong>: 休眠检测模式。 支持以下模式：</p>
 <ul>
 <li><code>None</code> — 禁用休眠</li>

@@ -194,7 +194,7 @@
                     <p><small>由 Sukka 整理，由 Sukka 翻译。</small></p>
                 
                 
-                    <p><small>本页面最后更新于 2020 年 03 月 12 日</small></p>
+                    <p><small>本页面最后更新于 2020 年 03 月 14 日</small></p>
                 
                 <br>
             
@@ -264,8 +264,8 @@
 <p>When each <code>Cpuid1Mask</code> bit is set to 0, the original CPU bit is used,<br>otherwise set bits take the value of <code>Cpuid1Data</code>.</p>
 <h2 id="7-6-Patch-属性"><a href="#7-6-Patch-属性" class="headerlink" title="7.6 Patch 属性"></a>7.6 Patch 属性</h2><h3 id="7-6-1-Base"><a href="#7-6-1-Base" class="headerlink" title="7.6.1 Base"></a>7.6.1 <code>Base</code></h3><p><strong>Type</strong>: <code>plist string</code><br><strong>Failsafe</strong>: Empty string<br><strong>Description</strong>: Selects symbol-matched base for patch lookup (or immediate replacement) by obtaining the address of provided symbol name. Can be set to empty string to be ignored.</p>
 <h3 id="7-6-2-Comment"><a href="#7-6-2-Comment" class="headerlink" title="7.6.2 Comment"></a>7.6.2 <code>Comment</code></h3><p><strong>Type</strong>: <code>plist string</code><br><strong>Failsafe</strong>: Empty string<br><strong>Description</strong>: 用于为条目提供人类可读参考的任意 ASCII 字符串（译者注：即注释）。</p>
-<h3 id="7-6-3-Count"><a href="#7-6-3-Count" class="headerlink" title="7.6.3 Count"></a>7.6.3 <code>Count</code></h3><p><strong>Type</strong>: <code>plist integer</code><br><strong>Failsafe</strong>: <code>0</code><br><strong>Description</strong>: Number of patch occurrences to apply. <code>0</code> applies the patch to all occurrences found.</p>
-<h3 id="7-6-4-Enabled"><a href="#7-6-4-Enabled" class="headerlink" title="7.6.4 Enabled"></a>7.6.4 <code>Enabled</code></h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: <code>false</code><br><strong>Description</strong>: This kernel patch will not be used unless set to <code>true</code>.</p>
+<h3 id="7-6-3-Count"><a href="#7-6-3-Count" class="headerlink" title="7.6.3 Count"></a>7.6.3 <code>Count</code></h3><p><strong>Type</strong>: <code>plist integer</code><br><strong>Failsafe</strong>: <code>0</code><br><strong>Description</strong>: 修补的次数，超过这一次数后便不再修补。<code>0</code> 表示修补所有查找到的。</p>
+<h3 id="7-6-4-Enabled"><a href="#7-6-4-Enabled" class="headerlink" title="7.6.4 Enabled"></a>7.6.4 <code>Enabled</code></h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: <code>false</code><br><strong>Description</strong>: 除非设置为 <code>true</code>，否则不对内核进行该修补。</p>
 <h3 id="7-6-5-Find"><a href="#7-6-5-Find" class="headerlink" title="7.6.5 Find"></a>7.6.5 <code>Find</code></h3><p><strong>Type</strong>: <code>plist data</code><br><strong>Failsafe</strong>: Empty data<br><strong>Description</strong>: Data to find. Can be set to empty for immediate replacement at <code>Base</code>. Must equal to <code>Replace</code> in size otherwise.</p>
 <h3 id="7-6-6-Identifier"><a href="#7-6-6-Identifier" class="headerlink" title="7.6.6 Identifier"></a>7.6.6 <code>Identifier</code></h3><p><strong>Type</strong>: <code>plist string</code><br><strong>Failsafe</strong>: Empty string<br><strong>Description</strong>: Kext bundle identifier (e.g.<br><code>com.apple.driver.AppleHDA</code>) or <code>kernel</code> for kernel patch.</p>
 <h3 id="7-6-7-Limit"><a href="#7-6-7-Limit" class="headerlink" title="7.6.7 Limit"></a>7.6.7 <code>Limit</code></h3><p><strong>Type</strong>: <code>plist integer</code><br><strong>Failsafe</strong>: <code>0</code><br><strong>Description</strong>: Maximum number of bytes to search for. Can be set to <code>0</code> to look through the whole kext or kernel.</p>
