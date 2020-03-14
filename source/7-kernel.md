@@ -3,7 +3,7 @@ title: 7. Kernel
 description: OpenCore 安全配置，Kext 加载顺序以及屏蔽（待翻译）
 type: docs
 author_info: 由 Sukka 整理，由 Sukka 翻译。
-last_updated: 2020-03-12
+last_updated: 2020-03-14
 ---
 
 ## 7.1 简介
@@ -202,13 +202,13 @@ otherwise set bits take the value of `Cpuid1Data`.
 
 **Type**: `plist integer`
 **Failsafe**: `0`
-**Description**: Number of patch occurrences to apply. `0` applies the patch to all occurrences found.
+**Description**: 修补的次数，超过这一次数后便不再修补。`0` 表示修补所有查找到的。
 
 ### 7.6.4 `Enabled`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
-**Description**: This kernel patch will not be used unless set to `true`.
+**Description**: 除非设置为 `true`，否则不对内核进行该修补。
 
 ### 7.6.5 `Find`
 

@@ -3,7 +3,7 @@ title: 8. Misc
 description: 关于 OpenCore 行为的其他配置（待翻译）
 type: docs
 author_info: 由 xMuu、Sukka 整理、由 Sukka 翻译。部分翻译参考黑果小兵的「精解 OpenCore」
-last_updated: 2020-03-12
+last_updated: 2020-03-14
 ---
 
 ## 8.1 Introduction
@@ -46,7 +46,7 @@ Designed to be filled with `plist dict` values, describing each load entry. See 
 
 Designed to be filled with `plist dict` values, describing each load entry. See [Entry Properties]() section below.
 
-*注*：Select tools, for example, [UEFI Shell](https://github.com/acidanthera/OpenCoreShell) are very dangerous and **MUST NOT** appear in production configurations, especially in vaulted ones and protected with secure boot, as they may be used to easily bypass secure boot chain.
+*注*：Select tools, for example, UEFI shell, are very dangerous and **MUST NOT** appear in production configurations, especially in vaulted ones and protected with secure boot, as they may be used to easily bypass secure boot chain.
 
 
 ## 8.3 Boot Properties
@@ -171,6 +171,7 @@ Introducing a delay may give extra time to hold the right `action hotkey` sequen
 **Description**: 开机引导菜单中，启动默认启动项之前超时时间（以秒为单位）。 使用 `0` 禁用倒计时。
 
 ### `PickerMode`
+
 **Type**: `plist string`
 **Failsafe**: `Builtin`
 **Description**: Choose boot picker used for boot management.

@@ -3,14 +3,70 @@ title: 11. UEFI
 description: UEFI 驱动以及加载顺序（待翻译）
 type: docs
 author_info: 由 xMuu、Sukka 整理，由 Sukka 翻译
-last_updated: 2020-03-12
+last_updated: 2020-03-14
 ---
 
 ## 11.1 Introduction
 
 [UEFI](https://uefi.org/specifications)（统一可扩展固件接口）是一种规范，用于定义操作系统和平台固件之间的软件接口。本部分允许加载其他 UEFI 模块 和/或 对板载固件进行调整。要检查固件内容，应用修改并执行升级，可以使用 [UEFITool](https://github.com/LongSoft/UEFITool/releases) 和其他实用程序。
 
-## 11.2 Properties
+## 11.2 Drivers
+
+根据固件不同、可能需要不同的驱动程序。加载不兼容的驱动程序可能会导致无法启动系统，甚至导致固件永久性损坏。OpenCore 目前对以下 UEFI 驱动提供支持。OpenCore 可能兼容对其他 UEFI 驱动，但不能确定。
+
+- [`ApfsDriverLoader`](https://github.com/acidanthera/AppleSupportPkg) --- APFS 文件系统引导驱动程序在 UEFI 固件的可启动 APFS 容器中添加了对嵌入式 APFS 驱动程序的支持。
+- [`FwRuntimeServices`](https://github.com/acidanthera/OpenCorePkg) --- `OC_FIRMWARE_RUNTIME` 协议通过支持只读、只写 NVRAM 变量，提升了 OpenCore 和 Lilu 的安全性。有些 Quirks 如 `RequestBootVarRouting` 依赖此驱动程序。由于 runtime 驱动饿性质（与目标操作系统并行运行），因此它不能在 OpenCore 本身实现，而是与 OpenCore 捆绑在一起。
+- [`HiiDatabase`](https://github.com/acidanthera/audk) --- 来自 `MdeModulePkg` 的 HII 服务驱动。Ivy Bridge 及其以后的大多数固件中都已内置此驱动程序。某些带有 GUI 的应用程序（例如 UEFI Shell）可能需要此驱动程序才能正常工作。
+- [`EnhancedFatDxe`](https://github.com/acidanthera/audk) --- 来自 `FatPkg` 的 FAT 文件系统驱动程序。这个驱动程序已经被嵌入到所有 UEFI 固件中，无法为 OpenCore 使用。众所周知，许多固件的 FAT 支持实现都有错误，导致在尝试写操作时损坏文件系统。如果在引导过程中需要写入 EFI 分区，则可能组要将此驱动程序嵌入固件中。
+- [`NvmExpressDxe`](https://github.com/acidanthera/audk) --- 来自`MdeModulePkg` 的 NVMe 驱动程序。从 Broadwell 一代开始的大多数固件都包含此驱动程序。对于 Haswell 以及更早的版本，如果安装了 NVMe SSD 驱动器，则将其嵌入固件中可能会更理想。
+- [`AppleUsbKbDxe`](https://github.com/acidanthera/OpenCorePkg) --- USB 键盘驱动在自定义 USB 键盘驱动程序的基础上新增了对 `AppleKeyMapAggregator` 协议的支持。这是内置的 `KeySupport` 的等效替代方案。根据固件不同，效果可能会更好或者更糟。
+- [`HfsPlus`](https://github.com/acidanthera/OcBinaryData) — Apple 固件中常见的具有祝福支持的专有 HFS 文件系统驱动程序。对于 `Sandy Bridge`和更早的 CPU，由于缺少 `RDRAND` 指令支持，应使用 `HfsPlusLegacy` 驱动程序。
+- [`VBoxHfs`](https://github.com/acidanthera/AppleSupportPkg) --- 带有 bless 支持的 HFS 文件系统驱动。是 Apple 固件中 `HfsPlus` 驱动的开源替代。虽然功能完善，但是启动速度比 `HFSPlus` 慢三倍，并且尚未经过安全审核。
+- [`XhciDxe`](https://github.com/acidanthera/audk) --- 来自 `MdeModulePkg` 的 XHCI USB controller 驱动程序。从 Sandy Bridge 代开始的大多数固件中都包含此驱动程序。在较早的固件或旧系统可以用于支持外部 USB 3.0 PCI 卡。
+- [`AudioDxe`](https://github.com/acidanthera/AppleSupportPkg) --- UEFI 固件中的 HDA 音频驱动程序，适用于大多数 Intel 和其他一些模拟音频控制器。Refer to [acidanthera/bugtracker#740](https://github.com/acidanthera/bugtracker/issues/740) for known issues in AudioDxe.
+- [`ExFatDxe`](https://github.com/acidanthera/OcBinaryData) --- 用于 Bootcamp 支持的专有 ExFAT 文件系统驱动程序，通常可以在 Apple 固件中找到。 对于 `Sandy Bridge` 和更早的 CPU，由于缺少 `RDRAND` 指令支持，应使用 `ExFatDxeLegacy` 驱动程序。
+
+要从 UDK（EDK II）编译驱动程序，可以使用编译 OpenCore 类似的命令。
+
+```bash
+git clone https://github.com/acidanthera/audk UDK
+cd UDK
+source edksetup.sh
+make -C BaseTools
+build -a X64 -b RELEASE -t XCODE5 -p FatPkg/FatPkg.dsc
+build -a X64 -b RELEASE -t XCODE5 -p MdeModulePkg/MdeModulePkg.dsc
+```
+
+## 11.3 Tools
+
+Standalone tools may help to debug firmware and hardware. Some of the known tools are listed below. While some tools can be launched from within OpenCore many should be run separately either directly or from `Shell`.
+
+To boot into Shell or any other tool directly save `Shell.efi` under the name of `EFI\BOOT\BOOTX64.EFI` on a FAT32 partition. In general it is unimportant whether the partitition scheme is `GPT` or `MBR`.
+
+While the previous approach works both on Macs and other computers, an alternative Mac-only approach to bless the tool on an HFS+ or APFS volume:
+
+```bash
+sudo bless --verbose --file /Volumes/VOLNAME/DIR/Shell.efi --folder /Volumes/VOLNAME/DIR/ --setBoot
+```
+
+*Note 1*: You may have to copy `/System/Library/CoreServices/BridgeVersion.bin` to `/Volumes/VOLNAME/DIR`.
+*Note 2*: To be able to use `bless` you may have to [disable System Integrity Protection](https://developer.apple.com/library/archive/documentation/Security/Conceptual/System_Integrity_Protection_Guide/ConfiguringSystemIntegrityProtection/ConfiguringSystemIntegrityProtection.html).
+*Note 3*: To be able to boot you may have to [disable Secure Boot](https://support.apple.com/HT208330) if present.
+
+Some of the known tools are listed below:
+
+- [`BootKicker`](https://github.com/acidanthera/OpenCorePkg) (**builtin**) — Enter Apple BootPicker menu (exclusive for Macs with compatible GPUs).
+- [`ChipTune`](https://github.com/acidanthera/OpenCorePkg) (**builtin**) — Test BeepGen protocol and generate audio signals of different style and length.
+- [`CleanNvram`](https://github.com/acidanthera/OpenCorePkg) (**builtin**) — Reset NVRAM alternative bundled as a standalone tool.
+- [`FwProtect`](https://github.com/acidanthera/OpenCorePkg) (**builtin**) — Unlock and lock back NVRAM protection for other tools to be able to get full NVRAM access when launching from OpenCore.
+- [`GopStop`](https://github.com/acidanthera/OpenCorePkg) (**builtin**) — Test GraphicsOutput protocol with a [simple scenario](https://github.com/acidanthera/OpenCorePkg/tree/master/Application/GopStop).
+- [`HdaCodecDump`](https://github.com/acidanthera/OpenCorePkg) (**builtin**) — Parse and dump High Definition Audio codec information (requires `AudioDxe`).
+- [`KeyTester`](https://github.com/acidanthera/OpenCorePkg) (**builtin**) — Test keyboard input in `SimpleText` mode.
+- [`OpenCore Shell`](https://github.com/acidanthera/OpenCorePkg) (**builtin**) — OpenCore-configured [`UEFI Shell`](http://github.com/tianocore/edk2) for compatibility with a broad range of firmwares.
+- [`PavpProvision`](https://github.com/acidanthera/OpenCorePkg) — Perform EPID provisioning (requires certificate data configuration).
+- [`VerifyMsrE2`](https://github.com/acidanthera/OpenCorePkg) (**builtin**) — Check `CFG Lock` (MSR `0xE2` write protection) consistency across all cores.
+
+## 11.4 Properties
 
 ### `Audio`
 
@@ -44,30 +100,7 @@ Audio localisation is determined separately for macOS bootloader and OpenCore. F
 **Failsafe**: None
 **Description**: 从 `OC/Drivers` 目录下加载选择的驱动。
 
-设计为填充要作为 UEFI 驱动程序加载的文件名。根据固件不同、可能需要不同的驱动程序。加载不兼容的驱动程序可能会导致无法启动系统，甚至导致固件永久性损坏。OpenCore 可以使用的驱动程序包括：
-
-- [`ApfsDriverLoader`](https://github.com/acidanthera/AppleSupportPkg) --- APFS 文件系统引导驱动程序在 UEFI 固件的可启动 APFS 容器中添加了对嵌入式 APFS 驱动程序的支持。
-- [`FwRuntimeServices`](https://github.com/acidanthera/OpenCorePkg) --- `OC_FIRMWARE_RUNTIME` 协议通过支持只读、只写 NVRAM 变量，提升了 OpenCore 和 Lilu 的安全性。有些 Quirks 如 `RequestBootVarRouting` 依赖此驱动程序。由于 runtime 驱动饿性质（与目标操作系统并行运行），因此它不能在 OpenCore 本身实现，而是与 OpenCore 捆绑在一起。
-- [`HiiDatabase`](https://github.com/acidanthera/audk) --- 来自 `MdeModulePkg` 的 HII 服务驱动。Ivy Bridge 及其以后的大多数固件中都已内置此驱动程序。某些带有 GUI 的应用程序（例如 UEFI Shell）可能需要此驱动程序才能正常工作。
-- [`EnhancedFatDxe`](https://github.com/acidanthera/audk) --- 来自 `FatPkg` 的 FAT 文件系统驱动程序。这个驱动程序已经被嵌入到所有 UEFI 固件中，无法为 OpenCore 使用。众所周知，许多固件的 FAT 支持实现都有错误，导致在尝试写操作时损坏文件系统。如果在引导过程中需要写入 EFI 分区，则可能组要将此驱动程序嵌入固件中。
-- [`NvmExpressDxe`](https://github.com/acidanthera/audk) --- 来自`MdeModulePkg` 的 NVMe 驱动程序。从 Broadwell 一代开始的大多数固件都包含此驱动程序。对于 Haswell 以及更早的版本，如果安装了 NVMe SSD 驱动器，则将其嵌入固件中可能会更理想。
-- [`AppleUsbKbDxe`](https://github.com/acidanthera/OpenCorePkg) --- USB 键盘驱动在自定义 USB 键盘驱动程序的基础上新增了对 `AppleKeyMapAggregator` 协议的支持。这是内置的 `KeySupport` 的等效替代方案。根据固件不同，效果可能会更好或者更糟。
-- [`HfsPlus`](https://github.com/acidanthera/OcBinaryData) — Apple 固件中常见的具有祝福支持的专有 HFS 文件系统驱动程序。对于 `Sandy Bridge`和更早的 CPU，由于缺少 `RDRAND` 指令支持，应使用 `HfsPlusLegacy` 驱动程序。
-- [`VBoxHfs`](https://github.com/acidanthera/AppleSupportPkg) --- 带有 bless 支持的 HFS 文件系统驱动。是 Apple 固件中 `HfsPlus` 驱动的开源替代。虽然功能完善，但是启动速度比 `HFSPlus` 慢三倍，并且尚未经过安全审核。
-- [`XhciDxe`](https://github.com/acidanthera/audk) --- 来自 `MdeModulePkg` 的 XHCI USB controller 驱动程序。从 Sandy Bridge 代开始的大多数固件中都包含此驱动程序。在较早的固件或旧系统可以用于支持外部 USB 3.0 PCI 卡。
-- [`AudioDxe`](https://github.com/acidanthera/AppleSupportPkg) --- UEFI 固件中的 HDA 音频驱动程序，适用于大多数 Intel 和其他一些模拟音频控制器。Refer to [acidanthera/bugtracker#740](https://github.com/acidanthera/bugtracker/issues/740) for known issues in AudioDxe.
-- [`ExFatDxe`](https://github.com/acidanthera/OcBinaryData) --- 用于 Bootcamp 支持的专有 ExFAT 文件系统驱动程序，通常可以在 Apple 固件中找到。 对于 `Sandy Bridge` 和更早的 CPU，由于缺少 `RDRAND` 指令支持，应使用 `ExFatDxeLegacy` 驱动程序。
-
-要从 UDK（EDK II）编译驱动程序，可以使用编译 OpenCore 类似的命令。
-
-```bash
-git clone https://github.com/acidanthera/audk UDK
-cd UDK
-source edksetup.sh
-make -C BaseTools
-build -a X64 -b RELEASE -t XCODE5 -p FatPkg/FatPkg.dsc
-build -a X64 -b RELEASE -t XCODE5 -p MdeModulePkg/MdeModulePkg.dsc
-```
+设计为填充要作为 UEFI 驱动程序加载的文件名。
 
 ### `Input`
 
@@ -91,7 +124,7 @@ build -a X64 -b RELEASE -t XCODE5 -p MdeModulePkg/MdeModulePkg.dsc
 **Failsafe**: None
 **Description**: Apply individual firmware quirks described in [Quirks Properties]() section below.
 
-## 11.3 Audio Properties
+## 11.5 Audio Properties
 
 ### `AudioCodec`
 
@@ -176,7 +209,7 @@ RawVolume = MIN{ [(SystemAudioVolume * VolumeAmplifier) / 100], 100 }
 
 *Note*: the transformation used in macOS is not linear, but it is very close and this nuance is thus ignored.
 
-## 11.4 Input Properties
+## 11.6 Input Properties
 
 ### `KeyFiltering`
 
@@ -259,7 +292,7 @@ Apparently some boards like GA Z77P-D3 may return uninitialised data in `EFI_INP
 
 设置较低的值可以提高界面和输入处理性能的响应能力。建议值为 `50000`（即 5 毫秒）或稍高一些。选择 ASUS Z87 主板时，请使用 `60000`，苹果主板请使用 `100000`。你也可以将此值保留为 0，由 OpenCore 自动计算。
 
-## 11.5 Output Properties
+## 11.7 Output Properties
 
 ### `TextRenderer`
 **Type**: `plist string`
@@ -375,7 +408,7 @@ On some firmwares when screen resolution is changed via GOP, it is required to r
 
 *注*：This option only applies to `System` renderer. On all known affected systems `ConsoleMode` had to be set to empty string for this to work.
 
-## 11.6 Protocols Properties
+## 11.8 Protocols Properties
 
 ### `AppleAudio`
 
@@ -474,7 +507,7 @@ Only one set of audio protocols can be available at a time, so in order to get a
 **Failsafe**: `false`
 **Description**: Forcibly reinstalls unicode collation services with builtin version. 建议启用这一选项以确保 UEFI Shell 的兼容性。一些较旧的固件破坏了 Unicode 排序规则, 设置为 YES 可以修复这些系统上 UEFI Shell 的兼容性 (通常为用于 IvyBridge 或更旧的设备)
 
-## 11.7 Quirks Properties
+## 11.9 Quirks Properties
 
 ### `ExitBootServicesDelay`
 

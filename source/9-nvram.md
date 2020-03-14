@@ -3,7 +3,7 @@ title: 9. NVRAM
 description: NVRAM 注入（如引导标识符和 SIP）（待翻译）
 type: docs
 author_info: 由 xMuu、Sukka 整理，由 Sukka 翻译
-last_updated: 2020-03-12
+last_updated: 2020-03-14
 ---
 
 ## 9.1 Introduction
@@ -19,7 +19,7 @@ last_updated: 2020-03-12
 
 *注*：某些变量可以通过 `PlatformNVRAM` 或 `PlatformInfo` 节的 `Generic` 子节添加。请确保本节中的变量不会与它们发生冲突，否则可能导致未定义的行为。
 
-为了使macOS正常运行，通常需要使用 `OC_FIRMWARE_RUNTIME` 协议。该协议的实现目前是 `FwRuntimeServices` 驱动程序的一部分。虽然可能带来一些好处，但根据用途不同也会存在某些限制。
+为了使 macOS 正常运行，通常需要使用 `OC_FIRMWARE_RUNTIME` 协议。该协议的实现目前是 `FwRuntimeServices` 驱动程序的一部分。虽然可能带来一些好处，但根据用途不同也会存在某些限制。
 
 - 并非所有工具都可能知道受保护的名称空间。当使用 `RequestBootVarRouting` 时，在独立的命名空间中会限制对 `Boot` 前缀的变量访问。要访问原始变量，工具必须了解 `OC_FIRMWARE_RUNTIME` 协议的工作原理。
 - 分配的 NVRAM 变量并非总是允许超过 512 个字节。当使用 `RequestBootVarFallback` 时，对于带有 `Boot` 前缀的变量，以及不符合 UEFI 2.8 规范的固件上使用非易失性覆盖变量，都存在 512 字节限制。

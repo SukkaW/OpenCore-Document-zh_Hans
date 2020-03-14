@@ -3,7 +3,7 @@ title: 3. Setup
 description: Setup（待翻译）
 type: docs
 author_info: 由 Sukka 整理、由 Sukka 翻译。
-last_updated: 2020-02-11
+last_updated: 2020-03-14
 ---
 
 ## 3.1 目录结构
@@ -53,6 +53,8 @@ ESP
 - **nvram.plist** - OpenCore 变量导入文件。
 - **Resources** - 媒体资源使用的目录，如 屏幕朗读 的语音文件（见「UEFI Audio 属性」章节）。
 - **opencore-YYYY-MM-DD-HHMMSS.txt** - OpenCore 日志文件。
+
+*Note*: It is not guaranteed that paths longer than `OC_STORAGE_SAFE_PATH_MAX` (128 characters including `0`-termnator) will be accessible within OpenCore.
 
 ## 3.2 安装和升级
 
@@ -115,6 +117,7 @@ For IDE usage Xcode projects are available in the root of the repositories. Anot
 -Wno-varargs
 -Wno-unused-const-variable
 -DOC_TARGET_NOOPT=1
+-DNO_MSABI_VA_FUNCS=1
 ```
 
 > **Warning:** Tool developers modifying `config.plist` or any other OpenCore files must ensure that their tool checks for `opencore-version` NVRAM variable (see `Debug Properties` section below) and warn the user if the version listed is unsupported or prerelease. OpenCore configuration may change across the releases and the tool shall ensure that it carefully follows this document. Failure to do so may result in this tool to be considered as malware and blocked with all possible means.
