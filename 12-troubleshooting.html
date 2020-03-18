@@ -194,7 +194,7 @@
                     <p><small>由 xMuu 整理，由 Sukka 翻译</small></p>
                 
                 
-                    <p><small>本页面最后更新于 2020 年 02 月 12 日</small></p>
+                    <p><small>本页面最后更新于 2020 年 03 月 18 日</small></p>
                 
                 <br>
             
@@ -281,7 +281,7 @@
 <h3 id="6-我可以在-Apple-的硬件、或虚拟机中使用-OpenCore-吗？"><a href="#6-我可以在-Apple-的硬件、或虚拟机中使用-OpenCore-吗？" class="headerlink" title="6. 我可以在 Apple 的硬件、或虚拟机中使用 OpenCore 吗？"></a>6. 我可以在 Apple 的硬件、或虚拟机中使用 OpenCore 吗？</h3><p><del>可以，没有必要，但请加大力度</del></p>
 <p>OpenCore 支持包括 MacPro 5,1 和虚拟机在内的大部分较新的 Mac 想好。不过，OpenCore有关在 Mac 硬件上使用的具体细节微乎其微。你可以在 <a href="https://github.com/acidanthera/bugtracker/issues/377" target="_blank" rel="noopener">acidanthera/bugtracker#377</a> 查看相关讨论。</p>
 <h3 id="7-为什么-Find-和-Replace-的补丁的长度必须相等？"><a href="#7-为什么-Find-和-Replace-的补丁的长度必须相等？" class="headerlink" title="7. 为什么 Find 和 Replace 的补丁的长度必须相等？"></a>7. 为什么 Find 和 Replace 的补丁的长度必须相等？</h3><p>对于 x86 机器码来说，<a href="https://en.wikipedia.org/w/index.php?title=Relative_addressing" target="_blank" rel="noopener">相对寻址</a> 无法进行大小不同的替换。对于 ACPI 代码来说这是有风险的，而且在技术上这与替换 ACPI 表等价，所以 OpenCore 没有实现。更多详细的解答可以在 <a href="https://applelife.ru/posts/819790" target="_blank" rel="noopener">AppleLife.ru</a> 上找到。</p>
-<h3 id="8-我如何从-AptioMemoryFix-迁移到-OpenCore"><a href="#8-我如何从-AptioMemoryFix-迁移到-OpenCore" class="headerlink" title="8. 我如何从 AptioMemoryFix 迁移到 OpenCore?"></a>8. 我如何从 <code>AptioMemoryFix</code> 迁移到 OpenCore?</h3><p>可以通过安装 <code>FwRuntimeServices.efi</code> 驱动程序并启用以下列出的 quirk 来获得与 <code>AptioMemoryFix</code> 类似的行为。 请注意，其中大多数功能都不需要启用。有关更多详细信息，请参阅本文档中关于它们的单独描述。</p>
+<h3 id="8-我如何从-AptioMemoryFix-迁移到-OpenCore"><a href="#8-我如何从-AptioMemoryFix-迁移到-OpenCore" class="headerlink" title="8. 我如何从 AptioMemoryFix 迁移到 OpenCore?"></a>8. 我如何从 <code>AptioMemoryFix</code> 迁移到 OpenCore?</h3><p>可以通过安装 <code>OpenRuntime.efi</code>（原名 <code>FwRuntimeServices.efi</code>）驱动程序并启用以下列出的 quirk 来获得与 <code>AptioMemoryFix</code> 类似的行为。 请注意，其中大多数功能都不需要启用。有关更多详细信息，请参阅本文档中关于它们的单独描述。</p>
 <ul>
 <li><code>ProvideConsoleGop</code> (UEFI quirk)</li>
 <li><code>AvoidRuntimeDefrag</code></li>

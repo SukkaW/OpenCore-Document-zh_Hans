@@ -187,14 +187,14 @@
         <div class="hero-body">
             <h1 class="title">5. Booter</h1>
             
-                <p class="subtitle">配置 FwRuntimeServices.efi（Slide 值计算、KASLR）</p>
+                <p class="subtitle">配置 OpenRuntime.efi（Slide 值计算、KASLR）</p>
             
             
                 
                     <p><small>由 Sukka 整理，由 Sukka 翻译。</small></p>
                 
                 
-                    <p><small>本页面最后更新于 2020 年 03 月 12 日</small></p>
+                    <p><small>本页面最后更新于 2020 年 03 月 18 日</small></p>
                 
                 <br>
             
@@ -244,7 +244,7 @@
 <h3 id="DisableSingleUser"><a href="#DisableSingleUser" class="headerlink" title="DisableSingleUser"></a><code>DisableSingleUser</code></h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: <code>false</code><br><strong>Description</strong>: 禁用 Apple 单用户模式</p>
 <p>这个选项可以禁用 <code>CMD+S</code> 热键和 <code>-s</code> 启动参数来限制单用户模式。启用这一 Quirks 后预期行为应和 T2 的模型行为类似。请参考 Apple 的 <a href="https://support.apple.com/HT201573" target="_blank" rel="noopener">这篇文章</a> 以了解如何在启用这一 Quirks 后继续使用单用户模式。</p>
 <h3 id="DisableVariableWrite"><a href="#DisableVariableWrite" class="headerlink" title="DisableVariableWrite"></a><code>DisableVariableWrite</code></h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: <code>false</code><br><strong>Description</strong>: 防止 macOS 获取 NVRAM 的写入权限。</p>
-<p>这个选项可以限制 macOS 对 NVRAM 的写入。这个 Quirk 需要 <code>FwRuntimeServices.efi</code> 提供了 <code>OC_FIRMWARE_RUNTIME</code> 协议的实现.</p>
+<p>这个选项可以限制 macOS 对 NVRAM 的写入。这个 Quirk 需要 <code>OpenRuntime.efi</code>（原名 <code>FwRuntimeServices.efi</code>）提供了 <code>OC_FIRMWARE_RUNTIME</code> 协议的实现.</p>
 <p><em>注</em>: 这个 Quirk 也可以避免由于无法将变量写入 NVRAM 而导致的对操作系统的破坏。</p>
 <blockquote>
 <p>译者注：在 Z390/HM370 等没有原生 macOS 支持 NVRAM 的主板上需要开启。</p>
@@ -256,7 +256,7 @@
 <p>这个选与启动到安全模式（启动时按住 Shift 或受用了 <code>-x</code> 启动参数）有关。默认情况下，安全模式会使用 <code>slide=0</code>，这个 Quirks 试图通过修补 <code>boot.efi</code> 接触这一限制。只有当 <code>ProvideCustomSlide</code> 启用后才可以启用本 Quirks。</p>
 <p><em>注</em>: 除非启动到安全模式失败，否则不需要启用此选项。</p>
 <h3 id="EnableWriteUnprotector"><a href="#EnableWriteUnprotector" class="headerlink" title="EnableWriteUnprotector"></a><code>EnableWriteUnprotector</code></h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: <code>false</code><br><strong>Description</strong>: 关闭 CR0 寄存器中的写入保护</p>
-<p>This option bypasses <code>RX̂</code> permissions in code pages of UEFI runtime services by removing write protection (<code>WP</code>) bit from <code>CR0</code> register during their execution. This quirk requires <code>OC_FIRMWARE_RUNTIME</code> protocol implemented in <code>FwRuntimeServices.efi</code>.</p>
+<p>This option bypasses <code>RX̂</code> permissions in code pages of UEFI runtime services by removing write protection (<code>WP</code>) bit from <code>CR0</code> register during their execution. This quirk requires <code>OC_FIRMWARE_RUNTIME</code> protocol implemented in <code>OpenRuntime.efi</code>（原名 <code>FwRuntimeServices.efi</code>）.</p>
 <p><em>注</em>：The necessity of this quirk is determined by early boot crashes<br>of the firmware.</p>
 <h3 id="ForceExitBootServices"><a href="#ForceExitBootServices" class="headerlink" title="ForceExitBootServices"></a><code>ForceExitBootServices</code></h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: <code>false</code><br><strong>Description</strong>: 开启后会确保 <code>ExitBootServices</code> 即使在 MemoryMap 发生更改时也能调用成功</p>
 <p>Try to ensure that <code>ExitBootServices</code> call succeeds even with outdated MemoryMap key argument by obtaining current memory map and retrying <code>ExitBootServices</code> call.</p>
