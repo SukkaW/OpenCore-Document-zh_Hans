@@ -25,6 +25,7 @@ last_updated: 2020-02-15
 - [ATH9KFixup.kext](https://github.com/chunnann/ATH9KFixup) --- 高通 Atheros AR9xxx 无线网卡修复
 - [BrcmPatchRAM.kext](https://github.com/acidanthera/BrcmPatchRAM) --- 博通网卡蓝牙固件
 - [BT4LEContinuityFixup.kext](https://github.com/acidanthera/BT4LEContinuityFixup) --- IOBluetoothFamily 修补
+- [IntelBluetoothFirmware](https://github.com/zxystd/IntelBluetoothFirmware) --- Intel 蓝牙固件驱动
 - [MT7610](https://d86o2zu8ugzlg.cloudfront.net/mediatek-craft/drivers/MT7612_7610U_D5.0.1.25_SDK1.0.2.18_UI5.0.0.27_20151209.zip) --- 联发科 MT7610 官方驱动
 - [RT5370](https://d86o2zu8ugzlg.cloudfront.net/mediatek-craft/drivers/RTUSB_D2870-4.2.9.2_UI-4.0.9.6_2013_11_29.zip) --- 联发科 RT5370 官方驱动
 - [RTL8192CU](https://drive.google.com/file/d/1ZtdMqlvKBbHULJhl1u9omuLOy6j0vx48/view?usp=sharing) --- Realtek RTL8192CU 驱动
@@ -42,6 +43,7 @@ last_updated: 2020-02-15
 - [VoodooI2C.kext](https://github.com/alexandred/VoodooI2C) --- I2C 触摸板/屏 驱动
 - [VoodooPS2Controller.kext](https://github.com/acidanthera/VoodooPS2) --- PS2 键盘/触摸板 驱动
 - [VoodooInput.kext](https://github.com/acidanthera/VoodooInput) --- 为 PS2 键盘/触摸板 提供模拟 Magic TrackPad 2 触控模拟
+- [VoodooSMBus.kext](https://github.com/leo-labs/VoodooSMBus)
 
 ## Video and audio
 
@@ -88,3 +90,4 @@ last_updated: 2020-02-15
 - [RTCMemoryFixup.kext](https://github.com/lvs1974/RTCMemoryFixup) --- 修复 BIOS CMOS (RTC) 内存和 AppleRTC 之间的冲突问题
 - [NightShiftUnlocker.kext](https://github.com/0xFireWolf/NightShiftUnlocker) --- 解锁 NightShift
 - [WebCamera.kext](https://www.applelife.ru/threads/asus-x550vc-i-asus-x550cc.41752/page-130#post-593586) --- 某些旧设备的摄像头驱动
+- [TOSMotionSensor.kext](https://github.com/jslegendre/TOSMotionSensor) --- 东芝设备的加速度传感器驱动
