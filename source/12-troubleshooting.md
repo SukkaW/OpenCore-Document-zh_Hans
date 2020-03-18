@@ -3,7 +3,7 @@ title: 12. 排错
 description: Troubleshooting
 type: docs
 author_info: 由 xMuu 整理，由 Sukka 翻译
-last_updated: 2020-02-12
+last_updated: 2020-03-18
 ---
 
 ## 12.1 Windows 支持
@@ -169,7 +169,7 @@ OpenCore 支持包括 MacPro 5,1 和虚拟机在内的大部分较新的 Mac 想
 
 ### 8. 我如何从 `AptioMemoryFix` 迁移到 OpenCore?
 
-可以通过安装 `FwRuntimeServices.efi` 驱动程序并启用以下列出的 quirk 来获得与 `AptioMemoryFix` 类似的行为。 请注意，其中大多数功能都不需要启用。有关更多详细信息，请参阅本文档中关于它们的单独描述。
+可以通过安装 `OpenRuntime.efi`（原名 `FwRuntimeServices.efi`）驱动程序并启用以下列出的 quirk 来获得与 `AptioMemoryFix` 类似的行为。 请注意，其中大多数功能都不需要启用。有关更多详细信息，请参阅本文档中关于它们的单独描述。
 
 - `ProvideConsoleGop` (UEFI quirk)
 - `AvoidRuntimeDefrag`

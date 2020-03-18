@@ -1,9 +1,9 @@
 ---
 title: 5. Booter
-description: 配置 FwRuntimeServices.efi（Slide 值计算、KASLR）
+description: 配置 OpenRuntime.efi（Slide 值计算、KASLR）
 type: docs
 author_info: 由 Sukka 整理，由 Sukka 翻译。
-last_updated: 2020-03-12
+last_updated: 2020-03-18
 ---
 
 ## 5.1 简介
@@ -105,7 +105,7 @@ sudo pmset standby 0
 **Failsafe**: `false`
 **Description**: 防止 macOS 获取 NVRAM 的写入权限。
 
-这个选项可以限制 macOS 对 NVRAM 的写入。这个 Quirk 需要 `FwRuntimeServices.efi` 提供了 `OC_FIRMWARE_RUNTIME` 协议的实现.
+这个选项可以限制 macOS 对 NVRAM 的写入。这个 Quirk 需要 `OpenRuntime.efi`（原名 `FwRuntimeServices.efi`）提供了 `OC_FIRMWARE_RUNTIME` 协议的实现.
 
 *注*: 这个 Quirk 也可以避免由于无法将变量写入 NVRAM 而导致的对操作系统的破坏。
 
@@ -137,7 +137,7 @@ sudo pmset standby 0
 **Failsafe**: `false`
 **Description**: 关闭 CR0 寄存器中的写入保护
 
-This option bypasses `RX̂` permissions in code pages of UEFI runtime services by removing write protection (`WP`) bit from `CR0` register during their execution. This quirk requires `OC_FIRMWARE_RUNTIME` protocol implemented in `FwRuntimeServices.efi`.
+This option bypasses `RX̂` permissions in code pages of UEFI runtime services by removing write protection (`WP`) bit from `CR0` register during their execution. This quirk requires `OC_FIRMWARE_RUNTIME` protocol implemented in `OpenRuntime.efi`（原名 `FwRuntimeServices.efi`）.
 
 *注*：The necessity of this quirk is determined by early boot crashes
 of the firmware.
