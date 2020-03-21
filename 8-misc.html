@@ -194,7 +194,7 @@
                     <p><small>由 xMuu、Sukka 整理、由 Sukka 翻译。部分翻译参考黑果小兵的「精解 OpenCore」</small></p>
                 
                 
-                    <p><small>本页面最后更新于 2020 年 03 月 14 日</small></p>
+                    <p><small>本页面最后更新于 2020 年 03 月 21 日</small></p>
                 
                 <br>
             
@@ -293,7 +293,7 @@
 <li><code>External</code> — an external boot management protocol is used<br>if available. Otherwise <code>Builtin</code> mode is used.</li>
 <li><code>Apple</code> — Apple boot management is used if available.<br>Otherwise <code>Builtin</code> mode is used.</li>
 </ul>
-<p>Upon success <code>External</code> mode will entirely disable all boot management in OpenCore except policy enforcement. In <code>Apple</code> mode it may additionally bypass policy enforcement. To implement <code>External</code> mode a custom user interface may utilise <a href="https://github.com/acidanthera/OpenCorePkg" target="_blank" rel="noopener">OpenCorePkg</a> <code>OcBootManagementLib</code>. Reference example of external graphics interface is provided in <a href="https://github.com/acidanthera/OpenCorePkg/tree/master/Tests/ExternalUi" target="_blank" rel="noopener">ExternalUi</a> test driver.</p>
+<p>Upon success <code>External</code> mode will entirely disable all boot management in OpenCore except policy enforcement. In <code>Apple</code> mode it may additionally bypass policy enforcement. See <code>ueficanopy</code> plugin for an example of a custom user interface.</p>
 <p>OpenCore built-in boot picker contains a set of actions chosen during the boot process. The list of supported actions is similar to Apple BDS and in general can be accessed by holding <code>action hotkeys</code> during boot process. Currently the following actions are considered:</p>
 <ul>
 <li><code>Default</code> — this is the default option, and it lets OpenCore built-in boot picker to loads the default boot option as specified in <a href="https://support.apple.com/HT202796" target="_blank" rel="noopener">Startup Disk</a> preference pane.</li>
@@ -302,7 +302,7 @@
 <li><code>BootApple</code> — this options performs booting to the first found Apple operating system unless the default chosen operating system is already made by Apple. Hold <code>X</code> key to choose this option.</li>
 <li><code>BootAppleRecovery</code> — this option performs booting to Apple operating system recovery. Either the one related to the default chosen operating system, or first found in case default chosen operating system is not made by Apple or has no recovery. Hold <code>CMD+R</code> key combination to choose this option.</li>
 </ul>
-<p><em>Note 1</em>: Activated <code>KeySupport</code>, <code>AppleUsbKbDxe</code>, or similar driver is required for key handling to work. On many firmwares it is not possible to get all the keys function.</p>
+<p><em>Note 1</em>: Activated <code>KeySupport</code>, <code>OpenUsbKbDxe</code>, or similar driver is required for key handling to work. On many firmwares it is not possible to get all the keys function.</p>
 <p><em>Note 2</em>: In addition to <code>OPT</code> OpenCore supports <code>Escape</code> key to display picker when <code>ShowPicker</code> is disabled. This key exists for <code>Apple</code> picker mode and for firmwares with PS/2 keyboards that fail to report held <code>OPT</code> key and require continual presses of <code>Escape</code> key to enter the boot menu.</p>
 <p><em>Note 3</em>: On Macs with problematic GOP it may be difficult to access Apple BootPicker. To workaround this problem even without loading OpenCore <code>BootKicker</code> utility can be blessed.</p>
 <h2 id="8-4-Debug-Properties"><a href="#8-4-Debug-Properties" class="headerlink" title="8.4 Debug Properties"></a>8.4 Debug Properties</h2><h3 id="AppleDebug"><a href="#AppleDebug" class="headerlink" title="AppleDebug"></a><code>AppleDebug</code></h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: <code>false</code><br><strong>Description</strong>: Enable <code>boot.efi</code> debug log saving to OpenCore log.</p>
@@ -426,7 +426,7 @@
 <h3 id="Path"><a href="#Path" class="headerlink" title="Path"></a><code>Path</code></h3><p><strong>Type</strong>: <code>plist string</code><br><strong>Failsafe</strong>: Empty string<br><strong>Description</strong>: 引导入口。</p>
 <ul>
 <li><code>Entries</code> specify external boot options, and therefore take device paths in <code>Path</code> key. These values are not checked, thus be extremely careful. Example: <code>PciRoot(0x0)/Pci(0x1,0x1)/.../\EFI\COOL.EFI</code></li>
-<li><code>Tools</code> specify internal boot options, which are part of bootloader vault, and therefore take file paths relative to <code>OC/Tools</code> directory. Example: <code>Shell.efi</code>.</li>
+<li><code>Tools</code> specify internal boot options, which are part of bootloader vault, and therefore take file paths relative to <code>OC/Tools</code> directory. Example: <code>OpenShell.efi</code>.</li>
 </ul>
 
             </div>
