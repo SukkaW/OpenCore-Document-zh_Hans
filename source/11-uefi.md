@@ -3,7 +3,7 @@ title: 11. UEFI
 description: UEFI 驱动以及加载顺序（待翻译）
 type: docs
 author_info: 由 xMuu、Sukka 整理，由 Sukka 翻译
-last_updated: 2020-03-18
+last_updated: 2020-03-21
 ---
 
 ## 11.1 Introduction
@@ -19,8 +19,8 @@ last_updated: 2020-03-18
 - [`HiiDatabase`](https://github.com/acidanthera/audk) --- 来自 `MdeModulePkg` 的 HII 服务驱动。Ivy Bridge 及其以后的大多数固件中都已内置此驱动程序。某些带有 GUI 的应用程序（例如 UEFI Shell）可能需要此驱动程序才能正常工作。
 - [`EnhancedFatDxe`](https://github.com/acidanthera/audk) --- 来自 `FatPkg` 的 FAT 文件系统驱动程序。这个驱动程序已经被嵌入到所有 UEFI 固件中，无法为 OpenCore 使用。众所周知，许多固件的 FAT 支持实现都有错误，导致在尝试写操作时损坏文件系统。如果在引导过程中需要写入 EFI 分区，则可能组要将此驱动程序嵌入固件中。
 - [`NvmExpressDxe`](https://github.com/acidanthera/audk) --- 来自`MdeModulePkg` 的 NVMe 驱动程序。从 Broadwell 一代开始的大多数固件都包含此驱动程序。对于 Haswell 以及更早的版本，如果安装了 NVMe SSD 驱动器，则将其嵌入固件中可能会更理想。
-- [`AppleUsbKbDxe`](https://github.com/acidanthera/OpenCorePkg) --- USB 键盘驱动在自定义 USB 键盘驱动程序的基础上新增了对 `AppleKeyMapAggregator` 协议的支持。这是内置的 `KeySupport` 的等效替代方案。根据固件不同，效果可能会更好或者更糟。
-- [`HfsPlus`](https://github.com/acidanthera/OcBinaryData) — Apple 固件中常见的具有祝福支持的专有 HFS 文件系统驱动程序。对于 `Sandy Bridge`和更早的 CPU，由于缺少 `RDRAND` 指令支持，应使用 `HfsPlusLegacy` 驱动程序。
+- [`OpenUsbKbDxe`](https://github.com/acidanthera/OpenCorePkg) --- USB 键盘驱动在自定义 USB 键盘驱动程序的基础上新增了对 `AppleKeyMapAggregator` 协议的支持。这是内置的 `KeySupport` 的等效替代方案。根据固件不同，效果可能会更好或者更糟。
+- [`HfsPlus`](https://github.com/acidanthera/OcBinaryData) — Apple 固件中常见的具有 Bless 支持的专有 HFS 文件系统驱动程序。对于 `Sandy Bridge` 和更早的 CPU，由于缺少 `RDRAND` 指令支持，应使用 `HfsPlusLegacy` 驱动程序。
 - [`VBoxHfs`](https://github.com/acidanthera/AppleSupportPkg) --- 带有 bless 支持的 HFS 文件系统驱动。是 Apple 固件中 `HfsPlus` 驱动的开源替代。虽然功能完善，但是启动速度比 `HFSPlus` 慢三倍，并且尚未经过安全审核。
 - [`XhciDxe`](https://github.com/acidanthera/audk) --- 来自 `MdeModulePkg` 的 XHCI USB controller 驱动程序。从 Sandy Bridge 代开始的大多数固件中都包含此驱动程序。在较早的固件或旧系统可以用于支持外部 USB 3.0 PCI 卡。
 - [`AudioDxe`](https://github.com/acidanthera/AppleSupportPkg) --- UEFI 固件中的 HDA 音频驱动程序，适用于大多数 Intel 和其他一些模拟音频控制器。Refer to [acidanthera/bugtracker#740](https://github.com/acidanthera/bugtracker/issues/740) for known issues in AudioDxe.
@@ -41,12 +41,12 @@ build -a X64 -b RELEASE -t XCODE5 -p MdeModulePkg/MdeModulePkg.dsc
 
 Standalone tools may help to debug firmware and hardware. Some of the known tools are listed below. While some tools can be launched from within OpenCore many should be run separately either directly or from `Shell`.
 
-To boot into Shell or any other tool directly save `Shell.efi` under the name of `EFI\BOOT\BOOTX64.EFI` on a FAT32 partition. In general it is unimportant whether the partitition scheme is `GPT` or `MBR`.
+To boot into `OpenShell` or any other tool directly save `OpenShell.efi` under the name of `EFI\BOOT\BOOTX64.EFI` on a FAT32 partition. In general it is unimportant whether the partitition scheme is `GPT` or `MBR`.
 
 While the previous approach works both on Macs and other computers, an alternative Mac-only approach to bless the tool on an HFS+ or APFS volume:
 
 ```bash
-sudo bless --verbose --file /Volumes/VOLNAME/DIR/Shell.efi --folder /Volumes/VOLNAME/DIR/ --setBoot
+sudo bless --verbose --file /Volumes/VOLNAME/DIR/OpenShell.efi --folder /Volumes/VOLNAME/DIR/ --setBoot
 ```
 
 *Note 1*: You may have to copy `/System/Library/CoreServices/BridgeVersion.bin` to `/Volumes/VOLNAME/DIR`.
@@ -66,7 +66,26 @@ Some of the known tools are listed below:
 - [`PavpProvision`](https://github.com/acidanthera/OpenCorePkg) — Perform EPID provisioning (requires certificate data configuration).
 - [`VerifyMsrE2`](https://github.com/acidanthera/OpenCorePkg) (**builtin**) — Check `CFG Lock` (MSR `0xE2` write protection) consistency across all cores.
 
-## 11.4 Properties
+
+## 11.4 OpenCanopy
+
+OpenCanopy 是一个 OpenCore 的图形化界面接口，基于 [OpenCorePkg](https://github.com/acidanthera/OpenCorePkg) `OcBootManagementLib` 实现，提供与现有的文字模式类似的功能。当 `PickerMode` 设置为 `External` 时启用。
+
+OpenCanopy 所需的图象资源位于 `Resources` 目录下，一些简单的资源（字体和图标）可以在 [OcBinaryData 仓库](https://github.com/acidanthera/OcBinaryData) 中获取。
+
+*Note*: OpenCanopy 是一个试验性质的功能、不应用于日常使用。你可以在 [acidanthera/bugtracker#759](https://github.com/acidanthera/bugtracker/issues/759) 获取相关的详细信息。
+
+## 11.5 OpenRuntime
+
+`OpenRuntime` 是一个 OpenCore 的插件，提供了对 `OC_FIRMWARE_RUNTIME` 协议的实现。该协议对 OpenCore 的部分功能提供了支持，而这部分功能由于需要 Runtime（如操作系统）中运行、因此无法内置在 OpenCore 中。该协议提供了包括但不限于如下功能：
+
+- NVRAM namespaces, allowing to isolate operating systems from accessing select variables (e.g. `RequestBootVarRouting` or `ProtectSecureBoot`).
+- NVRAM proxying, allowing to manipulate multiple variables on variable updates (e.g. `RequestBootVarFallback`).
+- Read-only and write-only NVRAM variables, enhancing the security of OpenCore, Lilu, and Lilu plugins, like VirtualSMC, which implements `AuthRestart` support.
+- NVRAM isolation, allowing to protect all variables from being written from an untrusted operating system (e.g. `DisableVariableWrite`).
+- UEFI Runtime Services memory protection management to workaround read-only mapping (e.g. `EnableWriteUnprotector`).
+
+## 11.6 Properties
 
 ### `Audio`
 
@@ -124,7 +143,7 @@ Audio localisation is determined separately for macOS bootloader and OpenCore. F
 **Failsafe**: None
 **Description**: Apply individual firmware quirks described in [Quirks Properties]() section below.
 
-## 11.5 Audio Properties
+## 11.7 Audio Properties
 
 ### `AudioCodec`
 
@@ -209,7 +228,7 @@ RawVolume = MIN{ [(SystemAudioVolume * VolumeAmplifier) / 100], 100 }
 
 *Note*: the transformation used in macOS is not linear, but it is very close and this nuance is thus ignored.
 
-## 11.6 Input Properties
+## 11.8 Input Properties
 
 ### `KeyFiltering`
 
@@ -292,7 +311,7 @@ Apparently some boards like GA Z77P-D3 may return uninitialised data in `EFI_INP
 
 设置较低的值可以提高界面和输入处理性能的响应能力。建议值为 `50000`（即 5 毫秒）或稍高一些。选择 ASUS Z87 主板时，请使用 `60000`，苹果主板请使用 `100000`。你也可以将此值保留为 0，由 OpenCore 自动计算。
 
-## 11.7 Output Properties
+## 11.9 Output Properties
 
 ### `TextRenderer`
 **Type**: `plist string`
@@ -317,6 +336,7 @@ The use of `System` protocols is more complicated. In general the preferred sett
 *注*：Some Macs, namely `MacPro5,1`, may have broken console output with newer GPUs, and thus only `BuiltinGraphics` may work for them.
 
 ### `ConsoleMode`
+
 **Type**: `plist string`
 **Failsafe**: Empty string
 **Description**: Sets console output mode as specified with the `WxH` (e.g. `80x24`) formatted string.
@@ -408,7 +428,7 @@ On some firmwares when screen resolution is changed via GOP, it is required to r
 
 *注*：This option only applies to `System` renderer. On all known affected systems `ConsoleMode` had to be set to empty string for this to work.
 
-## 11.8 Protocols Properties
+## 11.10 Protocols Properties
 
 ### `AppleAudio`
 
@@ -507,7 +527,7 @@ Only one set of audio protocols can be available at a time, so in order to get a
 **Failsafe**: `false`
 **Description**: Forcibly reinstalls unicode collation services with builtin version. 建议启用这一选项以确保 UEFI Shell 的兼容性。一些较旧的固件破坏了 Unicode 排序规则, 设置为 YES 可以修复这些系统上 UEFI Shell 的兼容性 (通常为用于 IvyBridge 或更旧的设备)
 
-## 11.9 Quirks Properties
+## 11.11 Quirks Properties
 
 ### `ExitBootServicesDelay`
 

@@ -3,7 +3,7 @@ title: 8. Misc
 description: 关于 OpenCore 行为的其他配置（待翻译）
 type: docs
 author_info: 由 xMuu、Sukka 整理、由 Sukka 翻译。部分翻译参考黑果小兵的「精解 OpenCore」
-last_updated: 2020-03-14
+last_updated: 2020-03-21
 ---
 
 ## 8.1 Introduction
@@ -185,7 +185,7 @@ if available. Otherwise `Builtin` mode is used.
 - `Apple` --- Apple boot management is used if available.
 Otherwise `Builtin` mode is used.
 
-Upon success `External` mode will entirely disable all boot management in OpenCore except policy enforcement. In `Apple` mode it may additionally bypass policy enforcement. To implement `External` mode a custom user interface may utilise [OpenCorePkg](https://github.com/acidanthera/OpenCorePkg) `OcBootManagementLib`. Reference example of external graphics interface is provided in [ExternalUi](https://github.com/acidanthera/OpenCorePkg/tree/master/Tests/ExternalUi) test driver.
+Upon success `External` mode will entirely disable all boot management in OpenCore except policy enforcement. In `Apple` mode it may additionally bypass policy enforcement. See `ueficanopy` plugin for an example of a custom user interface.
 
 OpenCore built-in boot picker contains a set of actions chosen during the boot process. The list of supported actions is similar to Apple BDS and in general can be accessed by holding `action hotkeys` during boot process. Currently the following actions are considered:
 
@@ -195,7 +195,7 @@ OpenCore built-in boot picker contains a set of actions chosen during the boot p
 - `BootApple` --- this options performs booting to the first found Apple operating system unless the default chosen operating system is already made by Apple. Hold `X` key to choose this option.
 - `BootAppleRecovery` --- this option performs booting to Apple operating system recovery. Either the one related to the default chosen operating system, or first found in case default chosen operating system is not made by Apple or has no recovery. Hold `CMD+R` key combination to choose this option.
 
-*Note 1*: Activated `KeySupport`, `AppleUsbKbDxe`, or similar driver is required for key handling to work. On many firmwares it is not possible to get all the keys function.
+*Note 1*: Activated `KeySupport`, `OpenUsbKbDxe`, or similar driver is required for key handling to work. On many firmwares it is not possible to get all the keys function.
 
 *Note 2*: In addition to `OPT` OpenCore supports `Escape` key to display picker when `ShowPicker` is disabled. This key exists for `Apple` picker mode and for firmwares with PS/2 keyboards that fail to report held `OPT` key and require continual presses of `Escape` key to enter the boot menu.
 
@@ -457,4 +457,4 @@ Third party drivers may introduce additional security (and performance) measures
 **Description**: 引导入口。
 
 - `Entries` specify external boot options, and therefore take device paths in `Path` key. These values are not checked, thus be extremely careful. Example: `PciRoot(0x0)/Pci(0x1,0x1)/.../\EFI\COOL.EFI`
-- `Tools` specify internal boot options, which are part of bootloader vault, and therefore take file paths relative to `OC/Tools` directory. Example: `Shell.efi`.
+- `Tools` specify internal boot options, which are part of bootloader vault, and therefore take file paths relative to `OC/Tools` directory. Example: `OpenShell.efi`.
