@@ -187,14 +187,14 @@
         <div class="hero-body">
             <h1 class="title">1. 简介</h1>
             
-                <p class="subtitle">Introduction（简体中文翻译填坑中）</p>
+                <p class="subtitle">Introduction</p>
             
             
                 
-                    <p><small>由 Sukka 整理，由 Sukka 翻译</small></p>
+                    <p><small>由 Sukka 整理，由 Sukka、derbalkon 翻译</small></p>
                 
                 
-                    <p><small>本页面最后更新于 2020 年 02 月 12 日</small></p>
+                    <p><small>本页面最后更新于 2020 年 03 月 28 日</small></p>
                 
                 <br>
             
@@ -217,19 +217,19 @@
 <p>本文档仅作为规范结构、并非用于提供手把手的配置教程。这类材料（译者注：即「手把手的配置教程」）都容易收到其作者的喜好和品位、对本文档的误解、过时的理解等。如果您仍然在使用这些资料来源，例如 <a href="https://khronokernel-2.gitbook.io/opencore-vanilla-desktop-guide/" target="_blank" rel="noopener">OpenCore Vanilla Guide</a>（及其 <a href="https://khronokernel-1.gitbook.io/getting-started-with-opencore" target="_blank" rel="noopener">父页面</a>），请务必在参考本文档后再作出每个决定、并判断其后果。无论使用哪种来源，你都必须全面了解每种专用工具。</p>
 <p>在通过 Acidanthera Bugtracker 反馈任何问题之前，请确保你彻底理解了 OpenCore 的每个配置选项及其对应的概念。</p>
 <h2 id="1-1-通用术语"><a href="#1-1-通用术语" class="headerlink" title="1.1 通用术语"></a>1.1 通用术语</h2><ul>
-<li><code>plist</code> — Subset of ASCII Property List format written in XML, also know as XML plist format version 1. Uniform Type Identifier (UTI): <code>com.apple.property-list</code>. Plists consist of  <code>plist objects</code>, which are combined to form a hierarchical structure. Due to plist format not being well-defined, all the definitions of this document may only be applied after plist is considered valid by running <code>plutil -lint</code>. External references: <a href="https://www.apple.com/DTDs/PropertyList-1.0.dtd" target="_blank" rel="noopener">https://www.apple.com/DTDs/PropertyList-1.0.dtd</a>,  <code>man plutil</code>.</li>
-<li><code>plist type</code> — plist collections (<code>plist array</code>, <code>plist dictionary</code>, <code>plist key</code>) and primitives (<code>plist string</code>, <code>plist data</code>, <code>plist date</code>, <code>plist boolean</code>, <code>plist integer</code>,  <code>plist real</code>).</li>
-<li><code>plist object</code> — definite realisation of <code>plist type</code>, which may be interpreted as value.</li>
-<li><code>plist array</code> — array-like collection, conforms to <code>array</code>. Consists of zero or more <code>plist\ objects</code>.</li>
-<li><code>plist dictionary</code> — map-like (associative array) collection, conforms to <code>dict</code>. Consists of zero or more <code>plist\ keys</code>.</li>
-<li><code>plist key</code> — contains one <code>plist object</code> going by the name of <code>plist key</code>, conforms to <code>key</code>. Consists of printable 7-bit ASCII characters.</li>
-<li><code>plist string</code> — printable 7-bit ASCII string, conforms to <code>string</code>.</li>
-<li><code>plist data</code> — base64-encoded blob, conforms to <code>data</code>.</li>
-<li><code>plist date</code> — ISO-8601 date, conforms to <code>date</code>, unsupported.</li>
-<li><code>plist boolean</code> — logical state object, w   hich is either true (1) or false (0), conforms to <code>true</code> and <code>false</code>.</li>
-<li><code>plist integer</code> — possibly signed integer number in base 10, conforms to <code>integer</code>. Fits in 64-bit unsigned integer in two’s complement representation, unless a smaller signed or unsigned integral type is explicitly mentioned in specific <code>plist object</code> description.</li>
-<li><code>plist real</code> — floating point number, conforms to <code>real</code>, unsupported.</li>
-<li><code>plist metadata</code> — value cast to data by the implementation. Permits passing <code>plist string</code>, in which case the result is represented by a null-terminated sequence of bytes (aka C string),<br><code>plist integer</code>, in which case the result is represented by <em>32-bit</em> little endian sequence of bytes in two’s complement representation, <code>plist boolean</code>, in which case the value is one byte: <code>01</code> for <code>true</code> and <code>00</code> for <code>false</code>, and <code>plist data</code> itself. All other types or larger integers invoke undefined behaviour.</li>
+<li><code>plist</code> — 是一种用 XML 编写的、储存 ASCII 属性列表格式的集合文件，又称 XML 1.0 版。 统一类型标识符（UTI）： <code>com.apple.property-list</code>。 plist 由多个 <code>plist object</code> 组成，这些对象组合在一起形成一种具有层次的结构。 由于 plist 格式的定义不明确，因此本文中的所有定义只有在运行 <code>plutil -lint</code> 有效后才能被应用。外部参考： <a href="https://www.apple.com/DTDs/PropertyList-1.0.dtd" target="_blank" rel="noopener">https://www.apple.com/DTDs/PropertyList-1.0.dtd</a>,  <code>man plutil</code>。</li>
+<li><code>plist type</code> — 指 plist 集合（<code>plist array</code>, <code>plist dictionary</code>, <code>plist key</code>）和基本类型（<code>plist string</code>, <code>plist data</code>, <code>plist date</code>, <code>plist boolean</code>, <code>plist integer</code>,  <code>plist real</code>）。</li>
+<li><code>plist object</code> — 是用来定义 <code>plist type</code> 的实现形式，可以理解为值。</li>
+<li><code>plist array</code> — 类数组集合，参数为 <code>array</code>。包含零个或多个  <code>plist object</code>。</li>
+<li><code>plist dictionary</code> — 类地图（关联数组）集合，参数为 <code>dict</code> 。包含零个或多个 <code>plist key</code>。</li>
+<li><code>plist key</code> — 包含一个以 <code>plist key</code> 名称命名的 <code>plist object</code>，参数为 <code>key</code>。由 7 位 ASCII 集的可打印字符组成。</li>
+<li><code>plist string</code> — 7 位 ASCII 集的可打印字符串，参数为 <code>string</code>。</li>
+<li><code>plist data</code> — base64 编码的对象，参数为 <code>data</code>。</li>
+<li><code>plist date</code> — ISO-8601 日期表示法，参数为 <code>date</code>，不支持。</li>
+<li><code>plist boolean</code> — 逻辑声明对象，其值为 true (1) 或 false (0)，参数为 <code>true</code> 和 <code>false</code>。</li>
+<li><code>plist integer</code> — 带符号的 10 进制，参数为 <code>integer</code>。适用于以二进制补码表示的 64 位无符号整数，除非在特定的 <code>plist object</code> 描述中明确提及一个更小的、有或无符号的整数类型。</li>
+<li><code>plist real</code> — 浮点数，参数为 <code>real</code>，不支持。</li>
+<li><code>plist metadata</code> — 实现将 value 强制转换为 data。 允许传递 <code>plist string</code>，此时的结果用空结果字节序列（即 C 字符串）表示；允许传递 <code>plist integer</code>，此时的结果用二进制补码形式的 32 位小尾数字节序列表示；允许传递 <code>plist boolean</code>， 此时的值为一个字节：<code>01</code> 表示 <code>true</code>，<code>00</code> 表示 <code>false</code>；允许传递 <code>plist data</code> 本身。其他类型或更大的整数会导致未定义、非预期的行为。</li>
 </ul>
 
             </div>
