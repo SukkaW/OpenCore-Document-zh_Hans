@@ -1,18 +1,18 @@
 ---
 title: 2. 配置
-description: Introduction（待翻译）
+description: Configuration
 type: docs
-author_info: 由 Sukka 整理，由 Sukka 翻译
-last_updated: 2020-02-13
+author_info: 由 Sukka 整理，由 Sukka、derbalkon 翻译
+last_updated: 2020-03-28
 ---
 
 ## 2.1 配置术语
 
 - `OC config` --- OpenCore 的配置文件，格式为 plist，文件名为 `config.plist`。OpenCore 的配置文件具有可扩展性，并被设计为具有多个命名空间的结构。每个命名空间下允许具有 plist array 或 plist dictionary，在本文档相应部分中对其进行了描述
 - `valid key` --- 现在以及未来本文档中描述的 OC Config 中的 plist key object。除了明确描述的 valid keys 以外，以 `#` 符号开头的 key（如 `#Hello`）也将被视为 valid key，并被表示为注释。虽然表示为注释的值会被丢弃，但是它们仍然是 valid key。其他的 plist key 都是无效、不合法的，它们的存在可能会导致未定义、非预期的行为。
-- `valid value` --- valid plist object of OC config described in this document that matches all the additional requirements in specific plist object description if any.
-- `invalid value` --- valid plist object of OC config described in this document that is of other plist type, does not conform to additional requirements found in specific plist object description (e.g. value range), or missing from the corresponding collection. Invalid value is read with or without an error message as any possible value of this plist object in an undetermined manner (i.e. the values may not be same across the reboots). Whilst reading an invalid value is equivalent to reading certain defined valid value, applying incompatible value to the host system may yield to undefined behaviour.
-- `optional value` --- valid value of OC config described in this document that reads in a certain defined manner provided in specific plist object description (instead of invalid value) when not present in OC config. All other cases of invalid value do still apply. Unless explicitly marked as optional value, any other value is required to be present and reads to invalid value if missing.
+- `valid value` --- 指本文档中描述的 OC Config 中的有效、合法的 `plist object`，并能匹配一些特定的 `plist object` 描述中所有附加条件（若有）。
+- `invalid value` --- 指本文档中描述的 OC Config 中的有效 `plist object`，但属于其他 `plist type`、与特定 `plist object` 描述中附加条件不符（例如 value range）或者在对应集合中缺如。`invalid value` 会被以不确定的方式读取为此 `plist obejct` 的任何可能值（即，重启前后的值可能会不同），可能报错也可能不报错。尽管读取 `invalid value` 相当于读取某些已定义的 `valid value`，但是将不兼容的值应用于主机系统可能会产生未定义、非预期的行为。
+- `optional value` --- 指在本文档描述的 OC Config 中缺如、以特定 `plist object` 描述提供的特定方式（区别于 `invalid value`）读取的有效值。而其他情况下（译者注：未提供读取方式）的 `invalid value` 仍然会被应用。value 除非明确标记为 `optional value`，否则必须存在，若缺如则读取为 `invalid value`。
 - `fatal behaviour` --- 导致引导终止的行为。对 `fatal behaviour` 的实现要求必须停止引导过程，直到下一次主机系统引导为止。允许，但不强制要求执行冷重启或显示任何警告消息。
 - `undefined behaviour` --- 本文档中未定义的行为，通常是因为某一选项的特定配置、或某些值被忽略导致的。在这种情况下，其实现可能会采取包括 `fatal behaviour`，而这些行为一般都会对系统安全性产生负面影响。
 
