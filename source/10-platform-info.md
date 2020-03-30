@@ -459,4 +459,4 @@ last_updated: 2020-03-30
 **Type**: `plist integer`, 8-bit
 **Failsafe**: OEM specified
 **SMBIOS**: Memory Device (Type 17) --- Form Factor
-**Description**: 内存形状因子。在 Mac 上应为 DIMM 或 SODIMM。
+**Description**: Memory Form Factor。在 Mac 上应为 DIMM 或 SODIMM。
