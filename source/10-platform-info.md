@@ -336,7 +336,7 @@ last_updated: 2020-03-30
 **Type**: `plist string`, GUID
 **Failsafe**: OEM specified
 **SMBIOS**: System Information (Type 1) --- UUID
-**Description**: UUID 被设计为在时间和空间上都是唯一的标识符。不依赖中央机构的注册和分配。
+**Description**: UUID 被设计为在时间和空间上都是唯一的标识符，其生成是随机与去中心化的。
 
 ### 9. `SystemSKUNumber`
 **Type**: `plist string`
