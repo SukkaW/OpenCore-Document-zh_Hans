@@ -194,7 +194,7 @@
                     <p><small>由 xMuu、Sukka 整理，由 Sukka 翻译</small></p>
                 
                 
-                    <p><small>本页面最后更新于 2020 年 03 月 18 日</small></p>
+                    <p><small>本页面最后更新于 2020 年 04 月 03 日</small></p>
                 
                 <br>
             
@@ -237,8 +237,8 @@
 <h3 id="5-LegacySchema"><a href="#5-LegacySchema" class="headerlink" title="5. LegacySchema"></a>5. <code>LegacySchema</code></h3><p><strong>Type</strong>: <code>plist dict</code><br><strong>Description</strong>: Allows setting select NVRAM variables from a map (<code>plist dict</code>) of GUIDs to an array (<code>plist array</code>) of variable names in <code>plist string</code> format.</p>
 <p>You can use <code>*</code> value to accept all variables for select GUID.</p>
 <p><strong>警告</strong>: Choose variables very carefully, as nvram.plist is not vaulted. For instance, do not put <code>boot-args</code> or <code>csr-active-config</code>, as this can bypass SIP.</p>
-<h3 id="6-WriteFlash"><a href="#6-WriteFlash" class="headerlink" title="6. WriteFlash"></a>6. <code>WriteFlash</code></h3><p> <strong>Type</strong>: <code>plist boolean</code><br> <strong>Failsafe</strong>: <code>false</code><br> <strong>Description</strong>: Enables writing to flash memory for all added variables.</p>
-<p> <em>注</em>：This value is recommended to be enabled on most firmwares, but is left configurable for firmwares that may have issues with NVRAM variable storage garbage collection or alike.</p>
+<h3 id="6-WriteFlash"><a href="#6-WriteFlash" class="headerlink" title="6. WriteFlash"></a>6. <code>WriteFlash</code></h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: <code>false</code><br><strong>Description</strong>: 允许将所有添加的变量写入闪存。</p>
+<p><em>注</em>：这个 Quirk 本应该在大多数固件上启用，但是由于可能存在 NVRAM 变量存储 GC 或类似的问题的固件，所以我们将这个 Quirk 设计为可配置的。</p>
 <p>To read NVRAM variable value from macOS one could use <code>nvram</code> by concatenating variable GUID and name separated by <code>:</code> symbol. For example, <code>nvram 7C436110-AB2A-4BBB-A880-FE41995C9F82:boot-args</code>.</p>
 <p>A continuously updated variable list can be found in a corresponding document: <a href="https://docs.google.com/spreadsheets/d/1HTCBwfOBkXsHiK7os3b2CUc6k68axdJYdGl-TyXqLu0" target="_blank" rel="noopener">NVRAM Variables</a>.</p>
 <h2 id="9-3-Mandatory-Variables"><a href="#9-3-Mandatory-Variables" class="headerlink" title="9.3 Mandatory Variables"></a>9.3 Mandatory Variables</h2><p><em>警告</em>: These variables may be added by <a href="">PlatformNVRAM</a> or <a href="">Generic</a> subsections of <a href="">PlatformInfo</a> section. Using <code>PlatformInfo</code> is the recommend way of setting these variables.</p>
@@ -269,7 +269,7 @@
 <li><code>acpi_layer=0xFFFFFFFF</code></li>
 <li><code>acpi_level=0xFFFF5F</code> (implies <a href="https://github.com/acpica/acpica/blob/master/source/include/acoutput.h" target="_blank" rel="noopener"><code>ACPI_ALL_COMPONENTS</code></a>)</li>
 <li><code>batman=VALUE</code> — <code>AppleSmartBatteryManager</code> 调试掩码</li>
-<li><code>batman-nosmc=1</code> — 禁用 <code>AppleSmartBatteryManager</code> SMC 表面</li>
+<li><code>batman-nosmc=1</code> — 禁用 <code>AppleSmartBatteryManager</code> SMC 接口</li>
 <li><code>cpus=VALUE</code> — 最大可用 CPU 数量</li>
 <li><code>debug=VALUE</code> — Debug 掩码</li>
 <li><code>io=VALUE</code> — <code>IOKit</code> 调试掩码</li>
@@ -277,7 +277,7 @@
 <li><code>kextlog=VALUE</code> — Kext 调试掩码</li>
 <li><code>nv_disable=1</code> — 禁用 NVIDIA GPU 加速</li>
 <li><code>nvda_drv=1</code> — 启用 NVIDIA web driver 的传统方法，这一参数在 macOS 10.12 中被去除</li>
-<li><code>npci=0x2000</code> (<a href="https://www.insanelymac.com/forum/topic/260539-1068-officially-released/?do=findComment&comment=1707972" target="_blank" rel="noopener">legacy</a>, disables <code>kIOPCIConfiguratorPFM64</code>)</li>
+<li><code>npci=0x2000</code> (<a href="https://www.insanelymac.com/forum/topic/260539-1068-officially-released/?do=findComment&comment=1707972" target="_blank" rel="noopener">legacy</a> 禁用 <code>kIOPCIConfiguratorPFM64</code>)</li>
 <li><code>lapic_dont_panic=1</code></li>
 <li><code>slide=VALUE</code> — 手动设置 KASLR 偏移值</li>
 <li><code>smcdebug=VALUE</code> — <code>AppleSMC</code> 调试掩码</li>
