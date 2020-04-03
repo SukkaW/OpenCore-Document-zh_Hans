@@ -3,7 +3,7 @@ title: 9. NVRAM
 description: NVRAM 注入（如引导标识符和 SIP）（待翻译）
 type: docs
 author_info: 由 xMuu、Sukka 整理，由 Sukka 翻译
-last_updated: 2020-03-18
+last_updated: 2020-04-03
 ---
 
 ## 9.1 Introduction
@@ -73,13 +73,12 @@ You can use `*` value to accept all variables for select GUID.
 **警告**: Choose variables very carefully, as nvram.plist is not vaulted. For instance, do not put `boot-args` or `csr-active-config`, as this can bypass SIP.
 
 ### 6. `WriteFlash`
- **Type**: `plist boolean`
- **Failsafe**: `false`
- **Description**: Enables writing to flash memory for all added variables.
 
- *注*：This value is recommended to be enabled on most firmwares, but is left configurable for firmwares that may have issues with NVRAM variable storage garbage collection or alike.
+**Type**: `plist boolean`
+**Failsafe**: `false`
+**Description**: 允许将所有添加的变量写入闪存。
 
-
+*注*：这个 Quirk 本应该在大多数固件上启用，但是由于可能存在 NVRAM 变量存储 GC 或类似的问题的固件，所以我们将这个 Quirk 设计为可配置的。
 
 To read NVRAM variable value from macOS one could use `nvram` by concatenating variable GUID and name separated by `:` symbol. For example, `nvram 7C436110-AB2A-4BBB-A880-FE41995C9F82:boot-args`.
 
@@ -135,7 +134,7 @@ The following variables are recommended for faster startup or other improvements
   - `acpi_layer=0xFFFFFFFF`
   - `acpi_level=0xFFFF5F` (implies [`ACPI_ALL_COMPONENTS`](https://github.com/acpica/acpica/blob/master/source/include/acoutput.h))
   - `batman=VALUE` --- `AppleSmartBatteryManager` 调试掩码
-  - `batman-nosmc=1` --- 禁用 `AppleSmartBatteryManager` SMC 表面
+  - `batman-nosmc=1` --- 禁用 `AppleSmartBatteryManager` SMC 接口
   - `cpus=VALUE` --- 最大可用 CPU 数量
   - `debug=VALUE` --- Debug 掩码
   - `io=VALUE` --- `IOKit` 调试掩码
@@ -143,7 +142,7 @@ The following variables are recommended for faster startup or other improvements
   - `kextlog=VALUE` --- Kext 调试掩码
   - `nv_disable=1` --- 禁用 NVIDIA GPU 加速
   - `nvda_drv=1` --- 启用 NVIDIA web driver 的传统方法，这一参数在 macOS 10.12 中被去除
-  - `npci=0x2000` ([legacy](https://www.insanelymac.com/forum/topic/260539-1068-officially-released/?do=findComment&comment=1707972), disables `kIOPCIConfiguratorPFM64`)
+  - `npci=0x2000` ([legacy](https://www.insanelymac.com/forum/topic/260539-1068-officially-released/?do=findComment&comment=1707972) 禁用 `kIOPCIConfiguratorPFM64`)
   - `lapic_dont_panic=1`
   - `slide=VALUE` --- 手动设置 KASLR 偏移值
   - `smcdebug=VALUE` --- `AppleSMC` 调试掩码

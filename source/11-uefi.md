@@ -3,7 +3,7 @@ title: 11. UEFI
 description: UEFI 驱动以及加载顺序（待翻译）
 type: docs
 author_info: 由 xMuu、Sukka 整理，由 Sukka 翻译
-last_updated: 2020-03-21
+last_updated: 2020-04-03
 ---
 
 ## 11.1 Introduction
@@ -39,11 +39,10 @@ build -a X64 -b RELEASE -t XCODE5 -p MdeModulePkg/MdeModulePkg.dsc
 
 ## 11.3 Tools
 
-Standalone tools may help to debug firmware and hardware. Some of the known tools are listed below. While some tools can be launched from within OpenCore many should be run separately either directly or from `Shell`.
+一些不依赖 OpenCore 的工具可以帮助调试固件和硬件。下面列出了一些已知的工具。虽然有些工具可以从 OpenCore 启动，但大部分工具都应该直接或从 `OpenCoreShell` 中单独运行。
 
-To boot into `OpenShell` or any other tool directly save `OpenShell.efi` under the name of `EFI\BOOT\BOOTX64.EFI` on a FAT32 partition. In general it is unimportant whether the partitition scheme is `GPT` or `MBR`.
-
-While the previous approach works both on Macs and other computers, an alternative Mac-only approach to bless the tool on an HFS+ or APFS volume:
+要启动到 `OpenShell` 或任何其他工具，直接将 `OpenShell.efi` 保存在 FAT32 分区中的 `EFI/BOOT/BOOTX64.EFI` 下。此时分区方案是 `GPT` 还是 `MBR` 并不重要。
+虽然这种方法可以在 Mac 和其他计算机上都可以使用，但是如果只在 Mac 上使用的话还可以在 HFS+ 或 APFS 分区上使用该工具。
 
 ```bash
 sudo bless --verbose --file /Volumes/VOLNAME/DIR/OpenShell.efi --folder /Volumes/VOLNAME/DIR/ --setBoot
@@ -55,17 +54,16 @@ sudo bless --verbose --file /Volumes/VOLNAME/DIR/OpenShell.efi --folder /Volumes
 
 Some of the known tools are listed below:
 
-- [`BootKicker`](https://github.com/acidanthera/OpenCorePkg) (**builtin**) — Enter Apple BootPicker menu (exclusive for Macs with compatible GPUs).
-- [`ChipTune`](https://github.com/acidanthera/OpenCorePkg) (**builtin**) — Test BeepGen protocol and generate audio signals of different style and length.
-- [`CleanNvram`](https://github.com/acidanthera/OpenCorePkg) (**builtin**) — Reset NVRAM alternative bundled as a standalone tool.
-- [`FwProtect`](https://github.com/acidanthera/OpenCorePkg) (**builtin**) — Unlock and lock back NVRAM protection for other tools to be able to get full NVRAM access when launching from OpenCore.
-- [`GopStop`](https://github.com/acidanthera/OpenCorePkg) (**builtin**) — Test GraphicsOutput protocol with a [simple scenario](https://github.com/acidanthera/OpenCorePkg/tree/master/Application/GopStop).
-- [`HdaCodecDump`](https://github.com/acidanthera/OpenCorePkg) (**builtin**) — Parse and dump High Definition Audio codec information (requires `AudioDxe`).
-- [`KeyTester`](https://github.com/acidanthera/OpenCorePkg) (**builtin**) — Test keyboard input in `SimpleText` mode.
-- [`OpenCore Shell`](https://github.com/acidanthera/OpenCorePkg) (**builtin**) — OpenCore-configured [`UEFI Shell`](http://github.com/tianocore/edk2) for compatibility with a broad range of firmwares.
+- [`BootKicker`](https://github.com/acidanthera/OpenCorePkg) (**内置**) — 进入 Apple 的 BootPicker 菜单（仅 Mac 同款显卡才可以使用）。
+- [`ChipTune`](https://github.com/acidanthera/OpenCorePkg) (**内置**) — 测试 BeepGen 协议，生成不同频率和长度的音频信号。
+- [`CleanNvram`](https://github.com/acidanthera/OpenCorePkg) (**内置**) — 重置 NVRAM，以一个单独的工具呈现。
+- [`FwProtect`](https://github.com/acidanthera/OpenCorePkg) (**内置**) — 解锁和回锁 NVRAM 保护，让其他工具在从 OpenCore 启动时能够获得完整的 NVRAM 访问权限。
+- [`GopStop`](https://github.com/acidanthera/OpenCorePkg) (**内置**) — 用一个 [简单的场景](https://github.com/acidanthera/OpenCorePkg/tree/master/Application/GopStop) 测试 GraphicOutput 协议。
+- [`HdaCodecDump`](https://github.com/acidanthera/OpenCorePkg) (**内置**) — 解析和转储高清晰度音频编解码器（Codec）信息（需要 `AudioDxe`）。
+- [`KeyTester`](https://github.com/acidanthera/OpenCorePkg) (**内置**) — 在 `SimpleText` 模式下测试键盘输入。
+- [`OpenCore Shell`](https://github.com/acidanthera/OpenCorePkg) (**内置**) — 由 OpenCore 配置的 [`UEFI Shell`](http://github.com/tianocore/edk2)，与绝大部分固件兼容。
 - [`PavpProvision`](https://github.com/acidanthera/OpenCorePkg) — Perform EPID provisioning (requires certificate data configuration).
-- [`VerifyMsrE2`](https://github.com/acidanthera/OpenCorePkg) (**builtin**) — Check `CFG Lock` (MSR `0xE2` write protection) consistency across all cores.
-
+- [`VerifyMsrE2`](https://github.com/acidanthera/OpenCorePkg) (**内置**) — 检查 `CFG Lock`（MSR `0xE2` 写保护）在所有 CPU 核心之间的一致性。
 
 ## 11.4 OpenCanopy
 
@@ -91,7 +89,7 @@ OpenCanopy 所需的图象资源位于 `Resources` 目录下，一些简单的�
 
 **Type**: `plist dict`
 **Failsafe**: None
-**Description**: Configure audio backend support described in section below.
+**Description**: 配置音频后端支持，具体配置如下文所述。
 
 Audio support provides a way for upstream protocols to interact with the selected hardware and audio resources. All audio resources should reside in `\EFI\OC\Resources\Audio` directory. Currently the only supported audio file format is WAVE PCM. While it is driver-dependent which audio stream format is supported, most common audio cards support 16-bit signed stereo audio at 44100 or 48000 Hz.
 
@@ -119,7 +117,7 @@ Audio localisation is determined separately for macOS bootloader and OpenCore. F
 **Failsafe**: None
 **Description**: 从 `OC/Drivers` 目录下加载选择的驱动。
 
-设计为填充要作为 UEFI 驱动程序加载的文件名。
+设计为填充 UEFI 驱动程序加载的文件名。
 
 ### `Input`
 
@@ -128,17 +126,20 @@ Audio localisation is determined separately for macOS bootloader and OpenCore. F
 **Description**: Apply individual settings designed for input (keyboard and mouse) in [Input Properties]() section below.
 
 ### `Output`
+
 **Type**: `plist dict`
 **Failsafe**: None
 **Description**: Apply individual settings designed for output (text and graphics) in [Output Properties]() section below.
 
 ### `Protocols`
+
 **Type**: `plist dict`
 **Failsafe**: None
 **Description**: Force builtin versions of select protocols described in [Protocols Properties]() section below.
 *注*：all protocol instances are installed prior to driver loading.
 
 ### `Quirks`
+
 **Type**: `plist dict`
 **Failsafe**: None
 **Description**: Apply individual firmware quirks described in [Quirks Properties]() section below.
@@ -191,7 +192,7 @@ The quickest way to find the right port is to bruteforce the values from `0` to 
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
-**Description**: Activate audio support by connecting to a backend driver.
+**Description**: 通过连接到固件音频驱动程序以激活音频支持。
 
 Enabling this setting routes audio playback from builtin protocols to a dedicated audio port (`AudioOut`) of the specified codec (`AudioCodec`) located on the audio controller (`AudioDevice`).
 
@@ -207,7 +208,7 @@ Screen reader will use this volume level, when the calculated volume level is le
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
-**Description**: Play chime sound at startup.
+**Description**: 开机时播放 Mac 特有的风铃的声音。
 
 Enabling this setting plays boot chime through builtin audio support. Volume level is determined by `MinimumVolume` and `VolumeAmplifier` settings and `SystemAudioVolume` NVRAM variable.
 
@@ -316,7 +317,7 @@ Apparently some boards like GA Z77P-D3 may return uninitialised data in `EFI_INP
 ### `TextRenderer`
 **Type**: `plist string`
 **Failsafe**: `BuiltinGraphics`
-**Description**: Chooses renderer for text going through standard console output.
+**Description**: 选择通过标准控制台输出的渲染器。
 
 Currently two renderers are supported: `Builtin` and `System`. `System` renderer uses firmware services for text rendering. `Builtin` bypassing firmware services and performs text rendering on its own. Different renderers support a different set of options. It is recommended to use `Builtin` renderer, as it supports HiDPI mode and uses full screen resolution.
 
@@ -346,9 +347,10 @@ Set to empty string not to change console mode. Set to `Max` to try to use large
 *注*：This field is best to be left empty on most firmwares.
 
 ### `Resolution`
+
 **Type**: `plist string`
 **Failsafe**: Empty string
-**Description**: Sets console output screen resolution.
+**Description**: 设置控制台的屏幕分辨率。
 
 - Set to `WxH@Bpp` (e.g. `1920x1080@32`) or `WxH` (e.g. `1920x1080`) formatted string to request custom resolution from GOP if available.
 - Set to empty string not to change screen resolution.
@@ -362,15 +364,15 @@ On HiDPI screens `APPLE_VENDOR_VARIABLE_GUID` `UIScale` NVRAM variable may need 
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
-**Description**: Some firmwares clear only part of screen when switching from graphics to text mode, leaving a fragment of previously drawn image visible. This option fills the entire graphics screen with black color before switching to text mode.
+**Description**: 有些固件在从图形模式切换到文本模式时，只会清除部分屏幕、而会留下一部分之前绘制的图像。启用这一选项后，在切换到文本模式之前会用黑色填充整个图形屏幕。
 
-*注*：This option only applies to `System` renderer.
+*注*：这一选项只会在 `System` 渲染器上生效。
 
 ### `DirectGopCacheMode`
 
 **Type**: `plist string`
 **Failsafe**: Empty string
-**Description**: Cache mode for builtin graphics output protocol framebuffer.
+**Description**: 设置内建图形输出协议帧缓冲区的缓存模式。
 
 Tuning cache mode may provide better rendering performance on some firmwares. Providing empty string leaves cache control settings to the firmware. Valid non-empty values are: `Uncacheable`, `WriteCombining`, and `WriteThrough`.
 
@@ -513,7 +515,7 @@ Only one set of audio protocols can be available at a time, so in order to get a
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
-**Description**: Forcibly reinstalls Hash Services protocols with builtin versions. Should be set to `true` to ensure File Vault 2 compatibility on platforms providing broken SHA-1 hashing. Can be diagnosed by invalid cursor size with `UIScale` set to `02`, in general platforms prior to APTIO V (Haswell and older) are affected.
+**Description**: 强制重新安装内置版本的 Hash Services 协议。为了在 SHA-1 哈希协议不完整的固件上确保 File Vault 2 的兼容性，这一 Quirk 应设置为 `true`。对于大多数固件来说，你可以通过将 `UIScale` 设置为 `02` 查看是否会出现禁行图标，来诊断你的固件是否需要这一 Quirk。一般来说，APTIO V（Haswell 和更早的平台）之前的平台都会受到影响。
 
 ### `OSInfo`
 
@@ -525,7 +527,7 @@ Only one set of audio protocols can be available at a time, so in order to get a
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
-**Description**: Forcibly reinstalls unicode collation services with builtin version. 建议启用这一选项以确保 UEFI Shell 的兼容性。一些较旧的固件破坏了 Unicode 排序规则, 设置为 YES 可以修复这些系统上 UEFI Shell 的兼容性 (通常为用于 IvyBridge 或更旧的设备)
+**Description**: 强制重新安装内置版本的 Unicode Collation 服务。建议启用这一选项以确保 UEFI Shell 的兼容性。一些较旧的固件破坏了 Unicode 排序规则, 启用后可以修复这些系统上 UEFI Shell 的兼容性 (通常为用于 IvyBridge 或更旧的设备)
 
 ## 11.11 Quirks Properties
 
@@ -535,7 +537,7 @@ Only one set of audio protocols can be available at a time, so in order to get a
 **Failsafe**: `0`
 **Description**: 在 `EXIT_BOOT_SERVICES` 事件后添加延迟，单位为毫秒。
 
-This is a very ugly quirk to circumvent "Still waiting for root device" message on select APTIO IV firmwares, namely ASUS Z87-Pro, when using FileVault 2 in particular. It seems that for some reason they execute code in parallel to `EXIT_BOOT_SERVICES`, which results in SATA controller being inaccessible from macOS. A better approach should be found in some future. Expect 3-5 seconds to be enough in case the quirk is needed.
+这是一个非常丑陋的 Quirks，用于修复 `Still waiting for root device` 提示信息。在使用 FileVault 2 时，特别是华硕 Z87-Pro 等 APTIO IV 固件这种错误经常发生。似乎因为某种原因，FileVault 与 `EXIT_BOOT_SERVICES` 同时执行、导致 macOS 无法访问 SATA 控制器。未来应该会找到一个更好的方法。如果需要启用这一选项，设置 3-5 秒的延时就可以了。
 
 ### `IgnoreInvalidFlexRatio`
 
@@ -557,18 +559,19 @@ This is a very ugly quirk to circumvent "Still waiting for root device" message 
 **Failsafe**: `false`
 **Description**: Request fallback of some `Boot` prefixed variables from `OC_VENDOR_VARIABLE_GUID` to newline `EFI_GLOBAL_VARIABLE_GUID`.
 
-  This quirk requires `RequestBootVarRouting` to be enabled and therefore `OC_FIRMWARE_RUNTIME` protocol implemented in `OpenRuntime.efi`（原名 `FwRuntimeServices.efi`）.
+This quirk requires `RequestBootVarRouting` to be enabled and therefore `OC_FIRMWARE_RUNTIME` protocol implemented in `OpenRuntime.efi`（原名 `FwRuntimeServices.efi`）.
 
-  By redirecting `Boot` prefixed variables to a separate GUID namespace we achieve multiple goals:
-  - Operating systems are jailed and only controlled by OpenCore boot environment to enhance security.
-  - Operating systems do not mess with OpenCore boot priority, and guarantee fluent updates and hibernation wakes for cases that require reboots with OpenCore in the middle.
-  - Potentially incompatible boot entries, such as macOS entries, are not deleted or anyhow corrupted.
+By redirecting `Boot` prefixed variables to a separate GUID namespace we achieve multiple goals:
 
-  However, some firmwares do their own boot option scanning upon startup by checking file presence on the available disks. Quite often this scanning includes non-standard locations, such as Windows Bootloader paths. Normally it is not an issue, but some firmwares, ASUS firmwares on APTIO V in particular, have bugs. For them scanning is implemented improperly, and firmware preferences may get accidentally corrupted due to `BootOrder` entry duplication (each option will be added twice) making it impossible to boot without cleaning NVRAM.
+- Operating systems are jailed and only controlled by OpenCore boot environment to enhance security.
+- Operating systems do not mess with OpenCore boot priority, and guarantee fluent updates and hibernation wakes for cases that require reboots with OpenCore in the middle.
+- Potentially incompatible boot entries, such as macOS entries, are not deleted or anyhow corrupted.
 
-  To trigger the bug one should have some valid boot options (e.g. OpenCore) and then install Windows with `RequestBootVarRouting` enabled. As Windows bootloader option will not be created by Windows installer, the firmware will attempt to create it itself, and then corrupt its boot option list.
+However, some firmwares do their own boot option scanning upon startup by checking file presence on the available disks. Quite often this scanning includes non-standard locations, such as Windows Bootloader paths. Normally it is not an issue, but some firmwares, ASUS firmwares on APTIO V in particular, have bugs. For them scanning is implemented improperly, and firmware preferences may get accidentally corrupted due to `BootOrder` entry duplication (each option will be added twice) making it impossible to boot without cleaning NVRAM.
 
-  This quirk forwards all UEFI specification valid boot options, that are not related to macOS, to the firmware into `BootF###` and `BootOrder` variables upon write. As the entries are added to the end of `BootOrder`, this does not break boot priority, but ensures that the firmware does not try to append a new option on its own after Windows installation for instance.
+To trigger the bug one should have some valid boot options (e.g. OpenCore) and then install Windows with `RequestBootVarRouting` enabled. As Windows bootloader option will not be created by Windows installer, the firmware will attempt to create it itself, and then corrupt its boot option list.
+
+This quirk forwards all UEFI specification valid boot options, that are not related to macOS, to the firmware into `BootF###` and `BootOrder` variables upon write. As the entries are added to the end of `BootOrder`, this does not break boot priority, but ensures that the firmware does not try to append a new option on its own after Windows installation for instance.
 
 ### `RequestBootVarRouting`
 
@@ -576,7 +579,7 @@ This is a very ugly quirk to circumvent "Still waiting for root device" message 
 **Failsafe**: `false`
 **Description**: 请求将所有带有 `Boot` 前缀的变量从 `EFI_GLOBAL_VARIABLE_GUID` 重定向到 `OC_VENDOR_VARIABLE_GUID`。
 
-  This quirk requires `OC_FIRMWARE_RUNTIME` protocol implemented in `OpenRuntime.efi`（原名 `FwRuntimeServices.efi`）. The quirk lets default boot entry preservation at times when firmwares delete incompatible boot entries. Simply said, you are required to enable this quirk to be able to reliably use [Startup Disk](https://support.apple.com/HT202796) preference pane in a firmware that is not compatible with macOS boot entries by design.
+This quirk requires `OC_FIRMWARE_RUNTIME` protocol implemented in `OpenRuntime.efi`（原名 `FwRuntimeServices.efi`）. 当固件删除不兼容的启动条目时，这一 Quirk 可以让默认的启动条目保存在引导菜单中。简单地说就是，如果你想使用「系统偏好设置」中的「[启动磁盘](https://support.apple.com/HT202796)」，就必须启用这一 Quirk。
 
 ### `UnblockFsConnect`
 
