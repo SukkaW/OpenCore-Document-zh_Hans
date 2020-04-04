@@ -3,7 +3,7 @@ title: 5. Booter
 description: 配置 OpenRuntime.efi（Slide 值计算、KASLR）
 type: docs
 author_info: 由 Sukka 整理，由 Sukka 翻译。
-last_updated: 2020-03-18
+last_updated: 2020-04-04
 ---
 
 ## 5.1 简介
@@ -139,8 +139,7 @@ sudo pmset standby 0
 
 This option bypasses `RX̂` permissions in code pages of UEFI runtime services by removing write protection (`WP`) bit from `CR0` register during their execution. This quirk requires `OC_FIRMWARE_RUNTIME` protocol implemented in `OpenRuntime.efi`（原名 `FwRuntimeServices.efi`）.
 
-*注*：The necessity of this quirk is determined by early boot crashes
-of the firmware.
+*注*：这个 Quirk 可能会破坏你的固件的安全性。如果你的固件支持内存属性表 (MAT)，请优先使用下文中的 `RebuildAppleMemoryMap` 那个 Quirk。
 
 ### `ForceExitBootServices`
 
@@ -193,6 +192,21 @@ Some modern firmwares including both hardware and virtual machines, like VMware,
 
 *注*: OpenCore 会自动检查是否需要启用这一选项。如果 OpenCore 的调试日志中出现 `OCABC: Only N/256 slide values are usable!` 则请启用这一选项。
 
+### `RebuildAppleMemoryMap`
+
+**Type**: `plist boolean`
+**Failsafe**: `false`
+**Description**: 生成与 macOS 兼容的内存映射。
+
+苹果内核在解析 UEFI 内存映射时有几个限制：
+
+- 内存映射的大小不能超过 4096 字节，因为苹果内核将其映射为一个 4 KiB 页面。由于某些固件的内存映射大小非常大（大约超过 100 个条目），苹果内核会在启动时崩溃。
+- 内存属性表被忽略 `EfiRuntimeServicesCode`
+
+为了解决这些限制，这个 Quirk 将内存属性表的权限应用到传递给苹果内核的内存映射中，如果生成的内存映射超过 4KiB，则可选择尝试统一类似类型的连续插槽。
+
+*注*：根据是否遇到第一阶段启动失败再决定是否启用这一 Quirk。在支持内存属性表 (MAT) 的平台上，这一 Quirk 是作为 `EnableWriteUnprotector` 更好的替代。
+
 ### `SetupVirtualMap`
 
 **Type**: `plist boolean`
@@ -203,16 +217,6 @@ Select firmwares access memory by virtual addresses after `SetVirtualAddresses` 
 
 *注*：是否启用这个 Quirks 取决于你是否遇到了 Early Boot 故障。目前具有内存保护支持的新固件（例如 OVMF ）由于一些原因不支持此 Quirks：[acidanthera/bugtracker#719](https://github.com/acidanthera/bugtracker/issues/719)。
 
-### `ShrinkMemoryMap`
-
-**Type**: `plist boolean`
-**Failsafe**: `false`
-**Description**: 尝试合并相似的内存映射条目。
-
-Select firmwares have very large memory maps, which do not fit Apple kernel, permitting up to `64` slots for runtime memory. This quirk attempts to unify contiguous slots of similar types to prevent boot failures.
-
-*注*：是否启用这个 Quirks 取决于你是否遇到了 Early Boot 故障。Haswell 及更新版本一般都不需要启用。除非你完全了解这一选项及其后果，否则请勿使用。
-
 ### `SignalAppleOS`
 
 **Type**: `plist boolean`
@@ -220,3 +224,13 @@ Select firmwares have very large memory maps, which do not fit Apple kernel, per
 **Description**: 不论使用什么操作系统、总是向 OSInfo 报告启动的是 macOS。
 
 Mac 设备在不同的操作系统中具有不同的行为，因此如果你在使用 Mac 设备，这一功能会非常有用。例如，你可以通过启用这一选项为某些双 GPU 的 MacBook 型号中在 Windows 和 Linux 中启用 Intel GPU。
+
+### `SyncRuntimePermissions`
+
+**Type**: `plist boolean`
+**Failsafe**: `false`
+**Description**: Update memory permissions for `OpenRuntime` to function.
+
+Some firmwares may incorrectly mark `OpenRuntime` as not executable, this quirks updates memory map and memory attributes table to correct this.
+
+*注*：The necessity of this quirk is determined by early boot failures either in macOS or in Linux/Windows. In general only firmwares released in 2018 or later are affected.
