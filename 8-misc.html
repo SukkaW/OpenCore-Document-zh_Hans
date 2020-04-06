@@ -194,7 +194,7 @@
                     <p><small>由 xMuu、Sukka 整理、由 Sukka 翻译。部分翻译参考黑果小兵的「精解 OpenCore」</small></p>
                 
                 
-                    <p><small>本页面最后更新于 2020 年 03 月 21 日</small></p>
+                    <p><small>本页面最后更新于 2020 年 04 月 06 日</small></p>
                 
                 <br>
             
@@ -217,7 +217,36 @@
 <h3 id="Tools"><a href="#Tools" class="headerlink" title="Tools"></a><code>Tools</code></h3><p><strong>Type</strong>: <code>plist array</code><br><strong>Description</strong>: Add tool entries to boot picker.</p>
 <p>Designed to be filled with <code>plist dict</code> values, describing each load entry. See <a href="">Entry Properties</a> section below.</p>
 <p><em>注</em>：Select tools, for example, UEFI shell, are very dangerous and <strong>MUST NOT</strong> appear in production configurations, especially in vaulted ones and protected with secure boot, as they may be used to easily bypass secure boot chain.</p>
-<h2 id="8-3-Boot-Properties"><a href="#8-3-Boot-Properties" class="headerlink" title="8.3 Boot Properties"></a>8.3 Boot Properties</h2><h3 id="HibernateMode"><a href="#HibernateMode" class="headerlink" title="HibernateMode"></a><code>HibernateMode</code></h3><p><strong>Type</strong>: <code>plist string</code><br><strong>Failsafe</strong>: <code>None</code><br><strong>Description</strong>: 休眠检测模式。 支持以下模式：</p>
+<h2 id="8-3-Boot-Properties"><a href="#8-3-Boot-Properties" class="headerlink" title="8.3 Boot Properties"></a>8.3 Boot Properties</h2><h3 id="ConsoleAttributes"><a href="#ConsoleAttributes" class="headerlink" title="ConsoleAttributes"></a><code>ConsoleAttributes</code></h3><p><strong>Type</strong>: <code>plist integer</code><br><strong>Failsafe</strong>: <code>0</code><br><strong>Description</strong>: 为控制台设置特定的属性。</p>
+<p>Text renderer supports colour arguments as a sum of foreground and background colors according to UEFI specification. The value of black background and black foreground (\texttt{0}) is reserved. List of colour names:</p>
+<ul>
+<li><code>0x00</code> — <code>EFI_BLACK</code>（黑色字体）</li>
+<li><code>0x01</code> — <code>EFI_BLUE</code>（蓝色字体）</li>
+<li><code>0x02</code> — <code>EFI_GREEN</code>（绿色字体）</li>
+<li><code>0x03</code> — <code>EFI_CYAN</code>（青色字体）</li>
+<li><code>0x04</code> — <code>EFI_RED</code>（红色字体）</li>
+<li><code>0x05</code> — <code>EFI_MAGENTA</code>（紫色字体）</li>
+<li><code>0x06</code> — <code>EFI_BROWN</code>（棕色字体）</li>
+<li><code>0x07</code> — <code>EFI_LIGHTGRAY</code>（亮灰色字体）</li>
+<li><code>0x08</code> — <code>EFI_DARKGRAY</code>（暗灰色字体）</li>
+<li><code>0x09</code> — <code>EFI_LIGHTBLUE</code>（淡蓝色字体）</li>
+<li><code>0x0A</code> — <code>EFI_LIGHTGREEN</code>（淡绿色字体）</li>
+<li><code>0x0B</code> — <code>EFI_LIGHTCYAN</code>（淡青色字体）</li>
+<li><code>0x0C</code> — <code>EFI_LIGHTRED</code>（淡红色字体）</li>
+<li><code>0x0D</code> — <code>EFI_LIGHTMAGENTA</code>（淡紫色字体）</li>
+<li><code>0x0E</code> — <code>EFI_YELLOW</code>（黄色字体）</li>
+<li><code>0x0F</code> — <code>EFI_WHITE</code>（白色字体）</li>
+<li><code>0x00</code> — <code>EFI_BACKGROUND_BLACK</code>（黑色背景）</li>
+<li><code>0x10</code> — <code>EFI_BACKGROUND_BLUE</code>（蓝色背景）</li>
+<li><code>0x20</code> — <code>EFI_BACKGROUND_GREEN</code>（绿色背景）</li>
+<li><code>0x30</code> — <code>EFI_BACKGROUND_CYAN</code>（青色背景）</li>
+<li><code>0x40</code> — <code>EFI_BACKGROUND_RED</code>（红色背景）</li>
+<li><code>0x50</code> — <code>EFI_BACKGROUND_MAGENTA</code>（紫色背景）</li>
+<li><code>0x60</code> — <code>EFI_BACKGROUND_BROWN</code>（棕色背景）</li>
+<li><code>0x70</code> — <code>EFI_BACKGROUND_LIGHTGRAY</code>（亮灰色背景）</li>
+</ul>
+<p><em>注</em>: This option may not work well with <code>System</code> text renderer. Setting a background different from black could help testing proper GOP<br>functioning.</p>
+<h3 id="HibernateMode"><a href="#HibernateMode" class="headerlink" title="HibernateMode"></a><code>HibernateMode</code></h3><p><strong>Type</strong>: <code>plist string</code><br><strong>Failsafe</strong>: <code>None</code><br><strong>Description</strong>: 休眠检测模式。 支持以下模式：</p>
 <ul>
 <li><code>None</code> — 禁用休眠</li>
 <li><code>Auto</code> — 从 RTC 或 NVRAM 中检测</li>
@@ -236,34 +265,29 @@
 <p>一般的，隐藏辅助条目有助于加快启动速度。</p>
 <h3 id="HideSelf"><a href="#HideSelf" class="headerlink" title="HideSelf"></a><code>HideSelf</code></h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: <code>false</code><br><strong>Description</strong>: 在 OpenCore 的启动选择中隐藏自身 EFI 分区内的其它启动项，如 UEFI OS 等、Recovery、Reset NVRAM 等。</p>
 <h3 id="PickerAttributes"><a href="#PickerAttributes" class="headerlink" title="PickerAttributes"></a><code>PickerAttributes</code></h3><p><strong>Type</strong>: <code>plist integer</code><br><strong>Failsafe</strong>: <code>0</code><br><strong>Description</strong>: Sets specific attributes for picker.</p>
-<p>Builtin picker supports colour arguments as a sum of foreground and background colors according to UEFI specification. The value of black background and black foreground (<code>0</code>) is reserved. List of colour names:</p>
+<p>Different pickers may be configured through the attribute mask containing OpenCore-reserved (<code>BIT0</code> ~ <code>BIT15</code>) and OEM-specific(<code>BIT16</code> ~ <code>BIT31</code>) values.</p>
+<p>Current OpenCore values include:</p>
 <ul>
-<li><code>0x00</code> — <code>EFI_BLACK</code></li>
-<li><code>0x01</code> — <code>EFI_BLUE</code></li>
-<li><code>0x02</code> — <code>EFI_GREEN</code></li>
-<li><code>0x03</code> — <code>EFI_CYAN</code></li>
-<li><code>0x04</code> — <code>EFI_RED</code></li>
-<li><code>0x05</code> — <code>EFI_MAGENTA</code></li>
-<li><code>0x06</code> — <code>EFI_BROWN</code></li>
-<li><code>0x07</code> — <code>EFI_LIGHTGRAY</code></li>
-<li><code>0x08</code> — <code>EFI_DARKGRAY</code></li>
-<li><code>0x09</code> — <code>EFI_LIGHTBLUE</code></li>
-<li><code>0x0A</code> — <code>EFI_LIGHTGREEN</code></li>
-<li><code>0x0B</code> — <code>EFI_LIGHTCYAN</code></li>
-<li><code>0x0C</code> — <code>EFI_LIGHTRED</code></li>
-<li><code>0x0D</code> — <code>EFI_LIGHTMAGENTA</code></li>
-<li><code>0x0E</code> — <code>EFI_YELLOW</code></li>
-<li><code>0x0F</code> — <code>EFI_WHITE</code></li>
-<li><code>0x00</code> — <code>EFI_BACKGROUND_BLACK</code></li>
-<li><code>0x10</code> — <code>EFI_BACKGROUND_BLUE</code></li>
-<li><code>0x20</code> — <code>EFI_BACKGROUND_GREEN</code></li>
-<li><code>0x30</code> — <code>EFI_BACKGROUND_CYAN</code></li>
-<li><code>0x40</code> — <code>EFI_BACKGROUND_RED</code></li>
-<li><code>0x50</code> — <code>EFI_BACKGROUND_MAGENTA</code></li>
-<li><code>0x60</code> — <code>EFI_BACKGROUND_BROWN</code></li>
-<li><code>0x70</code> — <code>EFI_BACKGROUND_LIGHTGRAY</code></li>
+<li><p><code>0x0001</code> — <code>OC_ATTR_USE_VOLUME_ICON</code>, provides custom icons for boot entries:</p>
+<ul>
+<li><code>.VolumeIcon.icns</code> file at <code>Preboot</code> root for APFS.</li>
+<li><code>.VolumeIcon.icns</code> file at volume root for other filesystems.</li>
+<li><code>&lt;TOOL_NAME&gt;.icns</code> file for <code>Tools</code>.</li>
 </ul>
-<p><em>注</em>：This option may not work well with <code>System</code> text renderer. Setting a background different from black could help testing proper GOP functioning.</p>
+<p>Volume icons can be set in Finder.</p>
+</li>
+<li><p><code>0x0002</code> — <code>OC_ATTR_USE_DISK_LABEL_FILE</code>, provides custom rendered titles for boot entries:</p>
+<ul>
+<li><p><code>.disk_label</code> (<code>.disk_label_2x</code>) file near bootloader for all filesystems.</p>
+</li>
+<li><p><code>&lt;TOOL_NAME.lbl</code> (<code>&lt;TOOL_NAME.l2x</code>) file near tool for <code>Tools</code>.</p>
+<p>Prerendered labels can be generated via <code>disklabel</code> utility or<br><code>bless</code> command. When disabled or missing text labels<br>(<code>.contentDetails</code> or <code>.disk_label.contentDetails</code>) are to be<br>rendered instead.</p>
+</li>
+</ul>
+</li>
+<li><p><code>0x0004</code> — <code>OC_ATTR_USE_GENERIC_LABEL_IMAGE</code>, provides predefined label images for boot entries without custom entries. May give less detail for the actual boot entry.</p>
+</li>
+</ul>
 <h3 id="PickerAudioAssist"><a href="#PickerAudioAssist" class="headerlink" title="PickerAudioAssist"></a><code>PickerAudioAssist</code></h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: <code>false</code><br><strong>Description</strong>: 在开机引导菜单中启用 屏幕朗读。</p>
 <p>macOS Bootloader 屏幕朗读 的偏好设置是存在 <code>isVOEnabled.int32</code> 文件的 <code>preferences.efires</code> 中、并受操作系统控制。这里仅提供一个等效的开关。切换 OpenCore 开机引导菜单和 macOS BootLoader FileVault 2 登录界面也可以使用快捷键 <code>Command</code> + <code>F5</code>。</p>
 <p><em>注</em>：屏幕朗读 依赖可以正常工作的音频设备。</p>
@@ -450,7 +474,7 @@
             <aside class="doku-document-toc" id="doku-document-toc">
                 <div class="doku-document-toc-content">
                     <p class="doku-document-toc-title">目录</p>
-                    <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#8-1-Introduction"><span class="post-toc-text">8.1 Introduction</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#8-2-Properties"><span class="post-toc-text">8.2 Properties</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Boot"><span class="post-toc-text">Boot</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#BlessOverride"><span class="post-toc-text">BlessOverride</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Debug"><span class="post-toc-text">Debug</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Entries"><span class="post-toc-text">Entries</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Security"><span class="post-toc-text">Security</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Tools"><span class="post-toc-text">Tools</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#8-3-Boot-Properties"><span class="post-toc-text">8.3 Boot Properties</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#HibernateMode"><span class="post-toc-text">HibernateMode</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#HideAuxiliary"><span class="post-toc-text">HideAuxiliary</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#HideSelf"><span class="post-toc-text">HideSelf</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#PickerAttributes"><span class="post-toc-text">PickerAttributes</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#PickerAudioAssist"><span class="post-toc-text">PickerAudioAssist</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#PollAppleHotKeys"><span class="post-toc-text">PollAppleHotKeys</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#ShowPicker"><span class="post-toc-text">ShowPicker</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#TakeoffDelay"><span class="post-toc-text">TakeoffDelay</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Timeout"><span class="post-toc-text">Timeout</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#PickerMode"><span class="post-toc-text">PickerMode</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#8-4-Debug-Properties"><span class="post-toc-text">8.4 Debug Properties</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#AppleDebug"><span class="post-toc-text">AppleDebug</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#DisableWatchDog"><span class="post-toc-text">DisableWatchDog</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#DisplayDelay"><span class="post-toc-text">DisplayDelay</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#3-DisplayLevel"><span class="post-toc-text">3.DisplayLevel</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Target"><span class="post-toc-text">Target</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#8-5-Security-Properties"><span class="post-toc-text">8.5 Security Properties</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#AllowNvramReset"><span class="post-toc-text">AllowNvramReset</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#AllowSetDefault"><span class="post-toc-text">AllowSetDefault</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#AuthRestart"><span class="post-toc-text">AuthRestart</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#ExposeSensitiveData"><span class="post-toc-text">ExposeSensitiveData</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#HaltLevel"><span class="post-toc-text">HaltLevel</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Vault"><span class="post-toc-text">Vault</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#ScanPolicy"><span class="post-toc-text">ScanPolicy</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#8-6-Entry-Properties"><span class="post-toc-text">8.6 Entry Properties</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Arguments"><span class="post-toc-text">Arguments</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Auxiliary"><span class="post-toc-text">Auxiliary</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Comment"><span class="post-toc-text">Comment</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Enabled"><span class="post-toc-text">Enabled</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Name"><span class="post-toc-text">Name</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Path"><span class="post-toc-text">Path</span></a></li></ol></li></ol>
+                    <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#8-1-Introduction"><span class="post-toc-text">8.1 Introduction</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#8-2-Properties"><span class="post-toc-text">8.2 Properties</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Boot"><span class="post-toc-text">Boot</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#BlessOverride"><span class="post-toc-text">BlessOverride</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Debug"><span class="post-toc-text">Debug</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Entries"><span class="post-toc-text">Entries</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Security"><span class="post-toc-text">Security</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Tools"><span class="post-toc-text">Tools</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#8-3-Boot-Properties"><span class="post-toc-text">8.3 Boot Properties</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#ConsoleAttributes"><span class="post-toc-text">ConsoleAttributes</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#HibernateMode"><span class="post-toc-text">HibernateMode</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#HideAuxiliary"><span class="post-toc-text">HideAuxiliary</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#HideSelf"><span class="post-toc-text">HideSelf</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#PickerAttributes"><span class="post-toc-text">PickerAttributes</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#PickerAudioAssist"><span class="post-toc-text">PickerAudioAssist</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#PollAppleHotKeys"><span class="post-toc-text">PollAppleHotKeys</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#ShowPicker"><span class="post-toc-text">ShowPicker</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#TakeoffDelay"><span class="post-toc-text">TakeoffDelay</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Timeout"><span class="post-toc-text">Timeout</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#PickerMode"><span class="post-toc-text">PickerMode</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#8-4-Debug-Properties"><span class="post-toc-text">8.4 Debug Properties</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#AppleDebug"><span class="post-toc-text">AppleDebug</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#DisableWatchDog"><span class="post-toc-text">DisableWatchDog</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#DisplayDelay"><span class="post-toc-text">DisplayDelay</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#3-DisplayLevel"><span class="post-toc-text">3.DisplayLevel</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Target"><span class="post-toc-text">Target</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#8-5-Security-Properties"><span class="post-toc-text">8.5 Security Properties</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#AllowNvramReset"><span class="post-toc-text">AllowNvramReset</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#AllowSetDefault"><span class="post-toc-text">AllowSetDefault</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#AuthRestart"><span class="post-toc-text">AuthRestart</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#ExposeSensitiveData"><span class="post-toc-text">ExposeSensitiveData</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#HaltLevel"><span class="post-toc-text">HaltLevel</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Vault"><span class="post-toc-text">Vault</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#ScanPolicy"><span class="post-toc-text">ScanPolicy</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#8-6-Entry-Properties"><span class="post-toc-text">8.6 Entry Properties</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Arguments"><span class="post-toc-text">Arguments</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Auxiliary"><span class="post-toc-text">Auxiliary</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Comment"><span class="post-toc-text">Comment</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Enabled"><span class="post-toc-text">Enabled</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Name"><span class="post-toc-text">Name</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Path"><span class="post-toc-text">Path</span></a></li></ol></li></ol>
                 </div>
             </aside>
         </div>
