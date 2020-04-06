@@ -3,7 +3,7 @@ title: 5. Booter
 description: 配置 OpenRuntime.efi（Slide 值计算、KASLR）
 type: docs
 author_info: 由 Sukka 整理，由 Sukka 翻译。
-last_updated: 2020-04-04
+last_updated: 2020-04-06
 ---
 
 ## 5.1 简介
@@ -151,15 +151,20 @@ Try to ensure that `ExitBootServices` call succeeds even with outdated MemoryMap
 
 *注*：The necessity of this quirk is determined by early boot crashes of the firmware. 请勿启用这一选项，除非你详细了解这一选项可能导致的后果。
 
-### `ProtectCsmRegion`
+### `ProtectMemoryRegions`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
-**Description**: 保护 CSM 区域免于重新分配
+**Description**: 保护内存区域免于不正确的读写。
 
-确保将 CSM 内存区域标记为 ACPI NVS，以防止 `boot.efi` 或 XNU 重新定位或使用这一区域。
+Some firmwares incorrectly map select memory regions:
 
-*注*：是否启用这一 Quirk 取决于你是否遇到了休眠或其他问题。`AvoidRuntimeDefrag` 理应能够解决所有类似的问题，所以已知的固件都不需要启用这一选项。除非你完全了解这一选项及其后果，否则请勿使用。
+- CSM region can be marked as boot services code or data, which leaves it as free memory for XNU kernel.
+- MMIO regions can be marked as reserved memory and stay unmapped, but may be required to be accessible at runtime for NVRAM support.
+
+This quirk attempts to fix types of these regions, e.g. ACPI NVS for CSM or MMIO for MMIO.
+
+*注*：是否启用这一 Quirk 取决于你是否遇到了休眠、睡眠无法唤醒、启动失败或其他问题。一般来说，只有古董固件才需要启用。
 
 
 ### `ProtectSecureBoot`
@@ -205,7 +210,7 @@ Some modern firmwares including both hardware and virtual machines, like VMware,
 
 为了解决这些限制，这个 Quirk 将内存属性表的权限应用到传递给苹果内核的内存映射中，如果生成的内存映射超过 4KiB，则可选择尝试统一类似类型的连续插槽。
 
-*注*：根据是否遇到第一阶段启动失败再决定是否启用这一 Quirk。在支持内存属性表 (MAT) 的平台上，这一 Quirk 是作为 `EnableWriteUnprotector` 更好的替代。
+*注*：由于许多固件自带的内存保护不正确，所以这个 Quirk 一般要和 `SyncRuntimePermissions` 一起启用。根据是否遇到第一阶段启动失败再决定是否启用这一 Quirk。在支持内存属 性表 (MAT) 的平台上，这一 Quirk 是作为 `EnableWriteUnprotector` 更好的替代。
 
 ### `SetupVirtualMap`
 
@@ -229,8 +234,15 @@ Mac 设备在不同的操作系统中具有不同的行为，因此如果你在�
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
-**Description**: Update memory permissions for `OpenRuntime` to function.
+**Description**: Update memory permissions for runtime environment.
 
-Some firmwares may incorrectly mark `OpenRuntime` as not executable, this quirks updates memory map and memory attributes table to correct this.
+Some firmwares either fail to properly handle runtime permissions:
+
+- They incorrectly mark `OpenRuntime` as not executable in the memory map.
+- They incorrectly mark `OpenRuntime` as not executable in the memory attributes table.
+- hey lose entries from the memory attributes table after `OpenRuntime` is loaded.
+- They mark items in the memory attributes table as read-write-execute.
+
+This quirk tries to update memory map and memory attributes table to correct this.
 
 *注*：The necessity of this quirk is determined by early boot failures either in macOS or in Linux/Windows. In general only firmwares released in 2018 or later are affected.

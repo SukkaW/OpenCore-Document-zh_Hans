@@ -3,7 +3,7 @@ title: 8. Misc
 description: 关于 OpenCore 行为的其他配置（待翻译）
 type: docs
 author_info: 由 xMuu、Sukka 整理、由 Sukka 翻译。部分翻译参考黑果小兵的「精解 OpenCore」
-last_updated: 2020-03-21
+last_updated: 2020-04-06
 ---
 
 ## 8.1 Introduction
@@ -51,6 +51,42 @@ Designed to be filled with `plist dict` values, describing each load entry. See 
 
 ## 8.3 Boot Properties
 
+### `ConsoleAttributes`
+
+**Type**: `plist integer`
+**Failsafe**: `0`
+**Description**: 为控制台设置特定的属性。
+
+Text renderer supports colour arguments as a sum of foreground and background colors according to UEFI specification. The value of black background and black foreground (\texttt{0}) is reserved. List of colour names:
+
+- `0x00` — `EFI_BLACK`（黑色字体）
+- `0x01` — `EFI_BLUE`（蓝色字体）
+- `0x02` — `EFI_GREEN`（绿色字体）
+- `0x03` — `EFI_CYAN`（青色字体）
+- `0x04` — `EFI_RED`（红色字体）
+- `0x05` — `EFI_MAGENTA`（紫色字体）
+- `0x06` — `EFI_BROWN`（棕色字体）
+- `0x07` — `EFI_LIGHTGRAY`（亮灰色字体）
+- `0x08` — `EFI_DARKGRAY`（暗灰色字体）
+- `0x09` — `EFI_LIGHTBLUE`（淡蓝色字体）
+- `0x0A` — `EFI_LIGHTGREEN`（淡绿色字体）
+- `0x0B` — `EFI_LIGHTCYAN`（淡青色字体）
+- `0x0C` — `EFI_LIGHTRED`（淡红色字体）
+- `0x0D` — `EFI_LIGHTMAGENTA`（淡紫色字体）
+- `0x0E` — `EFI_YELLOW`（黄色字体）
+- `0x0F` — `EFI_WHITE`（白色字体）
+- `0x00` — `EFI_BACKGROUND_BLACK`（黑色背景）
+- `0x10` — `EFI_BACKGROUND_BLUE`（蓝色背景）
+- `0x20` — `EFI_BACKGROUND_GREEN`（绿色背景）
+- `0x30` — `EFI_BACKGROUND_CYAN`（青色背景）
+- `0x40` — `EFI_BACKGROUND_RED`（红色背景）
+- `0x50` — `EFI_BACKGROUND_MAGENTA`（紫色背景）
+- `0x60` — `EFI_BACKGROUND_BROWN`（棕色背景）
+- `0x70` — `EFI_BACKGROUND_LIGHTGRAY`（亮灰色背景）
+
+*注*: This option may not work well with `System` text renderer. Setting a background different from black could help testing proper GOP
+functioning.
+
 ### `HibernateMode`
 
 **Type**: `plist string`
@@ -91,34 +127,27 @@ Designed to be filled with `plist dict` values, describing each load entry. See 
 **Failsafe**: `0`
 **Description**: Sets specific attributes for picker.
 
-Builtin picker supports colour arguments as a sum of foreground and background colors according to UEFI specification. The value of black background and black foreground (`0`) is reserved. List of colour names:
+Different pickers may be configured through the attribute mask containing OpenCore-reserved (`BIT0` ~ `BIT15`) and OEM-specific(`BIT16` ~ `BIT31`) values.
 
-- `0x00` --- `EFI_BLACK`
-- `0x01` --- `EFI_BLUE`
-- `0x02` --- `EFI_GREEN`
-- `0x03` --- `EFI_CYAN`
-- `0x04` --- `EFI_RED`
-- `0x05` --- `EFI_MAGENTA`
-- `0x06` --- `EFI_BROWN`
-- `0x07` --- `EFI_LIGHTGRAY`
-- `0x08` --- `EFI_DARKGRAY`
-- `0x09` --- `EFI_LIGHTBLUE`
-- `0x0A` --- `EFI_LIGHTGREEN`
-- `0x0B` --- `EFI_LIGHTCYAN`
-- `0x0C` --- `EFI_LIGHTRED`
-- `0x0D` --- `EFI_LIGHTMAGENTA`
-- `0x0E` --- `EFI_YELLOW`
-- `0x0F` --- `EFI_WHITE`
-- `0x00` --- `EFI_BACKGROUND_BLACK`
-- `0x10` --- `EFI_BACKGROUND_BLUE`
-- `0x20` --- `EFI_BACKGROUND_GREEN`
-- `0x30` --- `EFI_BACKGROUND_CYAN`
-- `0x40` --- `EFI_BACKGROUND_RED`
-- `0x50` --- `EFI_BACKGROUND_MAGENTA`
-- `0x60` --- `EFI_BACKGROUND_BROWN`
-- `0x70` --- `EFI_BACKGROUND_LIGHTGRAY`
+Current OpenCore values include:
 
-*注*：This option may not work well with `System` text renderer. Setting a background different from black could help testing proper GOP functioning.
+- `0x0001` — `OC_ATTR_USE_VOLUME_ICON`, provides custom icons for boot entries:
+  - `.VolumeIcon.icns` file at `Preboot` root for APFS.
+  - `.VolumeIcon.icns` file at volume root for other filesystems.
+  - `<TOOL_NAME>.icns` file for `Tools`.
+
+  Volume icons can be set in Finder.
+
+- `0x0002` — `OC_ATTR_USE_DISK_LABEL_FILE`, provides custom rendered titles for boot entries:
+  - `.disk_label` (`.disk_label_2x`) file near bootloader for all filesystems.
+  - `<TOOL_NAME.lbl` (`<TOOL_NAME.l2x`) file near tool for `Tools`.
+
+    Prerendered labels can be generated via `disklabel` utility or
+    `bless` command. When disabled or missing text labels
+    (`.contentDetails` or `.disk_label.contentDetails`) are to be
+    rendered instead.
+
+- `0x0004` — `OC_ATTR_USE_GENERIC_LABEL_IMAGE`, provides predefined label images for boot entries without custom entries. May give less detail for the actual boot entry.
 
 ### `PickerAudioAssist`
 
