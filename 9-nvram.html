@@ -194,7 +194,7 @@
                     <p><small>由 xMuu、Sukka 整理，由 Sukka 翻译</small></p>
                 
                 
-                    <p><small>本页面最后更新于 2020 年 04 月 03 日</small></p>
+                    <p><small>本页面最后更新于 2020 年 04 月 14 日</small></p>
                 
                 <br>
             
@@ -221,7 +221,7 @@
 <li>分配的 NVRAM 变量并非总是允许超过 512 个字节。当使用 <code>RequestBootVarFallback</code> 时，对于带有 <code>Boot</code> 前缀的变量，以及不符合 UEFI 2.8 规范的固件上使用非易失性覆盖变量，都存在 512 字节限制。</li>
 </ul>
 <h2 id="9-2-Properties"><a href="#9-2-Properties" class="headerlink" title="9.2 Properties"></a>9.2 Properties</h2><h3 id="1-Add"><a href="#1-Add" class="headerlink" title="1. Add"></a>1. <code>Add</code></h3><p><strong>Type</strong>: <code>plist dict</code><br><strong>Description</strong>: Sets NVRAM variables from a map (<code>plist dict</code>) of GUIDs to a map (<code>plist dict</code>) of variable names and their values in <code>plist metadata</code> format. GUIDs must be provided in canonic string format in upper or lower case (e.g. <code>8BE4DF61-93CA-11D2-AA0D-00E098032B8C</code>).</p>
-<p>Created variables get <code>EFI_VARIABLE_BOOTSERVICE_ACCESS</code> and <code>EFI_VARIABLE_RUNTIME_ACCESS</code> attributes set. Variables will only be set if not present and not blocked. To overwrite a variable add it to <code>Block</code> section. This approach enables to provide default values till the operating system takes the lead.</p>
+<p>Created variables get <code>EFI_VARIABLE_BOOTSERVICE_ACCESS</code> and <code>EFI_VARIABLE_RUNTIME_ACCESS</code> attributes set. Variables will only be set if not present and not blocked. I.e. to overwrite an existing variable value add the variable name to the <code>Block</code> section. This approach enables to provide default values till the operating system takes the lead.</p>
 <p><em>注</em>：If <code>plist key</code> does not conform to GUID format, behaviour is undefined.</p>
 <h3 id="2-Block"><a href="#2-Block" class="headerlink" title="2. Block"></a>2. <code>Block</code></h3><p><strong>Type</strong>: <code>plist dict</code><br><strong>Description</strong>: Removes NVRAM variables from a map (<code>plist dict</code>) of GUIDs to an array (<code>plist array</code>) of variable names in <code>plist string</code> format.</p>
 <h3 id="3-LegacyEnable"><a href="#3-LegacyEnable" class="headerlink" title="3. LegacyEnable"></a>3. <code>LegacyEnable</code></h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: <code>false</code><br><strong>Description</strong>: 允许从 ESP 分区的根目录中的 <code>nvram.plist</code> 文件读取 NVRAM 变量。</p>

@@ -194,7 +194,7 @@
                     <p><small>由 xMuu、Sukka 整理，由 Sukka、derbalkon 翻译</small></p>
                 
                 
-                    <p><small>本页面最后更新于 2020 年 03 月 30 日</small></p>
+                    <p><small>本页面最后更新于 2020 年 04 月 14 日</small></p>
                 
                 <br>
             
@@ -226,8 +226,9 @@
 <li><code>TryOverwrite</code> — 如果新的数据大小 小于等于 按页对齐的原始数据，且对解锁 legacy region 没有影响，则选择 <code>Overwrite</code> 方式；否则选择 <code>Create</code> 方式。在某些硬件上可能会有问题。 </li>
 <li><code>Create</code> — 在 AllocateMaxAddress 将表替换为新分配的 EfiReservedMemoryType，没有回退机制。</li>
 <li><code>Overwrite</code> — 如果数据大小合适则覆盖现有的 gEfiSmbiosTableGuid 和 gEfiSmbiosTable3Guid，否则将以不明状态中止。</li>
-<li><code>Custom</code> — 把第一个 SMBIOS 表（<code>gEfiSmbiosTableGuid</code>）写入 <code>gOcCustomSmbiosTableGuid</code>，以此来解决固件在 ExitBootServices 覆盖 SMBIOS 内容的问题；否则等同于 <code>Create</code>。需要 AppleSmbios.kext 和 AppleACPIPlatform.kext 打补丁来读取另一个 GUID: <code>&quot;EB9D2D31&quot;</code> - <code>&quot;EB9D2D35&quot;</code> (in ASCII)， 这一步由 <code>CustomSMBIOSGuid</code> quirk 自动完成。</li>
+<li><code>Custom</code> — 把第一个 SMBIOS 表（<code>gEfiSmbios(3)TableGuid</code>）写入 <code>gOcCustomSmbios(3)TableGuid</code>，以此来解决固件在 ExitBootServices 覆盖 SMBIOS 内容的问题；否则等同于 <code>Create</code>。需要 AppleSmbios.kext 和 AppleACPIPlatform.kext 打补丁来读取另一个 GUID: <code>&quot;EB9D2D31&quot;</code> - <code>&quot;EB9D2D35&quot;</code> (in ASCII)， 这一步由 <code>CustomSMBIOSGuid</code> quirk 自动完成。</li>
 </ul>
+<p><em>注</em>： 使用 <code>Custom</code> 有一个副作用（译者注：我怎么感觉是好事）使得 SMBIOS 设置只对 macOS 生效，避免了与现有的 Windows 激活和依赖机型的 OEM 设置的相关问题。不过，苹果在 Windows 下的特定工具（译者注：如 BootCamp for Windows）可能会受到影响</p>
 <h3 id="6-Generic"><a href="#6-Generic" class="headerlink" title="6. Generic"></a>6. <code>Generic</code></h3><p><strong>Type</strong>: <code>plist dictonary</code><br><strong>Optional</strong>: <code>Automatic</code> 为 <code>false</code> 时可不填<br><strong>Description</strong>: 更新所有字段。当 <code>Automatic</code> 激活时此处为只读。</p>
 <h3 id="7-DataHub"><a href="#7-DataHub" class="headerlink" title="7. DataHub"></a>7. <code>DataHub</code></h3><p><strong>Type</strong>: <code>plist dictonary</code><br><strong>Optional</strong>: <code>Automatic</code> 为 <code>true</code> 时可不填<br><strong>Description</strong>: 更新 Data Hub 字段。当 <code>Automatic</code> 未激活时此处为只读。</p>
 <h3 id="8-PlatformNVRAM"><a href="#8-PlatformNVRAM" class="headerlink" title="8. PlatformNVRAM"></a>8. <code>PlatformNVRAM</code></h3><p><strong>Type</strong>: <code>plist dictonary</code><br><strong>Optional</strong>: <code>Automatic</code> 为 <code>true</code> 时可不填<br><strong>Description</strong>: 更新 platform NVRAM 字段。当 <code>Automatic</code> 未激活时此处为只读。</p>
