@@ -26,11 +26,11 @@ type: docs
 由于 OpenCore 仍处于积极的维护之中，OpenCore 参考手册 仍然在高频率更新，本网站提供的内容 **仅可供参考**。本网站的内容和 OpenCore 官方的参考手册的任何出入，**请以 OpenCore 官方的参考手册为准**。
 
 > 本网站提供的翻译基于如下描述的 OpenCore 官方文档：
-> - **OpenCore 文档释出日期**：2020.03.21
-> - **OpenCore 文档版本**：[`e5e822e0d3953c327f199938f9920827d3c0fbe3`](https://github.com/acidanthera/OpenCorePkg/commit/e5e822e0d3953c327f199938f9920827d3c0fbe3)
+> - **OpenCore 文档释出日期**：2020.04.13
+> - **OpenCore 文档版本**：[`09aba22d36993053c116fee1704ebe2cb39bc921`](https://github.com/acidanthera/OpenCorePkg/commit/09aba22d36993053c116fee1704ebe2cb39bc921)
 >
 > 本网站提供的翻译适用于如下描述的 OpenCore 版本：
-> - **OpenCore 版本**：0.5.7
+> - **OpenCore 版本**：0.5.8
 
 本网站以及 `acidanthera` **不会对因本网站引起的任何损失负责**，包括但不限于 Kernel Panic、设备无法开机或正常使用、硬盘损坏或数据丢失、原子弹爆炸、第三次世界大战、[SCP 基金会](https://scp-wiki-cn.wikidot.com/) 无法阻止的全球 CK 级现实重构等。
 

@@ -3,7 +3,7 @@ title: 11. UEFI
 description: UEFI 驱动以及加载顺序（待翻译）
 type: docs
 author_info: 由 xMuu、Sukka 整理，由 Sukka 翻译
-last_updated: 2020-04-03
+last_updated: 2020-04-14
 ---
 
 ## 11.1 Introduction
@@ -14,7 +14,6 @@ last_updated: 2020-04-03
 
 根据固件不同、可能需要不同的驱动程序。加载不兼容的驱动程序可能会导致无法启动系统，甚至导致固件永久性损坏。OpenCore 目前对以下 UEFI 驱动提供支持。OpenCore 可能兼容对其他 UEFI 驱动，但不能确定。
 
-- [`ApfsDriverLoader`](https://github.com/acidanthera/AppleSupportPkg) --- APFS 文件系统引导驱动程序在 UEFI 固件的可启动 APFS 容器中添加了对嵌入式 APFS 驱动程序的支持。
 - [`OpenRuntime`](https://github.com/acidanthera/OpenCorePkg) --- （原名 `FwRuntimeServices.efi`）`OC_FIRMWARE_RUNTIME` 协议通过支持只读、只写 NVRAM 变量，提升了 OpenCore 和 Lilu 的安全性。有些 Quirks 如 `RequestBootVarRouting` 依赖此驱动程序。由于 runtime 驱动饿性质（与目标操作系统并行运行），因此它不能在 OpenCore 本身实现，而是与 OpenCore 捆绑在一起。
 - [`HiiDatabase`](https://github.com/acidanthera/audk) --- 来自 `MdeModulePkg` 的 HII 服务驱动。Ivy Bridge 及其以后的大多数固件中都已内置此驱动程序。某些带有 GUI 的应用程序（例如 UEFI Shell）可能需要此驱动程序才能正常工作。
 - [`EnhancedFatDxe`](https://github.com/acidanthera/audk) --- 来自 `FatPkg` 的 FAT 文件系统驱动程序。这个驱动程序已经被嵌入到所有 UEFI 固件中，无法为 OpenCore 使用。众所周知，许多固件的 FAT 支持实现都有错误，导致在尝试写操作时损坏文件系统。如果在引导过程中需要写入 EFI 分区，则可能组要将此驱动程序嵌入固件中。
@@ -85,6 +84,12 @@ OpenCanopy 所需的图象资源位于 `Resources` 目录下，一些简单的�
 
 ## 11.6 Properties
 
+### `APFS`
+
+**Type**: `plist dict`
+**Failsafe**: None
+**Description**: 配置 APFS 分区驱动，具体配置内容参见下文 `APFS Properties` 部分。
+
 ### `Audio`
 
 **Type**: `plist dict`
@@ -144,7 +149,45 @@ Audio localisation is determined separately for macOS bootloader and OpenCore. F
 **Failsafe**: None
 **Description**: Apply individual firmware quirks described in [Quirks Properties]() section below.
 
-## 11.7 Audio Properties
+## 11.7 APFS Properties
+
+### `EnableJumpstart`
+
+**Type**: `plist boolean`
+**Failsafe**: `False`
+**Description**: 从一个 APFS 容器中加载 APFS 驱动。
+
+APFS 的 EFI 驱动内置在所有可以作为系统启动盘的 APFS 容器之中。这一选项将会根据基于 `ScanPolicy` 找到的 APFS 容器，从中加载 APFS 驱动。更多详情请查看 [苹果 APFS 文件系统参考手册](https://developer.apple.com/support/apple-file-system/Apple-File-System-Reference.pdf) 中的 `EFI Jummpstart` 章节。
+
+### `HideVerbose`
+
+**Type**: `plist boolean`
+**Failsafe**: `False`
+**Description**: 是否隐藏 APFS 驱动的 verbose 信息。
+
+APFS 驱动的 verbose 信息有助于 debug。
+
+### `JumpstartHotPlug`
+
+**Type**: `plist boolean`
+**Failsafe**: `False`
+**Description**: 允许从进入 OpenCore 引导菜单后插入的可移除硬盘上的 APFS 容器中加载 APFS 驱动。
+
+这一选项不仅提供了进入 OpenCore 以后再插入 U 盘的支持，而且还允许了在 OpenCore 引导菜单下 APFS U 盘的热插拔。
+
+### `MinDate`
+
+**Type**: `plist integer`
+**Failsafe**: `0`
+**Description**: 允许加载的最老 APFS 驱动的版本号
+
+APFS 驱动的版本号基于其发布日期。较旧版本的 APFS 驱动可能与较新的系统不兼容、或者有未修补的漏洞。通过这一选项可以避免 OpenCore 加载过旧版本的 APFS 驱动。
+
+- `0` - 使用默认数值。OpenCore 会随着未来更新，内置的默认数值也会不断更新。如果你会一直更新你的系统，我们推荐使用这一数值。目前默认数值为 `2020/01/01`。
+- `-1` - 允许使用任何版本的 APFS 驱动（强烈不推荐）。
+- 其他数值 - 数值格式应为形如 `20200401` 的格式。你可以从 OpenCore 的启动日志和 [OcApfsLib](https://github.com/acidanthera/OpenCorePkg/blob/master/Include/Library/OcApfsLib.h) 中找到 APFS 驱动的版本号。
+
+## 11.8 Audio Properties
 
 ### `AudioCodec`
 
@@ -229,7 +272,7 @@ RawVolume = MIN{ [(SystemAudioVolume * VolumeAmplifier) / 100], 100 }
 
 *Note*: the transformation used in macOS is not linear, but it is very close and this nuance is thus ignored.
 
-## 11.8 Input Properties
+## 11.9 Input Properties
 
 ### `KeyFiltering`
 
@@ -312,7 +355,7 @@ Apparently some boards like GA Z77P-D3 may return uninitialised data in `EFI_INP
 
 设置较低的值可以提高界面和输入处理性能的响应能力。建议值为 `50000`（即 5 毫秒）或稍高一些。选择 ASUS Z87 主板时，请使用 `60000`，苹果主板请使用 `100000`。你也可以将此值保留为 0，由 OpenCore 自动计算。
 
-## 11.9 Output Properties
+## 11.10 Output Properties
 
 ### `TextRenderer`
 **Type**: `plist string`
@@ -430,7 +473,7 @@ On some firmwares when screen resolution is changed via GOP, it is required to r
 
 *注*：This option only applies to `System` renderer. On all known affected systems `ConsoleMode` had to be set to empty string for this to work.
 
-## 11.10 Protocols Properties
+## 11.11 Protocols Properties
 
 ### `AppleAudio`
 
@@ -529,7 +572,7 @@ Only one set of audio protocols can be available at a time, so in order to get a
 **Failsafe**: `false`
 **Description**: 强制重新安装内置版本的 Unicode Collation 服务。建议启用这一选项以确保 UEFI Shell 的兼容性。一些较旧的固件破坏了 Unicode 排序规则, 启用后可以修复这些系统上 UEFI Shell 的兼容性 (通常为用于 IvyBridge 或更旧的设备)
 
-## 11.11 Quirks Properties
+## 11.12 Quirks Properties
 
 ### `ExitBootServicesDelay`
 

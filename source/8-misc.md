@@ -3,7 +3,7 @@ title: 8. Misc
 description: 关于 OpenCore 行为的其他配置（待翻译）
 type: docs
 author_info: 由 xMuu、Sukka 整理、由 Sukka 翻译。部分翻译参考黑果小兵的「精解 OpenCore」
-last_updated: 2020-04-06
+last_updated: 2020-04-14
 ---
 
 ## 8.1 Introduction
@@ -136,7 +136,7 @@ Current OpenCore values include:
   - `.VolumeIcon.icns` file at volume root for other filesystems.
   - `<TOOL_NAME>.icns` file for `Tools`.
 
-  Volume icons can be set in Finder.
+  Volume icons can be set in Finder. 注意，启用此功能可能会导致 外部可移除硬盘的图标 和 内部不可移除硬盘的图标 无法区分。
 
 - `0x0002` — `OC_ATTR_USE_DISK_LABEL_FILE`, provides custom rendered titles for boot entries:
   - `.disk_label` (`.disk_label_2x`) file near bootloader for all filesystems.
