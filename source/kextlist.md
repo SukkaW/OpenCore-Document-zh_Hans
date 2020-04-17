@@ -3,7 +3,7 @@ title: 附录 1. OpenCore 兼容 Kext 列表
 description: OpenCore 支持的内核驱动 (Kext) 及其用途
 type: docs
 author_info: 由 Sukka 整理，感谢黑果小兵的博客提供的资料。
-last_updated: 2020-02-15
+last_updated: 2020-04-17
 ---
 
 ## 有线网卡
@@ -44,10 +44,11 @@ last_updated: 2020-02-15
 - [VoodooPS2Controller.kext](https://github.com/acidanthera/VoodooPS2) --- PS2 键盘/触摸板 驱动
 - [VoodooInput.kext](https://github.com/acidanthera/VoodooInput) --- 为 PS2 键盘/触摸板 提供模拟 Magic TrackPad 2 触控模拟
 - [VoodooSMBus.kext](https://github.com/leo-labs/VoodooSMBus)
+- [AlpsT4USB.kext](https://github.com/blankmac/AlpsT4USB) --- VoodooI2C 的卫星插件 kext，为 Alps T4 USB 触控板提供原生苹果手势支持。
 
-## Video and audio
+## 音频和视频
 
-- [AppleALC.kext](https://github.com/acidanthera/AppleALC) --- 定制万能声卡驱动
+- [AppleALC.kext](https://github.com/acidanthera/AppleALC) --- 定制声卡驱动
 - [EMUUSBAudio.kext](https://github.com/Wouter1/EMU-driver) --- 适用于 Creative Labs EMU USB 的驱动程序
 - [kXAudioDriver.kext](https://github.com/kxproject/kx-audio-driver) --- 适用于 kX 音频设备的驱动
 - [Nvidia CUDA drivers](https://www.nvidia.com/object/mac-driver-archive.html) --- NVIDIA CUDA 官方驱动
@@ -88,6 +89,6 @@ last_updated: 2020-02-15
 - [Lilu.kext](https://github.com/acidanthera/Lilu) --- SDK & Library
 - [LiluFriend.kext](https://github.com/PMheart/LiluFriend) --- 用于确保 Lilu 在 L/E 下正常加载
 - [RTCMemoryFixup.kext](https://github.com/lvs1974/RTCMemoryFixup) --- 修复 BIOS CMOS (RTC) 内存和 AppleRTC 之间的冲突问题
-- [NightShiftUnlocker.kext](https://github.com/0xFireWolf/NightShiftUnlocker) --- 解锁 NightShift
+- [NightShiftEnabler.kext](https://github.com/cdf/NightShiftEnabler) --- 解锁 NightShift
 - [WebCamera.kext](https://www.applelife.ru/threads/asus-x550vc-i-asus-x550cc.41752/page-130#post-593586) --- 某些旧设备的摄像头驱动
 - [TOSMotionSensor.kext](https://github.com/jslegendre/TOSMotionSensor) --- 东芝设备的加速度传感器驱动

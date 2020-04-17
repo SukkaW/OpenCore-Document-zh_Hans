@@ -3,7 +3,7 @@ title: 11. UEFI
 description: UEFI 驱动以及加载顺序（待翻译）
 type: docs
 author_info: 由 xMuu、Sukka 整理，由 Sukka 翻译
-last_updated: 2020-04-14
+last_updated: 2020-04-17
 ---
 
 ## 11.1 Introduction
@@ -24,6 +24,8 @@ last_updated: 2020-04-14
 - [`XhciDxe`](https://github.com/acidanthera/audk) --- 来自 `MdeModulePkg` 的 XHCI USB controller 驱动程序。从 Sandy Bridge 代开始的大多数固件中都包含此驱动程序。在较早的固件或旧系统可以用于支持外部 USB 3.0 PCI 卡。
 - [`AudioDxe`](https://github.com/acidanthera/AppleSupportPkg) --- UEFI 固件中的 HDA 音频驱动程序，适用于大多数 Intel 和其他一些模拟音频控制器。Refer to [acidanthera/bugtracker#740](https://github.com/acidanthera/bugtracker/issues/740) for known issues in AudioDxe.
 - [`ExFatDxe`](https://github.com/acidanthera/OcBinaryData) --- 用于 Bootcamp 支持的专有 ExFAT 文件系统驱动程序，通常可以在 Apple 固件中找到。 对于 `Sandy Bridge` 和更早的 CPU，由于缺少 `RDRAND` 指令支持，应使用 `ExFatDxeLegacy` 驱动程序。
+- [`Ps2MouseDxe`](https://github.com/acidanthera/audk) --- 从 `MdeModulePkg` 提取出来的 PS/2 鼠标驱动。该固件，虽然只有非常老旧的笔记本的固件中可能没有不包含该驱动，但是笔记本依赖该驱动才能在引导界面使用触控板。
+- [`UsbMouseDxe`](https://github.com/acidanthera/audk) --- 从 `MdeModulePkg` 提取出来的 USB 鼠标驱动。该固件，一般只有虚拟机（如 OVMF）的固件中可能没有不包含该驱动，但是这些虚拟机依赖该驱动才能在引导界面使用鼠标。
 
 要从 UDK（EDK II）编译驱动程序，可以使用编译 OpenCore 类似的命令。
 
