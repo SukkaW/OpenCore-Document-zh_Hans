@@ -3,7 +3,7 @@ title: 3. Setup
 description: Setup（待翻译）
 type: docs
 author_info: 由 Sukka 整理、由 Sukka 翻译。
-last_updated: 2020-03-14
+last_updated: 2020-04-19
 ---
 
 ## 3.1 目录结构
@@ -76,7 +76,7 @@ The only officially supported toolchain is `XCODE5`. Other toolchains might work
 
 Required external package dependencies include [EfiPkg](https://github.com/acidanthera/EfiPkg), [MacInfoPkg](https://github.com/acidanthera/MacInfoPkg).
 
-To compile with `XCODE5`, besides [Xcode](https://developer.apple.com/xcode), one should also install [NASM](https://www.nasm.us) and [MTOC](https://github.com/acidanthera/ocbuild/raw/master/external/mtoc-mac64.zip). The latest Xcode version is recommended for use despite the toolchain name. Example
+To compile with `XCODE5`, besides [Xcode](https://developer.apple.com/xcode), one should also install [NASM](https://www.nasm.us) and [MTOC](https://github.com/acidanthera/ocbuild/tree/master/external). The latest Xcode version is recommended for use despite the toolchain name. Example
 command sequence may look as follows:
 
 ```bash

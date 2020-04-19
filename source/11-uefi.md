@@ -3,7 +3,7 @@ title: 11. UEFI
 description: UEFI 驱动以及加载顺序（待翻译）
 type: docs
 author_info: 由 xMuu、Sukka 整理，由 Sukka 翻译
-last_updated: 2020-04-17
+last_updated: 2020-04-19
 ---
 
 ## 11.1 Introduction
@@ -63,6 +63,7 @@ Some of the known tools are listed below:
 - [`HdaCodecDump`](https://github.com/acidanthera/OpenCorePkg) (**内置**) — 解析和转储高清晰度音频编解码器（Codec）信息（需要 `AudioDxe`）。
 - [`KeyTester`](https://github.com/acidanthera/OpenCorePkg) (**内置**) — 在 `SimpleText` 模式下测试键盘输入。
 - [`OpenCore Shell`](https://github.com/acidanthera/OpenCorePkg) (**内置**) — 由 OpenCore 配置的 [`UEFI Shell`](http://github.com/tianocore/edk2)，与绝大部分固件兼容。
+- [`RtcRw`](https://github.com/acidanthera/OpenCorePkg) — Utility to read and write RTC (CMOS) memory.
 - [`PavpProvision`](https://github.com/acidanthera/OpenCorePkg) — Perform EPID provisioning (requires certificate data configuration).
 - [`VerifyMsrE2`](https://github.com/acidanthera/OpenCorePkg) (**内置**) — 检查 `CFG Lock`（MSR `0xE2` 写保护）在所有 CPU 核心之间的一致性。
 
@@ -150,6 +151,11 @@ Audio localisation is determined separately for macOS bootloader and OpenCore. F
 **Type**: `plist dict`
 **Failsafe**: None
 **Description**: Apply individual firmware quirks described in [Quirks Properties]() section below.
+
+### `ReservedMemory`
+
+**Type**: `plist array`
+**Description**: Designed to be filled with `plist dict` values, describing memory areas exquisite to particular firmware and hardware functioning, which should not be used by the operating system. An example of such memory region could be second 256 MB corrupted by Intel HD 3000 or an area with faulty RAM.
 
 ## 11.7 APFS Properties
 
@@ -520,7 +526,15 @@ Only one set of audio protocols can be available at a time, so in order to get a
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
-**Description**: 重新安装内置的 Apple Key Map 协议
+**Description**: 重新安装内置的 Apple Key Map 协议。
+
+### `AppleRtcRam`
+
+**Type**: `plist boolean`
+**Failsafe**: `false`
+**Description**: 重新安装内置的 Apple RTC RAM 协议。
+
+*注*：内置的 Apple RTC RAM 协议可能会过滤掉 RTC 内存地址的潜在 I/O。地址列表可以在 `4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102:rtc-blacklist` 中以数组的方式指定。
 
 ### `AppleSmcIo`
 
@@ -633,3 +647,31 @@ This quirk requires `OC_FIRMWARE_RUNTIME` protocol implemented in `OpenRuntime.e
 **Description**: 某些固件通过「按驱动程序」模式下来阻止引导项加载。
 
 *注*：如果惠普笔记本在 OpenCore 界面没有看到引导项时启用这一选项。
+
+## 11.13 ReservedMemory Properties
+
+### `Address`
+
+**Type**: `plist integer`
+**Failsafe**: `0`
+**Description**: Start address of the reserved memory region, which should be allocated as reserved effectively marking the memory of this type inaccessible to the operating system.
+
+The addresses written here must be part of the memory map, have `EfiConventionalMemory` type, and page-aligned (4 KBs).
+
+### `Comment`
+
+**Type**: `plist string`
+**Failsafe**: Empty string
+**Description**: Arbitrary ASCII string used to provide human readable reference for the entry. It is implementation defined whether this value is used.
+
+### `Size`
+
+**Type**: `plist integer`
+**Failsafe**: `0`
+**Description**: Size of the reserved memory region, must be page-aligned (4 KBs).
+
+### `Enabled`
+
+**Type**: `plist boolean`
+**Failsafe**: `false`
+**Description**: This region will not be reserved unless set to `true`.

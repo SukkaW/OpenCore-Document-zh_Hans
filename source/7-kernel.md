@@ -3,7 +3,7 @@ title: 7. Kernel
 description: OpenCore 安全配置，Kext 加载顺序以及屏蔽（待翻译）
 type: docs
 author_info: 由 Sukka 整理，由 Sukka 翻译。
-last_updated: 2020-03-14
+last_updated: 2020-04-19
 ---
 
 ## 7.1 简介
@@ -331,6 +331,17 @@ This patch writes `0xFF00` to `MSR_IA32_PERF_CONTROL` (`0x199`), effectively set
 **Description**: 禁用 XNU (VT-d) 中的 `IOMapper` 支持，这可能与固件的实现相冲突。
 
 *注*：相比直接在 ACPI 表中删除 `DMAR`，我们更推荐大家使用这一选项。这样不会破坏其他操作系统中的 VT-d 支持（总会有人需要用到的，对吧？）。
+
+### `DisableRtcChecksum`
+
+**Type**: `plist boolean`
+**Failsafe**: `false`
+**Description**: Disables primary checksum (`0x58` - `0x59`) writing in AppleRTC.
+
+*注*：
+
+1. This option will not protect other areas from being overwritten, use [RTCMemoryFixup](https://github.com/acidanthera/RTCMemoryFixup) kernel extension if this is desired.
+2. This option will not protect areas from being overwritten at firmware stage (e.g. macOS bootloader). See `AppleRtc` protocol description if this is desired.
 
 ### `DummyPowerManagement`
 
