@@ -46,7 +46,7 @@ last_updated: 2020-04-22
 
 应填入 `plist dict` 类型的值来描述相应的加载条目。详见 [Entry Properties]() 部分。
 
-*注*：选择工具（比如 UEFI shell）是很危险的事情，利用这些工具可以轻易地绕过安全启动链，所以**千万不要**出现在产品配置中，尤其是 设置了文件保险箱 和 有安全启动保护的设备（译者注：即，工具仅作调试用）。
+*注*：选择工具（比如 UEFI shell）是很危险的事情，利用这些工具可以轻易地绕过安全启动链，所以**千万不要**出现在产品配置中，尤其是设置了 vault 和安全启动保护的设备（译者注：即，工具仅作调试用）。
 
 
 ## 8.3 Boot Properties
@@ -84,7 +84,7 @@ last_updated: 2020-04-22
 - `0x60` — `EFI_BACKGROUND_BROWN`（棕色背景）
 - `0x70` — `EFI_BACKGROUND_LIGHTGRAY`（亮灰色背景）
 
-*注*：这个选项可能和 `System` 中的文字渲染有冲突，设置一个非黑的背景可以用来测试 GOP 是否正常运行。
+*注*：这个选项可能和 TextRenderer 的 `System` 参数有冲突，设置一个非黑的背景可以用来测试 GOP 是否正常运行。
 
 ### `HibernateMode`
 
@@ -126,7 +126,7 @@ last_updated: 2020-04-22
 **Failsafe**: `0`
 **Description**: 设置开机引导菜单的属性。
 
-不同的选项可以用属性遮罩的方式来设置，其中属性遮罩包含 OpenCore 的预留值（`BIT0` ~ `BIT15`）和 OEM 特定值（`BIT16` ~ `BIT31`）。
+不同的选项可以用属性掩码的方式来设置，其中掩码包含 OpenCore 的预留值（`BIT0` ~ `BIT15`）和 OEM 特定值（`BIT16` ~ `BIT31`）。
 
 目前 OpenCore 提供的值包括：
 
@@ -141,7 +141,7 @@ last_updated: 2020-04-22
   - `.disk_label` (`.disk_label_2x`) 文件与 bootloader 相关，适用于所有文件系统。
   - `<TOOL_NAME.lbl` (`<TOOL_NAME.l2x`) 文件与工具相关，适用于 `Tools`。
 
-    可用 `disklabel` 实用工具或 `bless` 命令来生成预置标签。当禁用或者缺少文本标签 (`.contentDetails` or `.disk_label.contentDetails`) 时，可以用它来代替渲染。
+    可用 `disklabel` 实用工具或 `bless` 命令来生成预置标签。当禁用或者缺少文本标签 (`.contentDetails` or `.disk_label.contentDetails`) 时将以它来代替渲染。
 
 - `0x0004` — `OC_ATTR_USE_GENERIC_LABEL_IMAGE`，为没有自定义条目的启动项提供预定义的标签图像。可能会缺少实际启动项的详细信息。
 
@@ -163,7 +163,7 @@ macOS Bootloader 屏幕朗读 的偏好设置是存在 `isVOEnabled.int32` 文�
 
 除了 `action hotkeys`（在 `PickerMode` 一节中有所描述，由 Apple BDS 处理），还有由操作系统 bootloader 处理的修饰键，即 `boot.efi`。这些键可以通过提供不同的启动模式来改变操作系统的行为。 
 
-在某些固件上，由于驱动程序不兼容，使用修饰键可能会有问题。为了解决问题，这个选项允许你在启动选择器中以更宽松的方式注册选择的热键吗，比如：在按住 `Shift` 和其他按键的同时支持敲击按键，而不是只按 `Shift`，这在许多 PS/2 键盘上是无法识别的。已知的 `modifier hotkeys` 包括：
+在某些固件上，由于驱动程序不兼容，使用修饰键可能会有问题。为了解决问题，这个选项允许你在启动选择器中以更宽松的方式注册选择的热键，比如：在按住 `Shift` 和其他按键的同时支持敲击按键，而不是只按 `Shift`，这在许多 PS/2 键盘上是无法识别的。已知的 `modifier hotkeys` 包括：
 
 - `CMD+C+MINUS` --- 禁用主板兼容性检查。
 - `CMD+K` --- 从 release 版本的内核启动，类似于 `kcsuffix=release` 参数。
@@ -204,7 +204,7 @@ macOS Bootloader 屏幕朗读 的偏好设置是存在 `isVOEnabled.int32` 文�
 这里描述的是具有可选用户界面的底层启动管理器，支持以下值：
 
 - `Builtin` --- 使用由 OpenCore 处理的启动管理器，简单的文本用户界面。
-- `External` --- 若果可用，则使用外部启动管理器协议，否则使用 `Builtin` 模式。
+- `External` --- 如果可用，则使用外部启动管理器协议，否则使用 `Builtin` 模式。
 - `Apple` --- 如果可用，则使用 Apple 启动管理器，否则使用 `Builtin` 模式。
 
 `External` 模式一旦成功，就会完全禁用 OpenCore 中的除策略强制执行的所有其他启动管理器，而 `Apple` 模式下可以绕过策略的强制执行。请参阅 `ueficanopy` 插件以了解自定义用户界面的实例。
@@ -215,11 +215,11 @@ OpenCore 内置的启动选择器包含了一系列在启动过程中选择的�
 - `ShowPicker` --- 此项会强制显示启动选择器，通常可以在启动时按住 `OPT` 键来实现。将 `ShowPicker` 设置为 `true` 会使 `ShowPicker` 成为默认选项。
 - `ResetNvram` --- 此项会擦除 UEFI 变量，通常是在启动时按住 `CMD+OPT+P+R` 组合键来实现。另一种擦除 UEFI 变量的方法是在选择器中选择 `Reset NVRAM`，要使用这种方式需要将 `AllowNvramReset` 设置为 `true`。
 - `BootApple` --- 此项会启动到第一个找到的 Apple 操作系统，除非 Apple 已经默认选择了操作系统。按住 `X` 来选择此选项。
-- `BootAppleRecovery` --- 此项会启动到 Apple 操作系统的恢复系统。这里的系统要么是「与默认选中的操作系统相关的恢复系统」，要么是「第一个找到的不是来自 Apple 的恢复系统」，要么是「无恢复系统」。按住 `CMD+R` 组合键来选择此选项。
+- `BootAppleRecovery` --- 此项会启动到 Apple 操作系统的恢复系统。这里的系统要么是「与默认选中的操作系统相关的恢复系统」，要么是「第一个找到的非 Apple 的默认操作系统的恢复系统」，要么是「无恢复系统」。按住 `CMD+R` 组合键来选择此选项。
 
-*注 1*：需要激活 `KeySupport`、`OpenUsbKbDxe` 或类似的驱动程序才能工作。在许多固件上，可能无法使所有按键功能生效。
+*注 1*：需要激活 `KeySupport`、`OpenUsbKbDxe` 或类似的驱动程序才能工作。无法获得全部按键功能的固件有很多。
 
-*注 2*：当禁用 `ShowPicker` 时，除了 `OPT` 键之外，OpenCore 还支持 `Escape` 键来显示启动选项。这个键适用于 `Apple` 启动选择器模式，也适用于 PS/2 键盘的固件，因为它们无法提交按住 `OPT` 键的请求，需要连续点按 `Escape` 键来进入启动选择菜单。
+*注 2*：当禁用 `ShowPicker` 时，除了 `OPT` 键之外，OpenCore 还支持 `Escape` 键来显示启动选项。这个键不仅适用于 `Apple` 启动选择器模式，也适用于 PS/2 键盘的固件，因为这种键盘无法提交按住 `OPT` 键的请求，需要连续点按 `Escape` 键来进入启动选择菜单。
 
 *注 3*：有些 Mac 的 GOP 很棘手，可能很难进入 Apple 启动选择器。要解决这个问题，可以在不加载 GOP 的情况下 bless OpenCore 的 `BootKicker` 实用工具。
 
@@ -250,7 +250,7 @@ OpenCore 内置的启动选择器包含了一系列在启动过程中选择的�
 
 **Type**: `plist integer`, 64 bit
 **Failsafe**: `0`
-**Description**: 将 EDK II 调试界别到位掩码（总和）显示在屏幕上。除非 `Target` 启用了控制台在屏幕上输出日志，否则屏幕上的调试输出将不可见。支持以下级别（更多信息参见 [DebugLib.h](https://github.com/acidanthera/audk/blob/master/MdePkg/Include/Library/DebugLib.h)）：
+**Description**: 与屏幕显示相关的 EDK II 调试级别的位掩码（总和）。除非 `Target` 启用了控制台在屏幕上输出日志，否则屏幕上的调试输出将不可见。支持以下级别（更多信息参见 [DebugLib.h](https://github.com/acidanthera/audk/blob/master/MdePkg/Include/Library/DebugLib.h)）：
 
 - `0x00000002` (bit `1`) --- `DEBUG_WARN` in `DEBUG`, `NOOPT`, `RELEASE`.
 - `0x00000040` (bit `6`) --- `DEBUG_INFO` in `DEBUG`, `NOOPT`.
@@ -281,7 +281,7 @@ Data Hub 日志中不包括 Kernel 和 Kext 的日志。要获取 Data Hub 日�
 ioreg -lw0 -p IODeviceTree | grep boot-log | sort | sed 's/.*<\(.*\)>.*/\1/' | xxd -r -p
 ```
 
-UEFI 变量日志中不包含某些信息，也没有性能数据。为了安全起见，日志大小被限制在 32 KB。有些固件可能会提前截断它，或者在它无内存时完全删除它。使用非易失性 flag 将会在每打印一行后将日志写入 NVRAM 闪存。如要获取 UEFI 变量日志，请在 macOS 中使用以下命令：
+UEFI 变量日志中不包含某些信息，也没有性能数据。为了安全起见，日志大小被限制在 32 KB。有些固件可能会提前截断它，或者在它无内存时完全删除它。使用非易失性 flag 将会在每打印一行后把日志写入 NVRAM 闪存。如要获取 UEFI 变量日志，请在 macOS 中使用以下命令：
 
 ```
 nvram 4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102:boot-log | awk '{gsub(/%0d%0a%00/,"");gsub(/%0d%0a/,"\n")}1'
@@ -289,7 +289,7 @@ nvram 4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102:boot-log | awk '{gsub(/%0d%0a%00/,"")
 
 *警告*：有些固件的 NVRAM 垃圾收集据说存在问题，它们可能无法做到在每次变量删除后都释放空间。在这类设备上，没有额外需要的话，请不要使用非易失性 NVRAM 日志。
 
-虽然 OpenCore 的引导日志已经包含了基本的版本信息（包括 build 类型和日期），但即使在禁用引导日志但情况下，这些数据也可以在 NVRAM 中的 `opencore-version` 变量中找到。
+虽然 OpenCore 的引导日志已经包含了基本的版本信息（包括 build 类型和日期），但即使在禁用引导日志的情况下，这些数据也可以在 NVRAM 中的 `opencore-version` 变量中找到。
 
 文件记录会在 EFI 卷宗的根目录下创建一个名为 `opencore-YYYY-MM-DD-HHMMSS.txt` 的文件，其中包含了日志的内容（大写字母部分会被替换为固件中的日期和时间）请注意，固件中的一些文件系统驱动程序不可靠，并且可能会通过 UEFI 写入文件时损坏数据。日志是尝试用最安全的方式来写入的，因此速度很慢。当你使用慢速硬盘时，请确保已将 `DisableWatchDog` 设置为 `true`。
 
@@ -326,7 +326,7 @@ VirtualSMC 通过将磁盘加密密钥拆分保存在 NVRAM 和 RTC 中来执行
 
 - `0x01` --- 将可打印的引导器路径作为 UEFI 变量暴露出来
 - `0x02` --- 将 OpenCore 版本作为 UEFI 变量暴露出来
-- `0x04` --- 将 OpenCore 版本暴露在在启动选择菜单的标题位置
+- `0x04` --- 将 OpenCore 版本暴露在启动选择菜单的标题位置
 - `0x08` --- 将 OEM 信息作为一组 UEFI 变量暴露出来
 
 根据加载顺序，暴露的启动器路径指向 OpenCore.efi 或其引导器。如要获得引导器路径，请在 macOS 中使用以下命令：
@@ -369,7 +369,7 @@ nvram 4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102:oem-board # SMBIOS Type2 ProductName
 
 有效值：
 
-- `Optional` --- vault 不加载，不安全
+- `Optional` --- 无要求，vault 不加载，不安全。
 - `Basic` --- 需要有 `vault.plist` 文件存放在 `OC` 目录下。这个值提供了基本的文件系统完整性验证，可以防止无意中的文件系统损坏。
 - `Secure` --- 需要有 `vault.sig` 签名的 `vault.plist` 文件存放在 `OC` 目录下。这个值包括了 `Basic` 完整性检查，但也会尝试建立一个可信的引导链。
 
@@ -413,7 +413,7 @@ rm vault.pub
 
 第三方驱动程序可能会根据提供的扫描策略引入额外的安全（和性能）措施。扫描策略暴露在 `4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102` GUID的 `scan-policy` 变量中，仅适用于 UEFI 启动服务。
 
-- `0x00000001` (bit `0`) --- `OC_SCAN_FILE_SYSTEM_LOCK`，将扫描限制于仅扫描此策略定义的已知文件系统。文件系统驱动可能不知道这个策略，为了避免挂载不必要的文件系统，最好不要加载它的驱动程序。此 bit 不影响 dmg 挂载，因为它可能有各种文件系统。已知文件系统的前缀为 `OC_SCAN_ALLOW_FS_`。
+- `0x00000001` (bit `0`) --- `OC_SCAN_FILE_SYSTEM_LOCK`，将扫描限制于仅扫描此策略定义的已知文件系统。文件系统驱动可能感知不到这个策略，为了避免挂载不必要的文件系统，最好不要加载它的驱动程序。此 bit 不影响 dmg 挂载，因为它可能有各种文件系统。已知文件系统的前缀为 `OC_SCAN_ALLOW_FS_`。
 - `0x00000002` (bit `1`) --- `OC_SCAN_DEVICE_LOCK`，将扫描限制于仅扫描此策略定义的已知设备类型。由于协议隧道并不一定能被检测到，因此请注意，在某些系统上可能会出现 USB 硬盘被识别成 SATA 等情况。如有类似情况，请务必报告。已知设备类型的前缀为 `OC_SCAN_ALLOW_DEVICE_`。
 - `0x00000100` (bit `8`) --- `OC_SCAN_ALLOW_FS_APFS`，允许扫描 APFS 文件系统。
 - `0x00000200` (bit `9`) --- `OC_SCAN_ALLOW_FS_HFS`，允许扫描 HFS 文件系统。
@@ -477,5 +477,5 @@ rm vault.pub
 **Failsafe**: Empty string
 **Description**: 引导入口。
 
-- `Entries` 用于指定外部启动选项，因此会在 `Path` 中取设备路径。这些值不会被检查，所以要非常小心。例如：`PciRoot(0x0)/Pci(0x1,0x1)/.../\EFI\COOL.EFI`
+- `Entries` 用于指定外部启动选项，因此会在 `Path` 中取设备路径。这些值不会被检查，所以要非常小心。例如：`PciRoot(0x0)/Pci(0x1,0x1)/.../\EFI\COOL.EFI`。
 - `Tools` 用于指定内部引导选项，这些选项隶属于 bootloader vault，因此会取相对于 `OC/Tools` 目录的文件路径。例如：`OpenShell.efi`。
