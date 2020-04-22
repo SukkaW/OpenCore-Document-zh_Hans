@@ -187,14 +187,14 @@
         <div class="hero-body">
             <h1 class="title">8. Misc</h1>
             
-                <p class="subtitle">关于 OpenCore 行为的其他配置（待翻译）</p>
+                <p class="subtitle">关于 OpenCore 行为的其他配置</p>
             
             
                 
-                    <p><small>由 xMuu、Sukka 整理、由 Sukka 翻译。部分翻译参考黑果小兵的「精解 OpenCore」</small></p>
+                    <p><small>由 xMuu、Sukka 整理、由 Sukka、derbalkon 翻译。部分翻译参考黑果小兵的「精解 OpenCore」</small></p>
                 
                 
-                    <p><small>本页面最后更新于 2020 年 04 月 14 日</small></p>
+                    <p><small>本页面最后更新于 2020 年 04 月 22 日</small></p>
                 
                 <br>
             
@@ -207,18 +207,18 @@
         <div class="column is-9-tablet doku-document-wrapper">
             <div class="content">
                 <h2 id="8-1-Introduction"><a href="#8-1-Introduction" class="headerlink" title="8.1 Introduction"></a>8.1 Introduction</h2><p>本部分包含关于 OpenCore 行为的其他配置。</p>
-<h2 id="8-2-Properties"><a href="#8-2-Properties" class="headerlink" title="8.2 Properties"></a>8.2 Properties</h2><h3 id="Boot"><a href="#Boot" class="headerlink" title="Boot"></a><code>Boot</code></h3><p><strong>Type</strong>: <code>plist dict</code><br><strong>Description</strong>: Apply boot configuration described in Boot Properties section below.</p>
+<h2 id="8-2-Properties"><a href="#8-2-Properties" class="headerlink" title="8.2 Properties"></a>8.2 Properties</h2><h3 id="Boot"><a href="#Boot" class="headerlink" title="Boot"></a><code>Boot</code></h3><p><strong>Type</strong>: <code>plist dict</code><br><strong>Description</strong>: 应用本章节 <a href="">Boot Properties</a> 中的引导相关设置。</p>
 <h3 id="BlessOverride"><a href="#BlessOverride" class="headerlink" title="BlessOverride"></a><code>BlessOverride</code></h3><p><strong>Type</strong>: <code>plist array</code><br><strong>Description</strong>: 通过 Bless Model 添加自定义扫描路径。</p>
 <p>设计为填充 <code>plist string</code> 条目，其中包含指向自定义引导程序的绝对 UEFI 路径，例如，用于 Microsoft 引导程序的 <code>\EFI\Microsoft\Boot\bootmgfw.efi</code>。这允许引导选择器自动发现异常的引导路径。在设计上它们等效于预定义的 Bless 路径（如 <code>\System\Library\CoreServices\boot.efi</code>），但与预定义的 Bless 路径不同，它们具有最高优先级。</p>
-<h3 id="Debug"><a href="#Debug" class="headerlink" title="Debug"></a><code>Debug</code></h3><p><strong>Type</strong>: <code>plist dict</code><br><strong>Description</strong>: Apply debug configuration described in <code>Debug Properties</code> section below.</p>
-<h3 id="Entries"><a href="#Entries" class="headerlink" title="Entries"></a><code>Entries</code></h3><p><strong>Type</strong>: <code>plist array</code><br><strong>Description</strong>: Add boot entries to boot picker.</p>
-<p>Designed to be filled with <code>plist dict</code> values, describing each load entry. See <a href="">Entry Properties</a> section below.</p>
-<h3 id="Security"><a href="#Security" class="headerlink" title="Security"></a><code>Security</code></h3><p><strong>Type</strong>: <code>plist dict</code><br><strong>Description</strong>: Apply security configuration described in <a href="">Security Properties</a> section below.</p>
-<h3 id="Tools"><a href="#Tools" class="headerlink" title="Tools"></a><code>Tools</code></h3><p><strong>Type</strong>: <code>plist array</code><br><strong>Description</strong>: Add tool entries to boot picker.</p>
-<p>Designed to be filled with <code>plist dict</code> values, describing each load entry. See <a href="">Entry Properties</a> section below.</p>
-<p><em>注</em>：Select tools, for example, UEFI shell, are very dangerous and <strong>MUST NOT</strong> appear in production configurations, especially in vaulted ones and protected with secure boot, as they may be used to easily bypass secure boot chain.</p>
+<h3 id="Debug"><a href="#Debug" class="headerlink" title="Debug"></a><code>Debug</code></h3><p><strong>Type</strong>: <code>plist dict</code><br><strong>Description</strong>: 应用本章节 <a href="">Debug Properties</a> 中的调试相关设置。</p>
+<h3 id="Entries"><a href="#Entries" class="headerlink" title="Entries"></a><code>Entries</code></h3><p><strong>Type</strong>: <code>plist array</code><br><strong>Description</strong>: 在开机引导菜单中添加引导项。</p>
+<p>应填入 <code>plist dict</code> 类型的值来描述相应的加载条目。详见 <a href="">Entry Properties</a> 部分。</p>
+<h3 id="Security"><a href="#Security" class="headerlink" title="Security"></a><code>Security</code></h3><p><strong>Type</strong>: <code>plist dict</code><br><strong>Description</strong>: 应用本章节 <a href="">Security Properties</a> 中的安全相关设置。</p>
+<h3 id="Tools"><a href="#Tools" class="headerlink" title="Tools"></a><code>Tools</code></h3><p><strong>Type</strong>: <code>plist array</code><br><strong>Description</strong>: 将工具条目添加到开机引导菜单。</p>
+<p>应填入 <code>plist dict</code> 类型的值来描述相应的加载条目。详见 <a href="">Entry Properties</a> 部分。</p>
+<p><em>注</em>：选择工具（比如 UEFI shell）是很危险的事情，利用这些工具可以轻易地绕过安全启动链，所以<strong>千万不要</strong>出现在产品配置中，尤其是设置了 vault 和安全启动保护的设备（译者注：即，工具仅作调试用）。</p>
 <h2 id="8-3-Boot-Properties"><a href="#8-3-Boot-Properties" class="headerlink" title="8.3 Boot Properties"></a>8.3 Boot Properties</h2><h3 id="ConsoleAttributes"><a href="#ConsoleAttributes" class="headerlink" title="ConsoleAttributes"></a><code>ConsoleAttributes</code></h3><p><strong>Type</strong>: <code>plist integer</code><br><strong>Failsafe</strong>: <code>0</code><br><strong>Description</strong>: 为控制台设置特定的属性。</p>
-<p>Text renderer supports colour arguments as a sum of foreground and background colors according to UEFI specification. The value of black background and black foreground (\texttt{0}) is reserved. List of colour names:</p>
+<p>根据 UEFI 规范，文本渲染器支持的颜色参数为前景色与背景色之和。黑色背景色和黑色前景色 (\texttt{0}) 的值是预留的。以下是颜色名称一览：</p>
 <ul>
 <li><code>0x00</code> — <code>EFI_BLACK</code>（黑色字体）</li>
 <li><code>0x01</code> — <code>EFI_BLUE</code>（蓝色字体）</li>
@@ -245,7 +245,7 @@
 <li><code>0x60</code> — <code>EFI_BACKGROUND_BROWN</code>（棕色背景）</li>
 <li><code>0x70</code> — <code>EFI_BACKGROUND_LIGHTGRAY</code>（亮灰色背景）</li>
 </ul>
-<p><em>注</em>: This option may not work well with <code>System</code> text renderer. Setting a background different from black could help testing proper GOP<br>functioning.</p>
+<p><em>注</em>：这个选项可能和 TextRenderer 的 <code>System</code> 参数有冲突，设置一个非黑的背景可以用来测试 GOP 是否正常运行。</p>
 <h3 id="HibernateMode"><a href="#HibernateMode" class="headerlink" title="HibernateMode"></a><code>HibernateMode</code></h3><p><strong>Type</strong>: <code>plist string</code><br><strong>Failsafe</strong>: <code>None</code><br><strong>Description</strong>: 休眠检测模式。 支持以下模式：</p>
 <ul>
 <li><code>None</code> — 禁用休眠</li>
@@ -264,175 +264,175 @@
 <p>即使被隐藏，你仍然可以通过 <code>空格</code> 进入「扩展模式」查看所有条目（引导项菜单会被重新加载）：</p>
 <p>一般的，隐藏辅助条目有助于加快启动速度。</p>
 <h3 id="HideSelf"><a href="#HideSelf" class="headerlink" title="HideSelf"></a><code>HideSelf</code></h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: <code>false</code><br><strong>Description</strong>: 在 OpenCore 的启动选择中隐藏自身 EFI 分区内的其它启动项，如 UEFI OS 等、Recovery、Reset NVRAM 等。</p>
-<h3 id="PickerAttributes"><a href="#PickerAttributes" class="headerlink" title="PickerAttributes"></a><code>PickerAttributes</code></h3><p><strong>Type</strong>: <code>plist integer</code><br><strong>Failsafe</strong>: <code>0</code><br><strong>Description</strong>: Sets specific attributes for picker.</p>
-<p>Different pickers may be configured through the attribute mask containing OpenCore-reserved (<code>BIT0</code> ~ <code>BIT15</code>) and OEM-specific(<code>BIT16</code> ~ <code>BIT31</code>) values.</p>
-<p>Current OpenCore values include:</p>
+<h3 id="PickerAttributes"><a href="#PickerAttributes" class="headerlink" title="PickerAttributes"></a><code>PickerAttributes</code></h3><p><strong>Type</strong>: <code>plist integer</code><br><strong>Failsafe</strong>: <code>0</code><br><strong>Description</strong>: 设置开机引导菜单的属性。</p>
+<p>不同的选项可以用属性掩码的方式来设置，其中掩码包含 OpenCore 的预留值（<code>BIT0</code> ~ <code>BIT15</code>）和 OEM 特定值（<code>BIT16</code> ~ <code>BIT31</code>）。</p>
+<p>目前 OpenCore 提供的值包括：</p>
 <ul>
-<li><p><code>0x0001</code> — <code>OC_ATTR_USE_VOLUME_ICON</code>, provides custom icons for boot entries:</p>
+<li><p><code>0x0001</code> — <code>OC_ATTR_USE_VOLUME_ICON</code>，提供引导项自定义图标：</p>
 <ul>
-<li><code>.VolumeIcon.icns</code> file at <code>Preboot</code> root for APFS.</li>
-<li><code>.VolumeIcon.icns</code> file at volume root for other filesystems.</li>
-<li><code>&lt;TOOL_NAME&gt;.icns</code> file for <code>Tools</code>.</li>
+<li><code>.VolumeIcon.icns</code> 文件，位于 APFS <code>Preboot</code> 根目录下。</li>
+<li><code>.VolumeIcon.icns</code> 文件，位于其他文件系统的卷宗的根目录下。</li>
+<li><code>&lt;TOOL_NAME&gt;.icns</code> 文件，用来显示 <code>Tools</code> 图标。</li>
 </ul>
-<p>Volume icons can be set in Finder. 注意，启用此功能可能会导致 外部可移除硬盘的图标 和 内部不可移除硬盘的图标 无法区分。</p>
+<p>卷宗图标可以在访达中设置。注意，启用此功能可能会导致 外部可移除硬盘的图标 和 内部不可移除硬盘的图标 无法区分。</p>
 </li>
-<li><p><code>0x0002</code> — <code>OC_ATTR_USE_DISK_LABEL_FILE</code>, provides custom rendered titles for boot entries:</p>
+<li><p><code>0x0002</code> — <code>OC_ATTR_USE_DISK_LABEL_FILE</code>，提供引导项自定义渲染的标题：</p>
 <ul>
-<li><p><code>.disk_label</code> (<code>.disk_label_2x</code>) file near bootloader for all filesystems.</p>
+<li><p><code>.disk_label</code> (<code>.disk_label_2x</code>) 文件与 bootloader 相关，适用于所有文件系统。</p>
 </li>
-<li><p><code>&lt;TOOL_NAME.lbl</code> (<code>&lt;TOOL_NAME.l2x</code>) file near tool for <code>Tools</code>.</p>
-<p>Prerendered labels can be generated via <code>disklabel</code> utility or<br><code>bless</code> command. When disabled or missing text labels<br>(<code>.contentDetails</code> or <code>.disk_label.contentDetails</code>) are to be<br>rendered instead.</p>
+<li><p><code>&lt;TOOL_NAME.lbl</code> (<code>&lt;TOOL_NAME.l2x</code>) 文件与工具相关，适用于 <code>Tools</code>。</p>
+<p>可用 <code>disklabel</code> 实用工具或 <code>bless</code> 命令来生成预置标签。当禁用或者缺少文本标签 (<code>.contentDetails</code> or <code>.disk_label.contentDetails</code>) 时将以它来代替渲染。</p>
 </li>
 </ul>
 </li>
-<li><p><code>0x0004</code> — <code>OC_ATTR_USE_GENERIC_LABEL_IMAGE</code>, provides predefined label images for boot entries without custom entries. May give less detail for the actual boot entry.</p>
+<li><p><code>0x0004</code> — <code>OC_ATTR_USE_GENERIC_LABEL_IMAGE</code>，为没有自定义条目的启动项提供预定义的标签图像。可能会缺少实际启动项的详细信息。</p>
 </li>
 </ul>
 <h3 id="PickerAudioAssist"><a href="#PickerAudioAssist" class="headerlink" title="PickerAudioAssist"></a><code>PickerAudioAssist</code></h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: <code>false</code><br><strong>Description</strong>: 在开机引导菜单中启用 屏幕朗读。</p>
 <p>macOS Bootloader 屏幕朗读 的偏好设置是存在 <code>isVOEnabled.int32</code> 文件的 <code>preferences.efires</code> 中、并受操作系统控制。这里仅提供一个等效的开关。切换 OpenCore 开机引导菜单和 macOS BootLoader FileVault 2 登录界面也可以使用快捷键 <code>Command</code> + <code>F5</code>。</p>
 <p><em>注</em>：屏幕朗读 依赖可以正常工作的音频设备。</p>
 <h3 id="PollAppleHotKeys"><a href="#PollAppleHotKeys" class="headerlink" title="PollAppleHotKeys"></a><code>PollAppleHotKeys</code></h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: <code>false</code><br><strong>Description</strong>: 在开机引导菜单中启用 <code>modifier hotkey</code>。</p>
-<p>In addition to <code>action hotkeys</code>, which are partially described in <code>PickerMode</code> section and are normally handled by Apple BDS, there exist modifier keys, which are handled by operating system bootloader, namely <code>boot.efi</code>. These keys allow to change operating system behaviour by providing different boot modes.</p>
-<p>On some firmwares it may be problematic to use modifier keys due to driver incompatibilities. To workaround this problem this option allows registering select hotkeys in a more permissive manner from within boot picker. Such extensions include the support of tapping on keys in addition to holding and pressing <code>Shift</code> along with other keys instead of just <code>Shift</code> alone, which is not detectible on many PS/2 keyboards. This list of known <code>modifier hotkeys</code> includes:</p>
+<p>除了 <code>action hotkeys</code>（在 <code>PickerMode</code> 一节中有所描述，由 Apple BDS 处理），还有由操作系统 bootloader 处理的修饰键，即 <code>boot.efi</code>。这些键可以通过提供不同的启动模式来改变操作系统的行为。 </p>
+<p>在某些固件上，由于驱动程序不兼容，使用修饰键可能会有问题。为了解决问题，这个选项允许你在启动选择器中以更宽松的方式注册选择的热键，比如：在按住 <code>Shift</code> 和其他按键的同时支持敲击按键，而不是只按 <code>Shift</code>，这在许多 PS/2 键盘上是无法识别的。已知的 <code>modifier hotkeys</code> 包括：</p>
 <ul>
-<li><code>CMD+C+MINUS</code> — disable board compatibility checking.</li>
-<li><code>CMD+K</code> — boot release kernel, similar to <code>kcsuffix=release</code>.</li>
+<li><code>CMD+C+MINUS</code> — 禁用主板兼容性检查。</li>
+<li><code>CMD+K</code> — 从 release 版本的内核启动，类似于 <code>kcsuffix=release</code> 参数。</li>
 <li><code>CMD+R</code> — 从恢复分区启动。</li>
 <li><code>CMD+S</code> — 启动至单用户模式。</li>
-<li><code>CMD+S+MINUS</code> — disable KASLR slide, requires disabled SIP.</li>
+<li><code>CMD+S+MINUS</code> — 禁用 KASLR slide，需要事先禁用 SIP。</li>
 <li><code>CMD+V</code> — 启用 <code>-v</code>。</li>
 <li><code>Shift</code> — 启用安全模式。</li>
 </ul>
 <h3 id="ShowPicker"><a href="#ShowPicker" class="headerlink" title="ShowPicker"></a><code>ShowPicker</code></h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: <code>false</code><br><strong>Description</strong>: 是否显示开机引导菜单。</p>
-<h3 id="TakeoffDelay"><a href="#TakeoffDelay" class="headerlink" title="TakeoffDelay"></a><code>TakeoffDelay</code></h3><p><strong>Type</strong>: <code>plist integer</code>, 32 bit<br><strong>Failsafe</strong>: <code>0</code><br><strong>Description</strong>: Delay in microseconds performed before handling picker startup and <code>action hotkeys</code>.</p>
-<p>Introducing a delay may give extra time to hold the right <code>action hotkey</code> sequence to e.g. boot to recovery mode. On some platforms setting this option to at least <code>5000-10000</code> microseconds may be necessary to access <code>action hotkeys</code> at all due to the nature of the keyboard driver.</p>
+<h3 id="TakeoffDelay"><a href="#TakeoffDelay" class="headerlink" title="TakeoffDelay"></a><code>TakeoffDelay</code></h3><p><strong>Type</strong>: <code>plist integer</code>, 32 bit<br><strong>Failsafe</strong>: <code>0</code><br><strong>Description</strong>: 在 处理引导项启动 和 处理 <code>action hotkeys</code> 之前的延迟，以微秒为单位。</p>
+<p>引入这一延迟有助于为你争取时间去完成按住 <code>action hotkey</code> 的操作，比如启动到恢复模式。在某些平台上，可能需要把此项设置为至少 <code>5000-10000</code> 来使 <code>action hotkeys</code> 生效，具体取决于键盘驱动程序的性质。</p>
+<h3 id="Timeout"><a href="#Timeout" class="headerlink" title="Timeout"></a><code>Timeout</code></h3><p><strong>Type</strong>: <code>plist integer</code>, 32 bit<br><strong>Failsafe</strong>: <code>0</code><br><strong>Description</strong>: 开机引导菜单中，启动默认启动项之前超时时间（以秒为单位）。 使用 <code>0</code> 禁用倒计时。</p>
 <blockquote>
 <p>译者注：<code>0</code> 为关闭倒计时而非跳过倒计时，相当于 Clover 的 <code>-1</code>。</p>
 </blockquote>
-<h3 id="Timeout"><a href="#Timeout" class="headerlink" title="Timeout"></a><code>Timeout</code></h3><p><strong>Type</strong>: <code>plist integer</code>, 32 bit<br><strong>Failsafe</strong>: <code>0</code><br><strong>Description</strong>: 开机引导菜单中，启动默认启动项之前超时时间（以秒为单位）。 使用 <code>0</code> 禁用倒计时。</p>
-<h3 id="PickerMode"><a href="#PickerMode" class="headerlink" title="PickerMode"></a><code>PickerMode</code></h3><p><strong>Type</strong>: <code>plist string</code><br><strong>Failsafe</strong>: <code>Builtin</code><br><strong>Description</strong>: Choose boot picker used for boot management.</p>
-<p>Picker describes underlying boot management with an optional user interface responsible for handling boot options. The following values are supported:</p>
+<h3 id="PickerMode"><a href="#PickerMode" class="headerlink" title="PickerMode"></a><code>PickerMode</code></h3><p><strong>Type</strong>: <code>plist string</code><br><strong>Failsafe</strong>: <code>Builtin</code><br><strong>Description</strong>: 选择启动管理器的界面。</p>
+<p>这里描述的是具有可选用户界面的底层启动管理器，支持以下值：</p>
 <ul>
-<li><code>Builtin</code> — boot management is handled by OpenCore, a simple<br>text only user interface is used.</li>
-<li><code>External</code> — an external boot management protocol is used<br>if available. Otherwise <code>Builtin</code> mode is used.</li>
-<li><code>Apple</code> — Apple boot management is used if available.<br>Otherwise <code>Builtin</code> mode is used.</li>
+<li><code>Builtin</code> — 使用由 OpenCore 处理的启动管理器，简单的文本用户界面。</li>
+<li><code>External</code> — 如果可用，则使用外部启动管理器协议，否则使用 <code>Builtin</code> 模式。</li>
+<li><code>Apple</code> — 如果可用，则使用 Apple 启动管理器，否则使用 <code>Builtin</code> 模式。</li>
 </ul>
-<p>Upon success <code>External</code> mode will entirely disable all boot management in OpenCore except policy enforcement. In <code>Apple</code> mode it may additionally bypass policy enforcement. See <code>ueficanopy</code> plugin for an example of a custom user interface.</p>
-<p>OpenCore built-in boot picker contains a set of actions chosen during the boot process. The list of supported actions is similar to Apple BDS and in general can be accessed by holding <code>action hotkeys</code> during boot process. Currently the following actions are considered:</p>
+<p><code>External</code> 模式一旦成功，就会完全禁用 OpenCore 中的除策略强制执行的所有其他启动管理器，而 <code>Apple</code> 模式下可以绕过策略的强制执行。请参阅 <code>ueficanopy</code> 插件以了解自定义用户界面的实例。</p>
+<p>OpenCore 内置的启动选择器包含了一系列在启动过程中选择的操作。支持的操作与 Apple BDS 类似，一般来说能够通过在启动过程中按住 <code>action hotkeys</code> 来实现，目前有以下几种：</p>
 <ul>
-<li><code>Default</code> — this is the default option, and it lets OpenCore built-in boot picker to loads the default boot option as specified in <a href="https://support.apple.com/HT202796" target="_blank" rel="noopener">Startup Disk</a> preference pane.</li>
-<li><code>ShowPicker</code> — this option forces picker to show. Normally it can be achieved by holding <code>OPT</code> key during boot. Setting <code>ShowPicker</code> to <code>true</code> will make <code>ShowPicker</code> the default option.</li>
-<li><code>ResetNvram</code> — this option performs select UEFI variable erase and is normally achieved by holding <code>CMD+OPT+P+R</code> key combination during boot. Another way to erase UEFI variables is to choose <code>Reset NVRAM</code> in the picker. This option requires <code>AllowNvramReset</code> to be set to <code>true</code>.</li>
-<li><code>BootApple</code> — this options performs booting to the first found Apple operating system unless the default chosen operating system is already made by Apple. Hold <code>X</code> key to choose this option.</li>
-<li><code>BootAppleRecovery</code> — this option performs booting to Apple operating system recovery. Either the one related to the default chosen operating system, or first found in case default chosen operating system is not made by Apple or has no recovery. Hold <code>CMD+R</code> key combination to choose this option.</li>
+<li><code>Default</code> — 此项为默认选项，可以让 OpenCore 内置的启动选择器按照 <a href="https://support.apple.com/HT202796" target="_blank" rel="noopener">启动磁盘</a> 偏好设置中指定的方式加载默认的启动项。</li>
+<li><code>ShowPicker</code> — 此项会强制显示启动选择器，通常可以在启动时按住 <code>OPT</code> 键来实现。将 <code>ShowPicker</code> 设置为 <code>true</code> 会使 <code>ShowPicker</code> 成为默认选项。</li>
+<li><code>ResetNvram</code> — 此项会擦除 UEFI 变量，通常是在启动时按住 <code>CMD+OPT+P+R</code> 组合键来实现。另一种擦除 UEFI 变量的方法是在选择器中选择 <code>Reset NVRAM</code>，要使用这种方式需要将 <code>AllowNvramReset</code> 设置为 <code>true</code>。</li>
+<li><code>BootApple</code> — 此项会启动到第一个找到的 Apple 操作系统，除非 Apple 已经默认选择了操作系统。按住 <code>X</code> 来选择此选项。</li>
+<li><code>BootAppleRecovery</code> — 此项会启动到 Apple 操作系统的恢复系统。这里的系统要么是「与默认选中的操作系统相关的恢复系统」，要么是「第一个找到的非 Apple 的默认操作系统的恢复系统」，要么是「无恢复系统」。按住 <code>CMD+R</code> 组合键来选择此选项。</li>
 </ul>
-<p><em>Note 1</em>: Activated <code>KeySupport</code>, <code>OpenUsbKbDxe</code>, or similar driver is required for key handling to work. On many firmwares it is not possible to get all the keys function.</p>
-<p><em>Note 2</em>: In addition to <code>OPT</code> OpenCore supports <code>Escape</code> key to display picker when <code>ShowPicker</code> is disabled. This key exists for <code>Apple</code> picker mode and for firmwares with PS/2 keyboards that fail to report held <code>OPT</code> key and require continual presses of <code>Escape</code> key to enter the boot menu.</p>
-<p><em>Note 3</em>: On Macs with problematic GOP it may be difficult to access Apple BootPicker. To workaround this problem even without loading OpenCore <code>BootKicker</code> utility can be blessed.</p>
-<h2 id="8-4-Debug-Properties"><a href="#8-4-Debug-Properties" class="headerlink" title="8.4 Debug Properties"></a>8.4 Debug Properties</h2><h3 id="AppleDebug"><a href="#AppleDebug" class="headerlink" title="AppleDebug"></a><code>AppleDebug</code></h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: <code>false</code><br><strong>Description</strong>: Enable <code>boot.efi</code> debug log saving to OpenCore log.</p>
-<p><em>Note</em>: This option only applies to 10.15.4 and newer.</p>
+<p><em>注 1</em>：需要激活 <code>KeySupport</code>、<code>OpenUsbKbDxe</code> 或类似的驱动程序才能工作。无法获得全部按键功能的固件有很多。</p>
+<p><em>注 2</em>：当禁用 <code>ShowPicker</code> 时，除了 <code>OPT</code> 键之外，OpenCore 还支持 <code>Escape</code> 键来显示启动选项。这个键不仅适用于 <code>Apple</code> 启动选择器模式，也适用于 PS/2 键盘的固件，因为这种键盘无法提交按住 <code>OPT</code> 键的请求，需要连续点按 <code>Escape</code> 键来进入启动选择菜单。</p>
+<p><em>注 3</em>：有些 Mac 的 GOP 很棘手，可能很难进入 Apple 启动选择器。要解决这个问题，可以在不加载 GOP 的情况下 bless OpenCore 的 <code>BootKicker</code> 实用工具。</p>
+<h2 id="8-4-Debug-Properties"><a href="#8-4-Debug-Properties" class="headerlink" title="8.4 Debug Properties"></a>8.4 Debug Properties</h2><h3 id="AppleDebug"><a href="#AppleDebug" class="headerlink" title="AppleDebug"></a><code>AppleDebug</code></h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: <code>false</code><br><strong>Description</strong>: 启用将 <code>boot.efi</code> 调试日志保存到 OpenCore 日志。</p>
+<p><em>注</em>：此项仅适用于 10.15.4 和更新版本。</p>
 <h3 id="DisableWatchDog"><a href="#DisableWatchDog" class="headerlink" title="DisableWatchDog"></a><code>DisableWatchDog</code></h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: <code>false</code><br><strong>Description</strong>: 某些固件可能无法成功快速启动操作系统，尤其是在调试模式下，这会导致看门狗定时器中止引导过程。此选项关闭看门狗定时器，用于排错。</p>
 <h3 id="DisplayDelay"><a href="#DisplayDelay" class="headerlink" title="DisplayDelay"></a><code>DisplayDelay</code></h3><p><strong>Type</strong>: <code>plist integer</code><br><strong>Failsafe</strong>: <code>0</code><br><strong>Description</strong>: 屏幕上打印每行输出之间的延迟。</p>
-<h3 id="3-DisplayLevel"><a href="#3-DisplayLevel" class="headerlink" title="3.DisplayLevel"></a>3.<code>DisplayLevel</code></h3><p><strong>Type</strong>: <code>plist integer</code>, 64 bit<br><strong>Failsafe</strong>: <code>0</code><br><strong>Description</strong>: EDK II debug level bitmask (sum) showed onscreen. Unless <code>Target</code> enables console (onscreen) printing, onscreen debug output will not be visible. The following levels are supported (discover more in <a href="https://github.com/acidanthera/audk/blob/master/MdePkg/Include/Library/DebugLib.h" target="_blank" rel="noopener">DebugLib.h</a>):</p>
+<h3 id="3-DisplayLevel"><a href="#3-DisplayLevel" class="headerlink" title="3.DisplayLevel"></a>3.<code>DisplayLevel</code></h3><p><strong>Type</strong>: <code>plist integer</code>, 64 bit<br><strong>Failsafe</strong>: <code>0</code><br><strong>Description</strong>: 与屏幕显示相关的 EDK II 调试级别的位掩码（总和）。除非 <code>Target</code> 启用了控制台在屏幕上输出日志，否则屏幕上的调试输出将不可见。支持以下级别（更多信息参见 <a href="https://github.com/acidanthera/audk/blob/master/MdePkg/Include/Library/DebugLib.h" target="_blank" rel="noopener">DebugLib.h</a>）：</p>
 <ul>
 <li><code>0x00000002</code> (bit <code>1</code>) — <code>DEBUG_WARN</code> in <code>DEBUG</code>, <code>NOOPT</code>, <code>RELEASE</code>.</li>
 <li><code>0x00000040</code> (bit <code>6</code>) — <code>DEBUG_INFO</code> in <code>DEBUG</code>, <code>NOOPT</code>.</li>
 <li><code>0x00400000</code> (bit <code>22</code>) — <code>DEBUG_VERBOSE</code> in custom builds.</li>
 <li><code>0x80000000</code> (bit <code>31</code>) — <code>DEBUG_ERROR</code> in <code>DEBUG</code>, <code>NOOPT</code>, <code>RELEASE</code>.</li>
 </ul>
-<h3 id="Target"><a href="#Target" class="headerlink" title="Target"></a><code>Target</code></h3><p><strong>Type</strong>: <code>plist integer</code><br><strong>Failsafe</strong>: <code>0</code><br><strong>Description</strong>: A bitmask (sum) of enabled logging targets. By default all the logging output is hidden, so this option is required to be set when debugging is necessary.</p>
-<p>The following logging targets are supported:</p>
+<h3 id="Target"><a href="#Target" class="headerlink" title="Target"></a><code>Target</code></h3><p><strong>Type</strong>: <code>plist integer</code><br><strong>Failsafe</strong>: <code>0</code><br><strong>Description</strong>: 启用日志记录目标的位掩码（总和）。默认所有日志的输出都是隐藏的，所以当需要调试时，有必要设置这个选项。</p>
+<p>支持以下日志记录目标：</p>
 <ul>
-<li><code>0x01</code> (bit <code>0</code>) — Enable logging, otherwise all log is discarded.</li>
+<li><code>0x01</code> (bit <code>0</code>) — 启用日志记录，否则所有日志都会被丢弃</li>
 <li><code>0x02</code> (bit <code>1</code>) — 在屏幕上输出日志</li>
-<li><code>0x04</code> (bit <code>2</code>) — Enable logging to Data Hub.</li>
-<li><code>0x08</code> (bit <code>3</code>) — Enable serial port logging.</li>
-<li><code>0x10</code> (bit <code>4</code>) — Enable UEFI variable logging.</li>
-<li><code>0x20</code> (bit <code>5</code>) — Enable non-volatile UEFI variable logging.</li>
+<li><code>0x04</code> (bit <code>2</code>) — 启用把日志记录到 Data Hub</li>
+<li><code>0x08</code> (bit <code>3</code>) — 启用串行端口记录</li>
+<li><code>0x10</code> (bit <code>4</code>) — 启用 UEFI 变量记录</li>
+<li><code>0x20</code> (bit <code>5</code>) — 启用非易失性 UEFI 变量记录</li>
 <li><code>0x40</code> (bit <code>6</code>) — 启用在 ESP 分区生成日志文件</li>
 </ul>
-<p>Console logging prints less than all the other variants. Depending on the build type (<code>RELEASE</code>, <code>DEBUG</code>, or <code>NOOPT</code>) different amount of logging may be read (from least to most).</p>
+<p>控制台日志会比其他日志少，根据 build 类型（<code>RELEASE</code>、<code>DEBUG</code> 或 <code>NOOPT</code>）的不同，读取到的日志量也会不同（从最少到最多）。</p>
 <p>Data Hub 日志中不包括 Kernel 和 Kext 的日志。要获取 Data Hub 日志，请使用 ioreg：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plain">ioreg -lw0 -p IODeviceTree | grep boot-log | sort | sed &#39;s&#x2F;.*&lt;\(.*\)&gt;.*&#x2F;\1&#x2F;&#39; | xxd -r -p<br></code></pre></td></tr></table></figure>
 
-<p>UEFI variable log does not include some messages and has no performance data. For safety reasons log size is limited to 32 kilobytes. Some firmwares may truncate it much earlier or drop completely if they have no memory. Using non-volatile flag will write the log to NVRAM flash after every printed line. To obtain UEFI variable log use the following command<br>in macOS:</p>
+<p>UEFI 变量日志中不包含某些信息，也没有性能数据。为了安全起见，日志大小被限制在 32 KB。有些固件可能会提前截断它，或者在它无内存时完全删除它。使用非易失性 flag 将会在每打印一行后把日志写入 NVRAM 闪存。如要获取 UEFI 变量日志，请在 macOS 中使用以下命令：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plain">nvram 4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102:boot-log | awk &#39;&#123;gsub(&#x2F;%0d%0a%00&#x2F;,&quot;&quot;);gsub(&#x2F;%0d%0a&#x2F;,&quot;\n&quot;)&#125;1&#39;<br></code></pre></td></tr></table></figure>
 
-<p><em>警告</em>: Some firmwares are reported to have broken NVRAM garbage collection. This means that they may not be able to always free space after variable deletion. Do not use non-volatile NVRAM logging without extra need on such devices.</p>
-<p>While OpenCore boot log already contains basic version information with build type and date, this data may also be found in NVRAM in <code>opencore-version</code> variable even with boot log disabled.</p>
-<p>File logging will create a file named <code>opencore-YYYY-MM-DD-HHMMSS.txt</code> at EFI volume root with log contents (the upper case letter sequence is replaced with date and time from the firmware). Please be warned that some file system drivers present in firmwares are not reliable, and may corrupt data when writing files through UEFI. Log is attempted to be written in the safest manner, and thus is very slow. Ensure that <code>DisableWatchDog</code> is set to <code>true</code> when you use a slow drive.</p>
+<p><em>警告</em>：有些固件的 NVRAM 垃圾收集据说存在问题，它们可能无法做到在每次变量删除后都释放空间。在这类设备上，没有额外需要的话，请不要使用非易失性 NVRAM 日志。</p>
+<p>虽然 OpenCore 的引导日志已经包含了基本的版本信息（包括 build 类型和日期），但即使在禁用引导日志的情况下，这些数据也可以在 NVRAM 中的 <code>opencore-version</code> 变量中找到。</p>
+<p>文件记录会在 EFI 卷宗的根目录下创建一个名为 <code>opencore-YYYY-MM-DD-HHMMSS.txt</code> 的文件，其中包含了日志的内容（大写字母部分会被替换为固件中的日期和时间）请注意，固件中的一些文件系统驱动程序不可靠，并且可能会通过 UEFI 写入文件时损坏数据。日志是尝试用最安全的方式来写入的，因此速度很慢。当你使用慢速硬盘时，请确保已将 <code>DisableWatchDog</code> 设置为 <code>true</code>。</p>
 <h2 id="8-5-Security-Properties"><a href="#8-5-Security-Properties" class="headerlink" title="8.5 Security Properties"></a>8.5 Security Properties</h2><h3 id="AllowNvramReset"><a href="#AllowNvramReset" class="headerlink" title="AllowNvramReset"></a><code>AllowNvramReset</code></h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: <code>false</code><br><strong>Description</strong>: 启用这一选项后将允许使用 <code>CMD+OPT+P+R</code> 快捷键重置 NVRAM，同时 <code>NVRAM Reset</code> 条目也会出现在开机引导菜单中。</p>
 <h3 id="AllowSetDefault"><a href="#AllowSetDefault" class="headerlink" title="AllowSetDefault"></a><code>AllowSetDefault</code></h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: <code>false</code><br><strong>Description</strong>: 允许使用 <code>CTRL+Enter</code> 和 <code>CTRL+[数字]</code> 设置默认启动项。</p>
 <h3 id="AuthRestart"><a href="#AuthRestart" class="headerlink" title="AuthRestart"></a><code>AuthRestart</code></h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: <code>false</code><br><strong>Description</strong>: 启用与 <code>VirtualSMC</code> 兼容的 authenticated restart.</p>
 <p>authenticated restart 可以在重启 FileVault2 分区时不用再次输入密码。你可以使用下述指令执行一次 authenticated restart：<code>sudo fdesetup authrestart</code>。macOS 在安装系统更新使用的也是 authenticated restart。</p>
 <p>VirtualSMC 通过将磁盘加密密钥拆分保存在 NVRAM 和 RTC 中来执行 authenticated restart。虽然 OpenCore 在启动系统后立刻删除密钥，但是这仍然可能被视为安全隐患。</p>
-<h3 id="ExposeSensitiveData"><a href="#ExposeSensitiveData" class="headerlink" title="ExposeSensitiveData"></a><code>ExposeSensitiveData</code></h3><p><strong>Type</strong>: <code>plist integer</code><br><strong>Failsafe</strong>: <code>0x6</code><br><strong>Description</strong>: Sensitive data exposure bitmask (sum) to operating system.</p>
+<h3 id="ExposeSensitiveData"><a href="#ExposeSensitiveData" class="headerlink" title="ExposeSensitiveData"></a><code>ExposeSensitiveData</code></h3><p><strong>Type</strong>: <code>plist integer</code><br><strong>Failsafe</strong>: <code>0x6</code><br><strong>Description</strong>: 用于向操作系统暴露敏感数据的位掩码（总和）。</p>
 <ul>
-<li><code>0x01</code> — Expose printable booter path as an UEFI variable.</li>
-<li><code>0x02</code> — Expose OpenCore version as an UEFI variable.</li>
-<li><code>0x04</code> — Expose OpenCore version in boot picker menu title.</li>
-<li><code>0x08</code> — Expose OEM information as a set of UEFI variables.</li>
+<li><code>0x01</code> — 将可打印的引导器路径作为 UEFI 变量暴露出来</li>
+<li><code>0x02</code> — 将 OpenCore 版本作为 UEFI 变量暴露出来</li>
+<li><code>0x04</code> — 将 OpenCore 版本暴露在启动选择菜单的标题位置</li>
+<li><code>0x08</code> — 将 OEM 信息作为一组 UEFI 变量暴露出来</li>
 </ul>
-<p>Exposed booter path points to OpenCore.efi or its booter depending on the load order. To obtain booter path use the following command in macOS:</p>
+<p>根据加载顺序，暴露的启动器路径指向 OpenCore.efi 或其引导器。如要获得引导器路径，请在 macOS 中使用以下命令：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plain">nvram 4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102:boot-path<br></code></pre></td></tr></table></figure>
 
-<p>To use booter path for mounting booter volume use the following command in macOS:</p>
+<p>如要使用启动器路径加载启动器卷宗，请在 macOS 中使用以下命令：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs plain">u&#x3D;$(nvram 4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102:boot-path | sed &#39;s&#x2F;.*GPT,\([^,]*\),.*&#x2F;\1&#x2F;&#39;); \<br>if [ &quot;$u&quot; !&#x3D; &quot;&quot; ]; then sudo diskutil mount $u ; fi<br></code></pre></td></tr></table></figure>
 
-<p>To obtain OpenCore version use the following command in macOS:</p>
+<p>如要获取 OpenCore 版本信息，请在 macOS 中使用以下命令：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plain">nvram 4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102:opencore-version<br></code></pre></td></tr></table></figure>
 
-<p>To obtain OEM information use the following commands in macOS:</p>
+<p>如要获取 OEM 信息，请在 macOS 中使用以下命令：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs plain">nvram 4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102:oem-product # SMBIOS Type1 ProductName<br>nvram 4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102:oem-vendor # SMBIOS Type2 Manufacturer<br>nvram 4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102:oem-board # SMBIOS Type2 ProductName<br></code></pre></td></tr></table></figure>
 
-<h3 id="HaltLevel"><a href="#HaltLevel" class="headerlink" title="HaltLevel"></a><code>HaltLevel</code></h3><p><strong>Type</strong>: <code>plist integer</code>, 64 bit<br><strong>Failsafe</strong>: <code>0x80000000</code> (<code>DEBUG_ERROR</code>)<br><strong>Description</strong>: EDK II debug level bitmask (sum) causing CPU to halt (stop execution) after obtaining a message of <code>HaltLevel</code>. Possible values match <code>DisplayLevel</code> values.</p>
-<h3 id="Vault"><a href="#Vault" class="headerlink" title="Vault"></a><code>Vault</code></h3><p><strong>Type</strong>: <code>plist string</code><br><strong>Failsafe</strong>: <code>Secure</code><br><strong>Description</strong>: Enables vaulting mechanism in OpenCore.</p>
-<p>Valid values:</p>
+<h3 id="HaltLevel"><a href="#HaltLevel" class="headerlink" title="HaltLevel"></a><code>HaltLevel</code></h3><p><strong>Type</strong>: <code>plist integer</code>, 64 bit<br><strong>Failsafe</strong>: <code>0x80000000</code> (<code>DEBUG_ERROR</code>)<br><strong>Description</strong>: EDK II 调试级别的位掩码（总和），使 CPU 在获得 <code>HaltLevel</code> 消息后中止（停止执行）。可能的值与 <code>DisplayLevel</code> 值相匹配。</p>
+<h3 id="Vault"><a href="#Vault" class="headerlink" title="Vault"></a><code>Vault</code></h3><p><strong>Type</strong>: <code>plist string</code><br><strong>Failsafe</strong>: <code>Secure</code><br><strong>Description</strong>: 启用 OpenCore 的 vault 机制。</p>
+<p>有效值：</p>
 <ul>
-<li><code>Optional</code> — require nothing, no vault is enforced, insecure.</li>
-<li><code>Basic</code> — require <code>vault.plist</code> file present in <code>OC</code> directory. This provides basic filesystem integrity verification and may protect from unintentional filesystem corruption.</li>
-<li><code>Secure</code> — require <code>vault.sig</code> signature file for <code>vault.plist</code> in <code>OC</code> directory. This includes <code>Basic</code> integrity checking but also attempts to build a trusted bootchain.</li>
+<li><code>Optional</code> — 无要求，vault 不加载，不安全。</li>
+<li><code>Basic</code> — 需要有 <code>vault.plist</code> 文件存放在 <code>OC</code> 目录下。这个值提供了基本的文件系统完整性验证，可以防止无意中的文件系统损坏。</li>
+<li><code>Secure</code> — 需要有 <code>vault.sig</code> 签名的 <code>vault.plist</code> 文件存放在 <code>OC</code> 目录下。这个值包括了 <code>Basic</code> 完整性检查，但也会尝试建立一个可信的引导链。</li>
 </ul>
-<p><code>vault.plist</code> file should contain SHA-256 hashes for all files used by OpenCore. Presence of this file is highly recommended to ensure that unintentional file modifications (including filesystem corruption) do not happen unnoticed. To create this file automatically use <a href="https://github.com/acidanthera/OpenCorePkg/tree/master/Utilities/CreateVault" target="_blank" rel="noopener"><code>create_vault.sh</code></a> script. Regardless of the underlying filesystem, path name and case must match between <code>config.plist</code> and <code>vault.plist</code>.</p>
-<p><code>vault.sig</code> file should contain a raw 256 byte RSA-2048 signature from SHA-256 hash of <code>vault.plist</code>. The signature is verified against the public key embedded into <code>OpenCore.efi</code>. To embed the public key you should do either of the following:</p>
+<p><code>vault.plist</code> 文件应该包含 OpenCore 使用的所有文件的 SHA-256 哈希值。强烈建议使用这个文件，以确保无意中的文件修改（包括文件系统损坏）不会被忽视。要自动创建这个文件，请使用 <a href="https://github.com/acidanthera/OpenCorePkg/tree/master/Utilities/CreateVault" target="_blank" rel="noopener"><code>create_vault.sh</code></a> 脚本。无论底层的文件系统如何，路径名和大小写必须在 <code>config.plist</code> 和 <code>vault.plist</code> 之间相匹配。</p>
+<p><code>vault.sig</code> 文件应该包含一个来自 <code>vault.plist</code> SHA-256 哈希值的原始的 256 字节 RSA-2048 签名。这个签名是根据嵌入到 <code>OpenCore.efi</code> 中的公钥来验证的。如要嵌入公钥，以下任一步骤均可：</p>
 <ul>
-<li>Provide public key during the <code>OpenCore.efi</code> compilation in <a href="https://github.com/acidanthera/OpenCorePkg/blob/master/Platform/OpenCore/OpenCoreVault.c" target="_blank" rel="noopener"><code>OpenCoreVault.c</code></a> file.</li>
-<li>Binary patch <code>OpenCore.efi</code> replacing zeroes with the public key between <code>=BEGIN OC VAULT=</code> and <code>==END OC VAULT==</code> ASCII markers.</li>
+<li>在 <code>OpenCore.efi</code> 编译过程中，在 <a href="https://github.com/acidanthera/OpenCorePkg/blob/master/Platform/OpenCore/OpenCoreVault.c" target="_blank" rel="noopener"><code>OpenCoreVault.c</code></a> 文件中提供公钥。</li>
+<li>用二进制补丁的方式将 <code>OpenCore.efi</code> 中 <code>=BEGIN OC VAULT=</code> 和 <code>==END OC VAULT==</code> ASCII 码之间的 0 替换为公钥。</li>
 </ul>
-<p>RSA public key 520 byte format description can be found in Chromium OS documentation. To convert public key from X.509 certificate or from PEM file use <a href="https://github.com/acidanthera/OpenCorePkg/tree/master/Utilities/CreateVault" target="_blank" rel="noopener">RsaTool</a>.</p>
-<p>The complete set of commands to:</p>
+<p>RSA 公钥的 520 字节格式可参阅 Chromium OS 文档。如要从 X.509 证书或 PEM 文件中转换公钥，请使用 <a href="https://github.com/acidanthera/OpenCorePkg/tree/master/Utilities/CreateVault" target="_blank" rel="noopener">RsaTool</a>。</p>
+<p>以下操作的完整指令：</p>
 <ul>
-<li>Create <code>vault.plist</code>.</li>
-<li>Create a new RSA key (always do this to avoid loading old configuration).</li>
-<li>Embed RSA key into <code>OpenCore.efi</code>.</li>
-<li>Create <code>vault.sig</code>.</li>
+<li>创建 <code>vault.plist</code></li>
+<li>创建一个新的 RSA 密钥（总是要这样做，以避免加载旧配置）</li>
+<li>将 RSA 密钥嵌入到 <code>OpenCore.efi</code></li>
+<li>创建 <code>vault.sig</code></li>
 </ul>
-<p>Can look as follows:</p>
+<p>可以参照如下指令：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs plain">cd &#x2F;Volumes&#x2F;EFI&#x2F;EFI&#x2F;OC<br>&#x2F;path&#x2F;to&#x2F;create_vault.sh .<br>&#x2F;path&#x2F;to&#x2F;RsaTool -sign vault.plist vault.sig vault.pub<br>off&#x3D;$(($(strings -a -t d OpenCore.efi | grep &quot;&#x3D;BEGIN OC VAULT&#x3D;&quot; | cut -f1 -d&#39; &#39;)+16))<br>dd of&#x3D;OpenCore.efi if&#x3D;vault.pub bs&#x3D;1 seek&#x3D;$off count&#x3D;528 conv&#x3D;notrunc<br>rm vault.pub<br></code></pre></td></tr></table></figure>
 
-<p><em>Note 1</em>: While it may appear obvious, but you have to use an externalmethod to verify <code>OpenCore.efi</code> and <code>BOOTx64.efi</code> for secure boot path. For this you are recommended to at least enable UEFI SecureBoot with a custom certificate, and sign <code>OpenCore.efi</code> and <code>BOOTx64.efi</code> with your custom key. More details on customising secure boot on modern firmwares can be found in <a href="https://habr.com/post/273497/" target="_blank" rel="noopener">Taming UEFI SecureBoot</a> paper (in Russian).</p>
-<p><em>Note 2</em>: <code>vault.plist</code> and <code>vault.sig</code> are used regardless of this option when <code>vault.plist</code> is present or public key is embedded into <code>OpenCore.efi</code>. Setting this option will only ensure configuration sanity, and abort the boot process otherwise.</p>
-<h3 id="ScanPolicy"><a href="#ScanPolicy" class="headerlink" title="ScanPolicy"></a><code>ScanPolicy</code></h3><p><strong>Type</strong>: <code>plist integer</code>, 32 bit<br><strong>Failsafe</strong>: <code>0xF0103</code><br><strong>Description</strong>: Define operating system detection policy.</p>
-<p>This value allows to prevent scanning (and booting) from untrusted source based on a bitmask (sum) of select flags. As it is not possible to reliably detect every file system or device type, this feature cannot be fully relied upon in open environments, and the additional measures are to be applied.</p>
-<p>Third party drivers may introduce additional security (and performance) measures following the provided scan policy. Scan policy is exposed in <code>scan-policy</code> variable of <code>4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102</code> GUID for UEFI Boot Services only.</p>
+<p><em>注 1</em>：必须使用外部方法来验证 <code>OpenCore.efi</code> 和 <code>BOOTx64.efi</code> 的安全启动路径，尽管它们看似显而易见。为此，建议你至少使用自定义证书来启用 UEFI 的 SecureBoot，并使用自定义的密钥来签名 <code>OpenCore.efi</code> 和 <code>BOOTx64.efi</code> 。关于在现代固件上定制安全启动的更多细节，请参见 <a href="https://habr.com/post/273497/" target="_blank" rel="noopener">Taming UEFI SecureBoot</a>（俄文）。</p>
+<p><em>注 2</em>：当 <code>vault.plist</code> 存在，或者当公钥嵌入到 <code>OpenCore.efi</code> 中的时候，无论这个选项是什么，<code>vault.plist</code> 和 <code>vault.sig</code> 都会被使用。设置这个选项仅仅会确保配置的合理性，否则启动过程会中止。</p>
+<h3 id="ScanPolicy"><a href="#ScanPolicy" class="headerlink" title="ScanPolicy"></a><code>ScanPolicy</code></h3><p><strong>Type</strong>: <code>plist integer</code>, 32 bit<br><strong>Failsafe</strong>: <code>0xF0103</code><br><strong>Description</strong>: 定义操作系统检测策略。</p>
+<p>通过设置该值来根据所选 flag 的位掩码（总和）防止从非信任源扫描（和启动）。由于不可能可靠地检测到每一个文件类型或设备类型，因此在开放环境中不能完全依赖此功能，需要采取额外的措施。</p>
+<p>第三方驱动程序可能会根据提供的扫描策略引入额外的安全（和性能）措施。扫描策略暴露在 <code>4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102</code> GUID的 <code>scan-policy</code> 变量中，仅适用于 UEFI 启动服务。</p>
 <ul>
-<li><code>0x00000001</code> (bit <code>0</code>) — <code>OC_SCAN_FILE_SYSTEM_LOCK</code>, restricts scanning to only known file systems defined as a part of this policy. File system drivers may not be aware of this policy, and to avoid mounting of undesired file systems it is best not to load its driver. This bit does not affect dmg mounting, which may have any file system. Known file systems are prefixed with <code>OC_SCAN_ALLOW_FS_</code>.</li>
-<li><code>0x00000002</code> (bit <code>1</code>) — <code>OC_SCAN_DEVICE_LOCK</code>, restricts scanning to only known device types defined as a part of this policy. This is not always possible to detect protocol tunneling, so be aware that on some systems it may be possible for e.g. USB HDDs to be recognised as SATA. Cases like this must be reported. Known device types are prefixed with <code>OC_SCAN_ALLOW_DEVICE_</code>.</li>
-<li><code>0x00000100</code> (bit <code>8</code>) — <code>OC_SCAN_ALLOW_FS_APFS</code>, allows scanning of APFS file system.</li>
-<li><code>0x00000200</code> (bit <code>9</code>) — <code>OC_SCAN_ALLOW_FS_HFS</code>, allows scanning of HFS file system.</li>
-<li><code>0x00000400</code> (bit <code>10</code>) — <code>OC_SCAN_ALLOW_FS_ESP</code>, allows scanning of EFI System Partition file system.</li>
-<li><code>0x00000800</code> (bit <code>11</code>) — <code>OC_SCAN_ALLOW_FS_NTFS</code>, allows scanning of NTFS (Msft Basic Data) file system.</li>
-<li><code>0x00001000</code> (bit <code>12</code>) — <code>OC_SCAN_ALLOW_FS_EXT</code>, allows scanning of EXT (Linux Root) file system.</li>
-<li><code>0x00010000</code> (bit <code>16</code>) — <code>OC_SCAN_ALLOW_DEVICE_SATA</code>, allow scanning SATA devices.</li>
-<li><code>0x00020000</code> (bit <code>17</code>) — <code>OC_SCAN_ALLOW_DEVICE_SASEX</code>, allow scanning SAS and Mac NVMe devices.</li>
-<li><code>0x00040000</code> (bit <code>18</code>) — <code>OC_SCAN_ALLOW_DEVICE_SCSI</code>, allow scanning SCSI devices.</li>
-<li><code>0x00080000</code> (bit <code>19</code>) — <code>OC_SCAN_ALLOW_DEVICE_NVME</code>, allow scanning NVMe devices.</li>
-<li><code>0x00100000</code> (bit <code>20</code>) — <code>OC_SCAN_ALLOW_DEVICE_ATAPI</code>, allow scanning CD/DVD devices.</li>
-<li><code>0x00200000</code> (bit <code>21</code>) — <code>OC_SCAN_ALLOW_DEVICE_USB</code>, allow scanning USB devices.</li>
-<li><code>0x00400000</code> (bit <code>22</code>) — <code>OC_SCAN_ALLOW_DEVICE_FIREWIRE</code>, allow scanning FireWire devices.</li>
-<li><code>0x00800000</code> (bit <code>23</code>) — <code>OC_SCAN_ALLOW_DEVICE_SDCARD</code>, allow scanning card reader devices.</li>
+<li><code>0x00000001</code> (bit <code>0</code>) — <code>OC_SCAN_FILE_SYSTEM_LOCK</code>，将扫描限制于仅扫描此策略定义的已知文件系统。文件系统驱动可能感知不到这个策略，为了避免挂载不必要的文件系统，最好不要加载它的驱动程序。此 bit 不影响 dmg 挂载，因为它可能有各种文件系统。已知文件系统的前缀为 <code>OC_SCAN_ALLOW_FS_</code>。</li>
+<li><code>0x00000002</code> (bit <code>1</code>) — <code>OC_SCAN_DEVICE_LOCK</code>，将扫描限制于仅扫描此策略定义的已知设备类型。由于协议隧道并不一定能被检测到，因此请注意，在某些系统上可能会出现 USB 硬盘被识别成 SATA 等情况。如有类似情况，请务必报告。已知设备类型的前缀为 <code>OC_SCAN_ALLOW_DEVICE_</code>。</li>
+<li><code>0x00000100</code> (bit <code>8</code>) — <code>OC_SCAN_ALLOW_FS_APFS</code>，允许扫描 APFS 文件系统。</li>
+<li><code>0x00000200</code> (bit <code>9</code>) — <code>OC_SCAN_ALLOW_FS_HFS</code>，允许扫描 HFS 文件系统。</li>
+<li><code>0x00000400</code> (bit <code>10</code>) — <code>OC_SCAN_ALLOW_FS_ESP</code>，允许扫描 EFI 系统分区文件系统。</li>
+<li><code>0x00000800</code> (bit <code>11</code>) — <code>OC_SCAN_ALLOW_FS_NTFS</code>，允许扫描 NTFS（MSFT Basic Data）文件系统。</li>
+<li><code>0x00001000</code> (bit <code>12</code>) — <code>OC_SCAN_ALLOW_FS_EXT</code>，允许扫描 EXT（Linux Root）文件系统。</li>
+<li><code>0x00010000</code> (bit <code>16</code>) — <code>OC_SCAN_ALLOW_DEVICE_SATA</code>，允许扫描 SATA 设备。</li>
+<li><code>0x00020000</code> (bit <code>17</code>) — <code>OC_SCAN_ALLOW_DEVICE_SASEX</code>，允许扫描 SAS 和 Mac NVMe 设备。</li>
+<li><code>0x00040000</code> (bit <code>18</code>) — <code>OC_SCAN_ALLOW_DEVICE_SCSI</code>，允许扫描 SCSI 设备。</li>
+<li><code>0x00080000</code> (bit <code>19</code>) — <code>OC_SCAN_ALLOW_DEVICE_NVME</code>，允许扫描 NVMe 设备。</li>
+<li><code>0x00100000</code> (bit <code>20</code>) — <code>OC_SCAN_ALLOW_DEVICE_ATAPI</code>，允许扫描 CD/DVD 设备。</li>
+<li><code>0x00200000</code> (bit <code>21</code>) — <code>OC_SCAN_ALLOW_DEVICE_USB</code>，允许扫描 USB 设备。</li>
+<li><code>0x00400000</code> (bit <code>22</code>) — <code>OC_SCAN_ALLOW_DEVICE_FIREWIRE</code>，允许扫描 FireWire 设备。</li>
+<li><code>0x00800000</code> (bit <code>23</code>) — <code>OC_SCAN_ALLOW_DEVICE_SDCARD</code>，允许扫描读卡器设备。</li>
 </ul>
-<p><em>注</em>：Given the above description, <code>0xF0103</code> value is expected to allow scanning of SATA, SAS, SCSI, and NVMe devices with APFS file system, and prevent scanning of any devices with HFS or FAT32 file systems in addition to not scanning APFS file systems on USB, CD, and FireWire drives. The combination reads as:</p>
+<p><em>注</em>：举例：根据以上描述，<code>0xF0103</code> 值允许扫描带有 APFS 文件系统的 SATA、SAS、SCSI 和 NVMe 设备，不扫描 USB、CD 和 FireWire 设备上的 APFS 文件系统，也不扫描任何带有 HFS 或 FAT32 文件系统的设备。该值表示如下组合：</p>
 <ul>
 <li><code>OC_SCAN_FILE_SYSTEM_LOCK</code></li>
 <li><code>OC_SCAN_DEVICE_LOCK</code></li>
@@ -449,8 +449,8 @@
 <h3 id="Name"><a href="#Name" class="headerlink" title="Name"></a><code>Name</code></h3><p><strong>Type</strong>: <code>plist string</code><br><strong>Failsafe</strong>: Empty string<br><strong>Description</strong>: 引导条目在开机引导菜单中显示的名字。</p>
 <h3 id="Path"><a href="#Path" class="headerlink" title="Path"></a><code>Path</code></h3><p><strong>Type</strong>: <code>plist string</code><br><strong>Failsafe</strong>: Empty string<br><strong>Description</strong>: 引导入口。</p>
 <ul>
-<li><code>Entries</code> specify external boot options, and therefore take device paths in <code>Path</code> key. These values are not checked, thus be extremely careful. Example: <code>PciRoot(0x0)/Pci(0x1,0x1)/.../\EFI\COOL.EFI</code></li>
-<li><code>Tools</code> specify internal boot options, which are part of bootloader vault, and therefore take file paths relative to <code>OC/Tools</code> directory. Example: <code>OpenShell.efi</code>.</li>
+<li><code>Entries</code> 用于指定外部启动选项，因此会在 <code>Path</code> 中取设备路径。这些值不会被检查，所以要非常小心。例如：<code>PciRoot(0x0)/Pci(0x1,0x1)/.../\EFI\COOL.EFI</code>。</li>
+<li><code>Tools</code> 用于指定内部引导选项，这些选项隶属于 bootloader vault，因此会取相对于 <code>OC/Tools</code> 目录的文件路径。例如：<code>OpenShell.efi</code>。</li>
 </ul>
 
             </div>
