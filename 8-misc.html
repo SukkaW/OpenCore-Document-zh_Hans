@@ -218,7 +218,7 @@
 <p>应填入 <code>plist dict</code> 类型的值来描述相应的加载条目。详见 <a href="">Entry Properties</a> 部分。</p>
 <p><em>注</em>：选择工具（比如 UEFI shell）是很危险的事情，利用这些工具可以轻易地绕过安全启动链，所以<strong>千万不要</strong>出现在产品配置中，尤其是设置了 vault 和安全启动保护的设备（译者注：即，工具仅作调试用）。</p>
 <h2 id="8-3-Boot-Properties"><a href="#8-3-Boot-Properties" class="headerlink" title="8.3 Boot Properties"></a>8.3 Boot Properties</h2><h3 id="ConsoleAttributes"><a href="#ConsoleAttributes" class="headerlink" title="ConsoleAttributes"></a><code>ConsoleAttributes</code></h3><p><strong>Type</strong>: <code>plist integer</code><br><strong>Failsafe</strong>: <code>0</code><br><strong>Description</strong>: 为控制台设置特定的属性。</p>
-<p>根据 UEFI 规范，文本渲染器支持的颜色参数为前景色与背景色之和。黑色背景色和黑色前景色 (\texttt{0}) 的值是预留的。以下是颜色名称一览：</p>
+<p>根据 UEFI 规范，文本渲染器支持的颜色参数为前景色与背景色之和。黑色背景色和黑色前景色 (<code>0</code>) 的值是预留的。以下是颜色名称一览：</p>
 <ul>
 <li><code>0x00</code> — <code>EFI_BLACK</code>（黑色字体）</li>
 <li><code>0x01</code> — <code>EFI_BLUE</code>（蓝色字体）</li>
