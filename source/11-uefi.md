@@ -3,7 +3,7 @@ title: 11. UEFI
 description: UEFI 驱动以及加载顺序（待翻译）
 type: docs
 author_info: 由 xMuu、Sukka 整理，由 Sukka 翻译
-last_updated: 2020-04-19
+last_updated: 2020-04-20
 ---
 
 ## 11.1 Introduction
@@ -19,7 +19,7 @@ last_updated: 2020-04-19
 - [`EnhancedFatDxe`](https://github.com/acidanthera/audk) --- 来自 `FatPkg` 的 FAT 文件系统驱动程序。这个驱动程序已经被嵌入到所有 UEFI 固件中，无法为 OpenCore 使用。众所周知，许多固件的 FAT 支持实现都有错误，导致在尝试写操作时损坏文件系统。如果在引导过程中需要写入 EFI 分区，则可能组要将此驱动程序嵌入固件中。
 - [`NvmExpressDxe`](https://github.com/acidanthera/audk) --- 来自`MdeModulePkg` 的 NVMe 驱动程序。从 Broadwell 一代开始的大多数固件都包含此驱动程序。对于 Haswell 以及更早的版本，如果安装了 NVMe SSD 驱动器，则将其嵌入固件中可能会更理想。
 - [`OpenUsbKbDxe`](https://github.com/acidanthera/OpenCorePkg) --- USB 键盘驱动在自定义 USB 键盘驱动程序的基础上新增了对 `AppleKeyMapAggregator` 协议的支持。这是内置的 `KeySupport` 的等效替代方案。根据固件不同，效果可能会更好或者更糟。
-- [`HfsPlus`](https://github.com/acidanthera/OcBinaryData) — Apple 固件中常见的具有 Bless 支持的专有 HFS 文件系统驱动程序。对于 `Sandy Bridge` 和更早的 CPU，由于缺少 `RDRAND` 指令支持，应使用 `HfsPlusLegacy` 驱动程序。
+- [`HfsPlus`](https://github.com/acidanthera/OcBinaryData) - Apple 固件中常见的具有 Bless 支持的专有 HFS 文件系统驱动程序。对于 `Sandy Bridge` 和更早的 CPU，由于缺少 `RDRAND` 指令支持，应使用 `HfsPlusLegacy` 驱动程序。
 - [`VBoxHfs`](https://github.com/acidanthera/AppleSupportPkg) --- 带有 bless 支持的 HFS 文件系统驱动。是 Apple 固件中 `HfsPlus` 驱动的开源替代。虽然功能完善，但是启动速度比 `HFSPlus` 慢三倍，并且尚未经过安全审核。
 - [`XhciDxe`](https://github.com/acidanthera/audk) --- 来自 `MdeModulePkg` 的 XHCI USB controller 驱动程序。从 Sandy Bridge 代开始的大多数固件中都包含此驱动程序。在较早的固件或旧系统可以用于支持外部 USB 3.0 PCI 卡。
 - [`AudioDxe`](https://github.com/acidanthera/AppleSupportPkg) --- UEFI 固件中的 HDA 音频驱动程序，适用于大多数 Intel 和其他一些模拟音频控制器。Refer to [acidanthera/bugtracker#740](https://github.com/acidanthera/bugtracker/issues/740) for known issues in AudioDxe.
@@ -55,17 +55,18 @@ sudo bless --verbose --file /Volumes/VOLNAME/DIR/OpenShell.efi --folder /Volumes
 
 Some of the known tools are listed below:
 
-- [`BootKicker`](https://github.com/acidanthera/OpenCorePkg) (**内置**) — 进入 Apple 的 BootPicker 菜单（仅 Mac 同款显卡才可以使用）。
-- [`ChipTune`](https://github.com/acidanthera/OpenCorePkg) (**内置**) — 测试 BeepGen 协议，生成不同频率和长度的音频信号。
-- [`CleanNvram`](https://github.com/acidanthera/OpenCorePkg) (**内置**) — 重置 NVRAM，以一个单独的工具呈现。
-- [`FwProtect`](https://github.com/acidanthera/OpenCorePkg) (**内置**) — 解锁和回锁 NVRAM 保护，让其他工具在从 OpenCore 启动时能够获得完整的 NVRAM 访问权限。
-- [`GopStop`](https://github.com/acidanthera/OpenCorePkg) (**内置**) — 用一个 [简单的场景](https://github.com/acidanthera/OpenCorePkg/tree/master/Application/GopStop) 测试 GraphicOutput 协议。
-- [`HdaCodecDump`](https://github.com/acidanthera/OpenCorePkg) (**内置**) — 解析和转储高清晰度音频编解码器（Codec）信息（需要 `AudioDxe`）。
-- [`KeyTester`](https://github.com/acidanthera/OpenCorePkg) (**内置**) — 在 `SimpleText` 模式下测试键盘输入。
-- [`OpenCore Shell`](https://github.com/acidanthera/OpenCorePkg) (**内置**) — 由 OpenCore 配置的 [`UEFI Shell`](http://github.com/tianocore/edk2)，与绝大部分固件兼容。
-- [`RtcRw`](https://github.com/acidanthera/OpenCorePkg) — Utility to read and write RTC (CMOS) memory.
-- [`PavpProvision`](https://github.com/acidanthera/OpenCorePkg) — Perform EPID provisioning (requires certificate data configuration).
-- [`VerifyMsrE2`](https://github.com/acidanthera/OpenCorePkg) (**内置**) — 检查 `CFG Lock`（MSR `0xE2` 写保护）在所有 CPU 核心之间的一致性。
+- [`BootKicker`](https://github.com/acidanthera/OpenCorePkg) (**内置**) - 进入 Apple 的 BootPicker 菜单（仅 Mac 同款显卡才可以使用）。
+- [`ChipTune`](https://github.com/acidanthera/OpenCorePkg) (**内置**) - 测试 BeepGen 协议，生成不同频率和长度的音频信号。
+- [`CleanNvram`](https://github.com/acidanthera/OpenCorePkg) (**内置**) - 重置 NVRAM，以一个单独的工具呈现。
+- [`FwProtect`](https://github.com/acidanthera/OpenCorePkg) (**内置**) - 解锁和回锁 NVRAM 保护，让其他工具在从 OpenCore 启动时能够获得完整的 NVRAM 访问权限。
+- [`GopStop`](https://github.com/acidanthera/OpenCorePkg) (**内置**) - 用一个 [简单的场景](https://github.com/acidanthera/OpenCorePkg/tree/master/Application/GopStop) 测试 GraphicOutput 协议。
+- [`HdaCodecDump`](https://github.com/acidanthera/OpenCorePkg) (**内置**) - 解析和转储高清晰度音频编解码器（Codec）信息（需要 `AudioDxe`）。
+- [`KeyTester`](https://github.com/acidanthera/OpenCorePkg) (**内置**) - 在 `SimpleText` 模式下测试键盘输入。
+- [`OpenCore Shell`](https://github.com/acidanthera/OpenCorePkg) (**内置**) - 由 OpenCore 配置的 [`UEFI Shell`](http://github.com/tianocore/edk2)，与绝大部分固件兼容。
+- [`RtcRw`](https://github.com/acidanthera/OpenCorePkg) - Utility to read and write RTC (CMOS) memory.
+- [`PavpProvision`](https://github.com/acidanthera/OpenCorePkg) - Perform EPID provisioning (requires certificate data configuration).
+- [`ResetSystem`](https://github.com/acidanthera/OpenCorePkg) - Utility to perform system reset. Takes reset type as an argument: `ColdReset`, `WarmReset`, `Shutdown`. Default to `ColdReset`.
+- [`VerifyMsrE2`](https://github.com/acidanthera/OpenCorePkg) (**内置**) - 检查 `CFG Lock`（MSR `0xE2` 写保护）在所有 CPU 核心之间的一致性。
 
 ## 11.4 OpenCanopy
 
@@ -139,11 +140,12 @@ Audio localisation is determined separately for macOS bootloader and OpenCore. F
 **Failsafe**: None
 **Description**: Apply individual settings designed for output (text and graphics) in [Output Properties]() section below.
 
-### `Protocols`
+### `ProtocolOverrides`
 
 **Type**: `plist dict`
 **Failsafe**: None
-**Description**: Force builtin versions of select protocols described in [Protocols Properties]() section below.
+**Description**: Force builtin versions of select protocols described in [ProtocolOverrides Properties]() section below.
+
 *注*：all protocol instances are installed prior to driver loading.
 
 ### `Quirks`
