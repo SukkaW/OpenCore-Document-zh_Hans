@@ -15,7 +15,7 @@ last_updated: 2020-04-22
 ### `Boot`
 
 **Type**: `plist dict`
-**Description**: 应用本章节 [Boot Properties](#8-3-Boot-Properties) 中的引导相关设置。
+**Description**: 应用本章节 Boot Properties 中的引导相关设置。
 
 ### `BlessOverride`
 
@@ -27,24 +27,24 @@ last_updated: 2020-04-22
 ### `Debug`
 
 **Type**: `plist dict`
-**Description**: 应用本章节 [Debug Properties](#8-4-Debug-Properties) 中的调试相关设置。
+**Description**: 应用本章节 Debug Properties 中的调试相关设置。
 
 ### `Entries`
 
 **Type**: `plist array`
 **Description**: 在开机引导菜单中添加引导项。
 
-应填入 `plist dict` 类型的值来描述相应的加载条目。详见 [Entry Properties](#8-6-Entry-Properties) 部分。
+应填入 `plist dict` 类型的值来描述相应的加载条目。详见 Entry Properties 部分。
 
 ### `Security`
 **Type**: `plist dict`
-**Description**: 应用本章节 [Security Properties](#8-5-Security-Properties) 中的安全相关设置。
+**Description**: 应用本章节 Security Properties 中的安全相关设置。
 
 ### `Tools`
 **Type**: `plist array`
 **Description**: 将工具条目添加到开机引导菜单。
 
-应填入 `plist dict` 类型的值来描述相应的加载条目。详见 [Entry Properties](#8-6-Entry-Properties) 部分。
+应填入 `plist dict` 类型的值来描述相应的加载条目。详见 Entry Properties 部分。
 
 *注*：选择工具（比如 UEFI shell）是很危险的事情，利用这些工具可以轻易地绕过安全启动链，所以**千万不要**出现在产品配置中，尤其是设置了 vault 和安全启动保护的设备（译者注：即，工具仅作调试用）。
 
