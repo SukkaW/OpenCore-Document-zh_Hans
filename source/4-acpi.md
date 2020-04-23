@@ -1,9 +1,9 @@
 ---
 title: 4. ACPI
-description: 加载、屏蔽、修补 ACPI（DSDT/SSDT）表（待翻译）
+description: 加载、屏蔽、修补 ACPI（DSDT/SSDT）表
 type: docs
-author_info: 由 Sukka 整理、由 Sukka 翻译。感谢黑果小兵提供的参考资料
-last_updated: 2020-03-12
+author_info: 由 Sukka 整理、由 Sukka、derbalkon 翻译。感谢黑果小兵提供的参考资料
+last_updated: 2020-04-23
 ---
 
 ## 4.1 简介
@@ -42,7 +42,7 @@ ACPI（Advanced Configuration and Power Interface，高级配置和电源接口�
 ### 4.2.4 `Quirks`
 
 **Type**: `plist dict`
-**Description**: 应用下文 [4.6 Quirks 属性](#4-5-Quirks-属性) 章节中描述的 Quirks。
+**Description**: 应用下文 [4.6 Quirks 属性](#4-6-Quirks-属性) 章节中描述的 Quirks。
 
 ## 4.3 Add 属性
 
@@ -74,7 +74,7 @@ ACPI（Advanced Configuration and Power Interface，高级配置和电源接口�
 
 **Type**: `plist boolean`
 **Failsafe**: false
-**Description**: 如果设置为 true，则所有符合条件的 ACPI 表都会被舍弃。 否则，只舍弃第一个匹配到的。
+**Description**: 如果设置为 `true`，则所有符合条件的 ACPI 表都会被舍弃。 否则，只舍弃第一个匹配到的。
 
 ### 4.2.2 `Comment`
 
@@ -92,21 +92,21 @@ ACPI（Advanced Configuration and Power Interface，高级配置和电源接口�
 
 **Type**: `plist data, 8 bytes`
 **Failsafe**: All zero
-**Description**: Match table OEM ID to be equal to this value unless all zero.
+**Description**: 将表的 OEM ID 匹配为此处所填的值，全部为 0 时忽略。
 
 ### 4.2.5 `TableLength`
 
 **Type**: `plist integer`
 **Failsafe**: 0
-**Description**: Match table size to be equal to this value unless 0.
+**Description**: 将表的大小匹配为此处所填的值，填 0 时忽略。
 
 ### 4.2.6 `TableSignature`
 
 **Type**: `plist data, 4 bytes`
 **Failsafe**: All zero
-**Description**: Match table signature to be equal to this value unless all zero.
+**Description**: 将表的签名匹配为此处的值，全部为 0 时忽略。
 
-**注**： Make sure not to specify table signature when the sequence needs to be replaced in multiple places. Especially when performing different kinds of renames.
+**注**：当序列需要在多处替换的时候，务必注意不要指定表的签名，尤其是在进行不同类型的重命名操作的时候。
 
 ## 4.5 Patch 属性
 
@@ -126,7 +126,7 @@ ACPI（Advanced Configuration and Power Interface，高级配置和电源接口�
 
 **Type**: `plist boolean`
 **Failsafe**: false
-**Description**: This ACPI patch will not be used unless set to true.
+**Description**: 除非设置为 `true`，否则此处的 ACPI 补丁不会生效。
 
 ### 4.5.4 Find
 
@@ -150,7 +150,7 @@ ACPI（Advanced Configuration and Power Interface，高级配置和电源接口�
 
 **Type**: `plist data, 8 bytes`
 **Failsafe**: All zero
-**Description**: Match table OEM ID to be equal to this value unless all zero.
+**Description**: 将表的 OEM ID 匹配为此处所填的值，全部为 0 时忽略。
 
 ### 4.5.8 Replace
 
@@ -174,26 +174,26 @@ ACPI（Advanced Configuration and Power Interface，高级配置和电源接口�
 
 **Type**: `plist integer`
 **Failsafe**: 0
-**Description**: Match table size to be equal to this value unless 0.
+**Description**: 将表的大小匹配为此处所填的值，填 0 时忽略。
 
 ### 4.5.11 TableSignature
 
 **Type**: `plist data, 4 bytes`
 **Failsafe**: All zero
-**Description**: Match table signature to be equal to this value unless all zero.
+**Description**: 将表的签名匹配为此处的值，全部为 0 时忽略。
 
-In the majority of the cases ACPI patches are not useful and harmful:
+大多数情况下，ACPI 补丁是有害而无益的：
 
-- Avoid renaming devices with ACPI patches. This may fail or perform improper renaming of unrelated devices (e.g. `EC` and `EC0`), be unnecessary, or even fail to rename devices in select tables. For ACPI consistency it is much safer to rename devices at I/O Registry level, as done by [WhateverGreen](https://github.com/acidanthera/WhateverGreen).
-- Avoid patching `_OSI` to support a higher level of feature sets unless absolutely required. Commonly this enables a number of hacks on APTIO firmwares, which result in the need to add more patches. Modern firmwares generally do not need it at all, and those that do are fine with much smaller patches.
-- Try to avoid hacky changes like renaming `_PRW` or `_DSM` whenever possible.
+- 避免用 ACPI 补丁重命名设备。这样做可能会使设备重命名失败，或者会对不相关的设备进行错误地重命名（如 `EC` 和 `EC0`）。为了保证 ACPI 的一致性，在 I/O 注册表级别重命名设备会更加安全，比如 [WhateverGreen](https://github.com/acidanthera/WhateverGreen) 的做法。
+- 避免为了支持更高级的功能集而给 `_OSI` 打补丁，除非你非常需要。这样做通常会侵入 APTIO 固件，从而导致需要用打更多的补丁去填坑。现代的固件基本不需要，而真正需要的那些固件只要打一些更小的补丁就可以了。
+- 尽量避免重命名 `_PRW` 或 `_DSM` 之类的魔改举动。
 
-Several cases, where patching actually does make sense, include:
+在某些情况下，打补丁确实是有意义的：
 
-- Refreshing `HPET` (or another device) method header to avoid compatibility checks by `_OSI` on legacy hardware. `_STA` method with `if ((OSFL () == Zero)) { If (HPTE)  ...  Return (Zero)` content may be forced to always return 0xF by replacing `A0 10 93 4F 53 46 4C 00` with `A4 0A 0F A3 A3 A3 A3 A3`.
-- To provide custom method implementation with in an SSDT, for instance, to report functional key presses on a laptop, the original method can be replaced with a dummy name by patching `_Q11` with `XQ11`.
+- 刷新 `HPET`（或其他设备）的 method header 来避免老硬件上的 `_OSI` 兼容性检查。可通过将 `A0 10 93 4F 53 46 4C 00` 替换为 `A4 0A 0F A3 A3 A3 A3 A3` 的办法，使带有 `if ((OSFL () == Zero)) { If (HPTE)  ...  Return (Zero)` 的 `_STA` method 达到强制返回 0xF 的目的。
+- 在 SSDT 中实现自定义 method，比如笔记本电脑上功能键可以通过将 `_Q11` 替换为 `XQ11` 的方法进行仿冒。
 
-Tianocore [AcpiAml.h](https://github.com/acidanthera/audk/blob/master/MdePkg/Include/IndustryStandard/AcpiAml.h) source file may help understanding ACPI opcodes.
+TianoCore 源文件 [AcpiAml.h](https://github.com/acidanthera/audk/blob/master/MdePkg/Include/IndustryStandard/AcpiAml.h) 可能会对于理解 ACPI 操作码有所帮助。
 
 ## 4.6 Quirks 属性
 
@@ -226,7 +226,7 @@ ACPI 表通常由底层固件动态生成。在与位置无关的代码中，ACP
 
 **Type**: `plist boolean`
 **Failsafe**: false
-**Description**: Reset `FACS` table `HardwareSignature` value to 0.
+**Description**: 将 `FACS` 表中 `HardwareSignature` 的值重置为 0。
 
 启用这一选项可以解决固件无法在重新启动过程中保持硬件签名导致的休眠唤醒问题。
 
