@@ -207,15 +207,15 @@
         <div class="column is-9-tablet doku-document-wrapper">
             <div class="content">
                 <h2 id="8-1-Introduction"><a href="#8-1-Introduction" class="headerlink" title="8.1 Introduction"></a>8.1 Introduction</h2><p>本部分包含关于 OpenCore 行为的其他配置。</p>
-<h2 id="8-2-Properties"><a href="#8-2-Properties" class="headerlink" title="8.2 Properties"></a>8.2 Properties</h2><h3 id="Boot"><a href="#Boot" class="headerlink" title="Boot"></a><code>Boot</code></h3><p><strong>Type</strong>: <code>plist dict</code><br><strong>Description</strong>: 应用本章节 <a href="">Boot Properties</a> 中的引导相关设置。</p>
+<h2 id="8-2-Properties"><a href="#8-2-Properties" class="headerlink" title="8.2 Properties"></a>8.2 Properties</h2><h3 id="Boot"><a href="#Boot" class="headerlink" title="Boot"></a><code>Boot</code></h3><p><strong>Type</strong>: <code>plist dict</code><br><strong>Description</strong>: 应用本章节 Boot Properties 中的引导相关设置。</p>
 <h3 id="BlessOverride"><a href="#BlessOverride" class="headerlink" title="BlessOverride"></a><code>BlessOverride</code></h3><p><strong>Type</strong>: <code>plist array</code><br><strong>Description</strong>: 通过 Bless Model 添加自定义扫描路径。</p>
 <p>设计为填充 <code>plist string</code> 条目，其中包含指向自定义引导程序的绝对 UEFI 路径，例如，用于 Microsoft 引导程序的 <code>\EFI\Microsoft\Boot\bootmgfw.efi</code>。这允许引导选择器自动发现异常的引导路径。在设计上它们等效于预定义的 Bless 路径（如 <code>\System\Library\CoreServices\boot.efi</code>），但与预定义的 Bless 路径不同，它们具有最高优先级。</p>
-<h3 id="Debug"><a href="#Debug" class="headerlink" title="Debug"></a><code>Debug</code></h3><p><strong>Type</strong>: <code>plist dict</code><br><strong>Description</strong>: 应用本章节 <a href="">Debug Properties</a> 中的调试相关设置。</p>
+<h3 id="Debug"><a href="#Debug" class="headerlink" title="Debug"></a><code>Debug</code></h3><p><strong>Type</strong>: <code>plist dict</code><br><strong>Description</strong>: 应用本章节 Debug Properties 中的调试相关设置。</p>
 <h3 id="Entries"><a href="#Entries" class="headerlink" title="Entries"></a><code>Entries</code></h3><p><strong>Type</strong>: <code>plist array</code><br><strong>Description</strong>: 在开机引导菜单中添加引导项。</p>
-<p>应填入 <code>plist dict</code> 类型的值来描述相应的加载条目。详见 <a href="">Entry Properties</a> 部分。</p>
-<h3 id="Security"><a href="#Security" class="headerlink" title="Security"></a><code>Security</code></h3><p><strong>Type</strong>: <code>plist dict</code><br><strong>Description</strong>: 应用本章节 <a href="">Security Properties</a> 中的安全相关设置。</p>
+<p>应填入 <code>plist dict</code> 类型的值来描述相应的加载条目。详见 Entry Properties 部分。</p>
+<h3 id="Security"><a href="#Security" class="headerlink" title="Security"></a><code>Security</code></h3><p><strong>Type</strong>: <code>plist dict</code><br><strong>Description</strong>: 应用本章节 Security Properties 中的安全相关设置。</p>
 <h3 id="Tools"><a href="#Tools" class="headerlink" title="Tools"></a><code>Tools</code></h3><p><strong>Type</strong>: <code>plist array</code><br><strong>Description</strong>: 将工具条目添加到开机引导菜单。</p>
-<p>应填入 <code>plist dict</code> 类型的值来描述相应的加载条目。详见 <a href="">Entry Properties</a> 部分。</p>
+<p>应填入 <code>plist dict</code> 类型的值来描述相应的加载条目。详见 Entry Properties 部分。</p>
 <p><em>注</em>：选择工具（比如 UEFI shell）是很危险的事情，利用这些工具可以轻易地绕过安全启动链，所以<strong>千万不要</strong>出现在产品配置中，尤其是设置了 vault 和安全启动保护的设备（译者注：即，工具仅作调试用）。</p>
 <h2 id="8-3-Boot-Properties"><a href="#8-3-Boot-Properties" class="headerlink" title="8.3 Boot Properties"></a>8.3 Boot Properties</h2><h3 id="ConsoleAttributes"><a href="#ConsoleAttributes" class="headerlink" title="ConsoleAttributes"></a><code>ConsoleAttributes</code></h3><p><strong>Type</strong>: <code>plist integer</code><br><strong>Failsafe</strong>: <code>0</code><br><strong>Description</strong>: 为控制台设置特定的属性。</p>
 <p>根据 UEFI 规范，文本渲染器支持的颜色参数为前景色与背景色之和。黑色背景色和黑色前景色 (<code>0</code>) 的值是预留的。以下是颜色名称一览：</p>

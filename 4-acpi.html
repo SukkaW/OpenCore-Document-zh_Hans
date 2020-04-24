@@ -187,14 +187,14 @@
         <div class="hero-body">
             <h1 class="title">4. ACPI</h1>
             
-                <p class="subtitle">加载、屏蔽、修补 ACPI（DSDT/SSDT）表（待翻译）</p>
+                <p class="subtitle">加载、屏蔽、修补 ACPI（DSDT/SSDT）表</p>
             
             
                 
-                    <p><small>由 Sukka 整理、由 Sukka 翻译。感谢黑果小兵提供的参考资料</small></p>
+                    <p><small>由 Sukka 整理、由 Sukka、derbalkon 翻译。感谢黑果小兵提供的参考资料</small></p>
                 
                 
-                    <p><small>本页面最后更新于 2020 年 03 月 12 日</small></p>
+                    <p><small>本页面最后更新于 2020 年 04 月 23 日</small></p>
                 
                 <br>
             
@@ -214,50 +214,50 @@
 <p>设计为用 <code>plist dict</code> 值填充以描述每个块级项目。请参阅下面 <a href="#4-4-Block-属性">4.4 Block 属性</a> 章节。</p>
 <h3 id="4-2-3-Patch"><a href="#4-2-3-Patch" class="headerlink" title="4.2.3 Patch"></a>4.2.3 <code>Patch</code></h3><p><strong>Type</strong>: <code>plist array</code><br><strong>Failsafe</strong>: Empty<br><strong>Description</strong>: 在添加或删除 ACPI 表之前执行的二进制修补。</p>
 <p>设计为用 <code>plist dictionary</code> 值填充以描述每个块级项目。请参阅下面 <a href="#4-5-Patch-属性">4.5 Patch 属性</a> 章节。</p>
-<h3 id="4-2-4-Quirks"><a href="#4-2-4-Quirks" class="headerlink" title="4.2.4 Quirks"></a>4.2.4 <code>Quirks</code></h3><p><strong>Type</strong>: <code>plist dict</code><br><strong>Description</strong>: 应用下文 <a href="#4-5-Quirks-属性">4.6 Quirks 属性</a> 章节中描述的 Quirks。</p>
+<h3 id="4-2-4-Quirks"><a href="#4-2-4-Quirks" class="headerlink" title="4.2.4 Quirks"></a>4.2.4 <code>Quirks</code></h3><p><strong>Type</strong>: <code>plist dict</code><br><strong>Description</strong>: 应用下文 <a href="#4-6-Quirks-属性">4.6 Quirks 属性</a> 章节中描述的 Quirks。</p>
 <h2 id="4-3-Add-属性"><a href="#4-3-Add-属性" class="headerlink" title="4.3 Add 属性"></a>4.3 Add 属性</h2><h3 id="4-2-1-Comment"><a href="#4-2-1-Comment" class="headerlink" title="4.2.1 Comment"></a>4.2.1 <code>Comment</code></h3><p><strong>Type</strong>: <code>plist string</code><br><strong>Failsafe</strong>: Empty string<br><strong>Description</strong>: 用于为条目提供人类可读参考的任意 ASCII 字符串（译者注：即注释）。</p>
 <h3 id="4-2-2-Enabled"><a href="#4-2-2-Enabled" class="headerlink" title="4.2.2 Enabled"></a>4.2.2 <code>Enabled</code></h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: false<br><strong>Description</strong>: 除非此值为 <code>true</code>，否则此 ACPI 表不会被添加。</p>
 <h3 id="4-2-3-Path"><a href="#4-2-3-Path" class="headerlink" title="4.2.3 Path"></a>4.2.3 <code>Path</code></h3><p><strong>Type</strong>: <code>plist string</code><br><strong>Failsafe</strong>: Empty string<br><strong>Description</strong>: 需要加载的 ACPI 表所在的路径。示例值如 <code>DSDT.aml</code>、<code>SubDir/SSDT-8.aml</code>、<code>SSDT-USBX.aml</code>。</p>
 <p>所有 ACPI 表都从 <code>OC/ACPI</code> 目录加载，加载顺序遵循数组中的项目顺序。</p>
 <p><strong>注</strong>： 除具有 DSDT 表标识符（由解析得到的数据、而非由其文件名决定）的表外，所有表都将作为新表插入 ACPI 栈。而 DSDT 表与其余的表不同，将会执行 DSDT 表的替换。</p>
-<h2 id="4-4-Block-属性"><a href="#4-4-Block-属性" class="headerlink" title="4.4 Block 属性"></a>4.4 Block 属性</h2><h3 id="4-2-1-All"><a href="#4-2-1-All" class="headerlink" title="4.2.1 All"></a>4.2.1 <code>All</code></h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: false<br><strong>Description</strong>: 如果设置为 true，则所有符合条件的 ACPI 表都会被舍弃。 否则，只舍弃第一个匹配到的。</p>
+<h2 id="4-4-Block-属性"><a href="#4-4-Block-属性" class="headerlink" title="4.4 Block 属性"></a>4.4 Block 属性</h2><h3 id="4-2-1-All"><a href="#4-2-1-All" class="headerlink" title="4.2.1 All"></a>4.2.1 <code>All</code></h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: false<br><strong>Description</strong>: 如果设置为 <code>true</code>，则所有符合条件的 ACPI 表都会被舍弃。 否则，只舍弃第一个匹配到的。</p>
 <h3 id="4-2-2-Comment"><a href="#4-2-2-Comment" class="headerlink" title="4.2.2 Comment"></a>4.2.2 <code>Comment</code></h3><p><strong>Type</strong>: <code>plist string</code><br><strong>Failsafe</strong>: Empty string<br><strong>Description</strong>: 用于为条目提供人类可读参考的任意 ASCII 字符串（译者注：即注释）。</p>
 <h3 id="4-2-3-Enabled"><a href="#4-2-3-Enabled" class="headerlink" title="4.2.3 Enabled"></a>4.2.3 <code>Enabled</code></h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: false<br><strong>Description</strong>: 除非此值为 <code>true</code>，否则此 ACPI 表不会被舍弃。</p>
-<h3 id="4-2-4-OemTableId"><a href="#4-2-4-OemTableId" class="headerlink" title="4.2.4 OemTableId"></a>4.2.4 <code>OemTableId</code></h3><p><strong>Type</strong>: <code>plist data, 8 bytes</code><br><strong>Failsafe</strong>: All zero<br><strong>Description</strong>: Match table OEM ID to be equal to this value unless all zero.</p>
-<h3 id="4-2-5-TableLength"><a href="#4-2-5-TableLength" class="headerlink" title="4.2.5 TableLength"></a>4.2.5 <code>TableLength</code></h3><p><strong>Type</strong>: <code>plist integer</code><br><strong>Failsafe</strong>: 0<br><strong>Description</strong>: Match table size to be equal to this value unless 0.</p>
-<h3 id="4-2-6-TableSignature"><a href="#4-2-6-TableSignature" class="headerlink" title="4.2.6 TableSignature"></a>4.2.6 <code>TableSignature</code></h3><p><strong>Type</strong>: <code>plist data, 4 bytes</code><br><strong>Failsafe</strong>: All zero<br><strong>Description</strong>: Match table signature to be equal to this value unless all zero.</p>
-<p><strong>注</strong>： Make sure not to specify table signature when the sequence needs to be replaced in multiple places. Especially when performing different kinds of renames.</p>
+<h3 id="4-2-4-OemTableId"><a href="#4-2-4-OemTableId" class="headerlink" title="4.2.4 OemTableId"></a>4.2.4 <code>OemTableId</code></h3><p><strong>Type</strong>: <code>plist data, 8 bytes</code><br><strong>Failsafe</strong>: All zero<br><strong>Description</strong>: 将表的 OEM ID 匹配为此处所填的值，全部为 0 时忽略。</p>
+<h3 id="4-2-5-TableLength"><a href="#4-2-5-TableLength" class="headerlink" title="4.2.5 TableLength"></a>4.2.5 <code>TableLength</code></h3><p><strong>Type</strong>: <code>plist integer</code><br><strong>Failsafe</strong>: 0<br><strong>Description</strong>: 将表的大小匹配为此处所填的值，填 0 时忽略。</p>
+<h3 id="4-2-6-TableSignature"><a href="#4-2-6-TableSignature" class="headerlink" title="4.2.6 TableSignature"></a>4.2.6 <code>TableSignature</code></h3><p><strong>Type</strong>: <code>plist data, 4 bytes</code><br><strong>Failsafe</strong>: All zero<br><strong>Description</strong>: 将表的签名匹配为此处的值，全部为 0 时忽略。</p>
+<p><strong>注</strong>：当序列需要在多处替换的时候，务必注意不要指定表的签名，尤其是在进行不同类型的重命名操作的时候。</p>
 <h2 id="4-5-Patch-属性"><a href="#4-5-Patch-属性" class="headerlink" title="4.5 Patch 属性"></a>4.5 Patch 属性</h2><h3 id="4-5-1-Comment"><a href="#4-5-1-Comment" class="headerlink" title="4.5.1 Comment"></a>4.5.1 Comment</h3><p><strong>Type</strong>: <code>plist string</code><br><strong>Failsafe</strong>: Empty string<br><strong>Description</strong>: 用于为条目提供人类可读参考的任意 ASCII 字符串（译者注：即注释）。</p>
 <h3 id="4-5-2-Count"><a href="#4-5-2-Count" class="headerlink" title="4.5.2 Count"></a>4.5.2 Count</h3><p><strong>Type</strong>: <code>plist integer</code><br><strong>Failsafe</strong>: 0<br><strong>Description</strong>: 补丁应用的次数。如果将此值设置为 0，补丁将会被应用于所有匹配。</p>
-<h3 id="4-5-3-Enabled"><a href="#4-5-3-Enabled" class="headerlink" title="4.5.3 Enabled"></a>4.5.3 Enabled</h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: false<br><strong>Description</strong>: This ACPI patch will not be used unless set to true.</p>
+<h3 id="4-5-3-Enabled"><a href="#4-5-3-Enabled" class="headerlink" title="4.5.3 Enabled"></a>4.5.3 Enabled</h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: false<br><strong>Description</strong>: 除非设置为 <code>true</code>，否则此处的 ACPI 补丁不会生效。</p>
 <h3 id="4-5-4-Find"><a href="#4-5-4-Find" class="headerlink" title="4.5.4 Find"></a>4.5.4 Find</h3><p><strong>Type</strong>: <code>plist data</code><br><strong>Failsafe</strong>: Empty data<br><strong>Description</strong>: 需要寻找的 Data，长度必须和 <code>Replace</code> 相等。</p>
 <h3 id="4-5-5-Limit"><a href="#4-5-5-Limit" class="headerlink" title="4.5.5 Limit"></a>4.5.5 Limit</h3><p><strong>Type</strong>: <code>plist integer</code><br><strong>Failsafe</strong>: 0<br><strong>Description</strong>: 要搜索的最大字节数。当此值为 0 时会遍历整个 ACPI 表。</p>
 <h3 id="4-5-6-Mask"><a href="#4-5-6-Mask" class="headerlink" title="4.5.6 Mask"></a>4.5.6 Mask</h3><p><strong>Type</strong>: <code>plist data</code><br><strong>Failsafe</strong>: Empty data<br><strong>Description</strong>: 查找比较期间使用的数据按位掩码。 通过忽略未屏蔽（设置为零）位来进行模糊搜索。可以设置为空数据以忽略，否则此值的长度必须和 <code>Replace</code> 的长度相等。</p>
-<h3 id="4-5-7-OemTableId"><a href="#4-5-7-OemTableId" class="headerlink" title="4.5.7 OemTableId"></a>4.5.7 OemTableId</h3><p><strong>Type</strong>: <code>plist data, 8 bytes</code><br><strong>Failsafe</strong>: All zero<br><strong>Description</strong>: Match table OEM ID to be equal to this value unless all zero.</p>
+<h3 id="4-5-7-OemTableId"><a href="#4-5-7-OemTableId" class="headerlink" title="4.5.7 OemTableId"></a>4.5.7 OemTableId</h3><p><strong>Type</strong>: <code>plist data, 8 bytes</code><br><strong>Failsafe</strong>: All zero<br><strong>Description</strong>: 将表的 OEM ID 匹配为此处所填的值，全部为 0 时忽略。</p>
 <h3 id="4-5-8-Replace"><a href="#4-5-8-Replace" class="headerlink" title="4.5.8 Replace"></a>4.5.8 Replace</h3><p><strong>Type</strong>: <code>plist data</code><br><strong>Failsafe</strong>: Empty data<br><strong>Description</strong>: 一个或多个字节的替换数据。</p>
 <h3 id="4-5-9-ReplaceMark"><a href="#4-5-9-ReplaceMark" class="headerlink" title="4.5.9 ReplaceMark"></a>4.5.9 ReplaceMark</h3><p><strong>Type</strong>: <code>plist data</code><br><strong>Failsafe</strong>: Empty data<br><strong>Description</strong>: 替换数据期间使用的数据按位掩码。 通过忽略未屏蔽（设置为零）位来进行模糊搜索。可以设置为空数据以忽略，否则此值的长度必须和 <code>Replace</code> 的长度相等。</p>
 <h3 id="4-5-10-Skip"><a href="#4-5-10-Skip" class="headerlink" title="4.5.10 Skip"></a>4.5.10 Skip</h3><p><strong>Type</strong>: <code>plist integer</code><br><strong>Failsafe</strong>: 0<br><strong>Description</strong>: 完成替换之前要跳过的匹配数。</p>
-<h3 id="4-5-11-TableLength"><a href="#4-5-11-TableLength" class="headerlink" title="4.5.11 TableLength"></a>4.5.11 TableLength</h3><p><strong>Type</strong>: <code>plist integer</code><br><strong>Failsafe</strong>: 0<br><strong>Description</strong>: Match table size to be equal to this value unless 0.</p>
-<h3 id="4-5-11-TableSignature"><a href="#4-5-11-TableSignature" class="headerlink" title="4.5.11 TableSignature"></a>4.5.11 TableSignature</h3><p><strong>Type</strong>: <code>plist data, 4 bytes</code><br><strong>Failsafe</strong>: All zero<br><strong>Description</strong>: Match table signature to be equal to this value unless all zero.</p>
-<p>In the majority of the cases ACPI patches are not useful and harmful:</p>
+<h3 id="4-5-11-TableLength"><a href="#4-5-11-TableLength" class="headerlink" title="4.5.11 TableLength"></a>4.5.11 TableLength</h3><p><strong>Type</strong>: <code>plist integer</code><br><strong>Failsafe</strong>: 0<br><strong>Description</strong>: 将表的大小匹配为此处所填的值，填 0 时忽略。</p>
+<h3 id="4-5-11-TableSignature"><a href="#4-5-11-TableSignature" class="headerlink" title="4.5.11 TableSignature"></a>4.5.11 TableSignature</h3><p><strong>Type</strong>: <code>plist data, 4 bytes</code><br><strong>Failsafe</strong>: All zero<br><strong>Description</strong>: 将表的签名匹配为此处的值，全部为 0 时忽略。</p>
+<p>大多数情况下，ACPI 补丁是有害而无益的：</p>
 <ul>
-<li>Avoid renaming devices with ACPI patches. This may fail or perform improper renaming of unrelated devices (e.g. <code>EC</code> and <code>EC0</code>), be unnecessary, or even fail to rename devices in select tables. For ACPI consistency it is much safer to rename devices at I/O Registry level, as done by <a href="https://github.com/acidanthera/WhateverGreen" target="_blank" rel="noopener">WhateverGreen</a>.</li>
-<li>Avoid patching <code>_OSI</code> to support a higher level of feature sets unless absolutely required. Commonly this enables a number of hacks on APTIO firmwares, which result in the need to add more patches. Modern firmwares generally do not need it at all, and those that do are fine with much smaller patches.</li>
-<li>Try to avoid hacky changes like renaming <code>_PRW</code> or <code>_DSM</code> whenever possible.</li>
+<li>避免用 ACPI 补丁重命名设备。这样做可能会使设备重命名失败，或者会对不相关的设备进行错误地重命名（如 <code>EC</code> 和 <code>EC0</code>）。为了保证 ACPI 的一致性，在 I/O 注册表级别重命名设备会更加安全，比如 <a href="https://github.com/acidanthera/WhateverGreen" target="_blank" rel="noopener">WhateverGreen</a> 的做法。</li>
+<li>避免为了支持更高级的功能集而给 <code>_OSI</code> 打补丁，除非你非常需要。这样做通常会侵入 APTIO 固件，从而导致需要用打更多的补丁去填坑。现代的固件基本不需要，而真正需要的那些固件只要打一些更小的补丁就可以了。</li>
+<li>尽量避免重命名 <code>_PRW</code> 或 <code>_DSM</code> 之类的魔改举动。</li>
 </ul>
-<p>Several cases, where patching actually does make sense, include:</p>
+<p>在某些情况下，打补丁确实是有意义的：</p>
 <ul>
-<li>Refreshing <code>HPET</code> (or another device) method header to avoid compatibility checks by <code>_OSI</code> on legacy hardware. <code>_STA</code> method with <code>if ((OSFL () == Zero)) { If (HPTE)  ...  Return (Zero)</code> content may be forced to always return 0xF by replacing <code>A0 10 93 4F 53 46 4C 00</code> with <code>A4 0A 0F A3 A3 A3 A3 A3</code>.</li>
-<li>To provide custom method implementation with in an SSDT, for instance, to report functional key presses on a laptop, the original method can be replaced with a dummy name by patching <code>_Q11</code> with <code>XQ11</code>.</li>
+<li>刷新 <code>HPET</code>（或其他设备）的 method header 来避免老硬件上的 <code>_OSI</code> 兼容性检查。可通过将 <code>A0 10 93 4F 53 46 4C 00</code> 替换为 <code>A4 0A 0F A3 A3 A3 A3 A3</code> 的办法，使带有 <code>if ((OSFL () == Zero)) { If (HPTE)  ...  Return (Zero)</code> 的 <code>_STA</code> method 达到强制返回 0xF 的目的。</li>
+<li>在 SSDT 中实现自定义 method，比如笔记本电脑上功能键可以通过将 <code>_Q11</code> 替换为 <code>XQ11</code> 的方法进行仿冒。</li>
 </ul>
-<p>Tianocore <a href="https://github.com/acidanthera/audk/blob/master/MdePkg/Include/IndustryStandard/AcpiAml.h" target="_blank" rel="noopener">AcpiAml.h</a> source file may help understanding ACPI opcodes.</p>
+<p>TianoCore 源文件 <a href="https://github.com/acidanthera/audk/blob/master/MdePkg/Include/IndustryStandard/AcpiAml.h" target="_blank" rel="noopener">AcpiAml.h</a> 可能会对于理解 ACPI 操作码有所帮助。</p>
 <h2 id="4-6-Quirks-属性"><a href="#4-6-Quirks-属性" class="headerlink" title="4.6 Quirks 属性"></a>4.6 Quirks 属性</h2><h3 id="4-6-1-FadtEnableReset"><a href="#4-6-1-FadtEnableReset" class="headerlink" title="4.6.1 FadtEnableReset"></a>4.6.1 FadtEnableReset</h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: false<br><strong>Description</strong>: 在 FADT 表中提供寄存器复位标志，用于修复旧硬件的重启和关机。除非需要，否则不建议启用。</p>
 <h3 id="4-6-2-NormalizeHeaders"><a href="#4-6-2-NormalizeHeaders" class="headerlink" title="4.6.2 NormalizeHeaders"></a>4.6.2 NormalizeHeaders</h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: false<br><strong>Description</strong>: 清理 ACPI 表头字段以解决 macOS ACPI 实现错误导致的引导崩溃<br><em>参考</em>: 由 Alex James（theracermaster）在调试 AppleACPIPlatform 时发现。从 macOS Mojave (10.14) 开始，这个错误已经被修复。</p>
 <h3 id="4-6-3-RebaseRegions"><a href="#4-6-3-RebaseRegions" class="headerlink" title="4.6.3 RebaseRegions"></a>4.6.3 RebaseRegions</h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: false<br><strong>Description</strong>: 尝试试探性地重定位 ACPI 内存区域。不建议启用这一选项，除非你需要自定义 DSDT。</p>
 <p>ACPI 表通常由底层固件动态生成。在与位置无关的代码中，ACPI 表可能包含用于设备配置的 MMIO 区域的物理地址，通常按区域（例如 OperationRegion）分组。 更改固件设置或硬件配置，升级或修补固件不可避免地会导致动态生成的 ACPI 代码发生变化，这有时会导致上述 OperationRegion 结构中的地址发生变化。</p>
 <p>因此，对 ACPI 表进行任何形式的修改都是非常危险的。最合理的方法是对 ACPI 进行尽可能少的更改，并尝试不替换任何表，尤其是 DSDT。</p>
 <p>如果无法不得不替换 DSDT，则至少应尝试确保自定义 DSDT 基于最新的 DSDT 或避免对受影响区域的读写。如果没有其他帮助，可以尝试通过尝试修复 ACPI 地址来避免在 macOS 引导的 PCI Configuration Begin 阶段出现停顿的情况。</p>
-<h3 id="4-6-4-ResetHwSig"><a href="#4-6-4-ResetHwSig" class="headerlink" title="4.6.4 ResetHwSig"></a>4.6.4 ResetHwSig</h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: false<br><strong>Description</strong>: Reset <code>FACS</code> table <code>HardwareSignature</code> value to 0.</p>
+<h3 id="4-6-4-ResetHwSig"><a href="#4-6-4-ResetHwSig" class="headerlink" title="4.6.4 ResetHwSig"></a>4.6.4 ResetHwSig</h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: false<br><strong>Description</strong>: 将 <code>FACS</code> 表中 <code>HardwareSignature</code> 的值重置为 0。</p>
 <p>启用这一选项可以解决固件无法在重新启动过程中保持硬件签名导致的休眠唤醒问题。</p>
 <h3 id="4-6-5-ResetLogoStatus"><a href="#4-6-5-ResetLogoStatus" class="headerlink" title="4.6.5 ResetLogoStatus"></a>4.6.5 ResetLogoStatus</h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: false<br><strong>Description</strong>: 将 <code>BGRT</code> 表中 <code>Displayed</code> 状态字段重置为 <code>false</code>.</p>
 <p>这适用于提供 <code>BGRT</code> 表、但随后无法处理屏幕更新的固件。如果在开机时无法显示 OEM Windows 标志的硬件可以尝试开启开启。</p>
