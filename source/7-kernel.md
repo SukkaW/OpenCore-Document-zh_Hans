@@ -3,7 +3,7 @@ title: 7. Kernel
 description: OpenCore 安全配置，Kext 加载顺序以及屏蔽（待翻译）
 type: docs
 author_info: 由 Sukka 整理，由 Sukka 翻译。
-last_updated: 2020-04-19
+last_updated: 2020-04-25
 ---
 
 ## 7.1 简介
@@ -220,8 +220,7 @@ otherwise set bits take the value of `Cpuid1Data`.
 
 **Type**: `plist string`
 **Failsafe**: Empty string
-**Description**: Kext bundle identifier (e.g.
-`com.apple.driver.AppleHDA`) or `kernel` for kernel patch.
+**Description**: Kext bundle identifier (e.g. `com.apple.driver.AppleHDA`) or `kernel` for kernel patch.
 
 ### 7.6.7 `Limit`
 
@@ -389,7 +388,7 @@ This patch writes `0xFF00` to `MSR_IA32_PERF_CONTROL` (`0x199`), effectively set
 **Failsafe**: `false`
 **Description**: 修复 macOS Catalina 中由于设备电源状态变化超时而导致的内核崩溃。
 
-An additional security measure was added to macOS Catalina (10.15) causing kernel panic on power change timeout for Apple drivers. Sometimes it may cause issues on misconfigured hardware, notably digital audio, which sometimes fails to wake up. For debug kernels `setpowerstate_panic=0` boot argument should be used, which is otherwise equivalent to this quirk.
+macOS Catalina 新增了一项额外的安全措施，导致在电源切换超时的时候会出现 Kernel Panic。配置错误的硬件可能会因此出现问题（如数字音频设备）、有的时候会导致睡眠唤醒的问题。这一 Quirk 和引导参数 `setpowerstate_panic=0` 功能大部分一致，但是后者只应该用于调试用途。
 
 ### `ThirdPartyDrives`
 
@@ -405,4 +404,4 @@ An additional security measure was added to macOS Catalina (10.15) causing kerne
 **Failsafe**: `false`
 **Description**: 修补 `AppleUSBXHCI.kext`、`AppleUSBXHCIPCI.kext`、`IOUSBHostFamily.kext` 以移除 15 端口限制。
 
-*注*：请尽可能避免使用这一选项。USB port limit is imposed by the amount of used bits in locationID format and there is no possible way to workaround this without heavy OS modification. The only valid solution is to limit the amount of used ports to 15 (discarding some). More details can be found on [AppleLife.ru](https://applelife.ru/posts/550233).
+*注*：请尽可能避免使用这一选项。USB 端口数量限制是由 locationID 格式使用的比特数决定的。真正长期有效的解决方案是限制可用的 USB 端口个数在 15 以下（通过 USB 定制的方法）。

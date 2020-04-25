@@ -1,9 +1,9 @@
 ---
 title: 6. DeviceProperties
-description: PCI 设备属性注入（待翻译）
+description: PCI 设备属性注入
 type: docs
 author_info: 由 Sukka 整理、由 Sukka 翻译。
-last_updated: 2020-02-14
+last_updated: 2020-04-25
 ---
 
 ## 6.1 简介
@@ -23,14 +23,14 @@ ioreg -lw0 -p IODeviceTree -n efi -r -x | grep device-properties |
 
 ### 6.2.1 Add
 
-**Type**: plist dict
+**Type**: `plist dict`
 **Description**: Sets device properties from a map (plist dict) of deivce paths to a map (plist dict) of variable names and their values in plist metadata format. Device paths must be provided in canonic string format (e.g. `PciRoot(0x0)/Pci(0x1,0x0)/Pci(0x0,0x0)`). Properties will only be set if not present and not blocked.
 **注**： 目前，属性只能通过原始驱动程序添加。因此除非安装了单独的驱动程序，否则没有理由 Block 变量。
 
 ### 6.2.2 Block
 
-**Type**: plist dict
-**Description**: 从设备路径的映射（数据类型 plist dict）到 plist 字符串格式的变量名数组（数据类型 plist array）中删除设备属性。
+**Type**: `plist dict`
+**Description**: 从设备路径的映射（`plist dict`）到 plist 字符串格式的变量名数组（数据类型 `plist array`）中删除设备属性。
 
 > 译者注：这里的设置等同于 Clover 里的 ACPI 重命名 `_DSM → XDSM => TgtBridge`
 
