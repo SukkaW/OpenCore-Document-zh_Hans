@@ -194,7 +194,7 @@
                     <p><small>由 Sukka 整理，由 Sukka 翻译。</small></p>
                 
                 
-                    <p><small>本页面最后更新于 2020 年 04 月 19 日</small></p>
+                    <p><small>本页面最后更新于 2020 年 04 月 25 日</small></p>
                 
                 <br>
             
@@ -267,7 +267,7 @@
 <h3 id="7-6-3-Count"><a href="#7-6-3-Count" class="headerlink" title="7.6.3 Count"></a>7.6.3 <code>Count</code></h3><p><strong>Type</strong>: <code>plist integer</code><br><strong>Failsafe</strong>: <code>0</code><br><strong>Description</strong>: 修补的次数，超过这一次数后便不再修补。<code>0</code> 表示修补所有查找到的。</p>
 <h3 id="7-6-4-Enabled"><a href="#7-6-4-Enabled" class="headerlink" title="7.6.4 Enabled"></a>7.6.4 <code>Enabled</code></h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: <code>false</code><br><strong>Description</strong>: 除非设置为 <code>true</code>，否则不对内核进行该修补。</p>
 <h3 id="7-6-5-Find"><a href="#7-6-5-Find" class="headerlink" title="7.6.5 Find"></a>7.6.5 <code>Find</code></h3><p><strong>Type</strong>: <code>plist data</code><br><strong>Failsafe</strong>: Empty data<br><strong>Description</strong>: Data to find. Can be set to empty for immediate replacement at <code>Base</code>. Must equal to <code>Replace</code> in size otherwise.</p>
-<h3 id="7-6-6-Identifier"><a href="#7-6-6-Identifier" class="headerlink" title="7.6.6 Identifier"></a>7.6.6 <code>Identifier</code></h3><p><strong>Type</strong>: <code>plist string</code><br><strong>Failsafe</strong>: Empty string<br><strong>Description</strong>: Kext bundle identifier (e.g.<br><code>com.apple.driver.AppleHDA</code>) or <code>kernel</code> for kernel patch.</p>
+<h3 id="7-6-6-Identifier"><a href="#7-6-6-Identifier" class="headerlink" title="7.6.6 Identifier"></a>7.6.6 <code>Identifier</code></h3><p><strong>Type</strong>: <code>plist string</code><br><strong>Failsafe</strong>: Empty string<br><strong>Description</strong>: Kext bundle identifier (e.g. <code>com.apple.driver.AppleHDA</code>) or <code>kernel</code> for kernel patch.</p>
 <h3 id="7-6-7-Limit"><a href="#7-6-7-Limit" class="headerlink" title="7.6.7 Limit"></a>7.6.7 <code>Limit</code></h3><p><strong>Type</strong>: <code>plist integer</code><br><strong>Failsafe</strong>: <code>0</code><br><strong>Description</strong>: Maximum number of bytes to search for. Can be set to <code>0</code> to look through the whole kext or kernel.</p>
 <h3 id="7-6-8-Mask"><a href="#7-6-8-Mask" class="headerlink" title="7.6.8 Mask"></a>7.6.8 <code>Mask</code></h3><p><strong>Type</strong>: <code>plist data</code><br><strong>Failsafe</strong>: Empty data<br><strong>Description</strong>: Data bitwise mask used during find comparison. Allows fuzzy search by ignoring not masked (set to zero) bits. Can be set to empty data to be ignored. Must equal to <code>Replace</code> in size otherwise.</p>
 <h3 id="7-6-9-MaxKernel"><a href="#7-6-9-MaxKernel" class="headerlink" title="7.6.9 MaxKernel"></a>7.6.9 <code>MaxKernel</code></h3><p><strong>Type</strong>: <code>plist string</code><br><strong>Failsafe</strong>: Empty string<br><strong>Description</strong>: Patches data on specified macOS version or older.</p>
@@ -322,11 +322,11 @@
 </blockquote>
 <h3 id="PanicNoKextDump"><a href="#PanicNoKextDump" class="headerlink" title="PanicNoKextDump"></a><code>PanicNoKextDump</code></h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: <code>false</code><br><strong>Description</strong>: 在发生内核崩溃时阻止输出 Kext 列表，提供可供排错参考的崩溃日志。</p>
 <h3 id="PowerTimeoutKernelPanic"><a href="#PowerTimeoutKernelPanic" class="headerlink" title="PowerTimeoutKernelPanic"></a><code>PowerTimeoutKernelPanic</code></h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: <code>false</code><br><strong>Description</strong>: 修复 macOS Catalina 中由于设备电源状态变化超时而导致的内核崩溃。</p>
-<p>An additional security measure was added to macOS Catalina (10.15) causing kernel panic on power change timeout for Apple drivers. Sometimes it may cause issues on misconfigured hardware, notably digital audio, which sometimes fails to wake up. For debug kernels <code>setpowerstate_panic=0</code> boot argument should be used, which is otherwise equivalent to this quirk.</p>
+<p>macOS Catalina 新增了一项额外的安全措施，导致在电源切换超时的时候会出现 Kernel Panic。配置错误的硬件可能会因此出现问题（如数字音频设备）、有的时候会导致睡眠唤醒的问题。这一 Quirk 和引导参数 <code>setpowerstate_panic=0</code> 功能大部分一致，但是后者只应该用于调试用途。</p>
 <h3 id="ThirdPartyDrives"><a href="#ThirdPartyDrives" class="headerlink" title="ThirdPartyDrives"></a><code>ThirdPartyDrives</code></h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: <code>false</code><br><strong>Description</strong>: 修补 <code>IOAHCIBlockStorage.kext</code>，以在第三方驱动器启用 TRIM、硬盘休眠等功能。</p>
 <p><em>注</em>：NVMe SSD 通常无需这一修改。对于 AHCI SSD（如 SATA SSD），macOS 从 10.15 开始提供 <code>trimforce</code>，可以将 <code>01 00 00 00</code> 值写入 <code>APPLE_BOOT_VARIABLE_GUID</code> 命名空间中的 <code>EnableTRIM</code> 变量。</p>
 <h3 id="XhciPortLimit"><a href="#XhciPortLimit" class="headerlink" title="XhciPortLimit"></a><code>XhciPortLimit</code></h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: <code>false</code><br><strong>Description</strong>: 修补 <code>AppleUSBXHCI.kext</code>、<code>AppleUSBXHCIPCI.kext</code>、<code>IOUSBHostFamily.kext</code> 以移除 15 端口限制。</p>
-<p><em>注</em>：请尽可能避免使用这一选项。USB port limit is imposed by the amount of used bits in locationID format and there is no possible way to workaround this without heavy OS modification. The only valid solution is to limit the amount of used ports to 15 (discarding some). More details can be found on <a href="https://applelife.ru/posts/550233" target="_blank" rel="noopener">AppleLife.ru</a>.</p>
+<p><em>注</em>：请尽可能避免使用这一选项。USB 端口数量限制是由 locationID 格式使用的比特数决定的。真正长期有效的解决方案是限制可用的 USB 端口个数在 15 以下（通过 USB 定制的方法）。</p>
 
             </div>
 
