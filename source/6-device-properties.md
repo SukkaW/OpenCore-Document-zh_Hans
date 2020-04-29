@@ -2,8 +2,8 @@
 title: 6. DeviceProperties
 description: PCI 设备属性注入
 type: docs
-author_info: 由 Sukka 整理、由 Sukka 翻译。
-last_updated: 2020-04-25
+author_info: 由 Sukka 整理、由 Sukka、derbalkon 翻译。
+last_updated: 2020-04-29
 ---
 
 ## 6.1 简介
@@ -24,8 +24,8 @@ ioreg -lw0 -p IODeviceTree -n efi -r -x | grep device-properties |
 ### 6.2.1 Add
 
 **Type**: `plist dict`
-**Description**: Sets device properties from a map (plist dict) of deivce paths to a map (plist dict) of variable names and their values in plist metadata format. Device paths must be provided in canonic string format (e.g. `PciRoot(0x0)/Pci(0x1,0x0)/Pci(0x0,0x0)`). Properties will only be set if not present and not blocked.
-**注**： 目前，属性只能通过原始驱动程序添加。因此除非安装了单独的驱动程序，否则没有理由 Block 变量。
+**Description**: 将设备属性从设备路径的映射（plist dict）设置为变量名称和值的映射（plist dict），其中变量名称和值的格式为 plist metadata。设备路径必须以 canonic string 格式提供（例如： `PciRoot(0x0)/Pci(0x1,0x0)/Pci(0x0,0x0)`）。添加的属性只有在不存在且未被屏蔽的情况下才会被设置。
+**注**：目前，属性只能通过原始驱动程序添加。因此除非安装了单独的驱动程序，否则没有理由 Block 变量。
 
 ### 6.2.2 Block
 

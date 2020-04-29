@@ -1,9 +1,9 @@
 ---
 title: 7. Kernel
-description: OpenCore 安全配置，Kext 加载顺序以及屏蔽（待翻译）
+description: OpenCore 安全配置，Kext 加载顺序以及屏蔽
 type: docs
-author_info: 由 Sukka 整理，由 Sukka 翻译。
-last_updated: 2020-04-25
+author_info: 由 Sukka 整理，由 Sukka、derbalkon 翻译。
+last_updated: 2020-04-29
 ---
 
 ## 7.1 简介
@@ -98,8 +98,7 @@ last_updated: 2020-04-25
 **Failsafe**: Empty string
 **Description**: 在大于等于指定的 macOS 版本中添加该 Kext 驱动程序。
 
-*注*：Refer to [`Add` `MaxKernel` description](#kernmatch) for
-matching logic.
+*注*：匹配逻辑请参阅 `Add` `MaxKernel` 的描述。
 
 > 译者注：以上两个属性定义了这个驱动将在什么版本范围的 macOS 中加载。留空表示在所有的 macOS 版本下都加载。
 
@@ -127,8 +126,8 @@ matching logic.
 
 **Type**: `plist string`
 **Failsafe**: Empty string
-**Description**: Kext bundle identifier (e.g.
-`com.apple.driver.AppleTyMCEDriver`).
+**Description**: Kext Bundle 标识符（比如
+`com.apple.driver.AppleTyMCEDriver`）。
 
 ### 7.4.4 `MaxKernel`
 
@@ -136,7 +135,7 @@ matching logic.
 **Failsafe**: Empty string
 **Description**: 在小于等于指定的 macOS 版本中阻止 Kext 驱动程序。
 
-*注*：Refer to [`Add` `MaxKernel` description](#kernmatch) for matching logic.
+*注*：匹配逻辑请参阅 `Add` `MaxKernel` 的描述。
 
 ### 7.4.5 `MinKernel`
 
@@ -144,8 +143,7 @@ matching logic.
 **Failsafe**: Empty string
 **Description**: 在大于等于指定的 macOS 版本中阻止 Kext 驱动程序。
 
-*注*：Refer to [`Add` `MaxKernel` description](#kernmatch) for
-matching logic.
+*注*：匹配逻辑请参阅 `Add` `MaxKernel` 的描述。
 
 ## 7.5 Emulate 属性
 
@@ -153,16 +151,16 @@ matching logic.
 
 **Type**: `plist data`, 16 bytes
 **Failsafe**: All zero
-**Description**: Sequence of `EAX`, `EBX`, `ECX`, `EDX` values to replace `CPUID (1)` call in XNU kernel.
+**Description**: `EAX`、`EBX`、`ECX`、`EDX` 值的序列，用来取代 XNU 内核中的 `CPUID (1)` 调用。
 
-This property serves for two needs:
+该属性应用于以下两种需求：
 
-- Enabling support of an unsupported CPU model.
-- Enabling XCPM support for an unsupported CPU variant.
+- 对不支持的 CPU 型号启用支持。
+- 对不支持的 CPU Variant 启用 XCPM 支持。
 
-Normally it is only the value of `EAX` that needs to be taken care of, since it represents the full CPUID. The remaining bytes are to be left as zeroes. Byte order is Little Endian, so for example, `A9 06 03 00` stands for CPUID `0x0306A9` (Ivy Bridge).
+通常来讲只需要处理 `EAX` 的值，因为它代表完整的 CPUID。剩余的字节要留为 0。字节顺序是小字节序（Little Endian），比如 `A9 06 03 00` 代表 CPUID `0x0306A9` (Ivy Bridge)。
 
-For XCPM support it is recommended to use the following combinations.
+推荐使用下面的组合启用 XCPM 支持：
 
 - Haswell-E (`0x306F2`) to Haswell (`0x0306C3`):
 
@@ -173,16 +171,15 @@ For XCPM support it is recommended to use the following combinations.
   `Cpuid1Data`: `D4 06 03 00 00 00 00 00 00 00 00 00 00 00 00 00`  
   `Cpuid1Mask`: `FF FF FF FF 00 00 00 00 00 00 00 00 00 00 00 00`
 
-Further explanations can be found at [acidanthera/bugtracker#365](https://github.com/acidanthera/bugtracker/issues/365). See `Special NOTES` for Haswell+ low-end.
+进一步解释参阅 [acidanthera/bugtracker#365](https://github.com/acidanthera/bugtracker/issues/365)。Haswell+ 低端架构请看 `Special NOTES`。
 
 ### 7.5.2 `Cpuid1Mask`
 
 **Type**: `plist data`, 16 bytes
 **Failsafe**: All zero
-**Description**: Bit mask of active bits in `Cpuid1Data`.
+**Description**: `Cpuid1Data` 中激活的 bit 的位掩码。
 
-When each `Cpuid1Mask` bit is set to 0, the original CPU bit is used,
-otherwise set bits take the value of `Cpuid1Data`.
+当每个 `Cpuid1Mask` bit 都设置为 `0` 时将使用原始的 CPU bit，否则取 `Cpuid1Data` 的值。
 
 ## 7.6 Patch 属性
 
@@ -190,7 +187,7 @@ otherwise set bits take the value of `Cpuid1Data`.
 
 **Type**: `plist string`
 **Failsafe**: Empty string
-**Description**: Selects symbol-matched base for patch lookup (or immediate replacement) by obtaining the address of provided symbol name. Can be set to empty string to be ignored.
+**Description**: 通过获取所提供的 Symbol 名称的地址，来选择 Symbol 匹配的 Base 进行补丁查找（或直接替换）。可以设置为空字符串以忽略。
 
 ### 7.6.2 `Comment`
 
@@ -214,58 +211,58 @@ otherwise set bits take the value of `Cpuid1Data`.
 
 **Type**: `plist data`
 **Failsafe**: Empty data
-**Description**: Data to find. Can be set to empty for immediate replacement at `Base`. Must equal to `Replace` in size otherwise.
+**Description**: 需要查找的数据。可留空，在 `Base` 处直接替换。若不留空，其大小必须等于 `Replace`。
 
 ### 7.6.6 `Identifier`
 
 **Type**: `plist string`
 **Failsafe**: Empty string
-**Description**: Kext bundle identifier (e.g. `com.apple.driver.AppleHDA`) or `kernel` for kernel patch.
+**Description**: Kext Bundle 标识符（如 `com.apple.driver.AppleHDA`）或内核补丁的 `kernel`。
 
 ### 7.6.7 `Limit`
 
 **Type**: `plist integer`
 **Failsafe**: `0`
-**Description**: Maximum number of bytes to search for. Can be set to `0` to look through the whole kext or kernel.
+**Description**: 搜索的最大字节数。可以设置为 `0` 来查找整个 ext 或内核。
 
 ### 7.6.8 `Mask`
 
 **Type**: `plist data`
 **Failsafe**: Empty data
-**Description**: Data bitwise mask used during find comparison. Allows fuzzy search by ignoring not masked (set to zero) bits. Can be set to empty data to be ignored. Must equal to `Replace` in size otherwise.
+**Description**: 在查找比较中使用数据位掩码。允许通过忽略未被屏蔽的 bit（设置为 `0`）进行模糊搜索。若留空则代表忽略，否则其大小必须等于 `Replace`。
 
 ### 7.6.9 `MaxKernel`
 
 **Type**: `plist string`
 **Failsafe**: Empty string
-**Description**: Patches data on specified macOS version or older.
+**Description**: 在指定的或更早的 macOS 版本上打补丁。
 
-*注*：Refer to [`Add` `MaxKernel` description](#kernmatch) for matching logic.
+*注*：匹配逻辑请参阅 `Add` `MaxKernel` 的描述。
 
 ### 7.6.10 `MinKernel`
 
 **Type**: `plist string`
 **Failsafe**: Empty string
-**Description**: Patches data on specified macOS version or newer.
+**Description**: 在指定的或更新的 macOS 版本上打补丁。
 
-*注*：Refer to [`Add` `MaxKernel` description](#kernmatch) for matching logic.
+*注*：匹配逻辑请参阅 `Add` `MaxKernel` 的描述。
 
 ### 7.6.11 `Replace`
 
 **Type**: `plist data`
 **Failsafe**: Empty data
-**Description**: Replacement data of one or more bytes.
+**Description**: 一个或多个字节的替换数据。
 
 ### 7.6.12 `ReplaceMask`
 
 **Type**: `plist data`
 **Failsafe**: Empty data
-**Description**: Data bitwise mask used during replacement. Allows fuzzy replacement by updating masked (set to non-zero) bits. Can be set to empty data to be ignored. Must equal to `Replace` in size otherwise.
+**Description**: 替换时使用的数据位掩码。允许通过更新掩码（设置为非 `0`）来进行模糊替换。若留空则代表忽略，否则其大小必须等于 `Replace`。
 
 ### 7.6.13 `Skip`
 **Type**: `plist integer`
 **Failsafe**: `0`
-**Description**: Number of found occurrences to be skipped before replacement is done.
+**Description**: 在替换前要跳过的发现事件数。
 
 ## 7.7 Quirks 属性
 
@@ -313,7 +310,7 @@ otherwise set bits take the value of `Cpuid1Data`.
 **Failsafe**: `false`
 **Description**: 在 XCPM 模式下强制使用最大性能。
 
-This patch writes `0xFF00` to `MSR_IA32_PERF_CONTROL` (`0x199`), effectively setting maximum multiplier for all the time.
+该补丁将 `0xFF00` 写入 `MSR_IA32_PERF_CONTROL` (`0x199`)，有效地做到了一直保持最大倍数。
 
 *注*：尽管有助于提高性能，但是在所有操作系统上都强烈建议不要启用这一选项。只有在某些 Xeon 型号的 CPU 才有可能从这个选项中受益。
 
@@ -335,12 +332,12 @@ This patch writes `0xFF00` to `MSR_IA32_PERF_CONTROL` (`0x199`), effectively set
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
-**Description**: Disables primary checksum (`0x58` - `0x59`) writing in AppleRTC.
+**Description**: 禁用 AppleRTC 初始校验和（`0x58` - `0x59`）写入。
 
 *注*：
 
-1. This option will not protect other areas from being overwritten, use [RTCMemoryFixup](https://github.com/acidanthera/RTCMemoryFixup) kernel extension if this is desired.
-2. This option will not protect areas from being overwritten at firmware stage (e.g. macOS bootloader). See `AppleRtc` protocol description if this is desired.
+1. 这个选项不能确保其他区域不被覆盖，如有需要，请使用 [RTCMemoryFixup](https://github.com/acidanthera/RTCMemoryFixup)。
+2. 这个选项不能确保区域在固件阶段不被覆盖（例如 macOS bootloader）。如有需要，请参阅 `AppleRtc` 协议描述。
 
 ### `DummyPowerManagement`
 
