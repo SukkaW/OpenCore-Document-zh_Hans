@@ -3,7 +3,7 @@ title: 8. Misc
 description: 关于 OpenCore 行为的其他配置
 type: docs
 author_info: 由 xMuu、Sukka 整理、由 Sukka、derbalkon 翻译。部分翻译参考黑果小兵的「精解 OpenCore」
-last_updated: 2020-04-25
+last_updated: 2020-04-29
 ---
 
 ## 8.1 Introduction
@@ -327,13 +327,13 @@ VirtualSMC 通过将磁盘加密密钥拆分保存在 NVRAM 和 RTC 中来执行
 可以使用的值有：
 
 - `None`: 什么都不做
-- `Bootstrap`: create or update top-priority `\EFI\OC\Bootstrap\Bootstrap.efi` boot option (`Boot9696`) in UEFI variable storage at bootloader startup. For this option to work `RequestBootVarRouting` is required to be enabled.
+- `Bootstrap`: 在启动引导程序时，在 UEFI 变量存储中创建或更新最高优先级  `\EFI\OC\Bootstrap\Bootstrap.efi` 引导选项 (`Boot9696`)。要使用这个选项，必须同时开启 `RequestBootVarRouting`。
 
-This option provides integration with third-party operating system installation and upgrade at the times they overwrite `\EFI\BOOT\BOOTx64.efi` file. By creating a custom option in `Bootstrap` mode this file path becomes no longer used for bootstraping OpenCore.
+在安装和升级第三方操作系统时 `\EFI\BOOT\BOOTx64.efi` 文件可能会被覆盖掉，该选项则保证了出现覆盖情况时 Bootloader 的一致性。在 `Bootstrap` 模式下创建一个自定义启动项后，`\EFI\BOOT\BOOTx64.efi` 这个文件路径将不再用于引导 OpenCore。
 
-*Note 1*: Some firmewares may have broken NVRAM, no boot option support, or various other incompatibilities of any kind. While unlikely, the use of this option may even cause boot failure. Use at your own risk on boards known to be compatible.
+*注 1*：某些固件的 NVRAM 本身存在问题，可能会出现无启动项支持，或者其他各种不兼容的情况。虽然可能性不大，但使用此选项可能会导致启动失败。请在已知兼容的主板上使用，风险自行考虑。
 
-*Note 2*: Be warned that NVRAM reset will also erase the boot option created in `Bootstrap` mode.
+*注 2*：请注意，NVRAM 重置也会同时清除 `Bootstrap` 模式下创建的启动选项。
 
 ### `ExposeSensitiveData`
 
