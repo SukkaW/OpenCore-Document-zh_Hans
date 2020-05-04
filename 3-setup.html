@@ -194,7 +194,7 @@
                     <p><small>由 Sukka 整理、由 Sukka 翻译。</small></p>
                 
                 
-                    <p><small>本页面最后更新于 2020 年 04 月 19 日</small></p>
+                    <p><small>本页面最后更新于 2020 年 05 月 04 日</small></p>
                 
                 <br>
             
@@ -226,7 +226,7 @@
 <p><em>Note</em>: It is not guaranteed that paths longer than <code>OC_STORAGE_SAFE_PATH_MAX</code> (128 characters including <code>0</code>-termnator) will be accessible within OpenCore.</p>
 <h2 id="3-2-安装和升级"><a href="#3-2-安装和升级" class="headerlink" title="3.2 安装和升级"></a>3.2 安装和升级</h2><p>如果要安装 OpenCore，请在使用 GPT 格式的硬盘上、按照上一节的文件夹结构建立文件和文件夹。尽管本文档的相应部分的确提供了有关你所需的外部资源（如 ACPI 表、UEFI 驱动程序或 kexts）的某些信息，但是本文档不保证会提供关于这些外部资源的全部信息。关于 kext 的完整信息可以查看由 OpenCore 提供的 <a href="https://github.com/acidanthera/OpenCorePkg/blob/master/Docs/Kexts.md" target="_blank" rel="noopener">可选 kext 列表</a>；而本文档也在安全属性的相关章节提供了 Vauting 的相关信息。</p>
 <p>OpenCore 的配置文件可以使用任何常规的文本编辑器（如 nano、vim、VSCode）进行编辑，但是专用软件可以带来更好的体验。在 macOS 上我们推荐使用 <a href="https://developer.apple.com/xcode" target="_blank" rel="noopener">Xcode</a>。你也可以使用 <a href="https://github.com/corpnewt/ProperTree" target="_blank" rel="noopener">ProperTree</a> ，这是一个轻量级的跨平台的开源 plist 编辑器。</p>
-<p>如果要通过 BIOS 进行开机，你必须使用第三方 UEFI 环境提供程序。<code>DuetPkg</code> 是一个常用的为旧操作系统提供 Legacy 引导的 UEFI 环境提供程序。要在这样的旧操作系统上运行 OpenCore，你可以使用 <a href="https://github.com/acidanthera/OpenCorePkg/tree/master/Utilities/BootInstall" target="_blank" rel="noopener">BootInstall</a> 安装 <code>DuetPkg</code>。</p>
+<p>如果要通过 BIOS 进行开机，你必须使用第三方 UEFI 环境提供程序。<code>DuetPkg</code> 是一个常用的为旧操作系统提供 Legacy 引导的 UEFI 环境提供程序。要在这样的旧操作系统上运行 OpenCore，你可以使用一个独立的工具 <code>BootInstall</code> 安装 <code>DuetPkg</code>（目前已和 OpenCore 打包在一起发布）。</p>
 <p>如果要升级 OpenCore，<a href="https://github.com/acidanthera/OpenCorePkg/blob/master/Docs/Differences/Differences.pdf" target="_blank" rel="noopener"><code>Differences.pdf</code></a> 提供了 OpenCore 配置文件变更的相关信息，<a href="https://github.com/acidanthera/OpenCorePkg/blob/master/Changelog.md" target="_blank" rel="noopener"><code>Changelog.md</code></a> 提供了 OpenCore 的更新日志。</p>
 <blockquote>
 <p>译者注：以下两个章节是为准备为参与 OpenCore 开发准备的。</p>
