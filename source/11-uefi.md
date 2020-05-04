@@ -3,7 +3,7 @@ title: 11. UEFI
 description: UEFI 驱动以及加载顺序（待翻译）
 type: docs
 author_info: 由 xMuu、Sukka 整理，由 Sukka 翻译
-last_updated: 2020-04-20
+last_updated: 2020-05-04
 ---
 
 ## 11.1 Introduction
@@ -24,6 +24,7 @@ last_updated: 2020-04-20
 - [`XhciDxe`](https://github.com/acidanthera/audk) --- 来自 `MdeModulePkg` 的 XHCI USB controller 驱动程序。从 Sandy Bridge 代开始的大多数固件中都包含此驱动程序。在较早的固件或旧系统可以用于支持外部 USB 3.0 PCI 卡。
 - [`AudioDxe`](https://github.com/acidanthera/AppleSupportPkg) --- UEFI 固件中的 HDA 音频驱动程序，适用于大多数 Intel 和其他一些模拟音频控制器。Refer to [acidanthera/bugtracker#740](https://github.com/acidanthera/bugtracker/issues/740) for known issues in AudioDxe.
 - [`ExFatDxe`](https://github.com/acidanthera/OcBinaryData) --- 用于 Bootcamp 支持的专有 ExFAT 文件系统驱动程序，通常可以在 Apple 固件中找到。 对于 `Sandy Bridge` 和更早的 CPU，由于缺少 `RDRAND` 指令支持，应使用 `ExFatDxeLegacy` 驱动程序。
+- [`Ps2KeyboardDxe`](https://github.com/acidanthera/audk) --- 从 `MdeModulePkg` 提取出来的 PS/2 键盘驱动。DuetPkg 和一些固件可能不包括这个驱动，但对于 PS/2 键盘来说该驱动是必须的。注：和 `OpenUsbKbDxe` 不同，该驱动不提供对 `AppleKeyMapAggregator` 的支持、因此需要启用 `KeySupport` 这个 Quirk。
 - [`Ps2MouseDxe`](https://github.com/acidanthera/audk) --- 从 `MdeModulePkg` 提取出来的 PS/2 鼠标驱动。该固件，虽然只有非常老旧的笔记本的固件中可能没有不包含该驱动，但是笔记本依赖该驱动才能在引导界面使用触控板。
 - [`UsbMouseDxe`](https://github.com/acidanthera/audk) --- 从 `MdeModulePkg` 提取出来的 USB 鼠标驱动。该固件，一般只有虚拟机（如 OVMF）的固件中可能没有不包含该驱动，但是这些虚拟机依赖该驱动才能在引导界面使用鼠标。
 
@@ -189,13 +190,25 @@ APFS 驱动的 verbose 信息有助于 debug。
 
 **Type**: `plist integer`
 **Failsafe**: `0`
-**Description**: 允许加载的最老 APFS 驱动的版本号
+**Description**: 允许加载的最老 APFS 驱动的发布日期
 
 APFS 驱动的版本号基于其发布日期。较旧版本的 APFS 驱动可能与较新的系统不兼容、或者有未修补的漏洞。通过这一选项可以避免 OpenCore 加载过旧版本的 APFS 驱动。
 
-- `0` - 使用默认数值。OpenCore 会随着未来更新，内置的默认数值也会不断更新。如果你会一直更新你的系统，我们推荐使用这一数值。目前默认数值为 `2020/01/01`。
+- `0` - 使用默认数值。OpenCore 会随着未来更新，内置的默认数值也会不断更新。如果你会一直更新你的系统，我们推荐使用这一数值。目前默认数值为 `2018/06/21`。
 - `-1` - 允许使用任何版本的 APFS 驱动（强烈不推荐）。
 - 其他数值 - 数值格式应为形如 `20200401` 的格式。你可以从 OpenCore 的启动日志和 [OcApfsLib](https://github.com/acidanthera/OpenCorePkg/blob/master/Include/Library/OcApfsLib.h) 中找到 APFS 驱动的版本号。
+
+### `MinVersion`
+
+**Type**: `plist integer`
+**Failsafe**: `0`
+**Description**: 允许加载的最老 APFS 驱动的版本号
+
+APFS 驱动的版本号和 macOS 版本相关。较旧版本的 APFS 驱动可能与较新的系统不兼容、或者有未修补的漏洞。通过这一选项可以避免 OpenCore 加载过旧版本的 APFS 驱动。
+
+- `0` - 使用默认数值。OpenCore 会随着未来更新，内置的默认数值也会不断更新。如果你会一直更新你的系统，我们推荐使用这一数值。目前默认数值选自 App Store 中能够下载到的 High Sierra（`748077008000000`）。
+- `-1` - 允许使用任何版本的 APFS 驱动（强烈不推荐）。
+- 其他数值 - 数值格式应为形如 `1412101001000000` 的格式（这是 macOS Catalina 10.15.4 的 APFS 驱动版本号）你可以从 OpenCore 的启动日志和 [OcApfsLib](https://github.com/acidanthera/OpenCorePkg/blob/master/Include/Library/OcApfsLib.h) 中找到 APFS 驱动的版本号。
 
 ## 11.8 Audio Properties
 

@@ -3,7 +3,7 @@ title: 3. Setup
 description: Setup（待翻译）
 type: docs
 author_info: 由 Sukka 整理、由 Sukka 翻译。
-last_updated: 2020-04-19
+last_updated: 2020-05-04
 ---
 
 ## 3.1 目录结构
@@ -62,7 +62,7 @@ ESP
 
 OpenCore 的配置文件可以使用任何常规的文本编辑器（如 nano、vim、VSCode）进行编辑，但是专用软件可以带来更好的体验。在 macOS 上我们推荐使用 [Xcode](https://developer.apple.com/xcode)。你也可以使用 [ProperTree](https://github.com/corpnewt/ProperTree) ，这是一个轻量级的跨平台的开源 plist 编辑器。
 
-如果要通过 BIOS 进行开机，你必须使用第三方 UEFI 环境提供程序。`DuetPkg` 是一个常用的为旧操作系统提供 Legacy 引导的 UEFI 环境提供程序。要在这样的旧操作系统上运行 OpenCore，你可以使用 [BootInstall](https://github.com/acidanthera/OpenCorePkg/tree/master/Utilities/BootInstall) 安装 `DuetPkg`。
+如果要通过 BIOS 进行开机，你必须使用第三方 UEFI 环境提供程序。`DuetPkg` 是一个常用的为旧操作系统提供 Legacy 引导的 UEFI 环境提供程序。要在这样的旧操作系统上运行 OpenCore，你可以使用一个独立的工具 `BootInstall` 安装 `DuetPkg`（目前已和 OpenCore 打包在一起发布）。
 
 如果要升级 OpenCore，[`Differences.pdf`](https://github.com/acidanthera/OpenCorePkg/blob/master/Docs/Differences/Differences.pdf) 提供了 OpenCore 配置文件变更的相关信息，[`Changelog.md`](https://github.com/acidanthera/OpenCorePkg/blob/master/Changelog.md) 提供了 OpenCore 的更新日志。
 
