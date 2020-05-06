@@ -3,7 +3,7 @@ title: 12. 排错
 description: Troubleshooting
 type: docs
 author_info: 由 xMuu 整理，由 Sukka 翻译
-last_updated: 2020-04-14
+last_updated: 2020-05-07
 ---
 
 ## 12.1 Windows 支持
@@ -64,7 +64,7 @@ last_updated: 2020-04-14
 
 ### 为什么我会在 Boot Camp 启动硬盘 控制面板 中看到 `Basic data partition`？
 
-Boot Camp 使用 GPT 分区表获取每个引导选项的名称。独立安装 Windows 后，你必须手动重新标记分区。这可以挺过许多工具完成，比如开源的 [gdisk](https://sourceforge.net/projects/gptfdisk)，使用方法如下：
+Boot Camp 使用 GPT 分区表获取每个引导选项的名称。独立安装 Windows 后，你必须手动重新标记分区。这可以通过许多工具完成，比如开源的 [gdisk](https://sourceforge.net/projects/gptfdisk)，使用方法如下：
 
 > **Listing 3: Relabeling Windows volume**
 
@@ -110,6 +110,8 @@ The operation has completed successfully.
 - [Tuxera 的常见问题解答页面](https://www.tuxera.com/products/tuxera-ntfs-for-mac/faq)
 - [Paragon 相关的技术支持文档](https://kb.paragon-software.com/article/6604)
 
+> 译者注：虽然 acidanthera 团队推荐使用 macOS 内置的 NTFS 支持，但是译者强烈反对这种方法（不论是直接方法还是使用类似 Mounty 的第三方工具）。修改 fstab 的风险是极高的。在你清楚你在做什么之前，不要轻举妄动！！
+
 ## 12.2 调试
 
 与其他硬件相关的项目类似，OpenCore 也支持审计与调试。使用 NOOPT 或 DEBUG 构建版本（而非 RELEASE 构建版本）可以产生更多的调试输出。对于 NOOPT 构建版本，你还可以使用 GDB 或 IDA Pro 进行调试。对于 GDB 请查看 [OpenCore Debug](https://github.com/acidanthera/OpenCorePkg/tree/master/Debug) 相关页面；对于 IDA Pro，你需要 7.3 或更高版本，更多详细信息请参考 IDA Pro 提供的页面：[Debugging the XNU Kernel with IDA Pro](https://www.hex-rays.com/products/ida/support/tutorials/index.shtml)。
@@ -143,7 +145,7 @@ OpenCore 遵循 Apple Bless 标准模型、从引导目录中的 `.contentDetail
 
 OpenCore 使用 UEFI 首选启动项 来选择默认的启动项。设置的方式随 BIOS 不同而不同，具体请参考 macOS [启动磁盘](https://support.apple.com/HT202796) 或 Windows [Boot Camp](https://support.apple.com/guide/bootcamp-control-panel/start-up-your-mac-in-windows-or-macos-bcmp29b8ac66/mac) 控制面板。
 
-由于使用 OpenCore 提供的 `BOOTx64.efi` 作为首选启动项会限制这项功能（可能还会导致一些固件删除不兼容的引导选项），我们强烈建议你修改 `RequestBootVarRouting` quirk，这会将你所做的选择保留在 OpenCore 变量空间中。请注意，`RequestBootVarRouting` 需要单独的 `.efi` 驱动文件。
+由于使用 OpenCore 提供的 `BOOTx64.efi` 作为首选启动项会限制这项功能（可能还会导致一些固件删除不兼容的引导选项），我们强烈建议你启用 `RequestBootVarRouting` quirk，这会将你所做的选择保留在 OpenCore 变量空间中。请注意，`RequestBootVarRouting` 需要单独的 `.efi` 驱动文件（译者注：即 OpenRuntime.efi）。
 
 ### 4. 安装 macOS 最简单的方法是什么？
 
