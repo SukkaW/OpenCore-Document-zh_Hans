@@ -194,7 +194,7 @@
                     <p><small>由 xMuu 整理，由 Sukka 翻译</small></p>
                 
                 
-                    <p><small>本页面最后更新于 2020 年 04 月 14 日</small></p>
+                    <p><small>本页面最后更新于 2020 年 05 月 07 日</small></p>
                 
                 <br>
             
@@ -246,7 +246,7 @@
 <blockquote>
 <p>译者注：<strong>切记不要在 Windows 下写入 APFS 或 HFS，十有八九你会导致分区表错误和无法恢复的数据丢失。别怪我们没有警告过你！！</strong></p>
 </blockquote>
-<h3 id="为什么我会在-Boot-Camp-启动硬盘-控制面板-中看到-Basic-data-partition？"><a href="#为什么我会在-Boot-Camp-启动硬盘-控制面板-中看到-Basic-data-partition？" class="headerlink" title="为什么我会在 Boot Camp 启动硬盘 控制面板 中看到 Basic data partition？"></a>为什么我会在 Boot Camp 启动硬盘 控制面板 中看到 <code>Basic data partition</code>？</h3><p>Boot Camp 使用 GPT 分区表获取每个引导选项的名称。独立安装 Windows 后，你必须手动重新标记分区。这可以挺过许多工具完成，比如开源的 <a href="https://sourceforge.net/projects/gptfdisk" target="_blank" rel="noopener">gdisk</a>，使用方法如下：</p>
+<h3 id="为什么我会在-Boot-Camp-启动硬盘-控制面板-中看到-Basic-data-partition？"><a href="#为什么我会在-Boot-Camp-启动硬盘-控制面板-中看到-Basic-data-partition？" class="headerlink" title="为什么我会在 Boot Camp 启动硬盘 控制面板 中看到 Basic data partition？"></a>为什么我会在 Boot Camp 启动硬盘 控制面板 中看到 <code>Basic data partition</code>？</h3><p>Boot Camp 使用 GPT 分区表获取每个引导选项的名称。独立安装 Windows 后，你必须手动重新标记分区。这可以通过许多工具完成，比如开源的 <a href="https://sourceforge.net/projects/gptfdisk" target="_blank" rel="noopener">gdisk</a>，使用方法如下：</p>
 <blockquote>
 <p><strong>Listing 3: Relabeling Windows volume</strong></p>
 </blockquote>
@@ -257,6 +257,9 @@
 <li><a href="https://www.tuxera.com/products/tuxera-ntfs-for-mac/faq" target="_blank" rel="noopener">Tuxera 的常见问题解答页面</a></li>
 <li><a href="https://kb.paragon-software.com/article/6604" target="_blank" rel="noopener">Paragon 相关的技术支持文档</a></li>
 </ul>
+<blockquote>
+<p>译者注：虽然 acidanthera 团队推荐使用 macOS 内置的 NTFS 支持，但是译者强烈反对这种方法（不论是直接方法还是使用类似 Mounty 的第三方工具）。修改 fstab 的风险是极高的。在你清楚你在做什么之前，不要轻举妄动！！</p>
+</blockquote>
 <h2 id="12-2-调试"><a href="#12-2-调试" class="headerlink" title="12.2 调试"></a>12.2 调试</h2><p>与其他硬件相关的项目类似，OpenCore 也支持审计与调试。使用 NOOPT 或 DEBUG 构建版本（而非 RELEASE 构建版本）可以产生更多的调试输出。对于 NOOPT 构建版本，你还可以使用 GDB 或 IDA Pro 进行调试。对于 GDB 请查看 <a href="https://github.com/acidanthera/OpenCorePkg/tree/master/Debug" target="_blank" rel="noopener">OpenCore Debug</a> 相关页面；对于 IDA Pro，你需要 7.3 或更高版本，更多详细信息请参考 IDA Pro 提供的页面：<a href="https://www.hex-rays.com/products/ida/support/tutorials/index.shtml" target="_blank" rel="noopener">Debugging the XNU Kernel with IDA Pro</a>。</p>
 <p>To obtain the log during boot you can make the use of serial port debugging. Serial port debugging is enabled in <code>Target</code>, e.g. <code>0xB</code> for onscreen with serial. OpenCore uses <code>115200</code> baud rate, <code>8</code> data bits, no parity, and <code>1</code> stop bit. For macOS your best choice are CP2102-based UART devices. Connect motherboard <code>TX</code> to USB UART <code>RX</code>, and motherboard <code>GND</code> to USB UART <code>GND</code>. Use <code>screen</code> utility to get the output, or download GUI software, such as <a href="https://freeware.the-meiers.org" target="_blank" rel="noopener">CoolTerm</a>.</p>
 <p><em>注释</em>: On several motherboards (and possibly USB UART dongles) PIN naming may be incorrect. It is very common to have <code>GND</code> swapped with <code>RX</code>, thus you have to connect motherboard <code>&quot;TX&quot;</code> to USB UART <code>GND</code>, and motherboard <code>&quot;GND&quot;</code> to USB UART <code>RX</code>.</p>
@@ -273,7 +276,7 @@
 <p>如果你在日志中看不出明显的错误，请逐一检查 Quirks 部分中可用的 hacks。例如，对于 Early Boot 出现的问题（如 OpenCore 启动菜单无法显示），通过 <a href="https://github.com/acidanthera/OpenCoreShell" target="_blank" rel="noopener">UEFI Shell</a> 可以查看相关调试信息。</p>
 <h3 id="2-如何自定义启动项？"><a href="#2-如何自定义启动项？" class="headerlink" title="2. 如何自定义启动项？"></a>2. 如何自定义启动项？</h3><p>OpenCore 遵循 Apple Bless 标准模型、从引导目录中的 <code>.contentDetails</code> 和 <code>.disk_label.contentDetails</code> 文件中提取条目名称。这些文件包含带有输入标题的 ASCII 字符串，你可以修改它们。</p>
 <h3 id="3-如何选择默认启动的系统？"><a href="#3-如何选择默认启动的系统？" class="headerlink" title="3. 如何选择默认启动的系统？"></a>3. 如何选择默认启动的系统？</h3><p>OpenCore 使用 UEFI 首选启动项 来选择默认的启动项。设置的方式随 BIOS 不同而不同，具体请参考 macOS <a href="https://support.apple.com/HT202796" target="_blank" rel="noopener">启动磁盘</a> 或 Windows <a href="https://support.apple.com/guide/bootcamp-control-panel/start-up-your-mac-in-windows-or-macos-bcmp29b8ac66/mac" target="_blank" rel="noopener">Boot Camp</a> 控制面板。</p>
-<p>由于使用 OpenCore 提供的 <code>BOOTx64.efi</code> 作为首选启动项会限制这项功能（可能还会导致一些固件删除不兼容的引导选项），我们强烈建议你修改 <code>RequestBootVarRouting</code> quirk，这会将你所做的选择保留在 OpenCore 变量空间中。请注意，<code>RequestBootVarRouting</code> 需要单独的 <code>.efi</code> 驱动文件。</p>
+<p>由于使用 OpenCore 提供的 <code>BOOTx64.efi</code> 作为首选启动项会限制这项功能（可能还会导致一些固件删除不兼容的引导选项），我们强烈建议你启用 <code>RequestBootVarRouting</code> quirk，这会将你所做的选择保留在 OpenCore 变量空间中。请注意，<code>RequestBootVarRouting</code> 需要单独的 <code>.efi</code> 驱动文件（译者注：即 OpenRuntime.efi）。</p>
 <h3 id="4-安装-macOS-最简单的方法是什么？"><a href="#4-安装-macOS-最简单的方法是什么？" class="headerlink" title="4. 安装 macOS 最简单的方法是什么？"></a>4. 安装 macOS 最简单的方法是什么？</h3><p>在线安装。将 Recovery 镜像（<code>*.dmg</code> 和 <code>*.chunklist</code> 文件）和 OpenCore 一起复制到一个 FAT32 分区中。加载 OpenCore 的启动菜单并选择后缀为 <code>.dmg</code> 的条目。如果你有强迫症，你可以修改 <code>.contentDetails</code> 文件改变条目显示的文字。</p>
 <p>你可能会用到 <a href="https://github.com/acidanthera/MacInfoPkg/releases" target="_blank" rel="noopener">MacInfoPkg</a> 内置的 <a href="https://github.com/acidanthera/MacInfoPkg/blob/master/macrecovery/macrecovery.py" target="_blank" rel="noopener">macrecovery.py</a> 来下载 Recovery 镜像。</p>
 <p>如果你需要进行离线安装，请参考 <a href="https://support.apple.com/HT201372" target="_blank" rel="noopener">How to create a bootable installer for macOS</a>。除了通过 App Store 或 系统更新，你还可以使用 <a href="https://github.com/corpnewt/gibMacOS" target="_blank" rel="noopener">第三方工具</a> 下载 macOS 镜像文件。</p>
