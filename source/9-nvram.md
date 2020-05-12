@@ -1,9 +1,9 @@
 ---
 title: 9. NVRAM
-description: NVRAM 注入（如引导标识符和 SIP）（待翻译）
+description: NVRAM 注入（如引导标识符和 SIP）
 type: docs
-author_info: 由 xMuu、Sukka 整理，由 Sukka 翻译
-last_updated: 2020-04-14
+author_info: 由 xMuu、Sukka 整理，由 Sukka、derbalkon 翻译
+last_updated: 2020-05-12
 ---
 
 ## 9.1 Introduction
@@ -29,16 +29,16 @@ last_updated: 2020-04-14
 ### 1. `Add`
 
 **Type**: `plist dict`
-**Description**: Sets NVRAM variables from a map (`plist dict`) of GUIDs to a map (`plist dict`) of variable names and their values in `plist metadata` format. GUIDs must be provided in canonic string format in upper or lower case (e.g. `8BE4DF61-93CA-11D2-AA0D-00E098032B8C`).
+**Description**: 将 NVRAM 变量从 GUID 映射（`plist dict`）设置为变量名称及变量值的映射，格式为 `plist metadata`。GUID 必须以 Canonical String 格式提供，大写或小写均可（如 `8BE4DF61-93CA-11D2-AA0D-00E098032B8C`）。
 
-Created variables get `EFI_VARIABLE_BOOTSERVICE_ACCESS` and `EFI_VARIABLE_RUNTIME_ACCESS` attributes set. Variables will only be set if not present and not blocked. I.e. to overwrite an existing variable value add the variable name to the `Block` section. This approach enables to provide default values till the operating system takes the lead.
+创建的变量会设置 `EFI_VARIABLE_BOOTSERVICE_ACCESS` 和 `EFI_VARIABLE_RUNTIME_ACCESS` 的属性。变量只有在不存在且未被屏蔽的情况下才会被设置，也就是说，如果想要覆盖一个现有的变量值，请将该变量的名称添加到 `Block` 部分，这种方法能够提供一个默认的值，直到操作系统接手为止。
 
-*注*：If `plist key` does not conform to GUID format, behaviour is undefined.
+*注*：如果 `plist key` 不符合 GUID 格式，则可能出现一些未定义的行为。
 
 ### 2. `Block`
 
 **Type**: `plist dict`
-**Description**: Removes NVRAM variables from a map (`plist dict`) of GUIDs to an array (`plist array`) of variable names in `plist string` format.
+**Description**: 将 NVRAM 变量从 GUID 映射（`plist dict`）移除到一个变量名称数组（`plist array`）中，格式为 `plist string`。
 
 ### 3. `LegacyEnable`
 
@@ -46,14 +46,14 @@ Created variables get `EFI_VARIABLE_BOOTSERVICE_ACCESS` and `EFI_VARIABLE_RUNTIM
 **Failsafe**: `false`
 **Description**: 允许从 ESP 分区的根目录中的 `nvram.plist` 文件读取 NVRAM 变量。
 
-This file must have root `plist dictionary` type and contain two fields:
+该文件必须有 Root `plist dictionary` 类型，并包含以下两个字段：
 
-- `Version` --- `plist integer`, file version, must be set to 1.
-- `Add` --- `plist dictionary`, equivalent to `Add` from `config.plist`.
+- `Version` --- `plist integer`，文件版本，必须设定为 1。
+- `Add` --- `plist dictionary`，等同于 `config.plist` 中的 `Add`。
 
-Variable loading happens prior to `Block` (and `Add`) phases. Unless `LegacyOverwrite` is enabled, it will not overwrite any existing variable. Variables allowed to be set must be specified in `LegacySchema`. Third-party scripts may be used to create `nvram.plist` file. An example of such script can be found in `Utilities`. The use of third-party scripts may require `ExposeSensitiveData` set to `0x3` to provide `boot-path` variable with OpenCore EFI partition UUID.
+变量加载优先于 `Block`（以及 `Add`）阶段。除非启用了 `LegacyOverwrite`，否则不会覆盖现有的任何变量。允许设置的变量必须指定于 `LegacySchema` 中。第三方脚本可以用来创建 `nvram.plist` 文件，脚本示例可参照 `Utilities`。使用第三方脚本可能要将 `ExposeSensitiveData` 设置为 `0x3` 来为 `boot-path` 变量提供 OpenCore EFI 分区的 UUID。
 
-**警告**: 这一功能非常危险，因为这将不受保护的数据传递给固件中的变量服务。只有你的硬件不提供硬件 NVRAM 或与之不兼容时才使用。
+**警告**: 这一功能非常危险，因为会将不受保护的数据传递给固件中的变量服务。只有在你的硬件不提供硬件 NVRAM 或与之不兼容时才使用。
 
 ### 4. `LegacyOverwrite`
 
@@ -66,11 +66,11 @@ Variable loading happens prior to `Block` (and `Add`) phases. Unless `LegacyOver
 ### 5. `LegacySchema`
 
 **Type**: `plist dict`
-**Description**: Allows setting select NVRAM variables from a map (`plist dict`) of GUIDs to an array (`plist array`) of variable names in `plist string` format.
+**Description**: 允许从 GUID 映射（`plist dict`）中选择 NVRAM 变量设置到一个变量名称数组（`plist array`），格式为 `plist string`。
 
-You can use `*` value to accept all variables for select GUID.
+可用 `*` 值来接受所有用来选择 GUID 的变量。
 
-**警告**: Choose variables very carefully, as nvram.plist is not vaulted. For instance, do not put `boot-args` or `csr-active-config`, as this can bypass SIP.
+**警告**：选择变量要非常慎重，因为 nvram.plist 不会被存储。比如，不要把 `boot-args` 或 `csr-active-config` 放进去，因为会绕过 SIP。
 
 ### 6. `WriteFlash`
 
@@ -80,49 +80,50 @@ You can use `*` value to accept all variables for select GUID.
 
 *注*：这个 Quirk 本应该在大多数固件上启用，但是由于可能存在 NVRAM 变量存储 GC 或类似的问题的固件，所以我们将这个 Quirk 设计为可配置的。
 
-To read NVRAM variable value from macOS one could use `nvram` by concatenating variable GUID and name separated by `:` symbol. For example, `nvram 7C436110-AB2A-4BBB-A880-FE41995C9F82:boot-args`.
+要从 macOS 中读取 NVRAM 变量的值，可以使用 `nvram`，并将变量 GUID 和名称用 `:` 符号隔开，形如 `nvram 7C436110-AB2A-4BBB-A880-FE41995C9F82:boot-args`。
 
-A continuously updated variable list can be found in a corresponding document: [NVRAM Variables](https://docs.google.com/spreadsheets/d/1HTCBwfOBkXsHiK7os3b2CUc6k68axdJYdGl-TyXqLu0).
+变量列表可参照相关文档（持续更新）：[NVRAM Variables](https://docs.google.com/spreadsheets/d/1HTCBwfOBkXsHiK7os3b2CUc6k68axdJYdGl-TyXqLu0)。
 
 ## 9.3 Mandatory Variables
 
-*警告*: These variables may be added by [PlatformNVRAM]() or [Generic]() subsections of [PlatformInfo]() section. Using `PlatformInfo` is the recommend way of setting these variables.
+*警告*：这些变量可通过 PlatformNVRAM 或 PlatformInfo 的 Generic 部分添加。推荐使用 `PlatformInfo` 来设置这些变量。
 
-The following variables are mandatory for macOS functioning:
+以下变量为 macOS 运行必需：
 
 - `4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14:FirmwareFeatures`
- 32-bit `FirmwareFeatures`. Present on all Macs to avoid extra parsing of SMBIOS tables
+ 32 位 `FirmwareFeatures`。存在于所有 Mac 上，用来避免额外解析 SMBIOS 表。
 - `4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14:FirmwareFeaturesMask`
- 32-bit `FirmwareFeaturesMask`. Present on all Macs to avoid extra parsing of SMBIOS tables.
+ 32 位 `FirmwareFeaturesMask`。存在于所有 Mac 上，用来避免额外解析 SMBIOS 表。
 - `4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14:MLB`
- `BoardSerialNumber`. Present on newer Macs (2013+ at least) to avoid extra parsing of SMBIOS tables, especially in `boot.efi`.
+ `BoardSerialNumber`。存在于较新的 Mac 上（至少 2013 年以后），用来避免额外解析 SMBIOS 表，尤其是在 `boot.efi` 中。
 - `4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14:ROM`
- Primary network adapter MAC address or replacement value. Present on newer Macs (2013+ at least) to avoid accessing special memory region, especially in `boot.efi`.
+ 主要的网络适配器的 MAC 地址或替换值。存在于较新的 Mac（至少 2013 年以后）上，用来避免访问特殊内存区域，尤其是在 `boot.efi` 中。
 
 
 ## 9.4 Recommended Variables
 
-The following variables are recommended for faster startup or other improvements:
+建议使用以下变量来加快启动速度或改善其他表现：
 
 - `7C436110-AB2A-4BBB-A880-FE41995C9F82:csr-active-config`
- 32-bit System Integrity Protection bitmask. Declared in XNU source code in [csr.h](https://opensource.apple.com/source/xnu/xnu-4570.71.2/bsd/sys/csr.h.auto.html).
+ 32 位系统完整性保护的位掩码，声明于 XNU 源码 [csr.h](https://opensource.apple.com/source/xnu/xnu-4570.71.2/bsd/sys/csr.h.auto.html)。
 - `4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14:ExtendedFirmwareFeatures`
- Combined `FirmwareFeatures` and `ExtendedFirmwareFeatures`. Present on newer Macs to avoid extra parsing of SMBIOS tables
+ 结合 `FirmwareFeatures` 和 `ExtendedFirmwareFeatures`。存在于较新的 Mac 上，用来避免额外解析 SMBIOS 表。
 - `4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14:ExtendedFirmwareFeaturesMask`
- Combined `FirmwareFeaturesMask` and `ExtendedFirmwareFeaturesMask`. Present on newer Macs to avoid extra parsing of SMBIOS tables.
+ 结合 `FirmwareFeaturesMask` 和 `ExtendedFirmwareFeaturesMask`。存在于较新的 Mac 上，用来避免额外解析 SMBIOS 表。
 - `4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14:HW_BID`
- Hardware `BoardProduct` (e.g. `Mac-35C1E88140C3E6CF`). Not present on real Macs, but used to avoid extra parsing of SMBIOS tables, especially in `boot.efi`.
+ 硬件 `BoardProduct`（如 `Mac-35C1E88140C3E6CF`）。在真正的 Mac 上不存在，但可用于避免额外解析 SMBIOS 表，尤其是在 `boot.efi` 中。
 - `4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14:HW_MLB`
- Hardware `BoardSerialNumber`. Override for MLB. Present on newer Macs (2013+ at least).
+ 硬件 `BoardSerialNumber`。覆盖 MLB，存在于较新的 Mac 上（至少 2013 年以后）。
 - `4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14:HW_ROM`
- Hardware ROM. Override for ROM. Present on newer Macs (2013+ at least).
+ 硬件 ROM。覆盖 ROM，存在于较新的 Mac 上（至少 2013 年以后）。
 - `7C436110-AB2A-4BBB-A880-FE41995C9F82:prev-lang:kbd`
- ASCII string defining default keyboard layout. Format is `lang-COUNTRY:keyboard`, e.g. `ru-RU:252` for Russian locale and ABC keyboard. Also accepts short forms: `ru:252` or `ru:0` (U.S. keyboard, compatible with 10.9). Full decoded keyboard list from `AppleKeyboardLayouts-L.dat` can be found [here](https://github.com/acidanthera/OpenCorePkg/tree/master/Utilities/AppleKeyboardLayouts). Using non-latin keyboard on 10.14 will not enable ABC keyboard, unlike previous and subsequent macOS versions, and is thus not recommended in case you need 10.14.
+ 定义默认键盘布局的 ASCII 字符串。格式为 `lang-COUNTRY:keyboard`，例如 `ru-RU:252` 代表俄语和 ABC 键盘。也接受简短形式：`ru:252` 或 `ru:0`（美国键盘，兼容 10.9）。完整的键盘列表解码来自 `AppleKeyboardLayouts-L.dat`，可前往[这里](https://github.com/acidanthera/OpenCorePkg/tree/master/Utilities/AppleKeyboardLayouts)查看。与之前或之后的 macOS 版本不同，在 10.14 上，使用非拉丁语键盘将无法启用 ABC 键盘，因此假如你需要使用 10.14 版本则不建议你使用这一变量。
 - `7C436110-AB2A-4BBB-A880-FE41995C9F82:security-mode`
- ASCII string defining FireWire security mode. Legacy, can be found in IOFireWireFamily source code in [IOFireWireController.cpp](https://opensource.apple.com/source/IOFireWireFamily/IOFireWireFamily-473/IOFireWireFamily.kmodproj/IOFireWireController.cpp.auto.html). It is recommended not to set this variable, which may speedup system startup. Setting to `full` is equivalent to not setting the variable and `none` disables FireWire security.
+ 定义 FireWire 安全模式的 ASCII 字符串。这一变量旧版本才有，可在 [IOFireWireController.cpp](https://opensource.apple.com/source/IOFireWireFamily/IOFireWireFamily-473/IOFireWireFamily.kmodproj/IOFireWireController.cpp.auto.html) 中的 IOFireWireFamily 源码里找到。建议不要设置这个变量，这样可能会加快启动速度。设置为 `full` 等同于不设置该变量，设置为 `none` 将禁用 FireWire 安全性。
 - `4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14:UIScale`
- One-byte data defining `boot.efi` user interface scaling. Should be **01** for normal screens and **02** for HiDPI screens.
-- `4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14:DefaultBackgroundColor` Four-byte `RGBA` data defining `boot.efi` user interface background colour. Standard colours include `BF BF BF 00` (Light Gray) and `00 00 00 00}` (Syrah Black). Other colours may be set at user's preference.
+ 定义 `boot.efi` 用户界面缩放比例的一字节数据。普通屏幕应为 **01**，HiDPI 屏幕应为 **02**。
+- `4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14:DefaultBackgroundColor` 
+ 定义 `boot.efi` 用户界面背景色的四字节 `RGBA` 数据。标准色包括 `BF BF BF 00`（浅灰）和 `00 00 00 00`（西拉黑）。其他颜色可根据用户喜好设置。
 
 
 ## 9.5 Other Variables
@@ -132,23 +133,23 @@ The following variables are recommended for faster startup or other improvements
 - `7C436110-AB2A-4BBB-A880-FE41995C9F82:boot-args` 内核参数，用于将配置传递给 Apple 内核和驱动程序。很多参数可以通过在内核或驱动程序代码中寻找 `PE_parse_boot_argn` 函数找到。已知的引导参数包括：
 
   - `acpi_layer=0xFFFFFFFF`
-  - `acpi_level=0xFFFF5F` (implies [`ACPI_ALL_COMPONENTS`](https://github.com/acpica/acpica/blob/master/source/include/acoutput.h))
+  - `acpi_level=0xFFFF5F` --- 表示 [`ACPI_ALL_COMPONENTS`](https://github.com/acpica/acpica/blob/master/source/include/acoutput.h)
   - `batman=VALUE` --- `AppleSmartBatteryManager` 调试掩码
   - `batman-nosmc=1` --- 禁用 `AppleSmartBatteryManager` SMC 接口
   - `cpus=VALUE` --- 最大可用 CPU 数量
   - `debug=VALUE` --- Debug 掩码
   - `io=VALUE` --- `IOKit` 调试掩码
-  - `keepsyms=1` (show panic log debug symbols)
+  - `keepsyms=1` --- 显示 Panic 日志调试符号
   - `kextlog=VALUE` --- Kext 调试掩码
   - `nv_disable=1` --- 禁用 NVIDIA GPU 加速
   - `nvda_drv=1` --- 启用 NVIDIA web driver 的传统方法，这一参数在 macOS 10.12 中被去除
-  - `npci=0x2000` ([legacy](https://www.insanelymac.com/forum/topic/260539-1068-officially-released/?do=findComment&comment=1707972) 禁用 `kIOPCIConfiguratorPFM64`)
+  - `npci=0x2000` --- [旧方法](https://www.insanelymac.com/forum/topic/260539-1068-officially-released/?do=findComment&comment=1707972) 禁用 `kIOPCIConfiguratorPFM64`
   - `lapic_dont_panic=1`
   - `slide=VALUE` --- 手动设置 KASLR 偏移值
   - `smcdebug=VALUE` --- `AppleSMC` 调试掩码
-  - `-amd_no_dgpu_accel` (alternative to [WhateverGreen](https://github.com/acidanthera/WhateverGreen)'s `-radvesa` for new GPUs)
+  - `-amd_no_dgpu_accel` --- 替代 [WhateverGreen](https://github.com/acidanthera/WhateverGreen) 的 `-radvesa`，用于较新的 GPUs
   - `-nehalem_error_disable`
-  - `-no_compat_check` (disable model checking)
+  - `-no_compat_check` --- 禁用机型检查
   - `-s` --- 单用户模式
   - `-v` --- 啰嗦模式
   - `-x` --- 安全模式
@@ -156,80 +157,74 @@ The following variables are recommended for faster startup or other improvements
   这里有一些网站收集了 macOS 内置的启动参数列表：[列表 1](https://osxeon.wordpress.com/2015/08/10/boot-argument-options-in-os-x)、[列表 2](https://superuser.com/questions/255176/is-there-a-list-of-available-boot-args-for-darwin-os-x).
 
 - `7C436110-AB2A-4BBB-A880-FE41995C9F82:bootercfg`
- Booter arguments, similar to `boot-args` but for `boot.efi`. Accepts a set of arguments, which are hexadecimal 64-bit values with or without `0x`. At
-different stages `boot.efi` will request different debugging (logging)
-modes (e.g. after `ExitBootServices` it will only print to serial).
-Several booter arguments control whether these requests will succeed.
-The list of known requests is covered below:
+ Booter 参数，类似于 `boot-args`，但用于 `boot.efi` 。接受参数为一组十六进制的 64 位值，带或不带 `0x`。在不同阶段，`boot.efi` 会请求不同的调试（日志）模式（例如，在 `ExitBootServices` 之后它只会打印到串行调试接口）。
+ 有些 Booter 参数会控制这些请求是否成功。
+ 下面是已知请求的列表：
 
-  - `0x00` – `INIT`.
-  - `0x01` – `VERBOSE` (e.g. `-v`, force console logging).
-  - `0x02` – `EXIT`.
-  - `0x03` – `RESET:OK`.
-  - `0x04` – `RESET:FAIL` (e.g. unknown `board-id`, hibernate mismatch, panic loop, etc.).
-  - `0x05` – `RESET:RECOVERY`.
-  - `0x06` – `RECOVERY`.
-  - `0x07` – `REAN:START`.
-  - `0x08` – `REAN:END`.
-  - `0x09` – `DT` (can no longer log to DeviceTree).
-  - `0x0A` – `EXITBS:START` (forced serial only).
-  - `0x0B` – `EXITBS:END` (forced serial only).
-  - `0x0C` – `UNKNOWN`.
+  - `0x00` – `INIT`
+  - `0x01` – `VERBOSE` （如 `-v`，强制控制台记录日志）
+  - `0x02` – `EXIT`
+  - `0x03` – `RESET:OK`
+  - `0x04` – `RESET:FAIL` （如未知的 `board-id`，休眠错配，Panic 循环，等等）
+  - `0x05` – `RESET:RECOVERY`
+  - `0x06` – `RECOVERY`
+  - `0x07` – `REAN:START`
+  - `0x08` – `REAN:END`
+  - `0x09` – `DT` （不再将日志记录到设备树）
+  - `0x0A` – `EXITBS:START` （仅强制的串行调试接口）
+  - `0x0B` – `EXITBS:END` （仅强制的串行调试接口）
+  - `0x0C` – `UNKNOWN`
 
-In 10.15 debugging support was mostly broken before 10.15.4 due to some kind of refactoring and introduction of a [new debug protocol](https://github.com/acidanthera/EfiPkg/blob/master/Include/Protocol/AppleDebugLog.h). Some of the arguments and their values below may not be valid for
-versions prior to 10.15.4. The list of known arguments is covered below:
+在 10.15 中，由于某种重构和[新调试协议](https://github.com/acidanthera/EfiPkg/blob/master/Include/Protocol/AppleDebugLog.h)的引入，10.15.4 之前的调试支持基本上不能用了。下面的一些参数和值可能不适用于 10.15.4 之前的版本。以下是已知参数的列表：
 
-- `boot-save-log=VALUE` — debug log save mode for normal boot.
+- `boot-save-log=VALUE` --- 正常启动时的调试日志保存模式
   - `0`
   - `1`
-  - `2` — (default).
+  - `2` --- 默认
   - `3`
-  - `4` — (save to file).
-- `wake-save-log=VALUE` — debug log save mode for hibernation wake.
-  - `0` — disabled.
+  - `4` --- 保存到文件
+- `wake-save-log=VALUE` --- 休眠唤醒时的调试日志保存模式
+  - `0` --- 禁用
   - `1`
-  - `2` — (default).
-  - `3` — (unavailable).
-  - `4` — (save to file, unavailable).
-- `breakpoint=VALUE` — enables debug breaks (missing in production
-`boot.efi`).
-  - `0` — disables debug breaks on errors (default).
-  - `1` — enables debug breaks on errors.
-- `console=VALUE` — enables console logging.
-  - `0` — disables console logging.
-  - `1` — enables console logging when debug protocol is missing
-(default).
-  - `2` — enables console logging unconditionally (unavailable).
-- `embed-log-dt=VALUE` — enables DeviceTree logging.
-  - `0` — disables DeviceTree logging (default).
-  - `1` — enables DeviceTree logging.
-- `kc-read-size=VALUE` — Chunk size used for buffered I/O from network
-or disk for prelinkedkernel reading and related. Set to 1MB
-(0x100000) by default, can be tuned for faster booting.
-- `log-level=VALUE` — log level bitmask.
-  - `0x01` — enables trace logging (default).
-- `serial=VALUE` — enables serial logging.
-  - `0` — disables serial logging (default).
-  - `1` — enables serial logging for `EXITBS:END` onwards.
-  - `1` — enables serial logging for `EXITBS:START` onwards.
-  - `3` — enables serial logging when debug protocol is missing.
-  - `4` — enables serial logging unconditionally.
-- `timestamps=VALUE` — enables timestamp logging.
-  - `0` — disables timestamp logging.
-  - `1` — enables timestamp logging (default).
-- `log=VALUE` — deprecated starting from 10.15.
+  - `2` --- 默认
+  - `3` --- 不可用
+  - `4` --- 保存到文件，不可用
+- `breakpoint=VALUE` --- 调试中断相关（在产品 `boot.efi` 中缺少）
+  - `0` --- 禁用错误时的调试中断（默认）
+  - `1` --- 启用错误时的调试中断
+- `console=VALUE` --- 启用控制台日志记录
+  - `0` --- 禁用控制台日志记录
+  - `1` --- 当缺少调试协议时，启用控制台日志记录（默认）
+  - `2` --- 无条件启用控制台日志记录（不可用）
+- `embed-log-dt=VALUE` --- 设备树日志记录相关
+  - `0` --- 禁用设备树日志记录
+  - `1` --- 启用设备树日志记录
+- `kc-read-size=VALUE` --- 用于网络或磁盘缓冲 I/O 的数据块大小，用于预链接内核读取和相关用途。默认设置为 1MB
+(0x100000)，可以通过调整使启动更快
+- `log-level=VALUE` --- 日志等级位掩码
+  - `0x01` --- 启用跟踪记录（默认）
+- `serial=VALUE` --- 串行控制台日志记录相关
+  - `0` --- 禁用串行日志记录（默认）
+  - `1` --- 从 `EXITBS:END` 开始启用串行日志记录
+  - `1` --- 从 `EXITBS:START` 开始启用串行日志记录
+  - `3` --- 当缺少调试协议时，启用串行日志记录
+  - `4` --- 无条件启用串行日志记录
+- `timestamps=VALUE` --- 时间戳日志记录相关
+  - `0` --- 禁用时间戳记录
+  - `1` --- 启用时间戳记录（默认）
+- `log=VALUE` --- 10.15 开始弃用
 
- *注*：To see verbose output from `boot.efi` on modern macOS versions enable `AppleDebug` option. This will save the log to general OpenCore log. For versions before 10.15.4 set `bootercfg` to `log=1`. This will print verbose output onscreen.
+ *注*：如要查看现代 macOS 版本上的 `boot.efi` verbose 输出，请启用 `AppleDebug` 选项。这样会把日志保存到通用 OpenCore 日志中。对于 10.15.4 之前的版本，将 `bootercfg` 设置为 `log=1`，可以将 verbose 输出打印在屏幕上。
 
 - `7C436110-AB2A-4BBB-A880-FE41995C9F82:efiboot-perf-record`
-  Enable performance log saving in `boot.efi`. Performance log is saved to physical memory and is pointed by `efiboot-perf-record-data` and `efiboot-perf-record-size` variables. Starting from 10.15.4 it can also be saved to OpenCore log by `AppleDebug` option.
+  启用 `boot.efi` 中的性能日志保存功能。性能日志会被保存到物理内存中，并通过 `efiboot-perf-record-data` 和 `efiboot-perf-record-size` 变量进行指向。从 10.15.4 开始，它也可以通过 `AppleDebug` 选项保存到 OpenCore 日志中。
 - `7C436110-AB2A-4BBB-A880-FE41995C9F82:bootercfg-once`
-  Booter arguments override removed after first launch. Otherwise equivalent to `bootercfg`.
+  在首次启动后删除 Booter 参数覆盖，否则等同于 `bootercfg`。
 - `7C436110-AB2A-4BBB-A880-FE41995C9F82:fmm-computer-name`
-  Current saved host name. ASCII string.
+  当前保存的主机名称，格式为 ASCII 字符串。
 - `7C436110-AB2A-4BBB-A880-FE41995C9F82:nvda_drv`
-  NVIDIA Web Driver control variable. Takes ASCII digit `1` or `0` to enable or disable installed driver.
+  NVIDIA Web Driver 的控制变量。用 ASCII 数字 `1` 来启用或用 `0` 来禁用已安装的驱动程序。
 - `7C436110-AB2A-4BBB-A880-FE41995C9F82:StartupMute`
   开机时禁用固件引导提示音。8 进制整数。`0x00` 指代不静音、其他任何值（或缺少该值）表示静音。这一选项只影响带 T2 的机器。
 - `7C436110-AB2A-4BBB-A880-FE41995C9F82:SystemAudioVolume`
-  System audio volume level for firmware audio support. 8-bit integer. The bit of `0x80` means muted. Lower bits are used to encode volume range specific to installed audio codec. The value is capped by `MaximumBootBeepVolume` AppleHDA layout value to avoid too loud audio playback in the firmware.
+  固件音频支持的系统音频音量等级。8 进制整数。`0x80` 指代静音。低位用于编码安装的音频编码解码器的音量范围。该值以 `MaximumBootBeepVolume` AppleHDA layout 值为上限，以避免固件中的音频播放声音过大。
