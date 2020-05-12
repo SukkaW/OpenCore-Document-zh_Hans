@@ -187,14 +187,14 @@
         <div class="hero-body">
             <h1 class="title">9. NVRAM</h1>
             
-                <p class="subtitle">NVRAM 注入（如引导标识符和 SIP）（待翻译）</p>
+                <p class="subtitle">NVRAM 注入（如引导标识符和 SIP）</p>
             
             
                 
-                    <p><small>由 xMuu、Sukka 整理，由 Sukka 翻译</small></p>
+                    <p><small>由 xMuu、Sukka 整理，由 Sukka、derbalkon 翻译</small></p>
                 
                 
-                    <p><small>本页面最后更新于 2020 年 04 月 14 日</small></p>
+                    <p><small>本页面最后更新于 2020 年 05 月 12 日</small></p>
                 
                 <br>
             
@@ -220,169 +220,169 @@
 <li>并非所有工具都可能知道受保护的名称空间。当使用 <code>RequestBootVarRouting</code> 时，在独立的命名空间中会限制对 <code>Boot</code> 前缀的变量访问。要访问原始变量，工具必须了解 <code>OC_FIRMWARE_RUNTIME</code> 协议的工作原理。</li>
 <li>分配的 NVRAM 变量并非总是允许超过 512 个字节。当使用 <code>RequestBootVarFallback</code> 时，对于带有 <code>Boot</code> 前缀的变量，以及不符合 UEFI 2.8 规范的固件上使用非易失性覆盖变量，都存在 512 字节限制。</li>
 </ul>
-<h2 id="9-2-Properties"><a href="#9-2-Properties" class="headerlink" title="9.2 Properties"></a>9.2 Properties</h2><h3 id="1-Add"><a href="#1-Add" class="headerlink" title="1. Add"></a>1. <code>Add</code></h3><p><strong>Type</strong>: <code>plist dict</code><br><strong>Description</strong>: Sets NVRAM variables from a map (<code>plist dict</code>) of GUIDs to a map (<code>plist dict</code>) of variable names and their values in <code>plist metadata</code> format. GUIDs must be provided in canonic string format in upper or lower case (e.g. <code>8BE4DF61-93CA-11D2-AA0D-00E098032B8C</code>).</p>
-<p>Created variables get <code>EFI_VARIABLE_BOOTSERVICE_ACCESS</code> and <code>EFI_VARIABLE_RUNTIME_ACCESS</code> attributes set. Variables will only be set if not present and not blocked. I.e. to overwrite an existing variable value add the variable name to the <code>Block</code> section. This approach enables to provide default values till the operating system takes the lead.</p>
-<p><em>注</em>：If <code>plist key</code> does not conform to GUID format, behaviour is undefined.</p>
-<h3 id="2-Block"><a href="#2-Block" class="headerlink" title="2. Block"></a>2. <code>Block</code></h3><p><strong>Type</strong>: <code>plist dict</code><br><strong>Description</strong>: Removes NVRAM variables from a map (<code>plist dict</code>) of GUIDs to an array (<code>plist array</code>) of variable names in <code>plist string</code> format.</p>
+<h2 id="9-2-Properties"><a href="#9-2-Properties" class="headerlink" title="9.2 Properties"></a>9.2 Properties</h2><h3 id="1-Add"><a href="#1-Add" class="headerlink" title="1. Add"></a>1. <code>Add</code></h3><p><strong>Type</strong>: <code>plist dict</code><br><strong>Description</strong>: 将 NVRAM 变量从 GUID 映射（<code>plist dict</code>）设置为变量名称及变量值的映射，格式为 <code>plist metadata</code>。GUID 必须以 Canonical String 格式提供，大写或小写均可（如 <code>8BE4DF61-93CA-11D2-AA0D-00E098032B8C</code>）。</p>
+<p>创建的变量会设置 <code>EFI_VARIABLE_BOOTSERVICE_ACCESS</code> 和 <code>EFI_VARIABLE_RUNTIME_ACCESS</code> 的属性。变量只有在不存在且未被屏蔽的情况下才会被设置，也就是说，如果想要覆盖一个现有的变量值，请将该变量的名称添加到 <code>Block</code> 部分，这种方法能够提供一个默认的值，直到操作系统接手为止。</p>
+<p><em>注</em>：如果 <code>plist key</code> 不符合 GUID 格式，则可能出现一些未定义的行为。</p>
+<h3 id="2-Block"><a href="#2-Block" class="headerlink" title="2. Block"></a>2. <code>Block</code></h3><p><strong>Type</strong>: <code>plist dict</code><br><strong>Description</strong>: 将 NVRAM 变量从 GUID 映射（<code>plist dict</code>）移除到一个变量名称数组（<code>plist array</code>）中，格式为 <code>plist string</code>。</p>
 <h3 id="3-LegacyEnable"><a href="#3-LegacyEnable" class="headerlink" title="3. LegacyEnable"></a>3. <code>LegacyEnable</code></h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: <code>false</code><br><strong>Description</strong>: 允许从 ESP 分区的根目录中的 <code>nvram.plist</code> 文件读取 NVRAM 变量。</p>
-<p>This file must have root <code>plist dictionary</code> type and contain two fields:</p>
+<p>该文件必须有 Root <code>plist dictionary</code> 类型，并包含以下两个字段：</p>
 <ul>
-<li><code>Version</code> — <code>plist integer</code>, file version, must be set to 1.</li>
-<li><code>Add</code> — <code>plist dictionary</code>, equivalent to <code>Add</code> from <code>config.plist</code>.</li>
+<li><code>Version</code> — <code>plist integer</code>，文件版本，必须设定为 1。</li>
+<li><code>Add</code> — <code>plist dictionary</code>，等同于 <code>config.plist</code> 中的 <code>Add</code>。</li>
 </ul>
-<p>Variable loading happens prior to <code>Block</code> (and <code>Add</code>) phases. Unless <code>LegacyOverwrite</code> is enabled, it will not overwrite any existing variable. Variables allowed to be set must be specified in <code>LegacySchema</code>. Third-party scripts may be used to create <code>nvram.plist</code> file. An example of such script can be found in <code>Utilities</code>. The use of third-party scripts may require <code>ExposeSensitiveData</code> set to <code>0x3</code> to provide <code>boot-path</code> variable with OpenCore EFI partition UUID.</p>
-<p><strong>警告</strong>: 这一功能非常危险，因为这将不受保护的数据传递给固件中的变量服务。只有你的硬件不提供硬件 NVRAM 或与之不兼容时才使用。</p>
+<p>变量加载优先于 <code>Block</code>（以及 <code>Add</code>）阶段。除非启用了 <code>LegacyOverwrite</code>，否则不会覆盖现有的任何变量。允许设置的变量必须指定于 <code>LegacySchema</code> 中。第三方脚本可以用来创建 <code>nvram.plist</code> 文件，脚本示例可参照 <code>Utilities</code>。使用第三方脚本可能要将 <code>ExposeSensitiveData</code> 设置为 <code>0x3</code> 来为 <code>boot-path</code> 变量提供 OpenCore EFI 分区的 UUID。</p>
+<p><strong>警告</strong>: 这一功能非常危险，因为会将不受保护的数据传递给固件中的变量服务。只有在你的硬件不提供硬件 NVRAM 或与之不兼容时才使用。</p>
 <h3 id="4-LegacyOverwrite"><a href="#4-LegacyOverwrite" class="headerlink" title="4. LegacyOverwrite"></a>4. <code>LegacyOverwrite</code></h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: <code>false</code><br><strong>Description</strong>: 允许用 <code>nvram.plist</code> 文件中的变量覆盖现有 NVRAM 中的变量。</p>
 <p><em>注</em>：只有操作系统访问的到的变量会被覆盖。</p>
-<h3 id="5-LegacySchema"><a href="#5-LegacySchema" class="headerlink" title="5. LegacySchema"></a>5. <code>LegacySchema</code></h3><p><strong>Type</strong>: <code>plist dict</code><br><strong>Description</strong>: Allows setting select NVRAM variables from a map (<code>plist dict</code>) of GUIDs to an array (<code>plist array</code>) of variable names in <code>plist string</code> format.</p>
-<p>You can use <code>*</code> value to accept all variables for select GUID.</p>
-<p><strong>警告</strong>: Choose variables very carefully, as nvram.plist is not vaulted. For instance, do not put <code>boot-args</code> or <code>csr-active-config</code>, as this can bypass SIP.</p>
+<h3 id="5-LegacySchema"><a href="#5-LegacySchema" class="headerlink" title="5. LegacySchema"></a>5. <code>LegacySchema</code></h3><p><strong>Type</strong>: <code>plist dict</code><br><strong>Description</strong>: 允许从 GUID 映射（<code>plist dict</code>）中选择 NVRAM 变量设置到一个变量名称数组（<code>plist array</code>），格式为 <code>plist string</code>。</p>
+<p>可用 <code>*</code> 值来接受所有用来选择 GUID 的变量。</p>
+<p><strong>警告</strong>：选择变量要非常慎重，因为 nvram.plist 不会被存储。比如，不要把 <code>boot-args</code> 或 <code>csr-active-config</code> 放进去，因为会绕过 SIP。</p>
 <h3 id="6-WriteFlash"><a href="#6-WriteFlash" class="headerlink" title="6. WriteFlash"></a>6. <code>WriteFlash</code></h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: <code>false</code><br><strong>Description</strong>: 允许将所有添加的变量写入闪存。</p>
 <p><em>注</em>：这个 Quirk 本应该在大多数固件上启用，但是由于可能存在 NVRAM 变量存储 GC 或类似的问题的固件，所以我们将这个 Quirk 设计为可配置的。</p>
-<p>To read NVRAM variable value from macOS one could use <code>nvram</code> by concatenating variable GUID and name separated by <code>:</code> symbol. For example, <code>nvram 7C436110-AB2A-4BBB-A880-FE41995C9F82:boot-args</code>.</p>
-<p>A continuously updated variable list can be found in a corresponding document: <a href="https://docs.google.com/spreadsheets/d/1HTCBwfOBkXsHiK7os3b2CUc6k68axdJYdGl-TyXqLu0" target="_blank" rel="noopener">NVRAM Variables</a>.</p>
-<h2 id="9-3-Mandatory-Variables"><a href="#9-3-Mandatory-Variables" class="headerlink" title="9.3 Mandatory Variables"></a>9.3 Mandatory Variables</h2><p><em>警告</em>: These variables may be added by <a href="">PlatformNVRAM</a> or <a href="">Generic</a> subsections of <a href="">PlatformInfo</a> section. Using <code>PlatformInfo</code> is the recommend way of setting these variables.</p>
-<p>The following variables are mandatory for macOS functioning:</p>
+<p>要从 macOS 中读取 NVRAM 变量的值，可以使用 <code>nvram</code>，并将变量 GUID 和名称用 <code>:</code> 符号隔开，形如 <code>nvram 7C436110-AB2A-4BBB-A880-FE41995C9F82:boot-args</code>。</p>
+<p>变量列表可参照相关文档（持续更新）：<a href="https://docs.google.com/spreadsheets/d/1HTCBwfOBkXsHiK7os3b2CUc6k68axdJYdGl-TyXqLu0" target="_blank" rel="noopener">NVRAM Variables</a>。</p>
+<h2 id="9-3-Mandatory-Variables"><a href="#9-3-Mandatory-Variables" class="headerlink" title="9.3 Mandatory Variables"></a>9.3 Mandatory Variables</h2><p><em>警告</em>：这些变量可通过 PlatformNVRAM 或 PlatformInfo 的 Generic 部分添加。推荐使用 <code>PlatformInfo</code> 来设置这些变量。</p>
+<p>以下变量为 macOS 运行必需：</p>
 <ul>
-<li><code>4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14:FirmwareFeatures</code><br>32-bit <code>FirmwareFeatures</code>. Present on all Macs to avoid extra parsing of SMBIOS tables</li>
-<li><code>4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14:FirmwareFeaturesMask</code><br>32-bit <code>FirmwareFeaturesMask</code>. Present on all Macs to avoid extra parsing of SMBIOS tables.</li>
-<li><code>4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14:MLB</code><br><code>BoardSerialNumber</code>. Present on newer Macs (2013+ at least) to avoid extra parsing of SMBIOS tables, especially in <code>boot.efi</code>.</li>
-<li><code>4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14:ROM</code><br>Primary network adapter MAC address or replacement value. Present on newer Macs (2013+ at least) to avoid accessing special memory region, especially in <code>boot.efi</code>.</li>
+<li><code>4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14:FirmwareFeatures</code><br>32 位 <code>FirmwareFeatures</code>。存在于所有 Mac 上，用来避免额外解析 SMBIOS 表。</li>
+<li><code>4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14:FirmwareFeaturesMask</code><br>32 位 <code>FirmwareFeaturesMask</code>。存在于所有 Mac 上，用来避免额外解析 SMBIOS 表。</li>
+<li><code>4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14:MLB</code><br><code>BoardSerialNumber</code>。存在于较新的 Mac 上（至少 2013 年以后），用来避免额外解析 SMBIOS 表，尤其是在 <code>boot.efi</code> 中。</li>
+<li><code>4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14:ROM</code><br>主要的网络适配器的 MAC 地址或替换值。存在于较新的 Mac（至少 2013 年以后）上，用来避免访问特殊内存区域，尤其是在 <code>boot.efi</code> 中。</li>
 </ul>
-<h2 id="9-4-Recommended-Variables"><a href="#9-4-Recommended-Variables" class="headerlink" title="9.4 Recommended Variables"></a>9.4 Recommended Variables</h2><p>The following variables are recommended for faster startup or other improvements:</p>
+<h2 id="9-4-Recommended-Variables"><a href="#9-4-Recommended-Variables" class="headerlink" title="9.4 Recommended Variables"></a>9.4 Recommended Variables</h2><p>建议使用以下变量来加快启动速度或改善其他表现：</p>
 <ul>
-<li><code>7C436110-AB2A-4BBB-A880-FE41995C9F82:csr-active-config</code><br>32-bit System Integrity Protection bitmask. Declared in XNU source code in <a href="https://opensource.apple.com/source/xnu/xnu-4570.71.2/bsd/sys/csr.h.auto.html" target="_blank" rel="noopener">csr.h</a>.</li>
-<li><code>4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14:ExtendedFirmwareFeatures</code><br>Combined <code>FirmwareFeatures</code> and <code>ExtendedFirmwareFeatures</code>. Present on newer Macs to avoid extra parsing of SMBIOS tables</li>
-<li><code>4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14:ExtendedFirmwareFeaturesMask</code><br>Combined <code>FirmwareFeaturesMask</code> and <code>ExtendedFirmwareFeaturesMask</code>. Present on newer Macs to avoid extra parsing of SMBIOS tables.</li>
-<li><code>4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14:HW_BID</code><br>Hardware <code>BoardProduct</code> (e.g. <code>Mac-35C1E88140C3E6CF</code>). Not present on real Macs, but used to avoid extra parsing of SMBIOS tables, especially in <code>boot.efi</code>.</li>
-<li><code>4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14:HW_MLB</code><br>Hardware <code>BoardSerialNumber</code>. Override for MLB. Present on newer Macs (2013+ at least).</li>
-<li><code>4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14:HW_ROM</code><br>Hardware ROM. Override for ROM. Present on newer Macs (2013+ at least).</li>
-<li><code>7C436110-AB2A-4BBB-A880-FE41995C9F82:prev-lang:kbd</code><br>ASCII string defining default keyboard layout. Format is <code>lang-COUNTRY:keyboard</code>, e.g. <code>ru-RU:252</code> for Russian locale and ABC keyboard. Also accepts short forms: <code>ru:252</code> or <code>ru:0</code> (U.S. keyboard, compatible with 10.9). Full decoded keyboard list from <code>AppleKeyboardLayouts-L.dat</code> can be found <a href="https://github.com/acidanthera/OpenCorePkg/tree/master/Utilities/AppleKeyboardLayouts" target="_blank" rel="noopener">here</a>. Using non-latin keyboard on 10.14 will not enable ABC keyboard, unlike previous and subsequent macOS versions, and is thus not recommended in case you need 10.14.</li>
-<li><code>7C436110-AB2A-4BBB-A880-FE41995C9F82:security-mode</code><br>ASCII string defining FireWire security mode. Legacy, can be found in IOFireWireFamily source code in <a href="https://opensource.apple.com/source/IOFireWireFamily/IOFireWireFamily-473/IOFireWireFamily.kmodproj/IOFireWireController.cpp.auto.html" target="_blank" rel="noopener">IOFireWireController.cpp</a>. It is recommended not to set this variable, which may speedup system startup. Setting to <code>full</code> is equivalent to not setting the variable and <code>none</code> disables FireWire security.</li>
-<li><code>4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14:UIScale</code><br>One-byte data defining <code>boot.efi</code> user interface scaling. Should be <strong>01</strong> for normal screens and <strong>02</strong> for HiDPI screens.</li>
-<li><code>4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14:DefaultBackgroundColor</code> Four-byte <code>RGBA</code> data defining <code>boot.efi</code> user interface background colour. Standard colours include <code>BF BF BF 00</code> (Light Gray) and <code>00 00 00 00}</code> (Syrah Black). Other colours may be set at user’s preference.</li>
+<li><code>7C436110-AB2A-4BBB-A880-FE41995C9F82:csr-active-config</code><br>32 位系统完整性保护的位掩码，声明于 XNU 源码 <a href="https://opensource.apple.com/source/xnu/xnu-4570.71.2/bsd/sys/csr.h.auto.html" target="_blank" rel="noopener">csr.h</a>。</li>
+<li><code>4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14:ExtendedFirmwareFeatures</code><br>结合 <code>FirmwareFeatures</code> 和 <code>ExtendedFirmwareFeatures</code>。存在于较新的 Mac 上，用来避免额外解析 SMBIOS 表。</li>
+<li><code>4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14:ExtendedFirmwareFeaturesMask</code><br>结合 <code>FirmwareFeaturesMask</code> 和 <code>ExtendedFirmwareFeaturesMask</code>。存在于较新的 Mac 上，用来避免额外解析 SMBIOS 表。</li>
+<li><code>4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14:HW_BID</code><br>硬件 <code>BoardProduct</code>（如 <code>Mac-35C1E88140C3E6CF</code>）。在真正的 Mac 上不存在，但可用于避免额外解析 SMBIOS 表，尤其是在 <code>boot.efi</code> 中。</li>
+<li><code>4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14:HW_MLB</code><br>硬件 <code>BoardSerialNumber</code>。覆盖 MLB，存在于较新的 Mac 上（至少 2013 年以后）。</li>
+<li><code>4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14:HW_ROM</code><br>硬件 ROM。覆盖 ROM，存在于较新的 Mac 上（至少 2013 年以后）。</li>
+<li><code>7C436110-AB2A-4BBB-A880-FE41995C9F82:prev-lang:kbd</code><br>定义默认键盘布局的 ASCII 字符串。格式为 <code>lang-COUNTRY:keyboard</code>，例如 <code>ru-RU:252</code> 代表俄语和 ABC 键盘。也接受简短形式：<code>ru:252</code> 或 <code>ru:0</code>（美国键盘，兼容 10.9）。完整的键盘列表解码来自 <code>AppleKeyboardLayouts-L.dat</code>，可前往<a href="https://github.com/acidanthera/OpenCorePkg/tree/master/Utilities/AppleKeyboardLayouts" target="_blank" rel="noopener">这里</a>查看。与之前或之后的 macOS 版本不同，在 10.14 上，使用非拉丁语键盘将无法启用 ABC 键盘，因此假如你需要使用 10.14 版本则不建议你使用这一变量。</li>
+<li><code>7C436110-AB2A-4BBB-A880-FE41995C9F82:security-mode</code><br>定义 FireWire 安全模式的 ASCII 字符串。这一变量旧版本才有，可在 <a href="https://opensource.apple.com/source/IOFireWireFamily/IOFireWireFamily-473/IOFireWireFamily.kmodproj/IOFireWireController.cpp.auto.html" target="_blank" rel="noopener">IOFireWireController.cpp</a> 中的 IOFireWireFamily 源码里找到。建议不要设置这个变量，这样可能会加快启动速度。设置为 <code>full</code> 等同于不设置该变量，设置为 <code>none</code> 将禁用 FireWire 安全性。</li>
+<li><code>4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14:UIScale</code><br>定义 <code>boot.efi</code> 用户界面缩放比例的一字节数据。普通屏幕应为 <strong>01</strong>，HiDPI 屏幕应为 <strong>02</strong>。</li>
+<li><code>4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14:DefaultBackgroundColor</code><br>定义 <code>boot.efi</code> 用户界面背景色的四字节 <code>RGBA</code> 数据。标准色包括 <code>BF BF BF 00</code>（浅灰）和 <code>00 00 00 00</code>（西拉黑）。其他颜色可根据用户喜好设置。</li>
 </ul>
 <h2 id="9-5-Other-Variables"><a href="#9-5-Other-Variables" class="headerlink" title="9.5 Other Variables"></a>9.5 Other Variables</h2><p>以下变量对于某些特定的配置或进行故障排除可能会很有用：</p>
 <ul>
 <li><p><code>7C436110-AB2A-4BBB-A880-FE41995C9F82:boot-args</code> 内核参数，用于将配置传递给 Apple 内核和驱动程序。很多参数可以通过在内核或驱动程序代码中寻找 <code>PE_parse_boot_argn</code> 函数找到。已知的引导参数包括：</p>
 <ul>
 <li><code>acpi_layer=0xFFFFFFFF</code></li>
-<li><code>acpi_level=0xFFFF5F</code> (implies <a href="https://github.com/acpica/acpica/blob/master/source/include/acoutput.h" target="_blank" rel="noopener"><code>ACPI_ALL_COMPONENTS</code></a>)</li>
+<li><code>acpi_level=0xFFFF5F</code> — 表示 <a href="https://github.com/acpica/acpica/blob/master/source/include/acoutput.h" target="_blank" rel="noopener"><code>ACPI_ALL_COMPONENTS</code></a></li>
 <li><code>batman=VALUE</code> — <code>AppleSmartBatteryManager</code> 调试掩码</li>
 <li><code>batman-nosmc=1</code> — 禁用 <code>AppleSmartBatteryManager</code> SMC 接口</li>
 <li><code>cpus=VALUE</code> — 最大可用 CPU 数量</li>
 <li><code>debug=VALUE</code> — Debug 掩码</li>
 <li><code>io=VALUE</code> — <code>IOKit</code> 调试掩码</li>
-<li><code>keepsyms=1</code> (show panic log debug symbols)</li>
+<li><code>keepsyms=1</code> — 显示 Panic 日志调试符号</li>
 <li><code>kextlog=VALUE</code> — Kext 调试掩码</li>
 <li><code>nv_disable=1</code> — 禁用 NVIDIA GPU 加速</li>
 <li><code>nvda_drv=1</code> — 启用 NVIDIA web driver 的传统方法，这一参数在 macOS 10.12 中被去除</li>
-<li><code>npci=0x2000</code> (<a href="https://www.insanelymac.com/forum/topic/260539-1068-officially-released/?do=findComment&comment=1707972" target="_blank" rel="noopener">legacy</a> 禁用 <code>kIOPCIConfiguratorPFM64</code>)</li>
+<li><code>npci=0x2000</code> — <a href="https://www.insanelymac.com/forum/topic/260539-1068-officially-released/?do=findComment&comment=1707972" target="_blank" rel="noopener">旧方法</a> 禁用 <code>kIOPCIConfiguratorPFM64</code></li>
 <li><code>lapic_dont_panic=1</code></li>
 <li><code>slide=VALUE</code> — 手动设置 KASLR 偏移值</li>
 <li><code>smcdebug=VALUE</code> — <code>AppleSMC</code> 调试掩码</li>
-<li><code>-amd_no_dgpu_accel</code> (alternative to <a href="https://github.com/acidanthera/WhateverGreen" target="_blank" rel="noopener">WhateverGreen</a>‘s <code>-radvesa</code> for new GPUs)</li>
+<li><code>-amd_no_dgpu_accel</code> — 替代 <a href="https://github.com/acidanthera/WhateverGreen" target="_blank" rel="noopener">WhateverGreen</a> 的 <code>-radvesa</code>，用于较新的 GPUs</li>
 <li><code>-nehalem_error_disable</code></li>
-<li><code>-no_compat_check</code> (disable model checking)</li>
+<li><code>-no_compat_check</code> — 禁用机型检查</li>
 <li><code>-s</code> — 单用户模式</li>
 <li><code>-v</code> — 啰嗦模式</li>
 <li><code>-x</code> — 安全模式</li>
 </ul>
 <p>这里有一些网站收集了 macOS 内置的启动参数列表：<a href="https://osxeon.wordpress.com/2015/08/10/boot-argument-options-in-os-x" target="_blank" rel="noopener">列表 1</a>、<a href="https://superuser.com/questions/255176/is-there-a-list-of-available-boot-args-for-darwin-os-x" target="_blank" rel="noopener">列表 2</a>.</p>
 </li>
-<li><p><code>7C436110-AB2A-4BBB-A880-FE41995C9F82:bootercfg</code><br>Booter arguments, similar to <code>boot-args</code> but for <code>boot.efi</code>. Accepts a set of arguments, which are hexadecimal 64-bit values with or without <code>0x</code>. At<br>different stages <code>boot.efi</code> will request different debugging (logging)<br>modes (e.g. after <code>ExitBootServices</code> it will only print to serial).<br>Several booter arguments control whether these requests will succeed.<br>The list of known requests is covered below:</p>
+<li><p><code>7C436110-AB2A-4BBB-A880-FE41995C9F82:bootercfg</code><br>Booter 参数，类似于 <code>boot-args</code>，但用于 <code>boot.efi</code> 。接受参数为一组十六进制的 64 位值，带或不带 <code>0x</code>。在不同阶段，<code>boot.efi</code> 会请求不同的调试（日志）模式（例如，在 <code>ExitBootServices</code> 之后它只会打印到串行调试接口）。<br>有些 Booter 参数会控制这些请求是否成功。<br>下面是已知请求的列表：</p>
 <ul>
-<li><code>0x00</code> – <code>INIT</code>.</li>
-<li><code>0x01</code> – <code>VERBOSE</code> (e.g. <code>-v</code>, force console logging).</li>
-<li><code>0x02</code> – <code>EXIT</code>.</li>
-<li><code>0x03</code> – <code>RESET:OK</code>.</li>
-<li><code>0x04</code> – <code>RESET:FAIL</code> (e.g. unknown <code>board-id</code>, hibernate mismatch, panic loop, etc.).</li>
-<li><code>0x05</code> – <code>RESET:RECOVERY</code>.</li>
-<li><code>0x06</code> – <code>RECOVERY</code>.</li>
-<li><code>0x07</code> – <code>REAN:START</code>.</li>
-<li><code>0x08</code> – <code>REAN:END</code>.</li>
-<li><code>0x09</code> – <code>DT</code> (can no longer log to DeviceTree).</li>
-<li><code>0x0A</code> – <code>EXITBS:START</code> (forced serial only).</li>
-<li><code>0x0B</code> – <code>EXITBS:END</code> (forced serial only).</li>
-<li><code>0x0C</code> – <code>UNKNOWN</code>.</li>
+<li><code>0x00</code> – <code>INIT</code></li>
+<li><code>0x01</code> – <code>VERBOSE</code> （如 <code>-v</code>，强制控制台记录日志）</li>
+<li><code>0x02</code> – <code>EXIT</code></li>
+<li><code>0x03</code> – <code>RESET:OK</code></li>
+<li><code>0x04</code> – <code>RESET:FAIL</code> （如未知的 <code>board-id</code>，休眠错配，Panic 循环，等等）</li>
+<li><code>0x05</code> – <code>RESET:RECOVERY</code></li>
+<li><code>0x06</code> – <code>RECOVERY</code></li>
+<li><code>0x07</code> – <code>REAN:START</code></li>
+<li><code>0x08</code> – <code>REAN:END</code></li>
+<li><code>0x09</code> – <code>DT</code> （不再将日志记录到设备树）</li>
+<li><code>0x0A</code> – <code>EXITBS:START</code> （仅强制的串行调试接口）</li>
+<li><code>0x0B</code> – <code>EXITBS:END</code> （仅强制的串行调试接口）</li>
+<li><code>0x0C</code> – <code>UNKNOWN</code></li>
 </ul>
 </li>
 </ul>
-<p>In 10.15 debugging support was mostly broken before 10.15.4 due to some kind of refactoring and introduction of a <a href="https://github.com/acidanthera/EfiPkg/blob/master/Include/Protocol/AppleDebugLog.h" target="_blank" rel="noopener">new debug protocol</a>. Some of the arguments and their values below may not be valid for<br>versions prior to 10.15.4. The list of known arguments is covered below:</p>
+<p>在 10.15 中，由于某种重构和<a href="https://github.com/acidanthera/EfiPkg/blob/master/Include/Protocol/AppleDebugLog.h" target="_blank" rel="noopener">新调试协议</a>的引入，10.15.4 之前的调试支持基本上不能用了。下面的一些参数和值可能不适用于 10.15.4 之前的版本。以下是已知参数的列表：</p>
 <ul>
-<li><p><code>boot-save-log=VALUE</code> — debug log save mode for normal boot.</p>
+<li><p><code>boot-save-log=VALUE</code> — 正常启动时的调试日志保存模式</p>
 <ul>
 <li><code>0</code></li>
 <li><code>1</code></li>
-<li><code>2</code> — (default).</li>
+<li><code>2</code> — 默认</li>
 <li><code>3</code></li>
-<li><code>4</code> — (save to file).</li>
+<li><code>4</code> — 保存到文件</li>
 </ul>
 </li>
-<li><p><code>wake-save-log=VALUE</code> — debug log save mode for hibernation wake.</p>
+<li><p><code>wake-save-log=VALUE</code> — 休眠唤醒时的调试日志保存模式</p>
 <ul>
-<li><code>0</code> — disabled.</li>
+<li><code>0</code> — 禁用</li>
 <li><code>1</code></li>
-<li><code>2</code> — (default).</li>
-<li><code>3</code> — (unavailable).</li>
-<li><code>4</code> — (save to file, unavailable).</li>
+<li><code>2</code> — 默认</li>
+<li><code>3</code> — 不可用</li>
+<li><code>4</code> — 保存到文件，不可用</li>
 </ul>
 </li>
-<li><p><code>breakpoint=VALUE</code> — enables debug breaks (missing in production<br><code>boot.efi</code>).</p>
+<li><p><code>breakpoint=VALUE</code> — 调试中断相关（在产品 <code>boot.efi</code> 中缺少）</p>
 <ul>
-<li><code>0</code> — disables debug breaks on errors (default).</li>
-<li><code>1</code> — enables debug breaks on errors.</li>
+<li><code>0</code> — 禁用错误时的调试中断（默认）</li>
+<li><code>1</code> — 启用错误时的调试中断</li>
 </ul>
 </li>
-<li><p><code>console=VALUE</code> — enables console logging.</p>
+<li><p><code>console=VALUE</code> — 启用控制台日志记录</p>
 <ul>
-<li><code>0</code> — disables console logging.</li>
-<li><code>1</code> — enables console logging when debug protocol is missing<br>(default).</li>
-<li><code>2</code> — enables console logging unconditionally (unavailable).</li>
+<li><code>0</code> — 禁用控制台日志记录</li>
+<li><code>1</code> — 当缺少调试协议时，启用控制台日志记录（默认）</li>
+<li><code>2</code> — 无条件启用控制台日志记录（不可用）</li>
 </ul>
 </li>
-<li><p><code>embed-log-dt=VALUE</code> — enables DeviceTree logging.</p>
+<li><p><code>embed-log-dt=VALUE</code> — 设备树日志记录相关</p>
 <ul>
-<li><code>0</code> — disables DeviceTree logging (default).</li>
-<li><code>1</code> — enables DeviceTree logging.</li>
+<li><code>0</code> — 禁用设备树日志记录</li>
+<li><code>1</code> — 启用设备树日志记录</li>
 </ul>
 </li>
-<li><p><code>kc-read-size=VALUE</code> — Chunk size used for buffered I/O from network<br>or disk for prelinkedkernel reading and related. Set to 1MB<br>(0x100000) by default, can be tuned for faster booting.</p>
+<li><p><code>kc-read-size=VALUE</code> — 用于网络或磁盘缓冲 I/O 的数据块大小，用于预链接内核读取和相关用途。默认设置为 1MB<br>(0x100000)，可以通过调整使启动更快</p>
 </li>
-<li><p><code>log-level=VALUE</code> — log level bitmask.</p>
+<li><p><code>log-level=VALUE</code> — 日志等级位掩码</p>
 <ul>
-<li><code>0x01</code> — enables trace logging (default).</li>
+<li><code>0x01</code> — 启用跟踪记录（默认）</li>
 </ul>
 </li>
-<li><p><code>serial=VALUE</code> — enables serial logging.</p>
+<li><p><code>serial=VALUE</code> — 串行控制台日志记录相关</p>
 <ul>
-<li><code>0</code> — disables serial logging (default).</li>
-<li><code>1</code> — enables serial logging for <code>EXITBS:END</code> onwards.</li>
-<li><code>1</code> — enables serial logging for <code>EXITBS:START</code> onwards.</li>
-<li><code>3</code> — enables serial logging when debug protocol is missing.</li>
-<li><code>4</code> — enables serial logging unconditionally.</li>
+<li><code>0</code> — 禁用串行日志记录（默认）</li>
+<li><code>1</code> — 从 <code>EXITBS:END</code> 开始启用串行日志记录</li>
+<li><code>1</code> — 从 <code>EXITBS:START</code> 开始启用串行日志记录</li>
+<li><code>3</code> — 当缺少调试协议时，启用串行日志记录</li>
+<li><code>4</code> — 无条件启用串行日志记录</li>
 </ul>
 </li>
-<li><p><code>timestamps=VALUE</code> — enables timestamp logging.</p>
+<li><p><code>timestamps=VALUE</code> — 时间戳日志记录相关</p>
 <ul>
-<li><code>0</code> — disables timestamp logging.</li>
-<li><code>1</code> — enables timestamp logging (default).</li>
+<li><code>0</code> — 禁用时间戳记录</li>
+<li><code>1</code> — 启用时间戳记录（默认）</li>
 </ul>
 </li>
-<li><p><code>log=VALUE</code> — deprecated starting from 10.15.</p>
-<p><em>注</em>：To see verbose output from <code>boot.efi</code> on modern macOS versions enable <code>AppleDebug</code> option. This will save the log to general OpenCore log. For versions before 10.15.4 set <code>bootercfg</code> to <code>log=1</code>. This will print verbose output onscreen.</p>
+<li><p><code>log=VALUE</code> — 10.15 开始弃用</p>
+<p><em>注</em>：如要查看现代 macOS 版本上的 <code>boot.efi</code> verbose 输出，请启用 <code>AppleDebug</code> 选项。这样会把日志保存到通用 OpenCore 日志中。对于 10.15.4 之前的版本，将 <code>bootercfg</code> 设置为 <code>log=1</code>，可以将 verbose 输出打印在屏幕上。</p>
 </li>
-<li><p><code>7C436110-AB2A-4BBB-A880-FE41995C9F82:efiboot-perf-record</code><br>Enable performance log saving in <code>boot.efi</code>. Performance log is saved to physical memory and is pointed by <code>efiboot-perf-record-data</code> and <code>efiboot-perf-record-size</code> variables. Starting from 10.15.4 it can also be saved to OpenCore log by <code>AppleDebug</code> option.</p>
+<li><p><code>7C436110-AB2A-4BBB-A880-FE41995C9F82:efiboot-perf-record</code><br>启用 <code>boot.efi</code> 中的性能日志保存功能。性能日志会被保存到物理内存中，并通过 <code>efiboot-perf-record-data</code> 和 <code>efiboot-perf-record-size</code> 变量进行指向。从 10.15.4 开始，它也可以通过 <code>AppleDebug</code> 选项保存到 OpenCore 日志中。</p>
 </li>
-<li><p><code>7C436110-AB2A-4BBB-A880-FE41995C9F82:bootercfg-once</code><br>Booter arguments override removed after first launch. Otherwise equivalent to <code>bootercfg</code>.</p>
+<li><p><code>7C436110-AB2A-4BBB-A880-FE41995C9F82:bootercfg-once</code><br>在首次启动后删除 Booter 参数覆盖，否则等同于 <code>bootercfg</code>。</p>
 </li>
-<li><p><code>7C436110-AB2A-4BBB-A880-FE41995C9F82:fmm-computer-name</code><br>Current saved host name. ASCII string.</p>
+<li><p><code>7C436110-AB2A-4BBB-A880-FE41995C9F82:fmm-computer-name</code><br>当前保存的主机名称，格式为 ASCII 字符串。</p>
 </li>
-<li><p><code>7C436110-AB2A-4BBB-A880-FE41995C9F82:nvda_drv</code><br>NVIDIA Web Driver control variable. Takes ASCII digit <code>1</code> or <code>0</code> to enable or disable installed driver.</p>
+<li><p><code>7C436110-AB2A-4BBB-A880-FE41995C9F82:nvda_drv</code><br>NVIDIA Web Driver 的控制变量。用 ASCII 数字 <code>1</code> 来启用或用 <code>0</code> 来禁用已安装的驱动程序。</p>
 </li>
 <li><p><code>7C436110-AB2A-4BBB-A880-FE41995C9F82:StartupMute</code><br>开机时禁用固件引导提示音。8 进制整数。<code>0x00</code> 指代不静音、其他任何值（或缺少该值）表示静音。这一选项只影响带 T2 的机器。</p>
 </li>
-<li><p><code>7C436110-AB2A-4BBB-A880-FE41995C9F82:SystemAudioVolume</code><br>System audio volume level for firmware audio support. 8-bit integer. The bit of <code>0x80</code> means muted. Lower bits are used to encode volume range specific to installed audio codec. The value is capped by <code>MaximumBootBeepVolume</code> AppleHDA layout value to avoid too loud audio playback in the firmware.</p>
+<li><p><code>7C436110-AB2A-4BBB-A880-FE41995C9F82:SystemAudioVolume</code><br>固件音频支持的系统音频音量等级。8 进制整数。<code>0x80</code> 指代静音。低位用于编码安装的音频编码解码器的音量范围。该值以 <code>MaximumBootBeepVolume</code> AppleHDA layout 值为上限，以避免固件中的音频播放声音过大。</p>
 </li>
 </ul>
 
