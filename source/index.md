@@ -11,7 +11,7 @@ type: docs
 <p>
 <span style="margin-top: 1em; margin-bottom: .5em; font-size: 2em">OpenCore</span>
 <br><br>
-<span style="margin-top: 2.2857em; margin-bottom: .5714em; font-size: 1.25em">参考手册（v0.5.7）</span>
+<span style="margin-top: 2.2857em; margin-bottom: .5714em; font-size: 1.25em">参考手册</span>
 </div>
 <br><br><br>
 
