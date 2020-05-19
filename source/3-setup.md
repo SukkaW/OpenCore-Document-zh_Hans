@@ -3,7 +3,7 @@ title: 3. Setup
 description: Setup（待翻译）
 type: docs
 author_info: 由 Sukka 整理、由 Sukka 翻译。
-last_updated: 2020-05-04
+last_updated: 2020-05-19
 ---
 
 ## 3.1 目录结构
@@ -41,18 +41,20 @@ ESP
 
 使用目录引导时，使用的目录结构应该遵循上述目录结构。可用的条目有：
 
-- **BOOTx64.efi** - 初始引导程序。除非 OpenCore.efi 已作为驱动程序启动，否则将用于加载 OpenCore.efi。
+- **BOOTx64.efi** 和 **Bootstrap.efi** - 初始引导程序。除非 `OpenCore.efi` 已作为驱动程序启动，否则将用于加载 `OpenCore.efi`。对于大部分固件来说，`BOOTx64.efi` 是 UEFI 默认启动项，而 `Bootstrap.efi` 可以被注册为自定义启动项，避免 `BOOTx64.efi` 被其它操作系统所覆盖。
+- **boot** -   Duet bootstrap loader, which initialises UEFI environment on legacy BIOS firmwares and loads \texttt{OpenCore.efi} similarly to other bootstrap loaders. Modern Duet bootstrap loader will default to \texttt{OpenCore.efi} on the same partition when present.
 - **ACPI** - 用于存储 ACPI 补充信息的目录。
 - **Drivers** - 用于存储 UEFI 补充驱动程序的目录。
 - **Kexts** - 用于存储内核驱动（kext）补充的目录。
 - **Tools** - 用于存储补充工具的目录。
 - **OpenCore.efi** - 主引导驱动程序，负责操作系统加载。
 - **vault.plist** - OC Config 可能加载的所有文件的哈希。
-- **config.plist** - OC Config（即 OpenCore 的配置文件，见「配置术语」）。
+- **config.plist** - OC Config（即 OpenCore 的配置文件，见「配置术语」）。这一目录同时也用于存放 GUI 界面所使用的图片，见 `OpenCanopy` 相关章节。
 - **vault.sig** - vault.plist 的签名文件。
 - **nvram.plist** - OpenCore 变量导入文件。
 - **Resources** - 媒体资源使用的目录，如 屏幕朗读 的语音文件（见「UEFI Audio 属性」章节）。
 - **opencore-YYYY-MM-DD-HHMMSS.txt** - OpenCore 日志文件。
+- **panic-YYYY-MM-DD-HHMMSS.txt** - Kernal Panic 日志文件。
 
 *Note*: It is not guaranteed that paths longer than `OC_STORAGE_SAFE_PATH_MAX` (128 characters including `0`-termnator) will be accessible within OpenCore.
 
@@ -62,7 +64,7 @@ ESP
 
 OpenCore 的配置文件可以使用任何常规的文本编辑器（如 nano、vim、VSCode）进行编辑，但是专用软件可以带来更好的体验。在 macOS 上我们推荐使用 [Xcode](https://developer.apple.com/xcode)。你也可以使用 [ProperTree](https://github.com/corpnewt/ProperTree) ，这是一个轻量级的跨平台的开源 plist 编辑器。
 
-如果要通过 BIOS 进行开机，你必须使用第三方 UEFI 环境提供程序。`DuetPkg` 是一个常用的为旧操作系统提供 Legacy 引导的 UEFI 环境提供程序。要在这样的旧操作系统上运行 OpenCore，你可以使用一个独立的工具 `BootInstall` 安装 `DuetPkg`（目前已和 OpenCore 打包在一起发布）。
+如果要通过 BIOS 进行开机，你必须使用第三方 UEFI 环境提供程序。`OpenDuetPkg` 是一个常用的为旧操作系统提供 Legacy 引导的 UEFI 环境提供程序。要在这样的旧操作系统上运行 OpenCore，你可以使用一个独立的工具 `BootInstall` 安装 `OpenDuetPkg`（目前已和 OpenCore 打包在一起发布）。
 
 如果要升级 OpenCore，[`Differences.pdf`](https://github.com/acidanthera/OpenCorePkg/blob/master/Docs/Differences/Differences.pdf) 提供了 OpenCore 配置文件变更的相关信息，[`Changelog.md`](https://github.com/acidanthera/OpenCorePkg/blob/master/Changelog.md) 提供了 OpenCore 的更新日志。
 
@@ -70,11 +72,9 @@ OpenCore 的配置文件可以使用任何常规的文本编辑器（如 nano、
 
 ## 3.3 贡献代码
 
-OpenCore can be compiled as an ordinary [EDK II](https://github.com/tianocore/tianocore.github.io/wiki/EDK-II). Since [UDK](https://github.com/tianocore/tianocore.github.io/wiki/UDK) development was abandoned by TianoCore, OpenCore requires the use of [EDK II Stable](https://github.com/tianocore/tianocore.github.io/wiki/EDK-II#stable-tags). Currently supported EDK II release (potentially with patches enhancing the experience) is hosted in [acidanthera/audk](https://github.com/acidanthera/audk).
+OpenCore can be compiled as an ordinary [EDK II](https://github.com/tianocore/tianocore.github.io/wiki/EDK-II). Since [UDK](https://github.com/tianocore/tianocore.github.io/wiki/UDK) development was abandoned by TianoCore, OpenCore requires the use of [EDK II Stable](https://github.com/tianocore/tianocore.github.io/wiki/EDK-II#stable-tags). Currently supported EDK II release is hosted in [acidanthera/audk](https://github.com/acidanthera/audk). The required patches for the package are present in `Patches` directory.
 
 The only officially supported toolchain is `XCODE5`. Other toolchains might work, but are neither supported, nor recommended. Contribution of clean patches is welcome. Please do follow [EDK II C Codestyle](https://github.com/tianocore/tianocore.github.io/wiki/Code-Style-C).
-
-Required external package dependencies include [EfiPkg](https://github.com/acidanthera/EfiPkg), [MacInfoPkg](https://github.com/acidanthera/MacInfoPkg).
 
 To compile with `XCODE5`, besides [Xcode](https://developer.apple.com/xcode), one should also install [NASM](https://www.nasm.us) and [MTOC](https://github.com/acidanthera/ocbuild/tree/master/external). The latest Xcode version is recommended for use despite the toolchain name. Example
 command sequence may look as follows:
@@ -82,8 +82,7 @@ command sequence may look as follows:
 ```bash
 git clone https://github.com/acidanthera/audk UDK
 cd UDK
-git clone https://github.com/acidanthera/EfiPkg
-git clone https://github.com/acidanthera/MacInfoPkg
+git clone https://github.com/acidanthera/DuetPkg
 git clone https://github.com/acidanthera/OpenCorePkg
 source edksetup.sh
 make -C BaseTools
@@ -96,12 +95,16 @@ For IDE usage Xcode projects are available in the root of the repositories. Anot
 -I/UefiPackages/MdePkg
 -I/UefiPackages/MdePkg/Include
 -I/UefiPackages/MdePkg/Include/X64
--I/UefiPackages/EfiPkg
--I/UefiPackages/EfiPkg/Include
--I/UefiPackages/EfiPkg/Include/X64
--I/UefiPackages/AppleSupportPkg/Include
--I/UefiPackages/OpenCorePkg/Include
--I/UefiPackages/MacInfoPkg/Include
+-I/UefiPackages/OpenCorePkg/Include/AMI
+-I/UefiPackages/OpenCorePkg/Include/Acidanthera
+-I/UefiPackages/OpenCorePkg/Include/Apple
+-I/UefiPackages/OpenCorePkg/Include/Apple/X64
+-I/UefiPackages/OpenCorePkg/Include/Duet
+-I/UefiPackages/OpenCorePkg/Include/Generic
+-I/UefiPackages/OpenCorePkg/Include/Intel
+-I/UefiPackages/OpenCorePkg/Include/Microsoft
+-I/UefiPackages/OpenCorePkg/Include/VMware
+-I/UefiPackages/OvmfPkg/Include
 -I/UefiPackages/UefiCpuPkg/Include
 -IInclude
 -include
@@ -126,8 +129,7 @@ For IDE usage Xcode projects are available in the root of the repositories. Anot
 
 Just like any other project we have conventions that we follow during the development. All third-party contributors are highly recommended to read and follow the conventions listed below before submitting their patches. In general it is also recommended to firstly discuss the issue in [Acidanthera Bugtracker](https://github.com/acidanthera/bugtracker) before sending the patch to ensure no double work and to avoid your patch being rejected.
 
-**Organisation**. The codebase is structured in multiple repositories
-which contain separate EDK II packages. `AppleSupportPkg` and `OpenCorePkg` are primary packages, and `EfiPkg`, `MacInfoPkg.dsc`) are dependent packages.
+**Organisation**. The codebase is contained in `OpenCorePkg` repo. which is the primary EDK II package.
 
 - Whenever changes are required in multiple repositories, separate pull requests should be sent to each.
 - Committing the changes should happen firstly to dependent repositories, secondly to primary repositories to avoid automatic build errors.
@@ -173,3 +175,5 @@ and clarifications.
 - Use `DEBUG_VERBOSE` debug level to leave debug messages for future debugging of the code, which are currently not necessary. By default `DEBUG_VERBOSE` messages are ignored even in `DEBUG` builds.
 - Use `DEBUG_INFO` debug level for all non critical messages (including errors) and `DEBUG_BULK_INFO` for extensive messages that should not appear in NVRAM log that is heavily limited in size. These messages are ignored in `RELEASE` builds.
 - Use `DEBUG_ERROR` to print critical human visible messages that may potentially halt the boot process, and `DEBUG_WARN` for all other human visible errors, `RELEASE` builds included.
+
+When trying to find the problematic change it is useful to rely on [`git-bisect`](https://git-scm.com/docs/git-bisect) functionality.

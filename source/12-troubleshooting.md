@@ -1,9 +1,9 @@
 ---
 title: 12. 排错
-description: Troubleshooting
+description: 当你遇到问题的时候应该看看这个（待翻译）
 type: docs
 author_info: 由 xMuu 整理，由 Sukka 翻译
-last_updated: 2020-05-07
+last_updated: 2020-05-19
 ---
 
 ## 12.1 Windows 支持
@@ -135,7 +135,7 @@ Remember to enable `COM` port in firmware settings, and never use USB cables lon
 - 禁用 Watch Dog 以避免自动重启：`Misc => Debug => DisableWatchDog = true`。
 - 已启用 启动菜单 显示：`Misc => Boot => ShowPicker = true`
 
-如果你在日志中看不出明显的错误，请逐一检查 Quirks 部分中可用的 hacks。例如，对于 Early Boot 出现的问题（如 OpenCore 启动菜单无法显示），通过 [UEFI Shell](https://github.com/acidanthera/OpenCoreShell) 可以查看相关调试信息。
+如果你在日志中看不出明显的错误，请逐一检查 Quirks 部分中可用的 hacks。例如，对于 Early Boot 出现的问题（如 OpenCore 启动菜单无法显示），通过 UEFI Shell（随 OpenCore 打包在一起）可以查看相关调试信息。
 
 ### 2. 如何自定义启动项？
 
@@ -151,7 +151,7 @@ OpenCore 使用 UEFI 首选启动项 来选择默认的启动项。设置的方�
 
 在线安装。将 Recovery 镜像（`*.dmg` 和 `*.chunklist` 文件）和 OpenCore 一起复制到一个 FAT32 分区中。加载 OpenCore 的启动菜单并选择后缀为 `.dmg` 的条目。如果你有强迫症，你可以修改 `.contentDetails` 文件改变条目显示的文字。
 
-你可能会用到 [MacInfoPkg](https://github.com/acidanthera/MacInfoPkg/releases) 内置的 [macrecovery.py](https://github.com/acidanthera/MacInfoPkg/blob/master/macrecovery/macrecovery.py) 来下载 Recovery 镜像。
+你可能会用到 `AppleModels` 内置的 [macrecovery.py](https://github.com/acidanthera/OpenCorePkg/blob/master/Utilities/macrecovery/macrecovery.py) 来下载 Recovery 镜像。
 
 如果你需要进行离线安装，请参考 [How to create a bootable installer for macOS](https://support.apple.com/HT201372)。除了通过 App Store 或 系统更新，你还可以使用 [第三方工具](https://github.com/corpnewt/gibMacOS) 下载 macOS 镜像文件。
 
@@ -163,23 +163,27 @@ OpenCore 使用 UEFI 首选启动项 来选择默认的启动项。设置的方�
 
 ~~可以，没有必要，但请加大力度~~
 
-OpenCore 支持包括 MacPro 5,1 和虚拟机在内的大部分较新的 Mac 想好。不过，OpenCore有关在 Mac 硬件上使用的具体细节微乎其微。你可以在 [acidanthera/bugtracker#377](https://github.com/acidanthera/bugtracker/issues/377) 查看相关讨论。
+OpenCore 支持包括 MacPro 5,1 和虚拟机在内的大部分较新的 Mac 想好。不过，OpenCore有关在 Mac 硬件上使用的具体细节微乎其微。你可以在 [MacRumors.com](https://forums.macrumors.com/threads/opencore-on-the-mac-pro.2207814) 查看相关讨论。
 
 ### 7. 为什么 Find 和 Replace 的补丁的长度必须相等？
 
-对于 x86 机器码来说，[相对寻址](https://en.wikipedia.org/w/index.php?title=Relative_addressing) 无法进行大小不同的替换。对于 ACPI 代码来说这是有风险的，而且在技术上这与替换 ACPI 表等价，所以 OpenCore 没有实现。更多详细的解答可以在 [AppleLife.ru](https://applelife.ru/posts/819790) 上找到。
+对于 x86 机器码来说，[相对寻址](https://en.wikipedia.org/w/index.php?title=Relative_addressing) 无法进行大小不同的替换。对于 ACPI 代码来说这是有风险的，而且在技术上这与替换 ACPI 表等价，所以 OpenCore 没有实现。更多详细的解答可以在 [AppleLife.ru](https://applelife.ru/posts/819790) 上和本文档的 ACPI 章节找到。
 
-### 8. 我如何从 `AptioMemoryFix` 迁移到 OpenCore?
+### 8. 我应该如何决定哪些 `Booter` Quirk 需要被启用？
 
-可以通过安装 `OpenRuntime.efi`（原名 `FwRuntimeServices.efi`）驱动程序并启用以下列出的 quirk 来获得与 `AptioMemoryFix` 类似的行为。 请注意，其中大多数功能都不需要启用。有关更多详细信息，请参阅本文档中关于它们的单独描述。
+这些 Quirk 源自 `AptioMemoryFix` 驱动，为更多的固件提供了广泛支持。如果你正在使用 `OpenRuntime`，并且想要获得和 `AptioMemoryFix` 类似的行为，请启用下述 Quirks：
 
-- `ProvideConsoleGop` (UEFI quirk)
+- `ProvideConsoleGop` （UEFI Quirk）
 - `AvoidRuntimeDefrag`
 - `DiscardHibernateMap`
 - `EnableSafeModeSlide`
 - `EnableWriteUnprotector`
 - `ForceExitBootServices`
-- `ProtectCsmRegion`
+- `ProtectMemoryRegions`
 - `ProvideCustomSlide`
+- `RebuildAppleMemoryMap`
 - `SetupVirtualMap`
-- `ShrinkMemoryMap`
+
+However, as of today such set is strongly discouraged as some of these quirks are not necessary to be enabled or need additional quirks. For example, `DevirtualiseMmio` 和 `ProtectUefiServices` are often required, while `DiscardHibernateMap` and `ForceExitBootServices` are rarely necessary.
+
+Unfortunately for some quirks like `RebuildAppleMemoryMap`, `EnableWriteUnprotector`, `ProtectMemoryRegions`, `RebuildAppleMemoryMap`, `SetupVirtualMap`, and `SyncRuntimePermissions` there is no definite approach even on similar systems, so trying all their combinations may be required for optimal setup. Refer to individual quirk descriptions in this document for more details.

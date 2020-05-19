@@ -1,6 +1,6 @@
 ---
 title: 4. ACPI
-description: 加载、屏蔽、修补 ACPI（DSDT/SSDT）表
+description: 加载、屏蔽、修补 ACPI（DSDT/SSDT）表（待翻译）
 type: docs
 author_info: 由 Sukka 整理、由 Sukka、derbalkon 翻译。感谢黑果小兵提供的参考资料
 last_updated: 2020-04-23
@@ -13,6 +13,17 @@ ACPI（Advanced Configuration and Power Interface，高级配置和电源接口�
 
 要反汇编和编译 ACPI 表，可以使用由 [ACPICA](https://www.acpica.org) 开发的 [iASL compiler](https://github.com/acpica/acpica)。你可以从 [Acidanthera/MaciASL](https://github.com/acidanthera/MaciASL/releases) 下载 iASL 的图形界面程序。
 
+对 ACPI 的修补按照如下顺序执行：
+
+- Patch
+- Delete
+- Add
+- Quirks
+
+Applying the changes globally resolves the problems of incorrect operating system detection, which is not possible before the operating system boots according to the ACPI specification, operating system chainloading, and harder ACPI debugging. For this reason it may be required to carefully use `\_OSI` method when writing the changes.
+
+Applying the patches early makes it possible to write so called `proxy` patches, where the original method is patched in the original table and is implemented in the patched table.
+
 ## 4.2 属性列表
 
 ### 4.2.1 `Add`
@@ -23,13 +34,13 @@ ACPI（Advanced Configuration and Power Interface，高级配置和电源接口�
 
 设计为用 `plist dict` 值填充以描述每个块级项目。请参阅下面 [4.3 Add 属性](#4-3-Add-属性) 章节。
 
-### 4.2.2 `Block`
+### 4.2.2 `Delete`
 
 **Type**: `plist array`
 **Failsafe**: Empty
 **Description**: 从 ACPI 栈中删除选定的表。
 
-设计为用 `plist dict` 值填充以描述每个块级项目。请参阅下面 [4.4 Block 属性](#4-4-Block-属性) 章节。
+设计为用 `plist dict` 值填充以描述每个块级项目。请参阅下面 [4.4 Delete 属性](#4-4-Delete-属性) 章节。
 
 ### 4.2.3 `Patch`
 
@@ -68,7 +79,7 @@ ACPI（Advanced Configuration and Power Interface，高级配置和电源接口�
 
 **注**： 除具有 DSDT 表标识符（由解析得到的数据、而非由其文件名决定）的表外，所有表都将作为新表插入 ACPI 栈。而 DSDT 表与其余的表不同，将会执行 DSDT 表的替换。
 
-## 4.4 Block 属性
+## 4.4 Delete 属性
 
 ### 4.2.1 `All`
 
@@ -194,6 +205,8 @@ ACPI（Advanced Configuration and Power Interface，高级配置和电源接口�
 - 在 SSDT 中实现自定义 method，比如笔记本电脑上功能键可以通过将 `_Q11` 替换为 `XQ11` 的方法进行仿冒。
 
 TianoCore 源文件 [AcpiAml.h](https://github.com/acidanthera/audk/blob/master/MdePkg/Include/IndustryStandard/AcpiAml.h) 可能会对于理解 ACPI 操作码有所帮助。
+
+*Note*: Patches of different `Find` and `Replace` lengths are unsupported as they may corrupt ACPI tables and make you system unstable due to area relocation. If you need such changes you may utilities `proxy` patching or `NOP` the remaining area.
 
 ## 4.6 Quirks 属性
 

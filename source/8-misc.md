@@ -1,14 +1,69 @@
 ---
 title: 8. Misc
-description: 关于 OpenCore 行为的其他配置
+description: 关于 OpenCore 行为的其他配置（待翻译）
 type: docs
 author_info: 由 xMuu、Sukka 整理、由 Sukka、derbalkon 翻译。部分翻译参考黑果小兵的「精解 OpenCore」
-last_updated: 2020-04-29
+last_updated: 2020-05-19
 ---
 
 ## 8.1 Introduction
 
-本部分包含关于 OpenCore 行为的其他配置。
+本部分包含关于 OpenCore 行为的其他配置，以及不能被分类到其它章节的配置条目的说明。
+
+OpenCore tries to follow `bless` model also known as `Apple Boot Policy`. The primary specialty of `bless` model is to allow embedding boot options within the file system (and be accessible through a specialised driver) as well as supporting a broader range of predefined boot paths compared to the removable media list found in the UEFI specification.
+
+Each partition will only be used for booting when it corresponds to `Scan policy`: a set of restrictions to only use partitions with specific file systems and from specific device types. Scan policy behaviour is discussed in `ScanPolicy` property description.
+
+Scan process starts with obtaining all the partitions filtered with `Scan policy`. Each partition may produce multiple primary and alternate options. Primary options describe operating systems installed on this media. Alternate options describe recovery options for the operating systems on the media. It is possible for alternate options to exist without primary options and vice versa. Be warned that the options may not necessarily describe the operating systems on the same partition. Each primary and alternate option can be an auxiliary option or not, refer to `HideAuxiliary` for more details. Algorithm to determine boot options behaves as follows:
+
+1. Obtain all available partition handles filtered by `Scan policy` (and driver availability).
+2. Obtain all available boot options from `BootOrder` UEFI variable.
+3. For each found boot option:
+  - Retrieve device path of the boot option.
+  - Perform fixups (e.g. NVMe subtype correction) and expansion (e.g. for Boot Camp) of the device path.
+  - Obtain device handle by locating device path of the resulting device path (ignore it on failure).
+  - Find device handle in the list of partition handles (ignore it if missing).
+  - For disk device paths (not specifying a bootloader) execute `bless` (may return more than 1 entry).
+  - For file device paths check presence on the file system directly.
+  - Exclude options with blacklisted filenames (refer to `BlacklistAppleUpdate` option).
+  - On OpenCore boot partition exclude all OpenCore bootstrap files by header checks.
+  - Mark device handle as *used* in the list of partition handles if any.
+  - Register the resulting entries as primary options and determine their types. The option will become auxiliary for some types (e.g. Apple HFS recovery).
+
+4. For each partition handle:
+  - If partition handle is marked as *unused* execute `bless` primary option list retrieval. In case `BlessOverride` list is set, not only standard `bless` paths will be found but also custom ones.
+  - Exclude options with blacklisted filenames (refer to
+  - <span>BlacklistAppleUpdate</span> option).
+  - On OpenCore boot partition exclude all OpenCore bootstrap files by header checks.
+  - Register the resulting entries as primary options and determine their types if found. The option will become auxiliary for some types (e.g. Apple HFS recovery).
+  - If partition already has primary options of `Apple Recovery` type proceed to next handle.
+  - Lookup alternate entries by `bless` recovery option list retrieval and predefined paths.
+  - Register the resulting entries as alternate auxiliary options
+  and determine their types if found.
+
+5. Custom entries and tools are added as primary options without any checks with respect to `Auxiliary`.
+6. System entries (e.g. `Reset NVRAM`) are added as primary auxiliary options.
+
+The display order of the boot options in the picker and the boot process are determined separately from the scanning algorithm. The display order as follows:
+
+- Alternate options follow corresponding primary options, i.e. Apple recovery will be following the relevant macOS option whenever possible.
+- Options will be listed in file system handle firmware order to maintain an established order across the reboots regardless of the chosen operating system for loading.
+- Custom entries, tools, and system entries will be added after all other options.
+- Auxiliary options will only show upon entering “Advanced Mode” in the picker (usually by pressing “Space”).
+
+The boot process is as follows:
+
+- Try looking up first valid primary option through `BootNext` UEFI variable.
+- On failure looking up first valid primary option through `BootOrder` UEFI variable.
+- Mark the option as the default option to boot.
+- Boot option through the picker or without it depending on the `ShowPicker` option.
+- Show picker on failure otherwise.
+
+*Note 1*: This process is meant to work reliably only when `RequestBootVarRouting` option is enabled or the firmware does not control UEFI boot options (`OpenDuetPkg` or custom BDS). Without `BootProtect` it also is possible that other operating systems overwrite OpenCore, make sure to enable it if you plan to use them.
+
+*Note 2*: UEFI variable boot options’ boot arguments will be dropped if present as they may contain arguments compromising the operating system, which is undesired once secure boot is enabled.
+
+*Note 3*: Some operating systems, namely Windows, will create their boot option and mark it as top most upon first boot or after NVRAM Reset. When this happens default boot entry choice will update till next manual reconfiguration.
 
 ## 8.2 Properties
 
@@ -141,7 +196,7 @@ last_updated: 2020-04-29
   - `.disk_label` (`.disk_label_2x`) 文件与 bootloader 相关，适用于所有文件系统。
   - `<TOOL_NAME.lbl` (`<TOOL_NAME.l2x`) 文件与工具相关，适用于 `Tools`。
 
-    可用 `disklabel` 实用工具或 `bless` 命令来生成预置标签。当禁用或者缺少文本标签 (`.contentDetails` or `.disk_label.contentDetails`) 时将以它来代替渲染。
+  可用 `disklabel` 实用工具或 `bless` 命令来生成预置标签。当禁用或者缺少文本标签 (`.contentDetails` or `.disk_label.contentDetails`) 时将以它来代替渲染。
 
 - `0x0004` — `OC_ATTR_USE_GENERIC_LABEL_IMAGE`，为没有自定义条目的启动项提供预定义的标签图像。可能会缺少实际启动项的详细信息。
 
@@ -234,6 +289,26 @@ OpenCore 内置的启动选择器包含了一系列在启动过程中选择的�
 
 *注*：此项仅适用于 10.15.4 和更新版本。
 
+### `ApplePanic`
+
+**Type**: `plist boolean`
+**Failsafe**: `false`
+**Description**: Save macOS kernel panic to OpenCore root partition.
+
+The file is saved as `panic-YYYY-MM-DD-HHMMSS.txt`. It is strongly recommended to have `keepsyms=1` boot argument to see debug symbols in the panic log. In case it was not present `kpdescribe.sh` utility (bundled with OpenCore) may be used to partially recover the stacktrace.
+
+Development and debug kernels produce more helpful kernel panics. Consider downloading and installing `KernelDebugKit` from [developer.apple.com](https://developer.apple.com) when debugging a problem. To activate a development kernel you will need to add a `kcsuffix=development` boot argument. Use `uname -a` command to ensure that your current loaded kernel is a development (or a debug) kernel.
+
+In case OpenCore kernel panic saving mechanism was not used, kernel
+panics may still be found in `/Library/Logs/DiagnosticReports`
+directory. Starting with macOS Catalina kernel panics are stored in JSON
+format, so they need to be preprocessed before passing to
+`kpdescribe.sh`:
+
+```bash
+cat Kernel.panic | grep macOSProcessedStackshotData | python -c 'import json,sys;print(json.load(sys.stdin)["macOSPanicString"])'
+```
+
 ### `DisableWatchDog`
 
 **Type**: `plist boolean`
@@ -293,6 +368,62 @@ nvram 4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102:boot-log | awk '{gsub(/%0d%0a%00/,"")
 
 文件记录会在 EFI 卷宗的根目录下创建一个名为 `opencore-YYYY-MM-DD-HHMMSS.txt` 的文件，其中包含了日志的内容（大写字母部分会被替换为固件中的日期和时间）请注意，固件中的一些文件系统驱动程序不可靠，并且可能会通过 UEFI 写入文件时损坏数据。日志是尝试用最安全的方式来写入的，因此速度很慢。当你使用慢速硬盘时，请确保已将 `DisableWatchDog` 设置为 `true`。
 
+When interpreting the log, note that the lines are prefixed with a tag describing the relevant location (module) of the log line allowing one to better attribute the line to the functionality. The list of currently used tags is provided below.
+
+**Drivers and tools**:
+
+- `BMF` — OpenCanopy, bitmap font
+- `BS` — Bootstrap
+- `GSTT` — GoptStop
+- `HDA` — AudioDxe
+- `KKT` — KeyTester
+- `MMDD` — MmapDump
+- `OCPAVP` — PavpProvision
+- `OCRST` — ResetSystem
+- `OCUI` — OpenCanopy
+- `OC` — OpenCore main
+
+**Libraries**:
+
+- `AAPL` — OcDebugLogLib, Apple EfiBoot logging
+- `OCABC` — OcAfterBootCompatLib
+- `OCAE` — OcAppleEventLib
+- `OCAK` — OcAppleKernelLib
+- `OCAU` — OcAudioLib
+- `OCAV` — OcAppleImageVerificationLib
+- `OCA` —- OcAcpiLib
+- `OCBP` — OcAppleBootPolicyLib
+- `OCB` — OcBootManagementLib
+- `OCCL` — OcAppleChunkListLib
+- `OCCPU` — OcCpuLib
+- `OCC` — OcConsoleLib
+- `OCDH` — OcDataHubLib
+- `OCDI` — OcAppleDiskImageLib
+- `OCFSQ` — OcFileLib, UnblockFs quirk
+- `OCFS` — OcFileLib
+- `OCFV` — OcFirmwareVolumeLib
+- `OCHS` — OcHashServicesLib
+- `OCIC` — OcImageConversionLib
+- `OCII` — OcInputLib
+- `OCJS` — OcApfsLib
+- `OCKM` — OcAppleKeyMapLib
+- `OCL` — OcDebugLogLib
+- `OCMCO` — OcMachoLib
+- `OCME` — OcHeciLib
+- `OCMM` — OcMemoryLib
+- `OCPI` — OcFileLib, partition info
+- `OCPNG` — OcPngLib
+- `OCRAM` — OcAppleRamDiskLib
+- `OCRTC` — OcRtcLib
+- `OCSB` — OcAppleSecureBootLib
+- `OCSMB` — OcSmbiosLib
+- `OCSMC` — OcSmcLib
+- `OCST` — OcStorageLib
+- `OCS` — OcSerializedLib
+- `OCTPL` — OcTemplateLib
+- `OCUC` — OcUnicodeCollationLib
+- `OCUT` — OcAppleUserInterfaceThemeLib
+- `OCXML` — OcXmlLib
 
 ## 8.5 Security Properties
 
@@ -447,7 +578,6 @@ rm vault.pub
 - `0x00800000` (bit `23`) --- `OC_SCAN_ALLOW_DEVICE_SDCARD`，允许扫描读卡器设备。
 
 *注*：举例：根据以上描述，`0xF0103` 值允许扫描带有 APFS 文件系统的 SATA、SAS、SCSI 和 NVMe 设备，不扫描 USB、CD 和 FireWire 设备上的 APFS 文件系统，也不扫描任何带有 HFS 或 FAT32 文件系统的设备。该值表示如下组合：
-
 - `OC_SCAN_FILE_SYSTEM_LOCK`
 - `OC_SCAN_DEVICE_LOCK`
 - `OC_SCAN_ALLOW_FS_APFS`

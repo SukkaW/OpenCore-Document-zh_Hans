@@ -3,7 +3,7 @@ title: 7. Kernel
 description: OpenCore 安全配置，Kext 加载顺序以及屏蔽
 type: docs
 author_info: 由 Sukka 整理，由 Sukka、derbalkon 翻译。
-last_updated: 2020-04-29
+last_updated: 2020-05-19
 ---
 
 ## 7.1 简介
@@ -20,13 +20,13 @@ last_updated: 2020-04-29
 
 设计为使用 plist dict 数据填充以描述每个驱动程序。请参阅下述 Add 属性章节。Kext 驱动程序加载的顺序遵照数组中项目的顺序，因此如 Lilu 这种其他驱动程序的依赖驱动应该位于前面。
 
-### 7.2.2 Block
+### 7.2.2 Delete
 
 **Type**: plist array
 **Failsafe**: Empty
 **Description**: 从内核中删除选定的内核驱动程序。
 
-设计为使用 plist dict 数据填充以描述每个驱动程序。请参阅下述 Block 属性章节。Kext 驱动程序加载的顺序遵照数组中项目的顺序，因此如 Lilu 这种其他驱动程序的依赖驱动应该位于前面。
+设计为使用 plist dict 数据填充以描述每个驱动程序。请参阅下述 Delete 属性章节。Kext 驱动程序加载的顺序遵照数组中项目的顺序，因此如 Lilu 这种其他驱动程序的依赖驱动应该位于前面。
 
 
 ### 7.2.3 Emulate
@@ -108,7 +108,7 @@ last_updated: 2020-04-29
 **Failsafe**: Empty string
 **Description**: Kext 中 `Info.plist` 文件的路径。一般为 `Contents/Info.plist`。
 
-## 7.4 Block 属性
+## 7.4 Delete 属性
 
 ### 7.4.1 `Comment`
 
@@ -300,7 +300,7 @@ last_updated: 2020-04-29
 **Failsafe**: `false`
 **Description**: 对于没有 XCMP 支持的设备，禁用对选定 CPU 的多 MSR 访问。
 
-通常将其与 Haswell-E，Broadwell-E，Skylake-X和类似 CPU 的 `Emulate` 结合使用。更多关于 XCPM 修补的信息可以在 [acidanthera/bugtracker#365](https://github.com/acidanthera/bugtracker/issues/365) 找到。
+通常将其与 Haswell-E，Broadwell-E，Skylake-SP 和类似 CPU 的 `Emulate` 结合使用。更多关于 XCPM 修补的信息可以在 [acidanthera/bugtracker#365](https://github.com/acidanthera/bugtracker/issues/365) 找到。
 
 *注*：Ivy Bridge 或 Pentium CPU 将需要其他未提供的补丁。建议对前者使用 `AppleIntelCpuPowerManagement.kext`。
 
@@ -391,7 +391,7 @@ macOS Catalina 新增了一项额外的安全措施，导致在电源切换超�
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
-**Description**: 修补 `IOAHCIBlockStorage.kext`，以在第三方驱动器启用 TRIM、硬盘休眠等功能。
+**Description**: 修补 `IOAHCIDeleteStorage.kext`，以在第三方驱动器启用 TRIM、硬盘休眠等功能。
 
 *注*：NVMe SSD 通常无需这一修改。对于 AHCI SSD（如 SATA SSD），macOS 从 10.15 开始提供 `trimforce`，可以将 `01 00 00 00` 值写入 `APPLE_BOOT_VARIABLE_GUID` 命名空间中的 `EnableTRIM` 变量。
 

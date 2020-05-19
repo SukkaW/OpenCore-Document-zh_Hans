@@ -3,7 +3,7 @@ title: 9. NVRAM
 description: NVRAM 注入（如引导标识符和 SIP）
 type: docs
 author_info: 由 xMuu、Sukka 整理，由 Sukka、derbalkon 翻译
-last_updated: 2020-05-12
+last_updated: 2020-05-19
 ---
 
 ## 9.1 Introduction
@@ -22,7 +22,6 @@ last_updated: 2020-05-12
 为了使 macOS 正常运行，通常需要使用 `OC_FIRMWARE_RUNTIME` 协议。该协议的实现目前是 `OpenRuntime`（原名 `FwRuntimeServices.efi`）驱动程序的一部分。虽然可能带来一些好处，但根据用途不同也会存在某些限制。
 
 - 并非所有工具都可能知道受保护的名称空间。当使用 `RequestBootVarRouting` 时，在独立的命名空间中会限制对 `Boot` 前缀的变量访问。要访问原始变量，工具必须了解 `OC_FIRMWARE_RUNTIME` 协议的工作原理。
-- 分配的 NVRAM 变量并非总是允许超过 512 个字节。当使用 `RequestBootVarFallback` 时，对于带有 `Boot` 前缀的变量，以及不符合 UEFI 2.8 规范的固件上使用非易失性覆盖变量，都存在 512 字节限制。
 
 ## 9.2 Properties
 
@@ -31,11 +30,11 @@ last_updated: 2020-05-12
 **Type**: `plist dict`
 **Description**: 将 NVRAM 变量从 GUID 映射（`plist dict`）设置为变量名称及变量值的映射，格式为 `plist metadata`。GUID 必须以 Canonical String 格式提供，大写或小写均可（如 `8BE4DF61-93CA-11D2-AA0D-00E098032B8C`）。
 
-创建的变量会设置 `EFI_VARIABLE_BOOTSERVICE_ACCESS` 和 `EFI_VARIABLE_RUNTIME_ACCESS` 的属性。变量只有在不存在且未被屏蔽的情况下才会被设置，也就是说，如果想要覆盖一个现有的变量值，请将该变量的名称添加到 `Block` 部分，这种方法能够提供一个默认的值，直到操作系统接手为止。
+创建的变量会设置 `EFI_VARIABLE_BOOTSERVICE_ACCESS` 和 `EFI_VARIABLE_RUNTIME_ACCESS` 的属性。变量只有在不存在且未被屏蔽的情况下才会被设置，也就是说，如果想要覆盖一个现有的变量值，请将该变量的名称添加到 `Delete` 部分，这种方法能够提供一个默认的值，直到操作系统接手为止。
 
 *注*：如果 `plist key` 不符合 GUID 格式，则可能出现一些未定义的行为。
 
-### 2. `Block`
+### 2. `Delete`
 
 **Type**: `plist dict`
 **Description**: 将 NVRAM 变量从 GUID 映射（`plist dict`）移除到一个变量名称数组（`plist array`）中，格式为 `plist string`。
@@ -51,7 +50,7 @@ last_updated: 2020-05-12
 - `Version` --- `plist integer`，文件版本，必须设定为 1。
 - `Add` --- `plist dictionary`，等同于 `config.plist` 中的 `Add`。
 
-变量加载优先于 `Block`（以及 `Add`）阶段。除非启用了 `LegacyOverwrite`，否则不会覆盖现有的任何变量。允许设置的变量必须指定于 `LegacySchema` 中。第三方脚本可以用来创建 `nvram.plist` 文件，脚本示例可参照 `Utilities`。使用第三方脚本可能要将 `ExposeSensitiveData` 设置为 `0x3` 来为 `boot-path` 变量提供 OpenCore EFI 分区的 UUID。
+变量加载优先于 `Delete`（以及 `Add`）阶段。除非启用了 `LegacyOverwrite`，否则不会覆盖现有的任何变量。允许设置的变量必须指定于 `LegacySchema` 中。第三方脚本可以用来创建 `nvram.plist` 文件，脚本示例可参照 `Utilities`。使用第三方脚本可能要将 `ExposeSensitiveData` 设置为 `0x3` 来为 `boot-path` 变量提供 OpenCore EFI 分区的 UUID。
 
 **警告**: 这一功能非常危险，因为会将不受保护的数据传递给固件中的变量服务。只有在你的硬件不提供硬件 NVRAM 或与之不兼容时才使用。
 
@@ -123,7 +122,7 @@ last_updated: 2020-05-12
 - `4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14:UIScale`
  定义 `boot.efi` 用户界面缩放比例的一字节数据。普通屏幕应为 **01**，HiDPI 屏幕应为 **02**。
 - `4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14:DefaultBackgroundColor` 
- 定义 `boot.efi` 用户界面背景色的四字节 `RGBA` 数据。标准色包括 `BF BF BF 00`（浅灰）和 `00 00 00 00`（西拉黑）。其他颜色可根据用户喜好设置。
+ 定义 `boot.efi` 用户界面背景色的四字节 `BGRA` 数据。标准色包括 `BF BF BF 00`（浅灰）和 `00 00 00 00`（西拉黑）。其他颜色可根据用户喜好设置。
 
 
 ## 9.5 Other Variables
@@ -175,7 +174,7 @@ last_updated: 2020-05-12
   - `0x0B` – `EXITBS:END` （仅强制的串行调试接口）
   - `0x0C` – `UNKNOWN`
 
-在 10.15 中，由于某种重构和[新调试协议](https://github.com/acidanthera/EfiPkg/blob/master/Include/Protocol/AppleDebugLog.h)的引入，10.15.4 之前的调试支持基本上不能用了。下面的一些参数和值可能不适用于 10.15.4 之前的版本。以下是已知参数的列表：
+在 10.15 中，由于某种重构和 [新调试协议](https://github.com/acidanthera/OpenCorePkg/blob/master/Include/Apple/Protocol/AppleDebugLog.h) 的引入，10.15.4 之前的调试支持基本上不能用了。下面的一些参数和值可能不适用于 10.15.4 之前的版本。以下是已知参数的列表：
 
 - `boot-save-log=VALUE` --- 正常启动时的调试日志保存模式
   - `0`

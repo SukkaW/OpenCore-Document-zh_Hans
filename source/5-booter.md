@@ -183,7 +183,7 @@ sudo pmset standby 0
 **Failsafe**: `false`
 **Description**: 保护 UEFI 服务不被固件覆盖。
 
-某些现代固件（包括硬件和 VMware 之类的虚拟机）可能会在加载驱动及相关操作的过程中，更新 UEFI 服务的指针。这一行为会直接破坏其他影响内存管理的 Quirk，如 `DevirtualiseMmio`、`ProtectCsmRegion` 或 `ShrinkMemoryMap`；也可能会破坏其他 Quirk，具体取决于 Quirk 的作用。
+某些现代固件（包括硬件和 VMware 之类的虚拟机）可能会在加载驱动及相关操作的过程中，更新 UEFI 服务的指针。这一行为会直接破坏其他影响内存管理的 Quirk，如 `DevirtualiseMmio`、`ProtectMemoryRegions`，或 `RebuildAppleMemoryMap`；也可能会破坏其他 Quirk，具体取决于 Quirk 的作用。
 
 *注*：在 VMware 上，是否需要开启这个 Quirk 取决于是否有 `Your Mac OS guest might run unreliably with more than one virtual core.` 这样的消息。
 

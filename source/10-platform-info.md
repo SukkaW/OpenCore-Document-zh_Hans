@@ -3,13 +3,13 @@ title: 10. PlatformInfo
 description: SMBIOS 机型信息配置
 type: docs
 author_info: 由 xMuu、Sukka 整理，由 Sukka、derbalkon 翻译
-last_updated: 2020-04-14
+last_updated: 2020-05-19
 ---
 
-机型信息由手动生成、填充以与 macOS 服务兼容的几个标识字段组成。配置的基础部分可以从 [`MacInfoPkg`](https://github.com/acidanthera/MacInfoPkg)、一个可以从 [YAML](https://yaml.org/spec/1.2/spec.html) 格式的数据库中生成一组接口的工具包中获得。这些字段将会被写入三个位置：
+机型信息由手动生成、填充以与 macOS 服务兼容的几个标识字段组成。配置的基础部分可以从 [`AppleModels`](https://github.com/acidanthera/OpenCorePkg/blob/master/AppleModels)、一个可以从 [YAML](https://yaml.org/spec/1.2/spec.html) 格式的数据库中生成一组接口的工具包中获得。这些字段将会被写入三个位置：
 
 - [SMBIOS](https://www.dmtf.org/standards/smbios)
-- [DataHub](https://github.com/acidanthera/EfiPkg/blob/master/Include/Protocol/DataHub.h)
+- [DataHub](https://github.com/acidanthera/OpenCorePkg/blob/master/Include/Intel/Protocol/DataHub.h)
 - NVRAM
 
 大多数字段在 SMBIOS 中指定覆盖，并且这些字段的名称符合 EDK2 [SmBios.h](https://github.com/acidanthera/audk/blob/master/MdePkg/Include/IndustryStandard/SmBios.h) 头文件。但是，在 Data Hub 和 NVRAM 中有几个重要的字段。有些值可以在多个字段 和/或 目标中找到，因此有两种方法可以控制它们的更新过程：手动指定所有值（默认方法）；半自动。
@@ -281,7 +281,7 @@ last_updated: 2020-04-14
 **Type**: `plist string`
 **Failsafe**: OEM specified
 **SMBIOS**: BIOS Information (Type 0) --- BIOS Version
-**Description**: 固件版本。此值更新时会同时影响更新推送配置文件以及 macOS 版本的兼容性。在较旧的固件中看起来类似于 `MM71.88Z.0234.B00.1809171422`，并且在 [BiosId.h](https://github.com/acidanthera/EfiPkg/blob/master/Include/Guid/BiosId.h) 中有所描述。在较新的固件中看起来类似于 `236.0.0.0.0` 或 `220.230.16.0.0 (iBridge: 16.16.2542.0.0,0)`。 iBridge 版本是从 `BridgeOSVersion` 变量中读取的，并且只在具有 T2 芯片的 Mac 上有显示。
+**Description**: 固件版本。此值更新时会同时影响更新推送配置文件以及 macOS 版本的兼容性。在较旧的固件中看起来类似于 `MM71.88Z.0234.B00.1809171422`，并且在 [BiosId.h](https://github.com/acidanthera/OpenCorePkg/blob/master/Include/Apple/Guid/BiosId.h) 中有所描述。在较新的固件中看起来类似于 `236.0.0.0.0` 或 `220.230.16.0.0 (iBridge: 16.16.2542.0.0,0)`。 iBridge 版本是从 `BridgeOSVersion` 变量中读取的，并且只在具有 T2 芯片的 Mac 上有显示。
 
 > ```
 > Apple ROM Version
@@ -331,7 +331,7 @@ last_updated: 2020-04-14
 **Type**: `plist string`
 **Failsafe**: OEM specified
 **SMBIOS**: System Information (Type 1) --- Serial Number
-**Description**: 按照格式定义的产品序列号。已知的序列号的格式在 [macserial](https://github.com/acidanthera/MacInfoPkg/blob/master/macserial/FORMAT.md) 中。
+**Description**: 按照格式定义的产品序列号。已知的序列号的格式在 [macserial](https://github.com/acidanthera/OpenCorePkg/blob/master/Utilities/macserial/FORMAT.md) 中可以找到。
 
 ### 8. `SystemUUID`
 
@@ -374,7 +374,7 @@ last_updated: 2020-04-14
 **Type**: `plist string`
 **Failsafe**: OEM specified
 **SMBIOS**: Baseboard (or Module) Information (Type 2) --- Serial Number
-**Description**: 主板序列号，有对应的格式，具体格式见 [macserial](https://github.com/acidanthera/MacInfoPkg/blob/master/macserial/FORMAT.md) 的描述。
+**Description**: 主板序列号，有对应的格式，具体格式见 [macserial](https://github.com/acidanthera/OpenCorePkg/blob/master/Utilities/macserial/FORMAT.md) 的描述。
 
 ### 15. `BoardAssetTag`
 **Type**: `plist string`
@@ -428,7 +428,7 @@ last_updated: 2020-04-14
 **Type**: `plist integer`, 32-bit
 **Failsafe**: `0xFFFFFFFF`
 **SMBIOS**: `APPLE_SMBIOS_TABLE_TYPE133` - `PlatformFeature`
-**Description**: 平台功能位掩码，详见 [AppleFeatures.h](https://github.com/acidanthera/EfiPkg/blob/master/Include/IndustryStandard/AppleFeatures.h)。填写 `0xFFFFFFFF` 值时不提供此表。
+**Description**: 平台功能位掩码，详见 [AppleFeatures.h](https://github.com/acidanthera/OpenCorePkg/blob/master/Include/Apple/IndustryStandard/AppleFeatures.h)。填写 `0xFFFFFFFF` 值时不提供此表。
 
 ### 24. `SmcVersion`
 
@@ -441,13 +441,13 @@ last_updated: 2020-04-14
 **Type**: `plist data`, 8 bytes
 **Failsafe**: `0`
 **SMBIOS**: `APPLE_SMBIOS_TABLE_TYPE128` - `FirmwareFeatures` and `ExtendedFirmwareFeatures`
-**Description**: 64 位固件功能位掩码。详见 [AppleFeatures.h](https://github.com/acidanthera/EfiPkg/blob/master/Include/IndustryStandard/AppleFeatures.h)。低 32 位与 `FirmwareFeatures` 匹配，高 64 位与 `ExtendedFirmwareFeatures` 匹配。
+**Description**: 64 位固件功能位掩码。详见 [AppleFeatures.h](https://github.com/acidanthera/OpenCorePkg/blob/master/Apple/Include/IndustryStandard/AppleFeatures.h)。低 32 位与 `FirmwareFeatures` 匹配，高 64 位与 `ExtendedFirmwareFeatures` 匹配。
 
 ### 26.`FirmwareFeaturesMask`
 **Type**: `plist data`, 8 bytes
 **Failsafe**: `0`
 **SMBIOS**: `APPLE_SMBIOS_TABLE_TYPE128` - `FirmwareFeaturesMask` and `ExtendedFirmwareFeaturesMask`
-**Description**: 扩展固件功能位掩码。详见 [AppleFeatures.h](https://github.com/acidanthera/EfiPkg/blob/master/Include/IndustryStandard/AppleFeatures.h)。低 32 位与 `FirmwareFeatures` 匹配，高 64 位与 `ExtendedFirmwareFeatures` 匹配。
+**Description**: 扩展固件功能位掩码。详见 [AppleFeatures.h](https://github.com/acidanthera/OpenCorePkg/blob/master/Apple/Include/IndustryStandard/AppleFeatures.h)。低 32 位与 `FirmwareFeatures` 匹配，高 64 位与 `ExtendedFirmwareFeatures` 匹配。
 
 ### 27. `ProcessorType`
 
