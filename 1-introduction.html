@@ -194,7 +194,7 @@
                     <p><small>由 Sukka 整理，由 Sukka、derbalkon 翻译</small></p>
                 
                 
-                    <p><small>本页面最后更新于 2020 年 05 月 04 日</small></p>
+                    <p><small>本页面最后更新于 2020 年 05 月 19 日</small></p>
                 
                 <br>
             
@@ -206,7 +206,8 @@
     <div class="columns">
         <div class="column is-9-tablet doku-document-wrapper">
             <div class="content">
-                <p>本文档提供关于 OpenCore 用户配置文件的信息，以使 macOS 操作系统正常工作。你应当视本文档为 OpenCore 预期行为的解释。如果在已经发布的 OpenCore 版本中找到与文档中的描述存在偏差的行为，应当视为 OpenCore 存在 Bug 或文档出现错误，应通过 <a href="https://github.com/acidanthera/bugtracker" target="_blank" rel="noopener">Acidanthera Bugtracker</a> 进行反馈。<strong>本文档所有其他来源或翻译都是非官方的，并且可能存在错误</strong>。</p>
+                <p>本文档提供关于 OpenCore 用户配置文件的信息，以使 macOS 操作系统正常工作。你应当视本文档为 OpenCore 预期行为的解释。如果在已经发布的 OpenCore 版本中找到与文档中的描述存在偏差的行为，应当视为 OpenCore 存在 Bug 或文档出现错误，应通过 <a href="https://github.com/acidanthera/bugtracker" target="_blank" rel="noopener">Acidanthera Bugtracker</a> 进行反馈。</p>
+<p>本文档仅作为规范结构、并非用于提供手把手的配置教程。本文档的目标受众是程序员、工程师、有对 macOS 内部和 UEFI 有足够了解的人。因此本文档只提供英文版本，<strong>任何通过其他来源分发的文档和文档翻译都是非官方的，并且可能存在错误。</strong></p>
 <blockquote>
 <p>译者注：</p>
 <ol>
@@ -214,10 +215,10 @@
 <li>你应当使用英语在 Acidanthera Bugtracker 进行反馈。</li>
 </ol>
 </blockquote>
-<p>本文档仅作为规范结构、并非用于提供手把手的配置教程。这类材料（译者注：即「手把手的配置教程」）都容易收到其作者的喜好和品位、对本文档的误解、过时的理解等。如果您仍然在使用这些资料来源，例如 <a href="https://dortania.github.io/OpenCore-Desktop-Guide" target="_blank" rel="noopener">OpenCore Desktop Guide</a>（及其 <a href="https://dortania.github.io/getting-started" target="_blank" rel="noopener">父页面</a>），请务必在参考本文档后再作出每个决定、并判断其后果。无论使用哪种来源，你都必须全面了解每种专用工具。</p>
+<p>对于大部分用户来说，第三方提供的教程、工具可能更易于使用、受众更广。但是这类材料（译者注：即由第三方提供的，如「手把手的配置教程」）都容易收到其作者的喜好和品位、对本文档的误解、过时的理解等。如果您正在使用这些资料来源，例如 <a href="https://dortania.github.io/OpenCore-Desktop-Guide" target="_blank" rel="noopener">OpenCore Desktop Guide</a>（及其 <a href="https://dortania.github.io/getting-started" target="_blank" rel="noopener">父页面</a>）或者「OpenCore 非官方简体中文翻译」，请务必在参考本文档后再作出每个决定、并判断其后果。</p>
 <p>在通过 Acidanthera Bugtracker 反馈任何问题之前，请确保你彻底理解了 OpenCore 的每个配置选项及其对应的概念。</p>
 <h2 id="1-1-通用术语"><a href="#1-1-通用术语" class="headerlink" title="1.1 通用术语"></a>1.1 通用术语</h2><ul>
-<li><code>plist</code> — 是一种用 XML 编写的、储存 ASCII 属性列表格式的集合文件，又称 XML 1.0 版。 统一类型标识符（UTI）： <code>com.apple.property-list</code>。 plist 由多个 <code>plist object</code> 组成，这些对象组合在一起形成一种具有层次的结构。 由于 plist 格式的定义不明确，因此本文中的所有定义只有在运行 <code>plutil -lint</code> 有效后才能被应用。外部参考： <a href="https://www.apple.com/DTDs/PropertyList-1.0.dtd" target="_blank" rel="noopener">https://www.apple.com/DTDs/PropertyList-1.0.dtd</a>,  <code>man plutil</code>。</li>
+<li><code>plist</code> — 是一种用 XML 编写的、储存 ASCII 属性列表格式的集合文件，又称 XML 1.0 版。 统一类型标识符（UTI）： <code>com.apple.property-list</code>。 plist 由多个 <code>plist object</code> 组成，这些对象组合在一起形成一种具有层次的结构。 由于 plist 格式的定义不明确，因此本文中的所有定义只有在运行 <code>plutil -lint</code> 有效后才能被应用。外部参考： <a href="https://www.apple.com/DTDs/PropertyList-1.0.dtd" target="_blank" rel="noopener">https://www.apple.com/DTDs/PropertyList-1.0.dtd</a>, <code>man plutil</code>。</li>
 <li><code>plist type</code> — 指 plist 集合（<code>plist array</code>, <code>plist dictionary</code>, <code>plist key</code>）和基本类型（<code>plist string</code>, <code>plist data</code>, <code>plist date</code>, <code>plist boolean</code>, <code>plist integer</code>,  <code>plist real</code>）。</li>
 <li><code>plist object</code> — 是用来定义 <code>plist type</code> 的实现形式，可以理解为值。</li>
 <li><code>plist array</code> — 类数组集合，参数为 <code>array</code>。包含零个或多个  <code>plist object</code>。</li>

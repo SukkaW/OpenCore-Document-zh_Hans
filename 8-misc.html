@@ -187,14 +187,14 @@
         <div class="hero-body">
             <h1 class="title">8. Misc</h1>
             
-                <p class="subtitle">关于 OpenCore 行为的其他配置</p>
+                <p class="subtitle">关于 OpenCore 行为的其他配置（待翻译）</p>
             
             
                 
                     <p><small>由 xMuu、Sukka 整理、由 Sukka、derbalkon 翻译。部分翻译参考黑果小兵的「精解 OpenCore」</small></p>
                 
                 
-                    <p><small>本页面最后更新于 2020 年 04 月 29 日</small></p>
+                    <p><small>本页面最后更新于 2020 年 05 月 19 日</small></p>
                 
                 <br>
             
@@ -206,7 +206,64 @@
     <div class="columns">
         <div class="column is-9-tablet doku-document-wrapper">
             <div class="content">
-                <h2 id="8-1-Introduction"><a href="#8-1-Introduction" class="headerlink" title="8.1 Introduction"></a>8.1 Introduction</h2><p>本部分包含关于 OpenCore 行为的其他配置。</p>
+                <h2 id="8-1-Introduction"><a href="#8-1-Introduction" class="headerlink" title="8.1 Introduction"></a>8.1 Introduction</h2><p>本部分包含关于 OpenCore 行为的其他配置，以及不能被分类到其它章节的配置条目的说明。</p>
+<p>OpenCore tries to follow <code>bless</code> model also known as <code>Apple Boot Policy</code>. The primary specialty of <code>bless</code> model is to allow embedding boot options within the file system (and be accessible through a specialised driver) as well as supporting a broader range of predefined boot paths compared to the removable media list found in the UEFI specification.</p>
+<p>Each partition will only be used for booting when it corresponds to <code>Scan policy</code>: a set of restrictions to only use partitions with specific file systems and from specific device types. Scan policy behaviour is discussed in <code>ScanPolicy</code> property description.</p>
+<p>Scan process starts with obtaining all the partitions filtered with <code>Scan policy</code>. Each partition may produce multiple primary and alternate options. Primary options describe operating systems installed on this media. Alternate options describe recovery options for the operating systems on the media. It is possible for alternate options to exist without primary options and vice versa. Be warned that the options may not necessarily describe the operating systems on the same partition. Each primary and alternate option can be an auxiliary option or not, refer to <code>HideAuxiliary</code> for more details. Algorithm to determine boot options behaves as follows:</p>
+<ol>
+<li><p>Obtain all available partition handles filtered by <code>Scan policy</code> (and driver availability).</p>
+</li>
+<li><p>Obtain all available boot options from <code>BootOrder</code> UEFI variable.</p>
+</li>
+<li><p>For each found boot option:</p>
+<ul>
+<li>Retrieve device path of the boot option.</li>
+<li>Perform fixups (e.g. NVMe subtype correction) and expansion (e.g. for Boot Camp) of the device path.</li>
+<li>Obtain device handle by locating device path of the resulting device path (ignore it on failure).</li>
+<li>Find device handle in the list of partition handles (ignore it if missing).</li>
+<li>For disk device paths (not specifying a bootloader) execute <code>bless</code> (may return more than 1 entry).</li>
+<li>For file device paths check presence on the file system directly.</li>
+<li>Exclude options with blacklisted filenames (refer to <code>BlacklistAppleUpdate</code> option).</li>
+<li>On OpenCore boot partition exclude all OpenCore bootstrap files by header checks.</li>
+<li>Mark device handle as <em>used</em> in the list of partition handles if any.</li>
+<li>Register the resulting entries as primary options and determine their types. The option will become auxiliary for some types (e.g. Apple HFS recovery).</li>
+</ul>
+</li>
+<li><p>For each partition handle:</p>
+<ul>
+<li>If partition handle is marked as <em>unused</em> execute <code>bless</code> primary option list retrieval. In case <code>BlessOverride</code> list is set, not only standard <code>bless</code> paths will be found but also custom ones.</li>
+<li>Exclude options with blacklisted filenames (refer to</li>
+<li><span>BlacklistAppleUpdate</span> option).</li>
+<li>On OpenCore boot partition exclude all OpenCore bootstrap files by header checks.</li>
+<li>Register the resulting entries as primary options and determine their types if found. The option will become auxiliary for some types (e.g. Apple HFS recovery).</li>
+<li>If partition already has primary options of <code>Apple Recovery</code> type proceed to next handle.</li>
+<li>Lookup alternate entries by <code>bless</code> recovery option list retrieval and predefined paths.</li>
+<li>Register the resulting entries as alternate auxiliary options<br>and determine their types if found.</li>
+</ul>
+</li>
+<li><p>Custom entries and tools are added as primary options without any checks with respect to <code>Auxiliary</code>.</p>
+</li>
+<li><p>System entries (e.g. <code>Reset NVRAM</code>) are added as primary auxiliary options.</p>
+</li>
+</ol>
+<p>The display order of the boot options in the picker and the boot process are determined separately from the scanning algorithm. The display order as follows:</p>
+<ul>
+<li>Alternate options follow corresponding primary options, i.e. Apple recovery will be following the relevant macOS option whenever possible.</li>
+<li>Options will be listed in file system handle firmware order to maintain an established order across the reboots regardless of the chosen operating system for loading.</li>
+<li>Custom entries, tools, and system entries will be added after all other options.</li>
+<li>Auxiliary options will only show upon entering “Advanced Mode” in the picker (usually by pressing “Space”).</li>
+</ul>
+<p>The boot process is as follows:</p>
+<ul>
+<li>Try looking up first valid primary option through <code>BootNext</code> UEFI variable.</li>
+<li>On failure looking up first valid primary option through <code>BootOrder</code> UEFI variable.</li>
+<li>Mark the option as the default option to boot.</li>
+<li>Boot option through the picker or without it depending on the <code>ShowPicker</code> option.</li>
+<li>Show picker on failure otherwise.</li>
+</ul>
+<p><em>Note 1</em>: This process is meant to work reliably only when <code>RequestBootVarRouting</code> option is enabled or the firmware does not control UEFI boot options (<code>OpenDuetPkg</code> or custom BDS). Without <code>BootProtect</code> it also is possible that other operating systems overwrite OpenCore, make sure to enable it if you plan to use them.</p>
+<p><em>Note 2</em>: UEFI variable boot options’ boot arguments will be dropped if present as they may contain arguments compromising the operating system, which is undesired once secure boot is enabled.</p>
+<p><em>Note 3</em>: Some operating systems, namely Windows, will create their boot option and mark it as top most upon first boot or after NVRAM Reset. When this happens default boot entry choice will update till next manual reconfiguration.</p>
 <h2 id="8-2-Properties"><a href="#8-2-Properties" class="headerlink" title="8.2 Properties"></a>8.2 Properties</h2><h3 id="Boot"><a href="#Boot" class="headerlink" title="Boot"></a><code>Boot</code></h3><p><strong>Type</strong>: <code>plist dict</code><br><strong>Description</strong>: 应用本章节 Boot Properties 中的引导相关设置。</p>
 <h3 id="BlessOverride"><a href="#BlessOverride" class="headerlink" title="BlessOverride"></a><code>BlessOverride</code></h3><p><strong>Type</strong>: <code>plist array</code><br><strong>Description</strong>: 通过 Bless Model 添加自定义扫描路径。</p>
 <p>设计为填充 <code>plist string</code> 条目，其中包含指向自定义引导程序的绝对 UEFI 路径，例如，用于 Microsoft 引导程序的 <code>\EFI\Microsoft\Boot\bootmgfw.efi</code>。这允许引导选择器自动发现异常的引导路径。在设计上它们等效于预定义的 Bless 路径（如 <code>\System\Library\CoreServices\boot.efi</code>），但与预定义的 Bless 路径不同，它们具有最高优先级。</p>
@@ -278,12 +335,10 @@
 </li>
 <li><p><code>0x0002</code> — <code>OC_ATTR_USE_DISK_LABEL_FILE</code>，提供引导项自定义渲染的标题：</p>
 <ul>
-<li><p><code>.disk_label</code> (<code>.disk_label_2x</code>) 文件与 bootloader 相关，适用于所有文件系统。</p>
-</li>
-<li><p><code>&lt;TOOL_NAME.lbl</code> (<code>&lt;TOOL_NAME.l2x</code>) 文件与工具相关，适用于 <code>Tools</code>。</p>
-<p>可用 <code>disklabel</code> 实用工具或 <code>bless</code> 命令来生成预置标签。当禁用或者缺少文本标签 (<code>.contentDetails</code> or <code>.disk_label.contentDetails</code>) 时将以它来代替渲染。</p>
-</li>
+<li><code>.disk_label</code> (<code>.disk_label_2x</code>) 文件与 bootloader 相关，适用于所有文件系统。</li>
+<li><code>&lt;TOOL_NAME.lbl</code> (<code>&lt;TOOL_NAME.l2x</code>) 文件与工具相关，适用于 <code>Tools</code>。</li>
 </ul>
+<p>可用 <code>disklabel</code> 实用工具或 <code>bless</code> 命令来生成预置标签。当禁用或者缺少文本标签 (<code>.contentDetails</code> or <code>.disk_label.contentDetails</code>) 时将以它来代替渲染。</p>
 </li>
 <li><p><code>0x0004</code> — <code>OC_ATTR_USE_GENERIC_LABEL_IMAGE</code>，为没有自定义条目的启动项提供预定义的标签图像。可能会缺少实际启动项的详细信息。</p>
 </li>
@@ -331,6 +386,12 @@
 <p><em>注 3</em>：有些 Mac 的 GOP 很棘手，可能很难进入 Apple 启动选择器。要解决这个问题，可以在不加载 GOP 的情况下 bless OpenCore 的 <code>BootKicker</code> 实用工具。</p>
 <h2 id="8-4-Debug-Properties"><a href="#8-4-Debug-Properties" class="headerlink" title="8.4 Debug Properties"></a>8.4 Debug Properties</h2><h3 id="AppleDebug"><a href="#AppleDebug" class="headerlink" title="AppleDebug"></a><code>AppleDebug</code></h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: <code>false</code><br><strong>Description</strong>: 启用将 <code>boot.efi</code> 调试日志保存到 OpenCore 日志。</p>
 <p><em>注</em>：此项仅适用于 10.15.4 和更新版本。</p>
+<h3 id="ApplePanic"><a href="#ApplePanic" class="headerlink" title="ApplePanic"></a><code>ApplePanic</code></h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: <code>false</code><br><strong>Description</strong>: Save macOS kernel panic to OpenCore root partition.</p>
+<p>The file is saved as <code>panic-YYYY-MM-DD-HHMMSS.txt</code>. It is strongly recommended to have <code>keepsyms=1</code> boot argument to see debug symbols in the panic log. In case it was not present <code>kpdescribe.sh</code> utility (bundled with OpenCore) may be used to partially recover the stacktrace.</p>
+<p>Development and debug kernels produce more helpful kernel panics. Consider downloading and installing <code>KernelDebugKit</code> from <a href="https://developer.apple.com" target="_blank" rel="noopener">developer.apple.com</a> when debugging a problem. To activate a development kernel you will need to add a <code>kcsuffix=development</code> boot argument. Use <code>uname -a</code> command to ensure that your current loaded kernel is a development (or a debug) kernel.</p>
+<p>In case OpenCore kernel panic saving mechanism was not used, kernel<br>panics may still be found in <code>/Library/Logs/DiagnosticReports</code><br>directory. Starting with macOS Catalina kernel panics are stored in JSON<br>format, so they need to be preprocessed before passing to<br><code>kpdescribe.sh</code>:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">cat Kernel.panic | grep macOSProcessedStackshotData | python -c <span class="hljs-string">'import json,sys;print(json.load(sys.stdin)["macOSPanicString"])'</span><br></code></pre></td></tr></table></figure>
+
 <h3 id="DisableWatchDog"><a href="#DisableWatchDog" class="headerlink" title="DisableWatchDog"></a><code>DisableWatchDog</code></h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: <code>false</code><br><strong>Description</strong>: 某些固件可能无法成功快速启动操作系统，尤其是在调试模式下，这会导致看门狗定时器中止引导过程。此选项关闭看门狗定时器，用于排错。</p>
 <h3 id="DisplayDelay"><a href="#DisplayDelay" class="headerlink" title="DisplayDelay"></a><code>DisplayDelay</code></h3><p><strong>Type</strong>: <code>plist integer</code><br><strong>Failsafe</strong>: <code>0</code><br><strong>Description</strong>: 屏幕上打印每行输出之间的延迟。</p>
 <h3 id="3-DisplayLevel"><a href="#3-DisplayLevel" class="headerlink" title="3.DisplayLevel"></a>3.<code>DisplayLevel</code></h3><p><strong>Type</strong>: <code>plist integer</code>, 64 bit<br><strong>Failsafe</strong>: <code>0</code><br><strong>Description</strong>: 与屏幕显示相关的 EDK II 调试级别的位掩码（总和）。除非 <code>Target</code> 启用了控制台在屏幕上输出日志，否则屏幕上的调试输出将不可见。支持以下级别（更多信息参见 <a href="https://github.com/acidanthera/audk/blob/master/MdePkg/Include/Library/DebugLib.h" target="_blank" rel="noopener">DebugLib.h</a>）：</p>
@@ -361,6 +422,62 @@
 <p><em>警告</em>：有些固件的 NVRAM 垃圾收集据说存在问题，它们可能无法做到在每次变量删除后都释放空间。在这类设备上，没有额外需要的话，请不要使用非易失性 NVRAM 日志。</p>
 <p>虽然 OpenCore 的引导日志已经包含了基本的版本信息（包括 build 类型和日期），但即使在禁用引导日志的情况下，这些数据也可以在 NVRAM 中的 <code>opencore-version</code> 变量中找到。</p>
 <p>文件记录会在 EFI 卷宗的根目录下创建一个名为 <code>opencore-YYYY-MM-DD-HHMMSS.txt</code> 的文件，其中包含了日志的内容（大写字母部分会被替换为固件中的日期和时间）请注意，固件中的一些文件系统驱动程序不可靠，并且可能会通过 UEFI 写入文件时损坏数据。日志是尝试用最安全的方式来写入的，因此速度很慢。当你使用慢速硬盘时，请确保已将 <code>DisableWatchDog</code> 设置为 <code>true</code>。</p>
+<p>When interpreting the log, note that the lines are prefixed with a tag describing the relevant location (module) of the log line allowing one to better attribute the line to the functionality. The list of currently used tags is provided below.</p>
+<p><strong>Drivers and tools</strong>:</p>
+<ul>
+<li><code>BMF</code> — OpenCanopy, bitmap font</li>
+<li><code>BS</code> — Bootstrap</li>
+<li><code>GSTT</code> — GoptStop</li>
+<li><code>HDA</code> — AudioDxe</li>
+<li><code>KKT</code> — KeyTester</li>
+<li><code>MMDD</code> — MmapDump</li>
+<li><code>OCPAVP</code> — PavpProvision</li>
+<li><code>OCRST</code> — ResetSystem</li>
+<li><code>OCUI</code> — OpenCanopy</li>
+<li><code>OC</code> — OpenCore main</li>
+</ul>
+<p><strong>Libraries</strong>:</p>
+<ul>
+<li><code>AAPL</code> — OcDebugLogLib, Apple EfiBoot logging</li>
+<li><code>OCABC</code> — OcAfterBootCompatLib</li>
+<li><code>OCAE</code> — OcAppleEventLib</li>
+<li><code>OCAK</code> — OcAppleKernelLib</li>
+<li><code>OCAU</code> — OcAudioLib</li>
+<li><code>OCAV</code> — OcAppleImageVerificationLib</li>
+<li><code>OCA</code> —- OcAcpiLib</li>
+<li><code>OCBP</code> — OcAppleBootPolicyLib</li>
+<li><code>OCB</code> — OcBootManagementLib</li>
+<li><code>OCCL</code> — OcAppleChunkListLib</li>
+<li><code>OCCPU</code> — OcCpuLib</li>
+<li><code>OCC</code> — OcConsoleLib</li>
+<li><code>OCDH</code> — OcDataHubLib</li>
+<li><code>OCDI</code> — OcAppleDiskImageLib</li>
+<li><code>OCFSQ</code> — OcFileLib, UnblockFs quirk</li>
+<li><code>OCFS</code> — OcFileLib</li>
+<li><code>OCFV</code> — OcFirmwareVolumeLib</li>
+<li><code>OCHS</code> — OcHashServicesLib</li>
+<li><code>OCIC</code> — OcImageConversionLib</li>
+<li><code>OCII</code> — OcInputLib</li>
+<li><code>OCJS</code> — OcApfsLib</li>
+<li><code>OCKM</code> — OcAppleKeyMapLib</li>
+<li><code>OCL</code> — OcDebugLogLib</li>
+<li><code>OCMCO</code> — OcMachoLib</li>
+<li><code>OCME</code> — OcHeciLib</li>
+<li><code>OCMM</code> — OcMemoryLib</li>
+<li><code>OCPI</code> — OcFileLib, partition info</li>
+<li><code>OCPNG</code> — OcPngLib</li>
+<li><code>OCRAM</code> — OcAppleRamDiskLib</li>
+<li><code>OCRTC</code> — OcRtcLib</li>
+<li><code>OCSB</code> — OcAppleSecureBootLib</li>
+<li><code>OCSMB</code> — OcSmbiosLib</li>
+<li><code>OCSMC</code> — OcSmcLib</li>
+<li><code>OCST</code> — OcStorageLib</li>
+<li><code>OCS</code> — OcSerializedLib</li>
+<li><code>OCTPL</code> — OcTemplateLib</li>
+<li><code>OCUC</code> — OcUnicodeCollationLib</li>
+<li><code>OCUT</code> — OcAppleUserInterfaceThemeLib</li>
+<li><code>OCXML</code> — OcXmlLib</li>
+</ul>
 <h2 id="8-5-Security-Properties"><a href="#8-5-Security-Properties" class="headerlink" title="8.5 Security Properties"></a>8.5 Security Properties</h2><h3 id="AllowNvramReset"><a href="#AllowNvramReset" class="headerlink" title="AllowNvramReset"></a><code>AllowNvramReset</code></h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: <code>false</code><br><strong>Description</strong>: 启用这一选项后将允许使用 <code>CMD+OPT+P+R</code> 快捷键重置 NVRAM，同时 <code>NVRAM Reset</code> 条目也会出现在开机引导菜单中。</p>
 <h3 id="AllowSetDefault"><a href="#AllowSetDefault" class="headerlink" title="AllowSetDefault"></a><code>AllowSetDefault</code></h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: <code>false</code><br><strong>Description</strong>: 允许使用 <code>CTRL+Enter</code> 和 <code>CTRL+[数字]</code> 设置默认启动项。</p>
 <h3 id="AuthRestart"><a href="#AuthRestart" class="headerlink" title="AuthRestart"></a><code>AuthRestart</code></h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: <code>false</code><br><strong>Description</strong>: 启用与 <code>VirtualSMC</code> 兼容的 authenticated restart.</p>
@@ -483,7 +600,7 @@
             <aside class="doku-document-toc" id="doku-document-toc">
                 <div class="doku-document-toc-content">
                     <p class="doku-document-toc-title">目录</p>
-                    <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#8-1-Introduction"><span class="post-toc-text">8.1 Introduction</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#8-2-Properties"><span class="post-toc-text">8.2 Properties</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Boot"><span class="post-toc-text">Boot</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#BlessOverride"><span class="post-toc-text">BlessOverride</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Debug"><span class="post-toc-text">Debug</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Entries"><span class="post-toc-text">Entries</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Security"><span class="post-toc-text">Security</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Tools"><span class="post-toc-text">Tools</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#8-3-Boot-Properties"><span class="post-toc-text">8.3 Boot Properties</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#ConsoleAttributes"><span class="post-toc-text">ConsoleAttributes</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#HibernateMode"><span class="post-toc-text">HibernateMode</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#HideAuxiliary"><span class="post-toc-text">HideAuxiliary</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#HideSelf"><span class="post-toc-text">HideSelf</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#PickerAttributes"><span class="post-toc-text">PickerAttributes</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#PickerAudioAssist"><span class="post-toc-text">PickerAudioAssist</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#PollAppleHotKeys"><span class="post-toc-text">PollAppleHotKeys</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#ShowPicker"><span class="post-toc-text">ShowPicker</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#TakeoffDelay"><span class="post-toc-text">TakeoffDelay</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Timeout"><span class="post-toc-text">Timeout</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#PickerMode"><span class="post-toc-text">PickerMode</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#8-4-Debug-Properties"><span class="post-toc-text">8.4 Debug Properties</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#AppleDebug"><span class="post-toc-text">AppleDebug</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#DisableWatchDog"><span class="post-toc-text">DisableWatchDog</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#DisplayDelay"><span class="post-toc-text">DisplayDelay</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#3-DisplayLevel"><span class="post-toc-text">3.DisplayLevel</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Target"><span class="post-toc-text">Target</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#8-5-Security-Properties"><span class="post-toc-text">8.5 Security Properties</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#AllowNvramReset"><span class="post-toc-text">AllowNvramReset</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#AllowSetDefault"><span class="post-toc-text">AllowSetDefault</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#AuthRestart"><span class="post-toc-text">AuthRestart</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#BootProtect"><span class="post-toc-text">BootProtect</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#ExposeSensitiveData"><span class="post-toc-text">ExposeSensitiveData</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#HaltLevel"><span class="post-toc-text">HaltLevel</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Vault"><span class="post-toc-text">Vault</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#ScanPolicy"><span class="post-toc-text">ScanPolicy</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#8-6-Entry-Properties"><span class="post-toc-text">8.6 Entry Properties</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Arguments"><span class="post-toc-text">Arguments</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Auxiliary"><span class="post-toc-text">Auxiliary</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Comment"><span class="post-toc-text">Comment</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Enabled"><span class="post-toc-text">Enabled</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Name"><span class="post-toc-text">Name</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Path"><span class="post-toc-text">Path</span></a></li></ol></li></ol>
+                    <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#8-1-Introduction"><span class="post-toc-text">8.1 Introduction</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#8-2-Properties"><span class="post-toc-text">8.2 Properties</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Boot"><span class="post-toc-text">Boot</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#BlessOverride"><span class="post-toc-text">BlessOverride</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Debug"><span class="post-toc-text">Debug</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Entries"><span class="post-toc-text">Entries</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Security"><span class="post-toc-text">Security</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Tools"><span class="post-toc-text">Tools</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#8-3-Boot-Properties"><span class="post-toc-text">8.3 Boot Properties</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#ConsoleAttributes"><span class="post-toc-text">ConsoleAttributes</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#HibernateMode"><span class="post-toc-text">HibernateMode</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#HideAuxiliary"><span class="post-toc-text">HideAuxiliary</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#HideSelf"><span class="post-toc-text">HideSelf</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#PickerAttributes"><span class="post-toc-text">PickerAttributes</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#PickerAudioAssist"><span class="post-toc-text">PickerAudioAssist</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#PollAppleHotKeys"><span class="post-toc-text">PollAppleHotKeys</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#ShowPicker"><span class="post-toc-text">ShowPicker</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#TakeoffDelay"><span class="post-toc-text">TakeoffDelay</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Timeout"><span class="post-toc-text">Timeout</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#PickerMode"><span class="post-toc-text">PickerMode</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#8-4-Debug-Properties"><span class="post-toc-text">8.4 Debug Properties</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#AppleDebug"><span class="post-toc-text">AppleDebug</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#ApplePanic"><span class="post-toc-text">ApplePanic</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#DisableWatchDog"><span class="post-toc-text">DisableWatchDog</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#DisplayDelay"><span class="post-toc-text">DisplayDelay</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#3-DisplayLevel"><span class="post-toc-text">3.DisplayLevel</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Target"><span class="post-toc-text">Target</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#8-5-Security-Properties"><span class="post-toc-text">8.5 Security Properties</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#AllowNvramReset"><span class="post-toc-text">AllowNvramReset</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#AllowSetDefault"><span class="post-toc-text">AllowSetDefault</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#AuthRestart"><span class="post-toc-text">AuthRestart</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#BootProtect"><span class="post-toc-text">BootProtect</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#ExposeSensitiveData"><span class="post-toc-text">ExposeSensitiveData</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#HaltLevel"><span class="post-toc-text">HaltLevel</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Vault"><span class="post-toc-text">Vault</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#ScanPolicy"><span class="post-toc-text">ScanPolicy</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#8-6-Entry-Properties"><span class="post-toc-text">8.6 Entry Properties</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Arguments"><span class="post-toc-text">Arguments</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Auxiliary"><span class="post-toc-text">Auxiliary</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Comment"><span class="post-toc-text">Comment</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Enabled"><span class="post-toc-text">Enabled</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Name"><span class="post-toc-text">Name</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Path"><span class="post-toc-text">Path</span></a></li></ol></li></ol>
                 </div>
             </aside>
         </div>

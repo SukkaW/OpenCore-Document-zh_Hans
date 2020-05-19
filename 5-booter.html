@@ -273,7 +273,7 @@
 <p>尝试从操作系统写入 <code>db</code>、<code>dbx</code>、<code>PK</code> 和 <code>KEK</code> 时生成报告。</p>
 <p><em>注</em>：这个 Quirk 主要试图避免碎片整理导致的 NVRAM 相关问题，如 Insyde 或 <code>MacPro5,1</code>。</p>
 <h3 id="ProtectUefiServices"><a href="#ProtectUefiServices" class="headerlink" title="ProtectUefiServices"></a><code>ProtectUefiServices</code></h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: <code>false</code><br><strong>Description</strong>: 保护 UEFI 服务不被固件覆盖。</p>
-<p>某些现代固件（包括硬件和 VMware 之类的虚拟机）可能会在加载驱动及相关操作的过程中，更新 UEFI 服务的指针。这一行为会直接破坏其他影响内存管理的 Quirk，如 <code>DevirtualiseMmio</code>、<code>ProtectCsmRegion</code> 或 <code>ShrinkMemoryMap</code>；也可能会破坏其他 Quirk，具体取决于 Quirk 的作用。</p>
+<p>某些现代固件（包括硬件和 VMware 之类的虚拟机）可能会在加载驱动及相关操作的过程中，更新 UEFI 服务的指针。这一行为会直接破坏其他影响内存管理的 Quirk，如 <code>DevirtualiseMmio</code>、<code>ProtectMemoryRegions</code>，或 <code>RebuildAppleMemoryMap</code>；也可能会破坏其他 Quirk，具体取决于 Quirk 的作用。</p>
 <p><em>注</em>：在 VMware 上，是否需要开启这个 Quirk 取决于是否有 <code>Your Mac OS guest might run unreliably with more than one virtual core.</code> 这样的消息。</p>
 <h3 id="ProvideCustomSlide"><a href="#ProvideCustomSlide" class="headerlink" title="ProvideCustomSlide"></a><code>ProvideCustomSlide</code></h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: <code>false</code><br><strong>Description</strong>: 为低内存设备提供自定义 KASLR slide 值。</p>
 <p>开启这个选项后，将会对固件进行内存映射分析，检查所有 slide（从 1 到 255）中是否有可用的。由于 <code>boot.efi</code> 私用 rdrand 或伪随机 rdtsc 随机生成此值，因此有可能出现冲突的 slide 值被使用并导致引导失败。如果出现潜在的冲突，这个选项将会强制为 macOS 选择一个伪随机值。这同时确保了 <code>slide=</code> 参数不会被传递给操作系统。</p>

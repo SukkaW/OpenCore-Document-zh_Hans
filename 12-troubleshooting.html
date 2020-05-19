@@ -187,14 +187,14 @@
         <div class="hero-body">
             <h1 class="title">12. 排错</h1>
             
-                <p class="subtitle">Troubleshooting</p>
+                <p class="subtitle">当你遇到问题的时候应该看看这个（待翻译）</p>
             
             
                 
                     <p><small>由 xMuu 整理，由 Sukka 翻译</small></p>
                 
                 
-                    <p><small>本页面最后更新于 2020 年 05 月 07 日</small></p>
+                    <p><small>本页面最后更新于 2020 年 05 月 19 日</small></p>
                 
                 <br>
             
@@ -273,30 +273,32 @@
 <li>禁用 Watch Dog 以避免自动重启：<code>Misc =&gt; Debug =&gt; DisableWatchDog = true</code>。</li>
 <li>已启用 启动菜单 显示：<code>Misc =&gt; Boot =&gt; ShowPicker = true</code></li>
 </ul>
-<p>如果你在日志中看不出明显的错误，请逐一检查 Quirks 部分中可用的 hacks。例如，对于 Early Boot 出现的问题（如 OpenCore 启动菜单无法显示），通过 <a href="https://github.com/acidanthera/OpenCoreShell" target="_blank" rel="noopener">UEFI Shell</a> 可以查看相关调试信息。</p>
+<p>如果你在日志中看不出明显的错误，请逐一检查 Quirks 部分中可用的 hacks。例如，对于 Early Boot 出现的问题（如 OpenCore 启动菜单无法显示），通过 UEFI Shell（随 OpenCore 打包在一起）可以查看相关调试信息。</p>
 <h3 id="2-如何自定义启动项？"><a href="#2-如何自定义启动项？" class="headerlink" title="2. 如何自定义启动项？"></a>2. 如何自定义启动项？</h3><p>OpenCore 遵循 Apple Bless 标准模型、从引导目录中的 <code>.contentDetails</code> 和 <code>.disk_label.contentDetails</code> 文件中提取条目名称。这些文件包含带有输入标题的 ASCII 字符串，你可以修改它们。</p>
 <h3 id="3-如何选择默认启动的系统？"><a href="#3-如何选择默认启动的系统？" class="headerlink" title="3. 如何选择默认启动的系统？"></a>3. 如何选择默认启动的系统？</h3><p>OpenCore 使用 UEFI 首选启动项 来选择默认的启动项。设置的方式随 BIOS 不同而不同，具体请参考 macOS <a href="https://support.apple.com/HT202796" target="_blank" rel="noopener">启动磁盘</a> 或 Windows <a href="https://support.apple.com/guide/bootcamp-control-panel/start-up-your-mac-in-windows-or-macos-bcmp29b8ac66/mac" target="_blank" rel="noopener">Boot Camp</a> 控制面板。</p>
 <p>由于使用 OpenCore 提供的 <code>BOOTx64.efi</code> 作为首选启动项会限制这项功能（可能还会导致一些固件删除不兼容的引导选项），我们强烈建议你启用 <code>RequestBootVarRouting</code> quirk，这会将你所做的选择保留在 OpenCore 变量空间中。请注意，<code>RequestBootVarRouting</code> 需要单独的 <code>.efi</code> 驱动文件（译者注：即 OpenRuntime.efi）。</p>
 <h3 id="4-安装-macOS-最简单的方法是什么？"><a href="#4-安装-macOS-最简单的方法是什么？" class="headerlink" title="4. 安装 macOS 最简单的方法是什么？"></a>4. 安装 macOS 最简单的方法是什么？</h3><p>在线安装。将 Recovery 镜像（<code>*.dmg</code> 和 <code>*.chunklist</code> 文件）和 OpenCore 一起复制到一个 FAT32 分区中。加载 OpenCore 的启动菜单并选择后缀为 <code>.dmg</code> 的条目。如果你有强迫症，你可以修改 <code>.contentDetails</code> 文件改变条目显示的文字。</p>
-<p>你可能会用到 <a href="https://github.com/acidanthera/MacInfoPkg/releases" target="_blank" rel="noopener">MacInfoPkg</a> 内置的 <a href="https://github.com/acidanthera/MacInfoPkg/blob/master/macrecovery/macrecovery.py" target="_blank" rel="noopener">macrecovery.py</a> 来下载 Recovery 镜像。</p>
+<p>你可能会用到 <code>AppleModels</code> 内置的 <a href="https://github.com/acidanthera/OpenCorePkg/blob/master/Utilities/macrecovery/macrecovery.py" target="_blank" rel="noopener">macrecovery.py</a> 来下载 Recovery 镜像。</p>
 <p>如果你需要进行离线安装，请参考 <a href="https://support.apple.com/HT201372" target="_blank" rel="noopener">How to create a bootable installer for macOS</a>。除了通过 App Store 或 系统更新，你还可以使用 <a href="https://github.com/corpnewt/gibMacOS" target="_blank" rel="noopener">第三方工具</a> 下载 macOS 镜像文件。</p>
 <h3 id="5-为什么无法加载-Recovery-恢复镜像-进行在线安装？"><a href="#5-为什么无法加载-Recovery-恢复镜像-进行在线安装？" class="headerlink" title="5. 为什么无法加载 Recovery 恢复镜像 进行在线安装？"></a>5. 为什么无法加载 Recovery 恢复镜像 进行在线安装？</h3><p>可能是因为你没带 HFS+ 驱动。目前我们所知道的 Recovery 分区全都是 HFS+ 文件系统。</p>
 <h3 id="6-我可以在-Apple-的硬件、或虚拟机中使用-OpenCore-吗？"><a href="#6-我可以在-Apple-的硬件、或虚拟机中使用-OpenCore-吗？" class="headerlink" title="6. 我可以在 Apple 的硬件、或虚拟机中使用 OpenCore 吗？"></a>6. 我可以在 Apple 的硬件、或虚拟机中使用 OpenCore 吗？</h3><p><del>可以，没有必要，但请加大力度</del></p>
-<p>OpenCore 支持包括 MacPro 5,1 和虚拟机在内的大部分较新的 Mac 想好。不过，OpenCore有关在 Mac 硬件上使用的具体细节微乎其微。你可以在 <a href="https://github.com/acidanthera/bugtracker/issues/377" target="_blank" rel="noopener">acidanthera/bugtracker#377</a> 查看相关讨论。</p>
-<h3 id="7-为什么-Find-和-Replace-的补丁的长度必须相等？"><a href="#7-为什么-Find-和-Replace-的补丁的长度必须相等？" class="headerlink" title="7. 为什么 Find 和 Replace 的补丁的长度必须相等？"></a>7. 为什么 Find 和 Replace 的补丁的长度必须相等？</h3><p>对于 x86 机器码来说，<a href="https://en.wikipedia.org/w/index.php?title=Relative_addressing" target="_blank" rel="noopener">相对寻址</a> 无法进行大小不同的替换。对于 ACPI 代码来说这是有风险的，而且在技术上这与替换 ACPI 表等价，所以 OpenCore 没有实现。更多详细的解答可以在 <a href="https://applelife.ru/posts/819790" target="_blank" rel="noopener">AppleLife.ru</a> 上找到。</p>
-<h3 id="8-我如何从-AptioMemoryFix-迁移到-OpenCore"><a href="#8-我如何从-AptioMemoryFix-迁移到-OpenCore" class="headerlink" title="8. 我如何从 AptioMemoryFix 迁移到 OpenCore?"></a>8. 我如何从 <code>AptioMemoryFix</code> 迁移到 OpenCore?</h3><p>可以通过安装 <code>OpenRuntime.efi</code>（原名 <code>FwRuntimeServices.efi</code>）驱动程序并启用以下列出的 quirk 来获得与 <code>AptioMemoryFix</code> 类似的行为。 请注意，其中大多数功能都不需要启用。有关更多详细信息，请参阅本文档中关于它们的单独描述。</p>
+<p>OpenCore 支持包括 MacPro 5,1 和虚拟机在内的大部分较新的 Mac 想好。不过，OpenCore有关在 Mac 硬件上使用的具体细节微乎其微。你可以在 <a href="https://forums.macrumors.com/threads/opencore-on-the-mac-pro.2207814" target="_blank" rel="noopener">MacRumors.com</a> 查看相关讨论。</p>
+<h3 id="7-为什么-Find-和-Replace-的补丁的长度必须相等？"><a href="#7-为什么-Find-和-Replace-的补丁的长度必须相等？" class="headerlink" title="7. 为什么 Find 和 Replace 的补丁的长度必须相等？"></a>7. 为什么 Find 和 Replace 的补丁的长度必须相等？</h3><p>对于 x86 机器码来说，<a href="https://en.wikipedia.org/w/index.php?title=Relative_addressing" target="_blank" rel="noopener">相对寻址</a> 无法进行大小不同的替换。对于 ACPI 代码来说这是有风险的，而且在技术上这与替换 ACPI 表等价，所以 OpenCore 没有实现。更多详细的解答可以在 <a href="https://applelife.ru/posts/819790" target="_blank" rel="noopener">AppleLife.ru</a> 上和本文档的 ACPI 章节找到。</p>
+<h3 id="8-我应该如何决定哪些-Booter-Quirk-需要被启用？"><a href="#8-我应该如何决定哪些-Booter-Quirk-需要被启用？" class="headerlink" title="8. 我应该如何决定哪些 Booter Quirk 需要被启用？"></a>8. 我应该如何决定哪些 <code>Booter</code> Quirk 需要被启用？</h3><p>这些 Quirk 源自 <code>AptioMemoryFix</code> 驱动，为更多的固件提供了广泛支持。如果你正在使用 <code>OpenRuntime</code>，并且想要获得和 <code>AptioMemoryFix</code> 类似的行为，请启用下述 Quirks：</p>
 <ul>
-<li><code>ProvideConsoleGop</code> (UEFI quirk)</li>
+<li><code>ProvideConsoleGop</code> （UEFI Quirk）</li>
 <li><code>AvoidRuntimeDefrag</code></li>
 <li><code>DiscardHibernateMap</code></li>
 <li><code>EnableSafeModeSlide</code></li>
 <li><code>EnableWriteUnprotector</code></li>
 <li><code>ForceExitBootServices</code></li>
-<li><code>ProtectCsmRegion</code></li>
+<li><code>ProtectMemoryRegions</code></li>
 <li><code>ProvideCustomSlide</code></li>
+<li><code>RebuildAppleMemoryMap</code></li>
 <li><code>SetupVirtualMap</code></li>
-<li><code>ShrinkMemoryMap</code></li>
 </ul>
+<p>However, as of today such set is strongly discouraged as some of these quirks are not necessary to be enabled or need additional quirks. For example, <code>DevirtualiseMmio</code> 和 <code>ProtectUefiServices</code> are often required, while <code>DiscardHibernateMap</code> and <code>ForceExitBootServices</code> are rarely necessary.</p>
+<p>Unfortunately for some quirks like <code>RebuildAppleMemoryMap</code>, <code>EnableWriteUnprotector</code>, <code>ProtectMemoryRegions</code>, <code>RebuildAppleMemoryMap</code>, <code>SetupVirtualMap</code>, and <code>SyncRuntimePermissions</code> there is no definite approach even on similar systems, so trying all their combinations may be required for optimal setup. Refer to individual quirk descriptions in this document for more details.</p>
 
             </div>
 
@@ -319,7 +321,7 @@
             <aside class="doku-document-toc" id="doku-document-toc">
                 <div class="doku-document-toc-content">
                     <p class="doku-document-toc-title">目录</p>
-                    <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#12-1-Windows-支持"><span class="post-toc-text">12.1 Windows 支持</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#我能安装-Windows-系统吗？"><span class="post-toc-text">我能安装 Windows 系统吗？</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#我需要安装其他什么软件吗？"><span class="post-toc-text">我需要安装其他什么软件吗？</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#为什么我会在-Boot-Camp-启动硬盘-控制面板-中看到-Basic-data-partition？"><span class="post-toc-text">为什么我会在 Boot Camp 启动硬盘 控制面板 中看到 Basic data partition？</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#如何选择-NTFS-驱动程序"><span class="post-toc-text">如何选择 NTFS 驱动程序</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#12-2-调试"><span class="post-toc-text">12.2 调试</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#12-3-技巧和窍门"><span class="post-toc-text">12.3 技巧和窍门</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#1-啊呀呀呀我系统没法启动了我该怎么看日志啊？"><span class="post-toc-text">1. 啊呀呀呀我系统没法启动了我该怎么看日志啊？</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#2-如何自定义启动项？"><span class="post-toc-text">2. 如何自定义启动项？</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#3-如何选择默认启动的系统？"><span class="post-toc-text">3. 如何选择默认启动的系统？</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#4-安装-macOS-最简单的方法是什么？"><span class="post-toc-text">4. 安装 macOS 最简单的方法是什么？</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#5-为什么无法加载-Recovery-恢复镜像-进行在线安装？"><span class="post-toc-text">5. 为什么无法加载 Recovery 恢复镜像 进行在线安装？</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#6-我可以在-Apple-的硬件、或虚拟机中使用-OpenCore-吗？"><span class="post-toc-text">6. 我可以在 Apple 的硬件、或虚拟机中使用 OpenCore 吗？</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#7-为什么-Find-和-Replace-的补丁的长度必须相等？"><span class="post-toc-text">7. 为什么 Find 和 Replace 的补丁的长度必须相等？</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#8-我如何从-AptioMemoryFix-迁移到-OpenCore"><span class="post-toc-text">8. 我如何从 AptioMemoryFix 迁移到 OpenCore?</span></a></li></ol></li></ol>
+                    <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#12-1-Windows-支持"><span class="post-toc-text">12.1 Windows 支持</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#我能安装-Windows-系统吗？"><span class="post-toc-text">我能安装 Windows 系统吗？</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#我需要安装其他什么软件吗？"><span class="post-toc-text">我需要安装其他什么软件吗？</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#为什么我会在-Boot-Camp-启动硬盘-控制面板-中看到-Basic-data-partition？"><span class="post-toc-text">为什么我会在 Boot Camp 启动硬盘 控制面板 中看到 Basic data partition？</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#如何选择-NTFS-驱动程序"><span class="post-toc-text">如何选择 NTFS 驱动程序</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#12-2-调试"><span class="post-toc-text">12.2 调试</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#12-3-技巧和窍门"><span class="post-toc-text">12.3 技巧和窍门</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#1-啊呀呀呀我系统没法启动了我该怎么看日志啊？"><span class="post-toc-text">1. 啊呀呀呀我系统没法启动了我该怎么看日志啊？</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#2-如何自定义启动项？"><span class="post-toc-text">2. 如何自定义启动项？</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#3-如何选择默认启动的系统？"><span class="post-toc-text">3. 如何选择默认启动的系统？</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#4-安装-macOS-最简单的方法是什么？"><span class="post-toc-text">4. 安装 macOS 最简单的方法是什么？</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#5-为什么无法加载-Recovery-恢复镜像-进行在线安装？"><span class="post-toc-text">5. 为什么无法加载 Recovery 恢复镜像 进行在线安装？</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#6-我可以在-Apple-的硬件、或虚拟机中使用-OpenCore-吗？"><span class="post-toc-text">6. 我可以在 Apple 的硬件、或虚拟机中使用 OpenCore 吗？</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#7-为什么-Find-和-Replace-的补丁的长度必须相等？"><span class="post-toc-text">7. 为什么 Find 和 Replace 的补丁的长度必须相等？</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#8-我应该如何决定哪些-Booter-Quirk-需要被启用？"><span class="post-toc-text">8. 我应该如何决定哪些 Booter Quirk 需要被启用？</span></a></li></ol></li></ol>
                 </div>
             </aside>
         </div>
