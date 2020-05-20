@@ -68,7 +68,7 @@ OpenCore 的配置文件可以使用任何常规的文本编辑器（如 nano、
 
 如果要升级 OpenCore，[`Differences.pdf`](https://github.com/acidanthera/OpenCorePkg/blob/master/Docs/Differences/Differences.pdf) 提供了 OpenCore 配置文件变更的相关信息，[`Changelog.md`](https://github.com/acidanthera/OpenCorePkg/blob/master/Changelog.md) 提供了 OpenCore 的更新日志。
 
-> 译者注：以下两个章节是为准备为参与 OpenCore 开发准备的。
+> 译者注：以下两节是为准备参与 OpenCore 开发的人员准备的。
 
 ## 3.3 贡献代码
 
