@@ -18,9 +18,9 @@ last_updated: 2020-03-28
 
 ## 2.2 配置处理
 
-如果 OpenCore 发现了 OC Config，则至少会被读取并处理一次。跟你局 OpenCore 的引导机制的不同，对于多个 OC Config 文件，OpenCore 可能会读取其中任何一个或数个。如果硬盘中没有 OC Config，OpenCore 将会使用可选值和无效值的规则。
+如果 OpenCore 发现了 OC Config，则至少会被读取并处理一次。根据 OpenCore 的引导机制的不同，对于多个 OC Config 文件，OpenCore 可能会读取其中任何一个或数个。如果硬盘中没有 OC Config，OpenCore 将会使用可选值和无效值的规则。
 
-OC Config 有大小、嵌套、键数量的限制。OC Config 的大小不得超过 16 MB，嵌套层数不得超过 8 层，没个 plist object 中最多有 16384 个节点（一个 plist dictionary 将被计为一对节点）。不符合上述规则的 OC Config 文件将可能导致未定义、非预期的行为。常见的 OC Config 错误格式包括
+OC Config 有大小、嵌套、键数量的限制。OC Config 的大小不得超过 16 MB，嵌套层数不得超过 8 层，每个 plist object 中最多有 16384 个节点（一个 plist dictionary 将被计为一对节点）。不符合上述规则的 OC Config 文件将可能导致未定义、非预期的行为。常见的 OC Config 错误格式包括
 
 - 不符合 plist DTD
 - 存在本文档中没有记载的 plist object
@@ -38,7 +38,7 @@ OC Config 有大小、嵌套、键数量的限制。OC Config 的大小不得超
 
 ## 2.3 配置结构
 
-OC Config 包括以下几个独立部分，将在本文档中分别进行介绍。默认情况下配置文件将尽可能不启用任何功能以及禁用某些功能。总的来说，这些配置的一般由如下的操作构成：
+OC Config 包括以下几个独立部分，将在本文档中分别进行介绍。默认情况下配置文件将尽可能不启用任何功能以及禁用某些功能。总的来说，这些配置一般由如下的操作构成：
 
 - Add：为数据提供 添加 操作支持。已经存在的值不会被覆盖，必要时请使用 Delete。
 - Delete：为数据提供 删除 操作支持
