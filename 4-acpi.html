@@ -187,14 +187,14 @@
         <div class="hero-body">
             <h1 class="title">4. ACPI</h1>
             
-                <p class="subtitle">加载、屏蔽、修补 ACPI（DSDT/SSDT）表（待翻译）</p>
+                <p class="subtitle">加载、屏蔽、修补 ACPI（DSDT/SSDT）表</p>
             
             
                 
                     <p><small>由 Sukka 整理、由 Sukka、derbalkon 翻译。感谢黑果小兵提供的参考资料</small></p>
                 
                 
-                    <p><small>本页面最后更新于 2020 年 04 月 23 日</small></p>
+                    <p><small>本页面最后更新于 2020 年 05 月 20 日</small></p>
                 
                 <br>
             
@@ -215,8 +215,8 @@
 <li>Add</li>
 <li>Quirks</li>
 </ul>
-<p>Applying the changes globally resolves the problems of incorrect operating system detection, which is not possible before the operating system boots according to the ACPI specification, operating system chainloading, and harder ACPI debugging. For this reason it may be required to carefully use <code>\_OSI</code> method when writing the changes.</p>
-<p>Applying the patches early makes it possible to write so called <code>proxy</code> patches, where the original method is patched in the original table and is implemented in the patched table.</p>
+<p>为了解决操作系统检测的问题，所有对 ACPI 的更改会在所有操作系统上生效。但是在某些场景下（ACPI 编写不规范、操作系统链式引导启动、ACPI 调试）会出现问题。因此在修补 ACPI 时，需要使用 <code>\_OSI</code> 方法。</p>
+<p>在系统引导前加载补丁使得编写「代理」补丁成为可能 —— 「代理」补丁即通过重命名的方法修补 DSDT 中的原始行为，然后通过 SSDT 注入同名的行为进行替代。</p>
 <h2 id="4-2-属性列表"><a href="#4-2-属性列表" class="headerlink" title="4.2 属性列表"></a>4.2 属性列表</h2><h3 id="4-2-1-Add"><a href="#4-2-1-Add" class="headerlink" title="4.2.1 Add"></a>4.2.1 <code>Add</code></h3><p><strong>Type</strong>: <code>plist array</code><br><strong>Failsafe</strong>: Empty<br><strong>Description</strong>: 从 <code>OC/ACPI</code> 目录加载指定的 ACPI 表。</p>
 <p>设计为用 <code>plist dict</code> 值填充以描述每个块级项目。请参阅下面 <a href="#4-3-Add-属性">4.3 Add 属性</a> 章节。</p>
 <h3 id="4-2-2-Delete"><a href="#4-2-2-Delete" class="headerlink" title="4.2.2 Delete"></a>4.2.2 <code>Delete</code></h3><p><strong>Type</strong>: <code>plist array</code><br><strong>Failsafe</strong>: Empty<br><strong>Description</strong>: 从 ACPI 栈中删除选定的表。</p>
@@ -260,7 +260,7 @@
 <li>在 SSDT 中实现自定义 method，比如笔记本电脑上功能键可以通过将 <code>_Q11</code> 替换为 <code>XQ11</code> 的方法进行仿冒。</li>
 </ul>
 <p>TianoCore 源文件 <a href="https://github.com/acidanthera/audk/blob/master/MdePkg/Include/IndustryStandard/AcpiAml.h" target="_blank" rel="noopener">AcpiAml.h</a> 可能会对于理解 ACPI 操作码有所帮助。</p>
-<p><em>Note</em>: Patches of different <code>Find</code> and <code>Replace</code> lengths are unsupported as they may corrupt ACPI tables and make you system unstable due to area relocation. If you need such changes you may utilities <code>proxy</code> patching or <code>NOP</code> the remaining area.</p>
+<p><em>注</em>：<code>Find</code> 和 <code>Replace</code> 的长度 <strong>必须完全一样</strong>，否则 ACPI 表可能会被破坏、导致系统不稳定。必要时请使用「代理」补丁的方法、或使用 <code>NOP</code> 填充剩余区域</p>
 <h2 id="4-6-Quirks-属性"><a href="#4-6-Quirks-属性" class="headerlink" title="4.6 Quirks 属性"></a>4.6 Quirks 属性</h2><h3 id="4-6-1-FadtEnableReset"><a href="#4-6-1-FadtEnableReset" class="headerlink" title="4.6.1 FadtEnableReset"></a>4.6.1 FadtEnableReset</h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: false<br><strong>Description</strong>: 在 FADT 表中提供寄存器复位标志，用于修复旧硬件的重启和关机。除非需要，否则不建议启用。</p>
 <h3 id="4-6-2-NormalizeHeaders"><a href="#4-6-2-NormalizeHeaders" class="headerlink" title="4.6.2 NormalizeHeaders"></a>4.6.2 NormalizeHeaders</h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: false<br><strong>Description</strong>: 清理 ACPI 表头字段以解决 macOS ACPI 实现错误导致的引导崩溃<br><em>参考</em>: 由 Alex James（theracermaster）在调试 AppleACPIPlatform 时发现。从 macOS Mojave (10.14) 开始，这个错误已经被修复。</p>
 <h3 id="4-6-3-RebaseRegions"><a href="#4-6-3-RebaseRegions" class="headerlink" title="4.6.3 RebaseRegions"></a>4.6.3 RebaseRegions</h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: false<br><strong>Description</strong>: 尝试试探性地重定位 ACPI 内存区域。不建议启用这一选项，除非你需要自定义 DSDT。</p>

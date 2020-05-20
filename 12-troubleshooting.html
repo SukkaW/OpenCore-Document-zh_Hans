@@ -187,14 +187,14 @@
         <div class="hero-body">
             <h1 class="title">12. 排错</h1>
             
-                <p class="subtitle">当你遇到问题的时候应该看看这个（待翻译）</p>
+                <p class="subtitle">当你遇到问题的时候应该看看这个</p>
             
             
                 
-                    <p><small>由 xMuu 整理，由 Sukka 翻译</small></p>
+                    <p><small>由 xMuu、Sukka 整理，由 Sukka 翻译</small></p>
                 
                 
-                    <p><small>本页面最后更新于 2020 年 05 月 19 日</small></p>
+                    <p><small>本页面最后更新于 2020 年 05 月 20 日</small></p>
                 
                 <br>
             
@@ -297,8 +297,8 @@
 <li><code>RebuildAppleMemoryMap</code></li>
 <li><code>SetupVirtualMap</code></li>
 </ul>
-<p>However, as of today such set is strongly discouraged as some of these quirks are not necessary to be enabled or need additional quirks. For example, <code>DevirtualiseMmio</code> 和 <code>ProtectUefiServices</code> are often required, while <code>DiscardHibernateMap</code> and <code>ForceExitBootServices</code> are rarely necessary.</p>
-<p>Unfortunately for some quirks like <code>RebuildAppleMemoryMap</code>, <code>EnableWriteUnprotector</code>, <code>ProtectMemoryRegions</code>, <code>RebuildAppleMemoryMap</code>, <code>SetupVirtualMap</code>, and <code>SyncRuntimePermissions</code> there is no definite approach even on similar systems, so trying all their combinations may be required for optimal setup. Refer to individual quirk descriptions in this document for more details.</p>
+<p>但是，对于大部分现代的设备来说，上述 Quirks 不一定是必须的。比如 <code>DevirtualiseMmio</code> 和 <code>ProtectUefiServices</code> 通常是需要启用的，但是 <code>DiscardHibernateMap</code> 和 <code>ForceExitBootServices</code> 一般不建议启用。</p>
+<p>不幸的是，对于某些 Quirks 来说（<code>RebuildAppleMemoryMap</code>, <code>EnableWriteUnprotector</code>, <code>ProtectMemoryRegions</code>, <code>RebuildAppleMemoryMap</code>, <code>SetupVirtualMap</code> 和 <code>SyncRuntimePermissions</code>）由于没有明确的参考，因此需要自行尝试最佳组合。详细内容请参考本文档中对这些 Quirks 的描述。</p>
 
             </div>
 

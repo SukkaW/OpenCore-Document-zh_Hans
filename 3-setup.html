@@ -187,14 +187,14 @@
         <div class="hero-body">
             <h1 class="title">3. Setup</h1>
             
-                <p class="subtitle">Setup（待翻译）</p>
+                <p class="subtitle">Setup</p>
             
             
                 
                     <p><small>由 Sukka 整理、由 Sukka 翻译。</small></p>
                 
                 
-                    <p><small>本页面最后更新于 2020 年 05 月 19 日</small></p>
+                    <p><small>本页面最后更新于 2020 年 05 月 20 日</small></p>
                 
                 <br>
             
@@ -211,7 +211,7 @@
 <p>使用目录引导时，使用的目录结构应该遵循上述目录结构。可用的条目有：</p>
 <ul>
 <li><strong>BOOTx64.efi</strong> 和 <strong>Bootstrap.efi</strong> - 初始引导程序。除非 <code>OpenCore.efi</code> 已作为驱动程序启动，否则将用于加载 <code>OpenCore.efi</code>。对于大部分固件来说，<code>BOOTx64.efi</code> 是 UEFI 默认启动项，而 <code>Bootstrap.efi</code> 可以被注册为自定义启动项，避免 <code>BOOTx64.efi</code> 被其它操作系统所覆盖。</li>
-<li><strong>boot</strong> -   Duet bootstrap loader, which initialises UEFI environment on legacy BIOS firmwares and loads \texttt{OpenCore.efi} similarly to other bootstrap loaders. Modern Duet bootstrap loader will default to \texttt{OpenCore.efi} on the same partition when present.</li>
+<li><strong>boot</strong> - Duet bootstrap loader，用于在传统 BIOS 固件上模拟 UEFI 环境、并加载 <code>OpenCore.efi</code>。</li>
 <li><strong>ACPI</strong> - 用于存储 ACPI 补充信息的目录。</li>
 <li><strong>Drivers</strong> - 用于存储 UEFI 补充驱动程序的目录。</li>
 <li><strong>Kexts</strong> - 用于存储内核驱动（kext）补充的目录。</li>
@@ -225,7 +225,7 @@
 <li><strong>opencore-YYYY-MM-DD-HHMMSS.txt</strong> - OpenCore 日志文件。</li>
 <li><strong>panic-YYYY-MM-DD-HHMMSS.txt</strong> - Kernal Panic 日志文件。</li>
 </ul>
-<p><em>Note</em>: It is not guaranteed that paths longer than <code>OC_STORAGE_SAFE_PATH_MAX</code> (128 characters including <code>0</code>-termnator) will be accessible within OpenCore.</p>
+<p><em>注</em>: 受限于固件的实现行为，OpenCore 可能无法访问绝对路径长度大于 <code>OC_STORAGE_SAFE_PATH_MAX</code>（默认值为 128）的目录。</p>
 <h2 id="3-2-安装和升级"><a href="#3-2-安装和升级" class="headerlink" title="3.2 安装和升级"></a>3.2 安装和升级</h2><p>如果要安装 OpenCore，请在使用 GPT 格式的硬盘上、按照上一节的文件夹结构建立文件和文件夹。尽管本文档的相应部分的确提供了有关你所需的外部资源（如 ACPI 表、UEFI 驱动程序或 kexts）的某些信息，但是本文档不保证会提供关于这些外部资源的全部信息。关于 kext 的完整信息可以查看由 OpenCore 提供的 <a href="https://github.com/acidanthera/OpenCorePkg/blob/master/Docs/Kexts.md" target="_blank" rel="noopener">可选 kext 列表</a>；而本文档也在安全属性的相关章节提供了 Vauting 的相关信息。</p>
 <p>OpenCore 的配置文件可以使用任何常规的文本编辑器（如 nano、vim、VSCode）进行编辑，但是专用软件可以带来更好的体验。在 macOS 上我们推荐使用 <a href="https://developer.apple.com/xcode" target="_blank" rel="noopener">Xcode</a>。你也可以使用 <a href="https://github.com/corpnewt/ProperTree" target="_blank" rel="noopener">ProperTree</a> ，这是一个轻量级的跨平台的开源 plist 编辑器。</p>
 <p>如果要通过 BIOS 进行开机，你必须使用第三方 UEFI 环境提供程序。<code>OpenDuetPkg</code> 是一个常用的为旧操作系统提供 Legacy 引导的 UEFI 环境提供程序。要在这样的旧操作系统上运行 OpenCore，你可以使用一个独立的工具 <code>BootInstall</code> 安装 <code>OpenDuetPkg</code>（目前已和 OpenCore 打包在一起发布）。</p>

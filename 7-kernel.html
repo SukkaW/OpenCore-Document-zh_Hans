@@ -207,14 +207,14 @@
         <div class="column is-9-tablet doku-document-wrapper">
             <div class="content">
                 <h2 id="7-1-简介"><a href="#7-1-简介" class="headerlink" title="7.1 简介"></a>7.1 简介</h2><p>本章节介绍了如何在 Apple Kernel（<a href="https://opensource.apple.com/source/xnu" target="_blank" rel="noopener">XNU</a>）上应用各种不同的内核空间修改，包括内核驱动程序（kext）注入、修补以及屏蔽。</p>
-<h2 id="7-2-属性列表"><a href="#7-2-属性列表" class="headerlink" title="7.2 属性列表"></a>7.2 属性列表</h2><h3 id="7-2-1-Add"><a href="#7-2-1-Add" class="headerlink" title="7.2.1 Add"></a>7.2.1 Add</h3><p><strong>Type</strong>: plist array<br><strong>Failsafe</strong>: Empty<br><strong>Description</strong>: 从 <code>OC/Kexts</code> 目录加载选定的 Kext 驱动。</p>
+<h2 id="7-2-属性列表"><a href="#7-2-属性列表" class="headerlink" title="7.2 属性列表"></a>7.2 属性列表</h2><h3 id="7-2-1-Add"><a href="#7-2-1-Add" class="headerlink" title="7.2.1 Add"></a>7.2.1 Add</h3><p><strong>Type</strong>: <code>plist array</code><br><strong>Failsafe</strong>: Empty<br><strong>Description</strong>: 从 <code>OC/Kexts</code> 目录加载选定的 Kext 驱动。</p>
 <p>设计为使用 plist dict 数据填充以描述每个驱动程序。请参阅下述 Add 属性章节。Kext 驱动程序加载的顺序遵照数组中项目的顺序，因此如 Lilu 这种其他驱动程序的依赖驱动应该位于前面。</p>
-<h3 id="7-2-2-Delete"><a href="#7-2-2-Delete" class="headerlink" title="7.2.2 Delete"></a>7.2.2 Delete</h3><p><strong>Type</strong>: plist array<br><strong>Failsafe</strong>: Empty<br><strong>Description</strong>: 从内核中删除选定的内核驱动程序。</p>
+<h3 id="7-2-2-Delete"><a href="#7-2-2-Delete" class="headerlink" title="7.2.2 Delete"></a>7.2.2 Delete</h3><p><strong>Type</strong>: <code>plist array</code><br><strong>Failsafe</strong>: Empty<br><strong>Description</strong>: 从内核中删除选定的内核驱动程序。</p>
 <p>设计为使用 plist dict 数据填充以描述每个驱动程序。请参阅下述 Delete 属性章节。Kext 驱动程序加载的顺序遵照数组中项目的顺序，因此如 Lilu 这种其他驱动程序的依赖驱动应该位于前面。</p>
-<h3 id="7-2-3-Emulate"><a href="#7-2-3-Emulate" class="headerlink" title="7.2.3 Emulate"></a>7.2.3 Emulate</h3><p><strong>Type</strong>: plist dict<br><strong>Description</strong>: 在内核空间中仿真选定的硬件。请参考下文 Emulate 属性。</p>
-<h3 id="7-2-4-Patch"><a href="#7-2-4-Patch" class="headerlink" title="7.2.4 Patch"></a>7.2.4 Patch</h3><p><strong>Type</strong>: plist array<br><strong>Failsafe</strong>: Empty<br><strong>Description</strong>: 在添加和删除驱动程序步骤之前执行的对现有 Kext 驱动程序的二进制修补。</p>
+<h3 id="7-2-3-Emulate"><a href="#7-2-3-Emulate" class="headerlink" title="7.2.3 Emulate"></a>7.2.3 Emulate</h3><p><strong>Type</strong>: <code>plist dict</code><br><strong>Description</strong>: 在内核空间中仿真选定的硬件。请参考下文 Emulate 属性。</p>
+<h3 id="7-2-4-Patch"><a href="#7-2-4-Patch" class="headerlink" title="7.2.4 Patch"></a>7.2.4 Patch</h3><p><strong>Type</strong>: <code>plist array</code><br><strong>Failsafe</strong>: Empty<br><strong>Description</strong>: 在添加和删除驱动程序步骤之前执行的对现有 Kext 驱动程序的二进制修补。</p>
 <p>设计为使用 plist dictionary 数据填充以描述每个驱动程序。请参阅下述 Patch 属性章节。</p>
-<h3 id="7-2-5-Quirks"><a href="#7-2-5-Quirks" class="headerlink" title="7.2.5 Quirks"></a>7.2.5 Quirks</h3><p><strong>Type</strong>: plist dict<br><strong>Description</strong>: 应用下面的 Quirks 属性章节中描述的各个内核和驱动程序 Quirk。</p>
+<h3 id="7-2-5-Quirks"><a href="#7-2-5-Quirks" class="headerlink" title="7.2.5 Quirks"></a>7.2.5 Quirks</h3><p><strong>Type</strong>: <code>plist dict</code><br><strong>Description</strong>: 应用下面的 Quirks 属性章节中描述的各个内核和驱动程序 Quirk。</p>
 <h2 id="7-3-Add-属性"><a href="#7-3-Add-属性" class="headerlink" title="7.3 Add 属性"></a>7.3 Add 属性</h2><h3 id="7-3-1-BundlePath"><a href="#7-3-1-BundlePath" class="headerlink" title="7.3.1 BundlePath"></a>7.3.1 <code>BundlePath</code></h3><p><strong>Type</strong>: <code>plist string</code><br><strong>Failsafe</strong>: Empty string<br><strong>Description</strong>: Kext 相对于 <code>EFI/OC/kexts/Other/</code> 的路径 (e.g. <code>Lilu.kext</code> or <code>MyKext.kext/Contents/PlugIns/MySubKext.kext</code>).</p>
 <blockquote>
 <p>注，如 <code>VoodooPS2Controller.kext</code> 这种包括其他 kext 驱动的，需要分别单独添加，如 <code>VoodooPS2Controller.kext/Contents/PlugIns/VoodooPS2Keyboard.kext</code>。</p>

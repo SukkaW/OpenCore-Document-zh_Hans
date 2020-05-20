@@ -231,7 +231,7 @@
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">sudo bless --verbose --file /Volumes/VOLNAME/DIR/OpenShell.efi --folder /Volumes/VOLNAME/DIR/ --setBoot<br></code></pre></td></tr></table></figure>
 
 <p><em>Note 1</em>: You may have to copy <code>/System/Library/CoreServices/BridgeVersion.bin</code> to <code>/Volumes/VOLNAME/DIR</code>.<br><em>Note 2</em>: To be able to use <code>bless</code> you may have to <a href="https://developer.apple.com/library/archive/documentation/Security/Conceptual/System_Integrity_Protection_Guide/ConfiguringSystemIntegrityProtection/ConfiguringSystemIntegrityProtection.html" target="_blank" rel="noopener">disable System Integrity Protection</a>.<br><em>Note 3</em>: To be able to boot you may have to <a href="https://support.apple.com/HT208330" target="_blank" rel="noopener">disable Secure Boot</a> if present.</p>
-<p>Some of the known tools are listed below:</p>
+<p>一些已知的 UEFI 工具：</p>
 <ul>
 <li><a href="https://github.com/acidanthera/OpenCorePkg" target="_blank" rel="noopener"><code>BootKicker</code></a> (<strong>内置</strong>) - 进入 Apple 的 BootPicker 菜单（仅 Mac 同款显卡才可以使用）。</li>
 <li><a href="https://github.com/acidanthera/OpenCorePkg" target="_blank" rel="noopener"><code>ChipTune</code></a> (<strong>内置</strong>) - 测试 BeepGen 协议，生成不同频率和长度的音频信号。</li>
