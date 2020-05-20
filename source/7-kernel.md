@@ -14,7 +14,7 @@ last_updated: 2020-05-19
 
 ### 7.2.1 Add
 
-**Type**: plist array
+**Type**: `plist array`
 **Failsafe**: Empty
 **Description**: 从 `OC/Kexts` 目录加载选定的 Kext 驱动。
 
@@ -22,7 +22,7 @@ last_updated: 2020-05-19
 
 ### 7.2.2 Delete
 
-**Type**: plist array
+**Type**: `plist array`
 **Failsafe**: Empty
 **Description**: 从内核中删除选定的内核驱动程序。
 
@@ -31,12 +31,12 @@ last_updated: 2020-05-19
 
 ### 7.2.3 Emulate
 
-**Type**: plist dict
+**Type**: `plist dict`
 **Description**: 在内核空间中仿真选定的硬件。请参考下文 Emulate 属性。
 
 ### 7.2.4 Patch
 
-**Type**: plist array
+**Type**: `plist array`
 **Failsafe**: Empty
 **Description**: 在添加和删除驱动程序步骤之前执行的对现有 Kext 驱动程序的二进制修补。
 
@@ -44,7 +44,7 @@ last_updated: 2020-05-19
 
 ### 7.2.5 Quirks
 
-**Type**: plist dict
+**Type**: `plist dict`
 **Description**: 应用下面的 Quirks 属性章节中描述的各个内核和驱动程序 Quirk。
 
 ## 7.3 Add 属性

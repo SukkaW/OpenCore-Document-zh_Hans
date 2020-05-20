@@ -1,9 +1,9 @@
 ---
 title: 12. 排错
-description: 当你遇到问题的时候应该看看这个（待翻译）
+description: 当你遇到问题的时候应该看看这个
 type: docs
-author_info: 由 xMuu 整理，由 Sukka 翻译
-last_updated: 2020-05-19
+author_info: 由 xMuu、Sukka 整理，由 Sukka 翻译
+last_updated: 2020-05-20
 ---
 
 ## 12.1 Windows 支持
@@ -184,6 +184,6 @@ OpenCore 支持包括 MacPro 5,1 和虚拟机在内的大部分较新的 Mac 想
 - `RebuildAppleMemoryMap`
 - `SetupVirtualMap`
 
-However, as of today such set is strongly discouraged as some of these quirks are not necessary to be enabled or need additional quirks. For example, `DevirtualiseMmio` 和 `ProtectUefiServices` are often required, while `DiscardHibernateMap` and `ForceExitBootServices` are rarely necessary.
+但是，对于大部分现代的设备来说，上述 Quirks 不一定是必须的。比如 `DevirtualiseMmio` 和 `ProtectUefiServices` 通常是需要启用的，但是 `DiscardHibernateMap` 和 `ForceExitBootServices` 一般不建议启用。
 
-Unfortunately for some quirks like `RebuildAppleMemoryMap`, `EnableWriteUnprotector`, `ProtectMemoryRegions`, `RebuildAppleMemoryMap`, `SetupVirtualMap`, and `SyncRuntimePermissions` there is no definite approach even on similar systems, so trying all their combinations may be required for optimal setup. Refer to individual quirk descriptions in this document for more details.
+不幸的是，对于某些 Quirks 来说（`RebuildAppleMemoryMap`, `EnableWriteUnprotector`, `ProtectMemoryRegions`, `RebuildAppleMemoryMap`, `SetupVirtualMap` 和 `SyncRuntimePermissions`）由于没有明确的参考，因此需要自行尝试最佳组合。详细内容请参考本文档中对这些 Quirks 的描述。

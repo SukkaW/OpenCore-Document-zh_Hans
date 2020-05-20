@@ -1,9 +1,9 @@
 ---
 title: 3. Setup
-description: Setup（待翻译）
+description: Setup
 type: docs
 author_info: 由 Sukka 整理、由 Sukka 翻译。
-last_updated: 2020-05-19
+last_updated: 2020-05-20
 ---
 
 ## 3.1 目录结构
@@ -42,7 +42,7 @@ ESP
 使用目录引导时，使用的目录结构应该遵循上述目录结构。可用的条目有：
 
 - **BOOTx64.efi** 和 **Bootstrap.efi** - 初始引导程序。除非 `OpenCore.efi` 已作为驱动程序启动，否则将用于加载 `OpenCore.efi`。对于大部分固件来说，`BOOTx64.efi` 是 UEFI 默认启动项，而 `Bootstrap.efi` 可以被注册为自定义启动项，避免 `BOOTx64.efi` 被其它操作系统所覆盖。
-- **boot** -   Duet bootstrap loader, which initialises UEFI environment on legacy BIOS firmwares and loads \texttt{OpenCore.efi} similarly to other bootstrap loaders. Modern Duet bootstrap loader will default to \texttt{OpenCore.efi} on the same partition when present.
+- **boot** - Duet bootstrap loader，用于在传统 BIOS 固件上模拟 UEFI 环境、并加载 `OpenCore.efi`。
 - **ACPI** - 用于存储 ACPI 补充信息的目录。
 - **Drivers** - 用于存储 UEFI 补充驱动程序的目录。
 - **Kexts** - 用于存储内核驱动（kext）补充的目录。
@@ -56,7 +56,7 @@ ESP
 - **opencore-YYYY-MM-DD-HHMMSS.txt** - OpenCore 日志文件。
 - **panic-YYYY-MM-DD-HHMMSS.txt** - Kernal Panic 日志文件。
 
-*Note*: It is not guaranteed that paths longer than `OC_STORAGE_SAFE_PATH_MAX` (128 characters including `0`-termnator) will be accessible within OpenCore.
+*注*: 受限于固件的实现行为，OpenCore 可能无法访问绝对路径长度大于 `OC_STORAGE_SAFE_PATH_MAX`（默认值为 128）的目录。
 
 ## 3.2 安装和升级
 

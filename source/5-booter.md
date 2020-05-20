@@ -37,33 +37,33 @@ sudo pmset standby 0
 
 ### 5.2.1 MmioWhitelist
 
-**Type**: plist array
+**Type**: `plist array`
 **Description**: 设计为用 `plist dict` 值填充，用来描述在启用 `DevirtualiseMmio` 这个 Quirk 时特定固件能够运作的关键地址。详见下面的 MmioWhitelist Properties 章节。
 
 > 译者注：如果开机卡在 `PCI...` 可以尝试开启 Item 1 下的 Patch
 
 ### 5.2.2 Quirks
 
-**Type**: plist dict
+**Type**: `plist dict`
 **Description**: 应用下面的 Quirks 属性部分中所述的各个引导 Quirk。
 
 ## 5.3 MmioWhitelist 属性
 
 ### 5.3.1 Address
 
-**Type**: plist integer
+**Type**: `plist integer`
 **Failsafe**: 0
 **Description**: 指排除在外的 MMIO 地址, 其内存描述符（Memory Descriptor）会被 `DevirtualiseMmio` 虚拟化（不变）。该值所在的区域会被分配一个虚拟地址，因此在操作系统运行期间，固件能够直接与该内存区域进行通信。
 
 ### 5.3.2 Comment
 
-**Type**: plist string
+**Type**: `plist string`
 **Failsafe**: Empty string
 **Description**: 用于为条目提供人类可读参考的任意 ASCII 字符串（译者注：即注释）。
 
 ### 5.3.3 Enabled
 
-**Type**: plist boolean
+**Type**: `plist boolean`
 **Failsafe**: false
 **Description**: 除非设置为 `true`，否则此地址将被虚拟化。
 

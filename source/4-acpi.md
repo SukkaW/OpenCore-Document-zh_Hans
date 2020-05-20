@@ -1,9 +1,9 @@
 ---
 title: 4. ACPI
-description: 加载、屏蔽、修补 ACPI（DSDT/SSDT）表（待翻译）
+description: 加载、屏蔽、修补 ACPI（DSDT/SSDT）表
 type: docs
 author_info: 由 Sukka 整理、由 Sukka、derbalkon 翻译。感谢黑果小兵提供的参考资料
-last_updated: 2020-04-23
+last_updated: 2020-05-20
 ---
 
 ## 4.1 简介
@@ -20,9 +20,9 @@ ACPI（Advanced Configuration and Power Interface，高级配置和电源接口�
 - Add
 - Quirks
 
-Applying the changes globally resolves the problems of incorrect operating system detection, which is not possible before the operating system boots according to the ACPI specification, operating system chainloading, and harder ACPI debugging. For this reason it may be required to carefully use `\_OSI` method when writing the changes.
+为了解决操作系统检测的问题，所有对 ACPI 的更改会在所有操作系统上生效。但是在某些场景下（ACPI 编写不规范、操作系统链式引导启动、ACPI 调试）会出现问题。因此在修补 ACPI 时，需要使用 `\_OSI` 方法。
 
-Applying the patches early makes it possible to write so called `proxy` patches, where the original method is patched in the original table and is implemented in the patched table.
+在系统引导前加载补丁使得编写「代理」补丁成为可能 —— 「代理」补丁即通过重命名的方法修补 DSDT 中的原始行为，然后通过 SSDT 注入同名的行为进行替代。
 
 ## 4.2 属性列表
 
@@ -206,7 +206,7 @@ Applying the patches early makes it possible to write so called `proxy` patches,
 
 TianoCore 源文件 [AcpiAml.h](https://github.com/acidanthera/audk/blob/master/MdePkg/Include/IndustryStandard/AcpiAml.h) 可能会对于理解 ACPI 操作码有所帮助。
 
-*Note*: Patches of different `Find` and `Replace` lengths are unsupported as they may corrupt ACPI tables and make you system unstable due to area relocation. If you need such changes you may utilities `proxy` patching or `NOP` the remaining area.
+*注*：`Find` 和 `Replace` 的长度 **必须完全一样**，否则 ACPI 表可能会被破坏、导致系统不稳定。必要时请使用「代理」补丁的方法、或使用 `NOP` 填充剩余区域
 
 ## 4.6 Quirks 属性
 
