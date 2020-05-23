@@ -187,14 +187,14 @@
         <div class="hero-body">
             <h1 class="title">8. Misc</h1>
             
-                <p class="subtitle">关于 OpenCore 行为的其他配置（待翻译）</p>
+                <p class="subtitle">关于 OpenCore 行为的其他配置</p>
             
             
                 
                     <p><small>由 xMuu、Sukka 整理、由 Sukka、derbalkon 翻译。部分翻译参考黑果小兵的「精解 OpenCore」</small></p>
                 
                 
-                    <p><small>本页面最后更新于 2020 年 05 月 19 日</small></p>
+                    <p><small>本页面最后更新于 2020 年 05 月 23 日</small></p>
                 
                 <br>
             
@@ -207,63 +207,62 @@
         <div class="column is-9-tablet doku-document-wrapper">
             <div class="content">
                 <h2 id="8-1-Introduction"><a href="#8-1-Introduction" class="headerlink" title="8.1 Introduction"></a>8.1 Introduction</h2><p>本部分包含关于 OpenCore 行为的其他配置，以及不能被分类到其它章节的配置条目的说明。</p>
-<p>OpenCore tries to follow <code>bless</code> model also known as <code>Apple Boot Policy</code>. The primary specialty of <code>bless</code> model is to allow embedding boot options within the file system (and be accessible through a specialised driver) as well as supporting a broader range of predefined boot paths compared to the removable media list found in the UEFI specification.</p>
-<p>Each partition will only be used for booting when it corresponds to <code>Scan policy</code>: a set of restrictions to only use partitions with specific file systems and from specific device types. Scan policy behaviour is discussed in <code>ScanPolicy</code> property description.</p>
-<p>Scan process starts with obtaining all the partitions filtered with <code>Scan policy</code>. Each partition may produce multiple primary and alternate options. Primary options describe operating systems installed on this media. Alternate options describe recovery options for the operating systems on the media. It is possible for alternate options to exist without primary options and vice versa. Be warned that the options may not necessarily describe the operating systems on the same partition. Each primary and alternate option can be an auxiliary option or not, refer to <code>HideAuxiliary</code> for more details. Algorithm to determine boot options behaves as follows:</p>
+<p>OpenCore 尽可能地遵循 <code>bless</code> 模式，即 <code>Apple Boot Policy</code>。<code>bless</code> 模式的主要特点是允许在文件系统中嵌入启动选项（而且能通过专门的驱动程序访问），同时，相比于 UEFI 规范中的可移动媒体列表，它还支持更多的预定义启动路径。</p>
+<p>只有当分区符合 <code>Scan policy</code> 时才能被启动（<code>Scan policy</code> 是一组限制条件，能够使其仅使用特定文件系统和特定设备类型的分区）。具体的扫描策略（<code>Scan policy</code>）将在下面的 <code>ScanPolicy</code> 属性中阐述。</p>
+<p>扫描过程从获取 <code>Scan policy</code> 过滤过的分区开始。每个分区可能会产生多个主选项和备用选项。主选项描述的是安装在这个介质上的操作系统。备用选项描述的是介质上的操作系统的恢复项。备用选项可以在没有主选项的情况下存在，反之亦然。请注意，这些选项描述的操作系统不一定都在同一个分区上。每个主选项和备用选项都可以作为辅助选项（Auxiliary Option），也可以不作为辅助选项，具体细节参考下面的 <code>HideAuxiliary</code> 章节。用来确定启动选项的算法如下：</p>
 <ol>
-<li><p>Obtain all available partition handles filtered by <code>Scan policy</code> (and driver availability).</p>
+<li><p>通过 <code>Scan policy</code>（和驱动可用性）过滤，获取所有可用的分区句柄。</p>
 </li>
-<li><p>Obtain all available boot options from <code>BootOrder</code> UEFI variable.</p>
+<li><p>从 <code>BootOrder</code> UEFI 变量中，获取所有可用的启动选项。</p>
 </li>
-<li><p>For each found boot option:</p>
+<li><p>对于每个找到的启动选项：</p>
 <ul>
-<li>Retrieve device path of the boot option.</li>
-<li>Perform fixups (e.g. NVMe subtype correction) and expansion (e.g. for Boot Camp) of the device path.</li>
-<li>Obtain device handle by locating device path of the resulting device path (ignore it on failure).</li>
-<li>Find device handle in the list of partition handles (ignore it if missing).</li>
-<li>For disk device paths (not specifying a bootloader) execute <code>bless</code> (may return more than 1 entry).</li>
-<li>For file device paths check presence on the file system directly.</li>
-<li>Exclude options with blacklisted filenames (refer to <code>BlacklistAppleUpdate</code> option).</li>
-<li>On OpenCore boot partition exclude all OpenCore bootstrap files by header checks.</li>
-<li>Mark device handle as <em>used</em> in the list of partition handles if any.</li>
-<li>Register the resulting entries as primary options and determine their types. The option will become auxiliary for some types (e.g. Apple HFS recovery).</li>
+<li>检索该启动选项的设备路径。</li>
+<li>执行对设备路径的修复（如 NVMe 子类型修复）和扩展（如 Boot Camp）。</li>
+<li>通过定位到所产生的设备路径，来获取句柄（失败时忽略）。</li>
+<li>在分区句柄列表中找到设备句柄（缺失时忽略）。</li>
+<li>对磁盘设备路径（不指定引导程序）执行 <code>bless</code>（可能返回不止一个条目）。</li>
+<li>对文件设备路径直接检查其文件系统。</li>
+<li>排除所有带有黑名单文件名的选项（参考 <code>BlacklistAppleUpdate</code> 选项）。</li>
+<li>在 OpenCore 启动分区中，通过 Header Check 排除所有 OpenCore Bootstrap 文件。</li>
+<li>如果有分区句柄列表，则在列表中将设备句柄标记为 <em>used</em>。</li>
+<li>将生成的条目注册为主选项，并确定他们的类型。某些类型的选项作为辅助选项（如 Apple HFS Recovery）。</li>
 </ul>
 </li>
-<li><p>For each partition handle:</p>
+<li><p>对于每个分区句柄：</p>
 <ul>
-<li>If partition handle is marked as <em>unused</em> execute <code>bless</code> primary option list retrieval. In case <code>BlessOverride</code> list is set, not only standard <code>bless</code> paths will be found but also custom ones.</li>
-<li>Exclude options with blacklisted filenames (refer to</li>
-<li><span>BlacklistAppleUpdate</span> option).</li>
-<li>On OpenCore boot partition exclude all OpenCore bootstrap files by header checks.</li>
-<li>Register the resulting entries as primary options and determine their types if found. The option will become auxiliary for some types (e.g. Apple HFS recovery).</li>
-<li>If partition already has primary options of <code>Apple Recovery</code> type proceed to next handle.</li>
-<li>Lookup alternate entries by <code>bless</code> recovery option list retrieval and predefined paths.</li>
-<li>Register the resulting entries as alternate auxiliary options<br>and determine their types if found.</li>
+<li>如果分区句柄被标记为 <em>unused</em>，则执行 <code>bless</code> 主选项列表检索。如果设置了 <code>BlessOverride</code> 列表，那么不仅能找到标准的 <code>bless</code> 路径，还能找到自定义的路径。</li>
+<li>排除带有黑名单文件名的选项（参考 <code>BlacklistAppleUpdate</code> 选项）。</li>
+<li>在 OpenCore 启动分区中，通过 Header Check 排除所有 OpenCore Bootstrap 文件。</li>
+<li>将生成的条目注册为主选项，并确定他们的类型。某些类型的选项作为辅助选项（如 Apple HFS Recovery）。</li>
+<li>如果分区已经具有来 <code>Apple Recovery</code> 类型的主选项，则继续处理下一个句柄。</li>
+<li>通过 <code>bless</code> 恢复选项列表检索和预定义路径，来查找备用条目。</li>
+<li>将生成的条目注册为备用辅助选项，并确定它们的类型。</li>
 </ul>
 </li>
-<li><p>Custom entries and tools are added as primary options without any checks with respect to <code>Auxiliary</code>.</p>
+<li><p>把自定义条目和工具添加为主选项，不做有关 <code>Auxiliary</code> 的任何检查。</p>
 </li>
-<li><p>System entries (e.g. <code>Reset NVRAM</code>) are added as primary auxiliary options.</p>
+<li><p>把系统条目（如 <code>Reset NVRAM</code>）添加为主要的辅助选项。</p>
 </li>
 </ol>
-<p>The display order of the boot options in the picker and the boot process are determined separately from the scanning algorithm. The display order as follows:</p>
+<p>启动选择器中的启动选项的显示顺序和启动过程，是通过扫描算法分别来确定的。显示顺序如下：</p>
 <ul>
-<li>Alternate options follow corresponding primary options, i.e. Apple recovery will be following the relevant macOS option whenever possible.</li>
-<li>Options will be listed in file system handle firmware order to maintain an established order across the reboots regardless of the chosen operating system for loading.</li>
-<li>Custom entries, tools, and system entries will be added after all other options.</li>
-<li>Auxiliary options will only show upon entering “Advanced Mode” in the picker (usually by pressing “Space”).</li>
+<li>备用选项跟随主选项，即，Apple Recovery 会尽可能地跟随相关的 macOS 选项。</li>
+<li>选项会按照文件系统句柄固件的顺序列出，以便在整个启动过程中保持一个既定的顺序，不因加载操作系统的不同而变化。</li>
+<li>自定义条目、工具和系统条目会被添加到所有选项之后。</li>
+<li>辅助选项只有在进入「高级模式」后才会显示（一般是按 <code>空格</code> 键）。</li>
 </ul>
-<p>The boot process is as follows:</p>
+<p>启动过程如下：</p>
 <ul>
-<li>Try looking up first valid primary option through <code>BootNext</code> UEFI variable.</li>
-<li>On failure looking up first valid primary option through <code>BootOrder</code> UEFI variable.</li>
-<li>Mark the option as the default option to boot.</li>
-<li>Boot option through the picker or without it depending on the <code>ShowPicker</code> option.</li>
-<li>Show picker on failure otherwise.</li>
+<li>尝试通过 <code>BootNext</code> UEFI 变量查找第一个有效的主选项。</li>
+<li>如果失败，则通过 <code>BootOrder</code> UEFI 变量继续查找。</li>
+<li>将该选项标记为默认启动选项。</li>
+<li>是否通过启动选择器来启动选项，取决于 <code>ShowPicker</code> 选项的设置。</li>
+<li>如果还失败，则显示启动选择器。</li>
 </ul>
-<p><em>Note 1</em>: This process is meant to work reliably only when <code>RequestBootVarRouting</code> option is enabled or the firmware does not control UEFI boot options (<code>OpenDuetPkg</code> or custom BDS). Without <code>BootProtect</code> it also is possible that other operating systems overwrite OpenCore, make sure to enable it if you plan to use them.</p>
-<p><em>Note 2</em>: UEFI variable boot options’ boot arguments will be dropped if present as they may contain arguments compromising the operating system, which is undesired once secure boot is enabled.</p>
-<p><em>Note 3</em>: Some operating systems, namely Windows, will create their boot option and mark it as top most upon first boot or after NVRAM Reset. When this happens default boot entry choice will update till next manual reconfiguration.</p>
+<p><em>注 1</em>：这个过程只有在启用了 <code>RequestBootVarRouting</code> 选项，或者固件不控制 UEFI 启动选项（如 <code>OpenDuetPkg</code> 或其他自定义 BDS）时，才会可靠地工作。如果不启用 <code>BootProtect</code>，那么其他操作系统有可能会覆盖 OpenCore，如果你打算使用 OpenCore，请确保启用这个选项。</p>
+<p><em>注 2</em>：UEFI 变量引导选项的引导参数，如果存在的话则会被丢弃，因为它们包含的一些参数可能会对操作系统产生不利影响，一旦启用了安全引导，这种影响是我们不希望看到的。</p>
+<p><em>注 3</em>：某些操作系统（说的就是你，Windows）会在第一次启动时，或 NVRAM 重置后，创建他们的启动选项，并将其标记为最上面的选项。这种情况发生时，默认的启动条目选择将会更新，直到下一次重新手动配置。</p>
 <h2 id="8-2-Properties"><a href="#8-2-Properties" class="headerlink" title="8.2 Properties"></a>8.2 Properties</h2><h3 id="Boot"><a href="#Boot" class="headerlink" title="Boot"></a><code>Boot</code></h3><p><strong>Type</strong>: <code>plist dict</code><br><strong>Description</strong>: 应用本章节 Boot Properties 中的引导相关设置。</p>
 <h3 id="BlessOverride"><a href="#BlessOverride" class="headerlink" title="BlessOverride"></a><code>BlessOverride</code></h3><p><strong>Type</strong>: <code>plist array</code><br><strong>Description</strong>: 通过 Bless Model 添加自定义扫描路径。</p>
 <p>设计为填充 <code>plist string</code> 条目，其中包含指向自定义引导程序的绝对 UEFI 路径，例如，用于 Microsoft 引导程序的 <code>\EFI\Microsoft\Boot\bootmgfw.efi</code>。这允许引导选择器自动发现异常的引导路径。在设计上它们等效于预定义的 Bless 路径（如 <code>\System\Library\CoreServices\boot.efi</code>），但与预定义的 Bless 路径不同，它们具有最高优先级。</p>
@@ -386,10 +385,10 @@
 <p><em>注 3</em>：有些 Mac 的 GOP 很棘手，可能很难进入 Apple 启动选择器。要解决这个问题，可以在不加载 GOP 的情况下 bless OpenCore 的 <code>BootKicker</code> 实用工具。</p>
 <h2 id="8-4-Debug-Properties"><a href="#8-4-Debug-Properties" class="headerlink" title="8.4 Debug Properties"></a>8.4 Debug Properties</h2><h3 id="AppleDebug"><a href="#AppleDebug" class="headerlink" title="AppleDebug"></a><code>AppleDebug</code></h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: <code>false</code><br><strong>Description</strong>: 启用将 <code>boot.efi</code> 调试日志保存到 OpenCore 日志。</p>
 <p><em>注</em>：此项仅适用于 10.15.4 和更新版本。</p>
-<h3 id="ApplePanic"><a href="#ApplePanic" class="headerlink" title="ApplePanic"></a><code>ApplePanic</code></h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: <code>false</code><br><strong>Description</strong>: Save macOS kernel panic to OpenCore root partition.</p>
-<p>The file is saved as <code>panic-YYYY-MM-DD-HHMMSS.txt</code>. It is strongly recommended to have <code>keepsyms=1</code> boot argument to see debug symbols in the panic log. In case it was not present <code>kpdescribe.sh</code> utility (bundled with OpenCore) may be used to partially recover the stacktrace.</p>
-<p>Development and debug kernels produce more helpful kernel panics. Consider downloading and installing <code>KernelDebugKit</code> from <a href="https://developer.apple.com" target="_blank" rel="noopener">developer.apple.com</a> when debugging a problem. To activate a development kernel you will need to add a <code>kcsuffix=development</code> boot argument. Use <code>uname -a</code> command to ensure that your current loaded kernel is a development (or a debug) kernel.</p>
-<p>In case OpenCore kernel panic saving mechanism was not used, kernel<br>panics may still be found in <code>/Library/Logs/DiagnosticReports</code><br>directory. Starting with macOS Catalina kernel panics are stored in JSON<br>format, so they need to be preprocessed before passing to<br><code>kpdescribe.sh</code>:</p>
+<h3 id="ApplePanic"><a href="#ApplePanic" class="headerlink" title="ApplePanic"></a><code>ApplePanic</code></h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: <code>false</code><br><strong>Description</strong>: 将 macOS Kernel Panic 保存到 OpenCore 根分区。</p>
+<p>保存的文件为 <code>panic-YYYY-MM-DD-HHMMSS.txt</code>。强烈建议使用 <code>keepsyms=1</code> 引导参数来查看 Panic 日志中的调试符号。如果没有，可以用 <code>kpdescribe.sh</code> 实用程序（OpenCore 绑定）来部分恢复堆栈跟踪。</p>
+<p>开发者内核和调试内核会产生更有用的 Kernel Panic。调试的时候，可以考虑从 <a href="https://developer.apple.com" target="_blank" rel="noopener">developer.apple.com</a> 下载并安装 <code>KernelDebugKit</code>。如果要激活开发者内核，需要添加一个 <code>kcsuffix=development</code> 引导参数。使用 <code>uname -a</code> 命令来确保你当前加载的内核是一个开发者（或调试）内核。</p>
+<p>如果没有实用 OpenCore 的 Kernel Panic 保存机制，仍然可以在 <code>/Library/Logs/DiagnosticReports</code> 目录下找到 Panic 日志。从 macOS Catalina 开始，Kernel Panic 会以 JSON 格式储存，所以在传递给 <code>kpdescribe.sh</code> 之前需要预处理：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">cat Kernel.panic | grep macOSProcessedStackshotData | python -c <span class="hljs-string">'import json,sys;print(json.load(sys.stdin)["macOSPanicString"])'</span><br></code></pre></td></tr></table></figure>
 
 <h3 id="DisableWatchDog"><a href="#DisableWatchDog" class="headerlink" title="DisableWatchDog"></a><code>DisableWatchDog</code></h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: <code>false</code><br><strong>Description</strong>: 某些固件可能无法成功快速启动操作系统，尤其是在调试模式下，这会导致看门狗定时器中止引导过程。此选项关闭看门狗定时器，用于排错。</p>

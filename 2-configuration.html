@@ -194,7 +194,7 @@
                     <p><small>由 Sukka 整理，由 Sukka、derbalkon 翻译</small></p>
                 
                 
-                    <p><small>本页面最后更新于 2020 年 03 月 28 日</small></p>
+                    <p><small>本页面最后更新于 2020 年 05 月 23 日</small></p>
                 
                 <br>
             
@@ -208,19 +208,22 @@
             <div class="content">
                 <h2 id="2-1-配置术语"><a href="#2-1-配置术语" class="headerlink" title="2.1 配置术语"></a>2.1 配置术语</h2><ul>
 <li><code>OC config</code> — OpenCore 的配置文件，格式为 plist，文件名为 <code>config.plist</code>。OpenCore 的配置文件具有可扩展性，并被设计为具有多个命名空间的结构。每个命名空间下允许具有 plist array 或 plist dictionary，在本文档相应部分中对其进行了描述</li>
-<li><code>valid key</code> — 现在以及未来本文档中描述的 OC Config 中的 plist key object。除了明确描述的 valid keys 以外，以 <code>#</code> 符号开头的 key（如 <code>#Hello</code>）也将被视为 valid key，并被表示为注释。虽然表示为注释的值会被丢弃，但是它们仍然是 valid key。其他的 plist key 都是无效、不合法的，它们的存在可能会导致未定义、非预期的行为。</li>
-<li><code>valid value</code> — 指本文档中描述的 OC Config 中的有效、合法的 <code>plist object</code>，并能匹配一些特定的 <code>plist object</code> 描述中所有附加条件（若有）。</li>
-<li><code>invalid value</code> — 指本文档中描述的 OC Config 中的有效 <code>plist object</code>，但属于其他 <code>plist type</code>、与特定 <code>plist object</code> 描述中附加条件不符（例如 value range）或者在对应集合中缺如。<code>invalid value</code> 会被以不确定的方式读取为此 <code>plist obejct</code> 的任何可能值（即，重启前后的值可能会不同），可能报错也可能不报错。尽管读取 <code>invalid value</code> 相当于读取某些已定义的 <code>valid value</code>，但是将不兼容的值应用于主机系统可能会产生未定义、非预期的行为。</li>
-<li><code>optional value</code> — 指在本文档描述的 OC Config 中缺如、以特定 <code>plist object</code> 描述提供的特定方式（区别于 <code>invalid value</code>）读取的有效值。而其他情况下（译者注：未提供读取方式）的 <code>invalid value</code> 仍然会被应用。value 除非明确标记为 <code>optional value</code>，否则必须存在，若缺如则读取为 <code>invalid value</code>。</li>
-<li><code>fatal behaviour</code> — 导致引导终止的行为。对 <code>fatal behaviour</code> 的实现要求必须停止引导过程，直到下一次主机系统引导为止。允许，但不强制要求执行冷重启或显示任何警告消息。</li>
+<li><code>valid key</code> — OC Config 中的 plist key object。除了明确描述的 valid key 以外，以 <code>#</code> 符号开头的值（如 <code>#Hello</code>）也将被视为 valid key，并被表示为注释。虽然表示为注释的值会被丢弃，但是它们仍然是 valid key。其他的 plist key 都是无效、不合法的，它们的存在可能会导致未定义、非预期的行为。</li>
+<li><code>valid value</code> — 有效、合法的 <code>plist object</code>，并能匹配一些特定的 <code>plist object</code> 描述中所有附加条件（若有）。</li>
+<li><code>invalid value</code> — 指 <code>plist object</code> 本身是有效、合法的，但属于其他 <code>plist type</code>、与特定 <code>plist object</code> 描述中附加条件不符（例如 value range）或者在对应集合中缺如。<code>invalid value</code> 会被不确定的方式读取为这个 <code>plist obejct</code> 的任何可能值（即，重启前后的值可能会不同），可能报错也可能不报错。尽管读取 <code>invalid value</code> 相当于读取某些已定义的 <code>valid value</code>，但是将不兼容的值应用于主机系统可能会产生未定义、非预期的行为。</li>
+<li><code>optional value</code> — 可缺少，或以特定 <code>plist object</code> 描述提供的特定方式（区别于 <code>invalid value</code>）读取的有效值。而其他情况下（译者注：未提供读取方式）的 <code>invalid value</code> 仍然会被应用。value 除非被明确标记为 <code>optional value</code>，否则必须存在，如果缺少则会被读取为 <code>invalid value</code>。</li>
+<li><code>fatal behaviour</code> — 导致引导终止的行为。对 <code>fatal behaviour</code> 的实现，要求必须停止引导过程，直到下一次主机系统引导为止。允许，但不强制要求执行冷重启或显示任何警告消息。</li>
 <li><code>undefined behaviour</code> — 本文档中未定义的行为，通常是因为某一选项的特定配置、或某些值被忽略导致的。在这种情况下，其实现可能会采取包括 <code>fatal behaviour</code>，而这些行为一般都会对系统安全性产生负面影响。</li>
 </ul>
-<h2 id="2-2-配置处理"><a href="#2-2-配置处理" class="headerlink" title="2.2 配置处理"></a>2.2 配置处理</h2><p>如果 OpenCore 发现了 OC Config，则至少会被读取并处理一次。根据 OpenCore 的引导机制的不同，对于多个 OC Config 文件，OpenCore 可能会读取其中任何一个或数个。如果硬盘中没有 OC Config，OpenCore 将会使用可选值和无效值的规则。</p>
-<p>OC Config 有大小、嵌套、键数量的限制。OC Config 的大小不得超过 16 MB，嵌套层数不得超过 8 层，每个 plist object 中最多有 16384 个节点（一个 plist dictionary 将被计为一对节点）。不符合上述规则的 OC Config 文件将可能导致未定义、非预期的行为。常见的 OC Config 错误格式包括</p>
+<blockquote>
+<p>译者注：以上术语的相关描述仅限于本文档所指的 OC Config。</p>
+</blockquote>
+<h2 id="2-2-配置处理"><a href="#2-2-配置处理" class="headerlink" title="2.2 配置处理"></a>2.2 配置处理</h2><p>如果 OpenCore 发现了 OC Config，则至少会读取并处理一次。根据 OpenCore 的引导机制的不同，如果存在多个 OC Config 文件，OpenCore 可能会读取其中任何一个或数个。如果硬盘中没有 OC Config，OpenCore 将会使用可选值和无效值的规则。</p>
+<p>OC Config 有大小、嵌套和键值数量的限制。OC Config 的大小不得超过 16 MB，嵌套层数不得超过 8 层，每个 plist object 中最多有 16384 个节点（一个 plist dictionary 将被计为一对节点）。不符合上述规则的 OC Config 文件将可能导致未定义、非预期的行为。常见的 OC Config 错误格式包括：</p>
 <ul>
 <li>不符合 plist DTD</li>
 <li>存在本文档中没有记载的 plist object</li>
-<li>违反文件大小、嵌套层级和密钥数量的限制</li>
+<li>违反文件大小、嵌套层级和键值数量的限制</li>
 </ul>
 <p>我们建议（但非强制）遇到格式错误的 OC Config 时不停止加载、然后继续进行就好像 OC Config 不存在一样。为了是先前向兼容性，建议（但非强制）要求实现对采用无效值的行为进行警告。采用无效值的建议做法是在使用的情况下遵守以下规则：</p>
 <table>
@@ -270,9 +273,9 @@
 <li>UEFI</li>
 </ul>
 <blockquote>
-<p>译者注：对上述部分的介绍位于文档的第 4 至 11 章节。你可以在本网站左侧边栏中的目录中找到这些章节的入口。</p>
+<p>译者注：对上述部分的介绍位于文档的第 4 至 11 章节。可以在本网站左侧边栏中的目录中找到这些章节的入口。</p>
 </blockquote>
-<p><strong>注意</strong>：出于安全原因，目前大多数属性都有默认值（译者注：后续文档中以 <code>FailSafe</code> 字段呈现）。如果在配置项中未指定任何值，默认值将会生效。你不应该依赖默认值的功能，必须在配置中正确指定所有字段。</p>
+<p><strong>注意</strong>：为了保险起见，目前大多数属性都有默认值（译者注：后续文档中以 <code>FailSafe</code> 字段呈现）。如果在配置项中未指定任何值，默认值将会生效。不要依赖默认值，务必在配置中正确指定所有字段。</p>
 
             </div>
 
