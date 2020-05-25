@@ -3,7 +3,7 @@ title: 4. ACPI
 description: 加载、屏蔽、修补 ACPI（DSDT/SSDT）表
 type: docs
 author_info: 由 Sukka 整理、由 Sukka、derbalkon 翻译。感谢黑果小兵提供的参考资料
-last_updated: 2020-05-20
+last_updated: 2020-05-25
 ---
 
 ## 4.1 简介
@@ -215,6 +215,8 @@ TianoCore 源文件 [AcpiAml.h](https://github.com/acidanthera/audk/blob/master/
 **Type**: `plist boolean`
 **Failsafe**: false
 **Description**: 在 FADT 表中提供寄存器复位标志，用于修复旧硬件的重启和关机。除非需要，否则不建议启用。
+
+只有在传统硬件和少数笔记本上需要。这一 Quirk 也可以修复电源快捷键（译者注：<kbd>Command</kbd> + 电源键）。不建议启用，除非不启用就无法关机和重启。
 
 ### 4.6.2 NormalizeHeaders
 

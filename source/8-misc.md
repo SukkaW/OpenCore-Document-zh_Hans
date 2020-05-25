@@ -3,7 +3,7 @@ title: 8. Misc
 description: 关于 OpenCore 行为的其他配置（待翻译）
 type: docs
 author_info: 由 xMuu、Sukka 整理、由 Sukka、derbalkon 翻译。部分翻译参考黑果小兵的「精解 OpenCore」
-last_updated: 2020-05-19
+last_updated: 2020-05-25
 ---
 
 ## 8.1 Introduction
@@ -32,8 +32,7 @@ Scan process starts with obtaining all the partitions filtered with `Scan policy
 
 4. For each partition handle:
   - If partition handle is marked as *unused* execute `bless` primary option list retrieval. In case `BlessOverride` list is set, not only standard `bless` paths will be found but also custom ones.
-  - Exclude options with blacklisted filenames (refer to
-  - <span>BlacklistAppleUpdate</span> option).
+  - Exclude options with blacklisted filenames (refer to `BlacklistAppleUpdate` option).
   - On OpenCore boot partition exclude all OpenCore bootstrap files by header checks.
   - Register the resulting entries as primary options and determine their types if found. The option will become auxiliary for some types (e.g. Apple HFS recovery).
   - If partition already has primary options of `Apple Recovery` type proceed to next handle.
