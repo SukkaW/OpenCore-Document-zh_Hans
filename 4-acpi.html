@@ -194,7 +194,7 @@
                     <p><small>由 Sukka 整理、由 Sukka、derbalkon 翻译。感谢黑果小兵提供的参考资料</small></p>
                 
                 
-                    <p><small>本页面最后更新于 2020 年 05 月 20 日</small></p>
+                    <p><small>本页面最后更新于 2020 年 05 月 25 日</small></p>
                 
                 <br>
             
@@ -262,6 +262,7 @@
 <p>TianoCore 源文件 <a href="https://github.com/acidanthera/audk/blob/master/MdePkg/Include/IndustryStandard/AcpiAml.h" target="_blank" rel="noopener">AcpiAml.h</a> 可能会对于理解 ACPI 操作码有所帮助。</p>
 <p><em>注</em>：<code>Find</code> 和 <code>Replace</code> 的长度 <strong>必须完全一样</strong>，否则 ACPI 表可能会被破坏、导致系统不稳定。必要时请使用「代理」补丁的方法、或使用 <code>NOP</code> 填充剩余区域</p>
 <h2 id="4-6-Quirks-属性"><a href="#4-6-Quirks-属性" class="headerlink" title="4.6 Quirks 属性"></a>4.6 Quirks 属性</h2><h3 id="4-6-1-FadtEnableReset"><a href="#4-6-1-FadtEnableReset" class="headerlink" title="4.6.1 FadtEnableReset"></a>4.6.1 FadtEnableReset</h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: false<br><strong>Description</strong>: 在 FADT 表中提供寄存器复位标志，用于修复旧硬件的重启和关机。除非需要，否则不建议启用。</p>
+<p>只有在传统硬件和少数笔记本上需要。这一 Quirk 也可以修复电源快捷键（译者注：<kbd>Command</kbd> + 电源键）。不建议启用，除非不启用就无法关机和重启。</p>
 <h3 id="4-6-2-NormalizeHeaders"><a href="#4-6-2-NormalizeHeaders" class="headerlink" title="4.6.2 NormalizeHeaders"></a>4.6.2 NormalizeHeaders</h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: false<br><strong>Description</strong>: 清理 ACPI 表头字段以解决 macOS ACPI 实现错误导致的引导崩溃<br><em>参考</em>: 由 Alex James（theracermaster）在调试 AppleACPIPlatform 时发现。从 macOS Mojave (10.14) 开始，这个错误已经被修复。</p>
 <h3 id="4-6-3-RebaseRegions"><a href="#4-6-3-RebaseRegions" class="headerlink" title="4.6.3 RebaseRegions"></a>4.6.3 RebaseRegions</h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: false<br><strong>Description</strong>: 尝试试探性地重定位 ACPI 内存区域。不建议启用这一选项，除非你需要自定义 DSDT。</p>
 <p>ACPI 表通常由底层固件动态生成。在与位置无关的代码中，ACPI 表可能包含用于设备配置的 MMIO 区域的物理地址，通常按区域（例如 OperationRegion）分组。 更改固件设置或硬件配置，升级或修补固件不可避免地会导致动态生成的 ACPI 代码发生变化，这有时会导致上述 OperationRegion 结构中的地址发生变化。</p>

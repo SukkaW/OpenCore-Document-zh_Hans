@@ -194,7 +194,7 @@
                     <p><small>由 xMuu、Sukka 整理，由 Sukka、derbalkon 翻译</small></p>
                 
                 
-                    <p><small>本页面最后更新于 2020 年 05 月 19 日</small></p>
+                    <p><small>本页面最后更新于 2020 年 05 月 25 日</small></p>
                 
                 <br>
             
@@ -215,7 +215,11 @@
 <p>大多数字段在 SMBIOS 中指定覆盖，并且这些字段的名称符合 EDK2 <a href="https://github.com/acidanthera/audk/blob/master/MdePkg/Include/IndustryStandard/SmBios.h" target="_blank" rel="noopener">SmBios.h</a> 头文件。但是，在 Data Hub 和 NVRAM 中有几个重要的字段。有些值可以在多个字段 和/或 目标中找到，因此有两种方法可以控制它们的更新过程：手动指定所有值（默认方法）；半自动。</p>
 <p>可以使用 <a href="http://www.nongnu.org/dmidecode" target="_blank" rel="noopener">dmidecode</a> 工具来检查 SMBIOS 内容。你可以从 <a href="https://github.com/acidanthera/dmidecode/releases" target="_blank" rel="noopener">Acidanthera/dmidecode</a> 下载 Acidanthera 制作的增强版。</p>
 <h2 id="10-1-Properties"><a href="#10-1-Properties" class="headerlink" title="10.1 Properties"></a>10.1 Properties</h2><h3 id="1-Automatic"><a href="#1-Automatic" class="headerlink" title="1. Automatic"></a>1. <code>Automatic</code></h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: <code>false</code><br><strong>Description</strong>: 基于 <code>Generic</code> 属性而不是 <code>DataHub</code>、<code>NVRAM</code> 和 <code>SMBIOS</code> 属性生成机型信息。</p>
-<p>当 <code>Generic</code> 属性足够灵活的时候，这一选项将会变得非常有用。启用这一选项后，<code>DataHub</code>、<code>NVRAM</code> 和 <code>SMBIOS</code> 的数据不会再被使用。</p>
+<p>当 <code>Generic</code> 属性足够灵活的时候，这一选项将会变得非常有用：</p>
+<ul>
+<li>When enabled <code>SMBIOS</code>、<code>DataHub</code>、<code>PlatformNVRAM</code> is used.</li>
+<li>When disabled <code>Generic</code> is not used.</li>
+</ul>
 <h3 id="2-UpdateDataHub"><a href="#2-UpdateDataHub" class="headerlink" title="2. UpdateDataHub"></a>2. <code>UpdateDataHub</code></h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: <code>false</code><br><strong>Description</strong>: 更新 Data Hub 字段。根据 <code>Automatic</code> 的值，这些字段会从 <code>Generic</code> 或 <code>DataHub</code> 中读取。</p>
 <h3 id="3-UpdateNVRAM"><a href="#3-UpdateNVRAM" class="headerlink" title="3. UpdateNVRAM"></a>3. <code>UpdateNVRAM</code></h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: <code>false</code><br><strong>Description</strong>: 是否更新 NVRAM 中关于机型信息的相关字段。</p>
 <p>根据 <code>Automatic</code> 的值，这些字段会从 <code>Generic</code> 或 <code>PlatformNVRAM</code> 中读取。所有其他字段都将在 <code>NVRAM</code> 部分中指定。</p>
