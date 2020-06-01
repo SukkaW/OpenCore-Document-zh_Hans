@@ -194,7 +194,7 @@
                     <p><small>由 Sukka 整理，由 Sukka、derbalkon 翻译。</small></p>
                 
                 
-                    <p><small>本页面最后更新于 2020 年 05 月 19 日</small></p>
+                    <p><small>本页面最后更新于 2020 年 06 月 01 日</small></p>
                 
                 <br>
             
@@ -250,16 +250,20 @@
 <li>对不支持的 CPU 型号启用支持。</li>
 <li>对不支持的 CPU Variant 启用 XCPM 支持。</li>
 </ul>
-<p>通常来讲只需要处理 <code>EAX</code> 的值，因为它代表完整的 CPUID。剩余的字节要留为 0。字节顺序是小字节序（Little Endian），比如 <code>A9 06 03 00</code> 代表 CPUID <code>0x0306A9</code> (Ivy Bridge)。</p>
+<p>通常来讲只需要处理 <code>EAX</code> 的值，因为它代表完整的 CPUID。剩余的字节要留为 0。字节顺序是小字节序（Little Endian），比如 <code>C3 06 03 00</code> 代表 CPUID <code>0x0306C3</code> (Haswell)。</p>
 <p>推荐使用下面的组合启用 XCPM 支持：</p>
 <ul>
-<li><p>Haswell-E (<code>0x306F2</code>) to Haswell (<code>0x0306C3</code>):</p>
+<li><p>Haswell-E (<code>0x0306F2</code>) to Haswell (<code>0x0306C3</code>):</p>
 <p><code>Cpuid1Data</code>: <code>C3 06 03 00 00 00 00 00 00 00 00 00 00 00 00 00</code><br><code>Cpuid1Mask</code>: <code>FF FF FF FF 00 00 00 00 00 00 00 00 00 00 00 00</code></p>
 </li>
 <li><p>Broadwell-E (<code>0x0406F1</code>) to Broadwell (<code>0x0306D4</code>):<br><code>Cpuid1Data</code>: <code>D4 06 03 00 00 00 00 00 00 00 00 00 00 00 00 00</code><br><code>Cpuid1Mask</code>: <code>FF FF FF FF 00 00 00 00 00 00 00 00 00 00 00 00</code></p>
 </li>
 </ul>
-<p>进一步解释参阅 <a href="https://github.com/acidanthera/bugtracker/issues/365" target="_blank" rel="noopener">acidanthera/bugtracker#365</a>。Haswell+ 低端架构请看 <code>Special NOTES</code>。</p>
+<p>请记住，目前以下配置并不被兼容的（至少还没有人成功过）：</p>
+<ul>
+<li>对于消费级的 Ivy Bridge（<code>0x0306A9</code>），苹果禁用了 XCPM 并推荐用户使用传统的电源管理。如果要使用这一选项，你还需要手动添加 <code>_xcpm_patch</code> 二进制修补以强制启用 XCPM。</li>
+<li>低端处理器（如 Haswell+ 奔腾）不被 macOS 支持。如果要启用这些 CPU 请参阅 <a href="https://github.com/acidanthera/bugtracker/issues/365" target="_blank" rel="noopener">acidanthera/bugtracker#365</a> 中的 <code>Special NOTES</code> 相关内容。</li>
+</ul>
 <h3 id="7-5-2-Cpuid1Mask"><a href="#7-5-2-Cpuid1Mask" class="headerlink" title="7.5.2 Cpuid1Mask"></a>7.5.2 <code>Cpuid1Mask</code></h3><p><strong>Type</strong>: <code>plist data</code>, 16 bytes<br><strong>Failsafe</strong>: All zero<br><strong>Description</strong>: <code>Cpuid1Data</code> 中激活的 bit 的位掩码。</p>
 <p>当每个 <code>Cpuid1Mask</code> bit 都设置为 <code>0</code> 时将使用原始的 CPU bit，否则取 <code>Cpuid1Data</code> 的值。</p>
 <h2 id="7-6-Patch-属性"><a href="#7-6-Patch-属性" class="headerlink" title="7.6 Patch 属性"></a>7.6 Patch 属性</h2><h3 id="7-6-1-Base"><a href="#7-6-1-Base" class="headerlink" title="7.6.1 Base"></a>7.6.1 <code>Base</code></h3><p><strong>Type</strong>: <code>plist string</code><br><strong>Failsafe</strong>: Empty string<br><strong>Description</strong>: 通过获取所提供的 Symbol 名称的地址，来选择 Symbol 匹配的 Base 进行补丁查找（或直接替换）。可以设置为空字符串以忽略。</p>

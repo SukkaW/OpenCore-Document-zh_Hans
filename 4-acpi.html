@@ -194,7 +194,7 @@
                     <p><small>由 Sukka 整理、由 Sukka、derbalkon 翻译。感谢黑果小兵提供的参考资料</small></p>
                 
                 
-                    <p><small>本页面最后更新于 2020 年 05 月 25 日</small></p>
+                    <p><small>本页面最后更新于 2020 年 06 月 01 日</small></p>
                 
                 <br>
             
@@ -217,6 +217,10 @@
 </ul>
 <p>为了解决操作系统检测的问题，所有对 ACPI 的更改会在所有操作系统上生效。但是在某些场景下（ACPI 编写不规范、操作系统链式引导启动、ACPI 调试）会出现问题。因此在修补 ACPI 时，需要使用 <code>\_OSI</code> 方法。</p>
 <p>在系统引导前加载补丁使得编写「代理」补丁成为可能 —— 「代理」补丁即通过重命名的方法修补 DSDT 中的原始行为，然后通过 SSDT 注入同名的行为进行替代。</p>
+<p>OpenCore、WhateverGreen、VirtualSmc、VoodooPS2 的 GitHub 仓库中都包含了部分 SSDT 和其他 ACPI 修补的方法。在 AppleLife 的 <a href="https://applelife.ru/forums/xakintosh.67" target="_blank" rel="noopener">Laboratory</a> 板块、<a href="https://applelife.ru/forums/dsdt.129" target="_blank" rel="noopener">DSDT</a> 板块提供了不少教程和样例（如 <a href="https://applelife.ru/posts/498967" target="_blank" rel="noopener">笔记本电池修补教程</a>）。<a href="https://dortania.github.io" target="_blank" rel="noopener">Dortania</a> 也编写了许多 <a href="https://dortania.github.io/Getting-Started-With-ACPI" target="_blank" rel="noopener">ACPI 有关的教程</a>。但是请注意，这些教程和 OpenCore 无关，他们提供的解决方法也不一定有用。</p>
+<blockquote>
+<p>译者注：对于中国黑苹果玩家，强烈推荐 <a href="https://github.com/daliansky/OC-little" target="_blank" rel="noopener">OC-little</a> 项目，提供了众多 SSDT 范例和相关指导；笔记本用户电池修补请参考 <a href="https://xstar-dev.github.io/hackintosh_advanced/Guide_For_Battery_Hotpatch.html" target="_blank" rel="noopener">这篇教程</a>。</p>
+</blockquote>
 <h2 id="4-2-属性列表"><a href="#4-2-属性列表" class="headerlink" title="4.2 属性列表"></a>4.2 属性列表</h2><h3 id="4-2-1-Add"><a href="#4-2-1-Add" class="headerlink" title="4.2.1 Add"></a>4.2.1 <code>Add</code></h3><p><strong>Type</strong>: <code>plist array</code><br><strong>Failsafe</strong>: Empty<br><strong>Description</strong>: 从 <code>OC/ACPI</code> 目录加载指定的 ACPI 表。</p>
 <p>设计为用 <code>plist dict</code> 值填充以描述每个块级项目。请参阅下面 <a href="#4-3-Add-属性">4.3 Add 属性</a> 章节。</p>
 <h3 id="4-2-2-Delete"><a href="#4-2-2-Delete" class="headerlink" title="4.2.2 Delete"></a>4.2.2 <code>Delete</code></h3><p><strong>Type</strong>: <code>plist array</code><br><strong>Failsafe</strong>: Empty<br><strong>Description</strong>: 从 ACPI 栈中删除选定的表。</p>
