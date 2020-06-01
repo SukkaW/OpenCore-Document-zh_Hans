@@ -3,7 +3,7 @@ title: 12. 排错
 description: 当你遇到问题的时候应该看看这个
 type: docs
 author_info: 由 xMuu、Sukka 整理，由 Sukka 翻译
-last_updated: 2020-05-20
+last_updated: 2020-06-01
 ---
 
 ## 12.1 Windows 支持
@@ -13,7 +13,6 @@ last_updated: 2020-05-20
 虽然 OpenCore 并没有提供官方的 Windows 支持，但是使用 Boot Camp 安装 64 位 UEFI Windows（即 Windows 8 及更高版本）应该是可以正常工作的。安装第三方 UEFI、或者仅部分支持 UEFI 引导的系统（如 Windows 7）可能需要额外注意。不论如何，记住以下几点：
 
 - MBR (Master Boot Record) 属于 Legacy 引导，因此将不会被支持。
-- 在同一块硬盘上安装 Windows、macOS 和 OpenCore 时，你可以在 `BlessOverride` 部分中指定 Windows Bootloader 的路径（`\EFI\Microsoft\Boot\bootmgfw.efi`）。
 - 在 OpenCore 上应用的所有更改（ACPI、NVRAM、SMBIOS）都应该与操作系统本身无关。OpenCore 会将这些改动生效于所有操作系统，这样在 Windows 上可以获得 Boot Camp 的体验。
 - macOS 要求硬盘中的第一份分区为 EFI 分区，并且与 Windows 的默认布局不支持。尽管 OpenCore 确实提供了一个 [解决方法](https://github.com/acidanthera/bugtracker/issues/327)，但是强烈建议不要依赖这个方法。
 - Windows 系统可能需要重新激活。为了避免这种情况发生，请考虑将 SystemUUID 设置为原始固件的 UUID。请注意，在旧固件上 UUID 可能是无效的（非随机的）。如果你还遇到了什么问题，可以考虑使用 HWID 或 KMS38 的 Windows 许可证。从 OpenCore 0.5.8 开始，你还可以通过设置 `UpdateSMBIOSMode` 为 `Custom` 来避免 OEM 激活失效。Windows 激活的细节不在本文档的讨论范围内，你应该能够在网上查找到相关资料。

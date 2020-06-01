@@ -3,7 +3,7 @@ title: 4. ACPI
 description: 加载、屏蔽、修补 ACPI（DSDT/SSDT）表
 type: docs
 author_info: 由 Sukka 整理、由 Sukka、derbalkon 翻译。感谢黑果小兵提供的参考资料
-last_updated: 2020-05-25
+last_updated: 2020-06-01
 ---
 
 ## 4.1 简介
@@ -23,6 +23,10 @@ ACPI（Advanced Configuration and Power Interface，高级配置和电源接口�
 为了解决操作系统检测的问题，所有对 ACPI 的更改会在所有操作系统上生效。但是在某些场景下（ACPI 编写不规范、操作系统链式引导启动、ACPI 调试）会出现问题。因此在修补 ACPI 时，需要使用 `\_OSI` 方法。
 
 在系统引导前加载补丁使得编写「代理」补丁成为可能 —— 「代理」补丁即通过重命名的方法修补 DSDT 中的原始行为，然后通过 SSDT 注入同名的行为进行替代。
+
+OpenCore、WhateverGreen、VirtualSmc、VoodooPS2 的 GitHub 仓库中都包含了部分 SSDT 和其他 ACPI 修补的方法。在 AppleLife 的 [Laboratory](https://applelife.ru/forums/xakintosh.67) 板块、[DSDT](https://applelife.ru/forums/dsdt.129) 板块提供了不少教程和样例（如 [笔记本电池修补教程](https://applelife.ru/posts/498967)）。[Dortania](https://dortania.github.io) 也编写了许多 [ACPI 有关的教程](https://dortania.github.io/Getting-Started-With-ACPI)。但是请注意，这些教程和 OpenCore 无关，他们提供的解决方法也不一定有用。
+
+> 译者注：对于中国黑苹果玩家，强烈推荐 [OC-little](https://github.com/daliansky/OC-little) 项目，提供了众多 SSDT 范例和相关指导；笔记本用户电池修补请参考 [这篇教程](https://xstar-dev.github.io/hackintosh_advanced/Guide_For_Battery_Hotpatch.html)。
 
 ## 4.2 属性列表
 

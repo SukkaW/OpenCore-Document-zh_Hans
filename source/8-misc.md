@@ -3,7 +3,7 @@ title: 8. Misc
 description: 关于 OpenCore 行为的其他配置
 type: docs
 author_info: 由 xMuu、Sukka 整理、由 Sukka、derbalkon 翻译。部分翻译参考黑果小兵的「精解 OpenCore」
-last_updated: 2020-05-25
+last_updated: 2020-06-01
 ---
 
 ## 8.1 Introduction
@@ -75,7 +75,7 @@ OpenCore 尽可能地遵循 `bless` 模式，即 `Apple Boot Policy`。`bless` �
 **Type**: `plist array`
 **Description**: 通过 Bless Model 添加自定义扫描路径。
 
-设计为填充 `plist string` 条目，其中包含指向自定义引导程序的绝对 UEFI 路径，例如，用于 Microsoft 引导程序的 `\EFI\Microsoft\Boot\bootmgfw.efi`。这允许引导选择器自动发现异常的引导路径。在设计上它们等效于预定义的 Bless 路径（如 `\System\Library\CoreServices\boot.efi`），但与预定义的 Bless 路径不同，它们具有最高优先级。
+设计为填充 `plist string` 条目，其中包含指向自定义引导程序的绝对 UEFI 路径，例如，用于 Debian 引导程序的 `\EFI\debian\grubx64.efi`。这允许引导选择器自动发现异常的引导路径。在设计上它们等效于预定义的 Bless 路径（如 `\System\Library\CoreServices\boot.efi` 和 `\EFI\Microsoft\Boot\bootmgfw.efi`），但与预定义的 Bless 路径不同，它们具有最高优先级。
 
 ### `Debug`
 
@@ -315,7 +315,7 @@ cat Kernel.panic | grep macOSProcessedStackshotData | python -c 'import json,sys
 **Failsafe**: `0`
 **Description**: 屏幕上打印每行输出之间的延迟。
 
-### 3.`DisplayLevel`
+### `DisplayLevel`
 
 **Type**: `plist integer`, 64 bit
 **Failsafe**: `0`
@@ -325,6 +325,16 @@ cat Kernel.panic | grep macOSProcessedStackshotData | python -c 'import json,sys
 - `0x00000040` (bit `6`) --- `DEBUG_INFO` in `DEBUG`, `NOOPT`.
 - `0x00400000` (bit `22`) --- `DEBUG_VERBOSE` in custom builds.
 - `0x80000000` (bit `31`) --- `DEBUG_ERROR` in `DEBUG`, `NOOPT`, `RELEASE`.
+
+### `SysReport`
+
+**Type**: `plist boolean`
+**Failsafe**: `false`
+**Description**: 在 EFI 分区中保存系统报告。
+
+启用这一选项后，EFI 分区中将会新建一个 `SysReport` 目录。这一目录中将会保存 ACPI 和 SMBIOS 的调试信息。
+
+*注*：基于安全的考虑，`Release` 构建的 OpenCore 将不会内置这一功能。如果需要使用这一功能请使用 `Debug` 构建版。
 
 ### `Target`
 
@@ -376,6 +386,7 @@ When interpreting the log, note that the lines are prefixed with a tag describin
 - `OCRST` — ResetSystem
 - `OCUI` — OpenCanopy
 - `OC` — OpenCore main
+- `VMOPT` — VerifyMemOpt
 
 **Libraries**:
 

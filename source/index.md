@@ -26,8 +26,8 @@ type: docs
 由于 OpenCore 仍处于积极的维护之中，OpenCore 参考手册 仍然在高频率更新，本网站提供的内容 **仅可供参考**。本网站的内容和 OpenCore 官方的参考手册的任何出入，**请以 OpenCore 官方的参考手册为准**。
 
 > 本网站提供的翻译基于如下描述的 OpenCore 官方文档：
-> - **OpenCore 文档释出日期**：2020.05.23
-> - **OpenCore 文档版本**：[`bffded3a52f5ac57c2e855020d517b5e311a89c8`](https://github.com/acidanthera/OpenCorePkg/commit/bffded3a52f5ac57c2e855020d517b5e311a89c8)
+> - **OpenCore 文档释出日期**：2020.05.30
+> - **OpenCore 文档版本**：[`d818c6012a128584cfb9149ebeab07c8d2e87b85`](https://github.com/acidanthera/OpenCorePkg/commit/d818c6012a128584cfb9149ebeab07c8d2e87b85)
 >
 > 本网站提供的翻译适用于如下描述的 OpenCore 版本：
 > - **OpenCore 版本**：0.5.9
@@ -39,8 +39,9 @@ type: docs
 - [OpenCore 官方文档](https://github.com/acidanthera/OpenCorePkg/blob/master/Docs/Configuration.pdf)
 - [OpenCore 官方文档迭代](https://github.com/acidanthera/OpenCorePkg/blob/master/Docs/Differences/Differences.pdf)
 - [OpenCore Vanilla Guide](https://khronokernel.github.io/Opencore-Vanilla-Desktop-Guide/) --- 从零开始的 OpenCore 台式机安装指南。本网站由考虑提供对该指南的简体中文翻译
-- [精解 OpenCore | 黑果小兵](https://blog.daliansky.net/OpenCore-BootLoader.html) --- 本网站的部分翻译参考的就是黑果小兵的这篇文章
-- [使用 OpenCore 引导黑苹果 | Xjn's Blog](https://blog.xjn819.com/?p=543) --- 提供了很多排错和完善的指南
+- [从 Clover 到 OpenCore](https://blog.skk.moe/post/from-clover-to-opencore/) --- 由本网站的发起人和创始人 Sukka 编写的 Clover 迁移 OpenCore 的教程。
+- [精解 OpenCore | 黑果小兵](https://blog.daliansky.net/OpenCore-BootLoader.html) --- 本网站的部分翻译参考的就是黑果小兵前辈的这篇文章
+- [使用 OpenCore 引导黑苹果 | Xjn's Blog](https://blog.xjn819.com/?p=543) --- 提供了很多台式机上排错和完善的指南
 
 ## 维护者
 

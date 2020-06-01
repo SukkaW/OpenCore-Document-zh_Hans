@@ -3,7 +3,7 @@ title: 11. UEFI
 description: UEFI 驱动以及加载顺序（待翻译）
 type: docs
 author_info: 由 xMuu、Sukka 整理，由 Sukka 翻译
-last_updated: 2020-05-19
+last_updated: 2020-06-01
 ---
 
 ## 11.1 Introduction
@@ -14,18 +14,20 @@ last_updated: 2020-05-19
 
 根据固件不同、可能需要不同的驱动程序。加载不兼容的驱动程序可能会导致无法启动系统，甚至导致固件永久性损坏。OpenCore 目前对以下 UEFI 驱动提供支持。OpenCore 可能兼容对其他 UEFI 驱动，但不能确定。
 
+- [`CrScreenshotDxe`](https://github.com/acidanthera/OpenCorePkg) --- 截图驱动。启用后，按下 <kbd>F10</kbd> 将能够截图并保存在 EFI 分区根目录下。该驱动基于 [Nikolaj Schlej](https://github.com/NikolajSchlej ) 修改的 LongSoft 开发的 [`CrScreenshotDxe`](https://github.com/LongSoft/CrScreenshotDxe)。
 - [`OpenRuntime`](https://github.com/acidanthera/OpenCorePkg) --- （原名 `FwRuntimeServices.efi`）`OC_FIRMWARE_RUNTIME` 协议通过支持只读、只写 NVRAM 变量，提升了 OpenCore 和 Lilu 的安全性。有些 Quirks 如 `RequestBootVarRouting` 依赖此驱动程序。由于 runtime 驱动饿性质（与目标操作系统并行运行），因此它不能在 OpenCore 本身实现，而是与 OpenCore 捆绑在一起。
 - [`HiiDatabase`](https://github.com/acidanthera/audk) --- 来自 `MdeModulePkg` 的 HII 服务驱动。Ivy Bridge 及其以后的大多数固件中都已内置此驱动程序。某些带有 GUI 的应用程序（例如 UEFI Shell）可能需要此驱动程序才能正常工作。
 - [`EnhancedFatDxe`](https://github.com/acidanthera/audk) --- 来自 `FatPkg` 的 FAT 文件系统驱动程序。这个驱动程序已经被嵌入到所有 UEFI 固件中，无法为 OpenCore 使用。众所周知，许多固件的 FAT 支持实现都有错误，导致在尝试写操作时损坏文件系统。如果在引导过程中需要写入 EFI 分区，则可能组要将此驱动程序嵌入固件中。
 - [`NvmExpressDxe`](https://github.com/acidanthera/audk) --- 来自`MdeModulePkg` 的 NVMe 驱动程序。从 Broadwell 一代开始的大多数固件都包含此驱动程序。对于 Haswell 以及更早的版本，如果安装了 NVMe SSD 驱动器，则将其嵌入固件中可能会更理想。
 - [`OpenUsbKbDxe`](https://github.com/acidanthera/OpenCorePkg) --- USB 键盘驱动在自定义 USB 键盘驱动程序的基础上新增了对 `AppleKeyMapAggregator` 协议的支持。这是内置的 `KeySupport` 的等效替代方案。根据固件不同，效果可能会更好或者更糟。
-- [`HfsPlus`](https://github.com/acidanthera/OcBinaryData) - Apple 固件中常见的具有 Bless 支持的专有 HFS 文件系统驱动程序。对于 `Sandy Bridge` 和更早的 CPU，由于缺少 `RDRAND` 指令支持，应使用 `HfsPlusLegacy` 驱动程序。
+- [`HfsPlus`](https://github.com/acidanthera/OcBinaryData) - Apple 固件中常见的具有 Bless 支持的专有 HFS 文件系统驱动程序。对于 `Sandy Bridge` 和更早的 CPU，由于这些 CPU 缺少 `RDRAND` 指令支持，应使用 `HfsPlusLegacy` 驱动程序。
 - [`VBoxHfs`](https://github.com/acidanthera/OpenCorePkg) --- 带有 bless 支持的 HFS 文件系统驱动。是 Apple 固件中 `HfsPlus` 驱动的开源替代。虽然功能完善，但是启动速度比 `HFSPlus` 慢三倍，并且尚未经过安全审核。
 - [`XhciDxe`](https://github.com/acidanthera/audk) --- 来自 `MdeModulePkg` 的 XHCI USB controller 驱动程序。从 Sandy Bridge 代开始的大多数固件中都包含此驱动程序。在较早的固件或旧系统可以用于支持外部 USB 3.0 PCI 卡。
 - [`AudioDxe`](https://github.com/acidanthera/OpenCorePkg) --- UEFI 固件中的 HDA 音频驱动程序，适用于大多数 Intel 和其他一些模拟音频控制器。Refer to [acidanthera/bugtracker#740](https://github.com/acidanthera/bugtracker/issues/740) for known issues in AudioDxe.
 - [`ExFatDxe`](https://github.com/acidanthera/OcBinaryData) --- 用于 Bootcamp 支持的专有 ExFAT 文件系统驱动程序，通常可以在 Apple 固件中找到。 对于 `Sandy Bridge` 和更早的 CPU，由于缺少 `RDRAND` 指令支持，应使用 `ExFatDxeLegacy` 驱动程序。
 - [`Ps2KeyboardDxe`](https://github.com/acidanthera/audk) --- 从 `MdeModulePkg` 提取出来的 PS/2 键盘驱动。OpenDuetPkg 和一些固件可能不包括这个驱动，但对于 PS/2 键盘来说该驱动是必须的。注：和 `OpenUsbKbDxe` 不同，该驱动不提供对 `AppleKeyMapAggregator` 的支持、因此需要启用 `KeySupport` 这个 Quirk。
 - [`Ps2MouseDxe`](https://github.com/acidanthera/audk) --- 从 `MdeModulePkg` 提取出来的 PS/2 鼠标驱动。该固件，虽然只有非常老旧的笔记本的固件中可能没有不包含该驱动，但是笔记本依赖该驱动才能在引导界面使用触控板。
+- [`PartitionDxe`](https://github.com/acidanthera/OcBinaryData) --- 一个专门的分区管理驱动程序，用于加载旧版 macOS 的 DMG 映像（如 macOS 10.9 的分区映像）。对于 `Sandy Bridge` 或者更早的 CPU，由于缺少 `RDRAND` 指令支持，应使用 `PartitionDxeLegacy` 驱动程序。
 - [`UsbMouseDxe`](https://github.com/acidanthera/audk) --- 从 `MdeModulePkg` 提取出来的 USB 鼠标驱动。该固件，一般只有虚拟机（如 OVMF）的固件中可能没有不包含该驱动，但是这些虚拟机依赖该驱动才能在引导界面使用鼠标。
 
 要从 UDK（EDK II）编译驱动程序，可以使用编译 OpenCore 类似的命令。
@@ -646,6 +648,18 @@ This quirk removes all duplicates in `BootOrder` variable attempting to resolve 
 **Description**: 请求将所有带有 `Boot` 前缀的变量从 `EFI_GLOBAL_VARIABLE_GUID` 重定向到 `OC_VENDOR_VARIABLE_GUID`。
 
 This quirk requires `OC_FIRMWARE_RUNTIME` protocol implemented in `OpenRuntime.efi`（原名 `FwRuntimeServices.efi`）. 当固件删除不兼容的启动条目时，这一 Quirk 可以让默认的启动条目保存在引导菜单中。简单地说就是，如果你想使用「系统偏好设置」中的「[启动磁盘](https://support.apple.com/HT202796)」，就必须启用这一 Quirk。
+
+### `TscSyncTimeout`
+
+**Type**: `plist integer`
+**Failsafe**: `0`
+**Description**: Attempts to perform TSC synchronisation with a specified timeout.
+
+The primary purpose of this quirk is to enable early bootstrap TSC synchronisation on some server and laptop models when running a debug XNU kernel. For the debug kernel the TSC needs to be kept in sync across the cores before any kext could kick in rendering all other solutions problematic. The timeout is specified in microseconds and depends on the amount of cores present on the platform, the recommended starting value is `500000`.
+
+This is an experimental quirk, which should only be used for the aforementioned problem. In all other cases the quirk may render the operating system unstable and is not recommended. The recommended solution in the other cases is to install a kernel driver like [VoodooTSCSync](https://github.com/RehabMan/VoodooTSCSync), [TSCAdjustReset](https://github.com/interferenc/TSCAdjustReset) or [CpuTscSync](https://github.com/lvs1974/CpuTscSync) (a more specialised variant of VoodooTSCSync for newer laptops).
+
+*Note*: The reason this quirk cannot replace the kernel driver is because it cannot operate in ACPI S3 mode (sleep wake) and because the UEFI firmwares provide very limited multicore support preventing the precise update of the MSR registers.
 
 ### `UnblockFsConnect`
 

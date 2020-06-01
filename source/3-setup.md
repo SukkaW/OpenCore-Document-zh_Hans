@@ -3,7 +3,7 @@ title: 3. Setup
 description: Setup
 type: docs
 author_info: 由 Sukka 整理、由 Sukka 翻译。
-last_updated: 2020-05-20
+last_updated: 2020-06-01
 ---
 
 ## 3.1 目录结构
@@ -33,6 +33,7 @@ ESP
 │        ├── vault.plist
 │        ├── config.plist
 │        └── vault.sig
+├── SysReport
 ├── nvram.plist
 └── opencore-YYYY-MM-DD-HHMMSS.txt
 
@@ -50,9 +51,10 @@ ESP
 - **OpenCore.efi** - 主引导驱动程序，负责操作系统加载。
 - **vault.plist** - OC Config 可能加载的所有文件的哈希。
 - **config.plist** - OC Config（即 OpenCore 的配置文件，见「配置术语」）。这一目录同时也用于存放 GUI 界面所使用的图片，见 `OpenCanopy` 相关章节。
-- **vault.sig** - vault.plist 的签名文件。
+- **vault.sig** - `vault.plist` 的签名文件。
 - **nvram.plist** - OpenCore 变量导入文件。
 - **Resources** - 媒体资源使用的目录，如 屏幕朗读 的语音文件（见「UEFI Audio 属性」章节）。
+- **SysReport** - 存放 `SysReport` 功能产生的系统错误报告。
 - **opencore-YYYY-MM-DD-HHMMSS.txt** - OpenCore 日志文件。
 - **panic-YYYY-MM-DD-HHMMSS.txt** - Kernal Panic 日志文件。
 

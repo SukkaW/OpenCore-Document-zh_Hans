@@ -3,7 +3,7 @@ title: 7. Kernel
 description: OpenCore 安全配置，Kext 加载顺序以及屏蔽
 type: docs
 author_info: 由 Sukka 整理，由 Sukka、derbalkon 翻译。
-last_updated: 2020-05-19
+last_updated: 2020-06-01
 ---
 
 ## 7.1 简介
@@ -158,11 +158,11 @@ last_updated: 2020-05-19
 - 对不支持的 CPU 型号启用支持。
 - 对不支持的 CPU Variant 启用 XCPM 支持。
 
-通常来讲只需要处理 `EAX` 的值，因为它代表完整的 CPUID。剩余的字节要留为 0。字节顺序是小字节序（Little Endian），比如 `A9 06 03 00` 代表 CPUID `0x0306A9` (Ivy Bridge)。
+通常来讲只需要处理 `EAX` 的值，因为它代表完整的 CPUID。剩余的字节要留为 0。字节顺序是小字节序（Little Endian），比如 `C3 06 03 00` 代表 CPUID `0x0306C3` (Haswell)。
 
 推荐使用下面的组合启用 XCPM 支持：
 
-- Haswell-E (`0x306F2`) to Haswell (`0x0306C3`):
+- Haswell-E (`0x0306F2`) to Haswell (`0x0306C3`):
 
   `Cpuid1Data`: `C3 06 03 00 00 00 00 00 00 00 00 00 00 00 00 00`  
   `Cpuid1Mask`: `FF FF FF FF 00 00 00 00 00 00 00 00 00 00 00 00`
@@ -171,7 +171,10 @@ last_updated: 2020-05-19
   `Cpuid1Data`: `D4 06 03 00 00 00 00 00 00 00 00 00 00 00 00 00`  
   `Cpuid1Mask`: `FF FF FF FF 00 00 00 00 00 00 00 00 00 00 00 00`
 
-进一步解释参阅 [acidanthera/bugtracker#365](https://github.com/acidanthera/bugtracker/issues/365)。Haswell+ 低端架构请看 `Special NOTES`。
+请记住，目前以下配置并不被兼容的（至少还没有人成功过）：
+
+- 对于消费级的 Ivy Bridge（`0x0306A9`），苹果禁用了 XCPM 并推荐用户使用传统的电源管理。如果要使用这一选项，你还需要手动添加 `_xcpm_patch` 二进制修补以强制启用 XCPM。
+- 低端处理器（如 Haswell+ 奔腾）不被 macOS 支持。如果要启用这些 CPU 请参阅 [acidanthera/bugtracker#365](https://github.com/acidanthera/bugtracker/issues/365) 中的 `Special NOTES` 相关内容。
 
 ### 7.5.2 `Cpuid1Mask`
 
