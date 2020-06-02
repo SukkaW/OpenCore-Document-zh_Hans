@@ -3,7 +3,7 @@ title: 8. Misc
 description: 关于 OpenCore 行为的其他配置
 type: docs
 author_info: 由 xMuu、Sukka 整理、由 Sukka、derbalkon 翻译。部分翻译参考黑果小兵的「精解 OpenCore」
-last_updated: 2020-06-01
+last_updated: 2020-06-02
 ---
 
 ## 8.1 Introduction
@@ -448,11 +448,17 @@ When interpreting the log, note that the lines are prefixed with a tag describin
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
-**Description**: 启用与 `VirtualSMC` 兼容的 authenticated restart.
+**Description**: 启用与 `VirtualSMC` 兼容的 authenticated restart。
 
 authenticated restart 可以在重启 FileVault2 分区时不用再次输入密码。你可以使用下述指令执行一次 authenticated restart：`sudo fdesetup authrestart`。macOS 在安装系统更新使用的也是 authenticated restart。
 
 VirtualSMC 通过将磁盘加密密钥拆分保存在 NVRAM 和 RTC 中来执行 authenticated restart。虽然 OpenCore 在启动系统后立刻删除密钥，但是这仍然可能被视为安全隐患。
+
+### `BlacklistAppleUpdate`
+
+**Type**: `plist boolean`
+**Failsafe**: `false`
+**Description**: Ignore boot options trying to update Apple peripheral firmware. (e.g. `MultiUpdater.efi`).
 
 ### `BootProtect`
 
