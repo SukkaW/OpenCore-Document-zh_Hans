@@ -167,12 +167,6 @@ OpenCore 尽可能地遵循 `bless` 模式，即 `Apple Boot Policy`。`bless` �
 
 一般的，隐藏辅助条目有助于加快启动速度。
 
-### `HideSelf`
-
-**Type**: `plist boolean`
-**Failsafe**: `false`
-**Description**: 在 OpenCore 的启动选择中隐藏自身 EFI 分区内的其它启动项，如 UEFI OS 等、Recovery、Reset NVRAM 等。
-
 ### `PickerAttributes`
 
 **Type**: `plist integer`
