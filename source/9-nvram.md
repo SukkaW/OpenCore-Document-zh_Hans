@@ -3,7 +3,7 @@ title: 9. NVRAM
 description: NVRAM 注入（如引导标识符和 SIP）
 type: docs
 author_info: 由 xMuu、Sukka 整理，由 Sukka、derbalkon 翻译
-last_updated: 2020-05-19
+last_updated: 2020-06-01
 ---
 
 ## 9.1 Introduction
@@ -28,7 +28,7 @@ last_updated: 2020-05-19
 ### 1. `Add`
 
 **Type**: `plist dict`
-**Description**: 将 NVRAM 变量从 GUID 映射（`plist dict`）设置为变量名称及变量值的映射，格式为 `plist metadata`。GUID 必须以 Canonical String 格式提供，大写或小写均可（如 `8BE4DF61-93CA-11D2-AA0D-00E098032B8C`）。
+**Description**: 从一组 GUID 映射（`plist dict`）中读取格式为 `plist metadata` 的变量映射，并将其添加到 NVRAM 中。GUID 必须以 Canonical String 格式提供，大写或小写均可（如 `8BE4DF61-93CA-11D2-AA0D-00E098032B8C`）。
 
 创建的变量会设置 `EFI_VARIABLE_BOOTSERVICE_ACCESS` 和 `EFI_VARIABLE_RUNTIME_ACCESS` 的属性。变量只有在不存在且未被屏蔽的情况下才会被设置，也就是说，如果想要覆盖一个现有的变量值，请将该变量的名称添加到 `Delete` 部分，这种方法能够提供一个默认的值，直到操作系统接手为止。
 
@@ -37,7 +37,7 @@ last_updated: 2020-05-19
 ### 2. `Delete`
 
 **Type**: `plist dict`
-**Description**: 将 NVRAM 变量从 GUID 映射（`plist dict`）移除到一个变量名称数组（`plist array`）中，格式为 `plist string`。
+**Description**: 从一组 GUID 映射（`plist dict`）读取一组包含 `plist string` 的数组（`plist array`），这些将会被从 NVRAM 变量中被删除。
 
 ### 3. `LegacyEnable`
 
@@ -45,7 +45,7 @@ last_updated: 2020-05-19
 **Failsafe**: `false`
 **Description**: 允许从 ESP 分区的根目录中的 `nvram.plist` 文件读取 NVRAM 变量。
 
-该文件必须有 Root `plist dictionary` 类型，并包含以下两个字段：
+该文件必须以 `plist dictionary` 为文件根格式，并包含以下两个字段：
 
 - `Version` --- `plist integer`，文件版本，必须设定为 1。
 - `Add` --- `plist dictionary`，等同于 `config.plist` 中的 `Add`。
