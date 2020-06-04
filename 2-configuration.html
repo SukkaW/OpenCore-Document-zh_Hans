@@ -194,7 +194,7 @@
                     <p><small>由 Sukka 整理，由 Sukka、derbalkon 翻译</small></p>
                 
                 
-                    <p><small>本页面最后更新于 2020 年 06 月 01 日</small></p>
+                    <p><small>本页面最后更新于 2020 年 06 月 04 日</small></p>
                 
                 <br>
             
@@ -207,11 +207,11 @@
         <div class="column is-9-tablet doku-document-wrapper">
             <div class="content">
                 <h2 id="2-1-配置术语"><a href="#2-1-配置术语" class="headerlink" title="2.1 配置术语"></a>2.1 配置术语</h2><ul>
-<li><code>OC config</code> — OpenCore 的配置文件，格式为 plist，文件名为 <code>config.plist</code>。OpenCore 的配置文件具有可扩展性，并被设计为具有多个命名空间的结构。每个命名空间下允许具有 plist array 或 plist dictionary，在本文档相应部分中对其进行了描述</li>
+<li><code>OC config</code> — OpenCore 的配置文件，格式为 plist，文件名为 <code>config.plist</code>。OpenCore 的配置文件具有可扩展性，并被设计为具有多个命名空间的结构。每个命名空间下允许具有 plist array 或 plist dictionary，在本文档相应部分中对其进行了描述。</li>
 <li><code>valid key</code> — OC Config 中的 plist key object。除了明确描述的 valid key 以外，以 <code>#</code> 符号开头的值（如 <code>#Hello</code>）也将被视为 valid key，并被表示为注释。虽然表示为注释的值会被丢弃，但是它们仍然是 valid key。其他的 plist key 都是无效、不合法的，它们的存在可能会导致未定义、非预期的行为。</li>
 <li><code>valid value</code> — 有效、合法的 <code>plist object</code>，并能匹配一些特定的 <code>plist object</code> 描述中所有附加条件（若有）。</li>
-<li><code>invalid value</code> — 指 <code>plist object</code> 本身是有效、合法的，但属于其他 <code>plist type</code>、与特定 <code>plist object</code> 描述中附加条件不符（例如 value range）或者在对应集合中缺如。<code>invalid value</code> 会被不确定的方式读取为这个 <code>plist obejct</code> 的任何可能值（即，重启前后的值可能会不同），可能报错也可能不报错。尽管读取 <code>invalid value</code> 相当于读取某些已定义的 <code>valid value</code>，但是将不兼容的值应用于主机系统可能会产生未定义、非预期的行为。</li>
-<li><code>optional value</code> — 可缺少，或以特定 <code>plist object</code> 描述提供的特定方式（区别于 <code>invalid value</code>）读取的有效值。而其他情况下（译者注：未提供读取方式）的 <code>invalid value</code> 仍然会被应用。value 除非被明确标记为 <code>optional value</code>，否则必须存在，如果缺少则会被读取为 <code>invalid value</code>。</li>
+<li><code>invalid value</code> — 指 <code>plist object</code> 本身是有效、合法的，但属于其他 <code>plist type</code>、与特定 <code>plist object</code> 描述中附加条件不符（例如取值范围）或者在对应集合中空缺。<code>invalid value</code> 会被不确定的方式读取为这个 <code>plist object</code> 的任何可能值（即，重启前后的值可能会不同），可能报错也可能不报错。尽管读取 <code>invalid value</code> 相当于读取某些已定义的 <code>valid value</code>，但是将不兼容的值应用于主机系统可能会产生未定义、非预期的行为。</li>
+<li><code>optional value</code> — 可空缺，或以特定 <code>plist object</code> 描述提供的特定方式（区别于 <code>invalid value</code>）读取的有效值。而其他情况下（译者注：未提供读取方式）的 <code>invalid value</code> 仍然会被应用。Value 除非被明确标记为 <code>optional value</code>，否则必须存在，如果空缺则会被读取为 <code>invalid value</code>。</li>
 <li><code>fatal behaviour</code> — 导致引导终止的行为。对 <code>fatal behaviour</code> 的实现，要求必须停止引导过程，直到下一次主机系统引导为止。允许，但不强制要求执行冷重启或显示任何警告消息。</li>
 <li><code>undefined behaviour</code> — 本文档中未定义的行为，通常是因为某一选项的特定配置、或某些值被忽略导致的。在这种情况下，其实现可能会采取包括 <code>fatal behaviour</code>，而这些行为一般都会对系统安全性产生负面影响。</li>
 </ul>

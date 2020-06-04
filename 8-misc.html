@@ -194,7 +194,7 @@
                     <p><small>由 xMuu、Sukka 整理、由 Sukka、derbalkon 翻译。部分翻译参考黑果小兵的「精解 OpenCore」</small></p>
                 
                 
-                    <p><small>本页面最后更新于 2020 年 06 月 02 日</small></p>
+                    <p><small>本页面最后更新于 2020 年 06 月 04 日</small></p>
                 
                 <br>
             
@@ -272,7 +272,7 @@
 <h3 id="Security"><a href="#Security" class="headerlink" title="Security"></a><code>Security</code></h3><p><strong>Type</strong>: <code>plist dict</code><br><strong>Description</strong>: 应用本章节 Security Properties 中的安全相关设置。</p>
 <h3 id="Tools"><a href="#Tools" class="headerlink" title="Tools"></a><code>Tools</code></h3><p><strong>Type</strong>: <code>plist array</code><br><strong>Description</strong>: 将工具条目添加到开机引导菜单。</p>
 <p>应填入 <code>plist dict</code> 类型的值来描述相应的加载条目。详见 Entry Properties 部分。</p>
-<p><em>注</em>：选择工具（比如 UEFI shell）是很危险的事情，利用这些工具可以轻易地绕过安全启动链，所以<strong>千万不要</strong>出现在产品配置中，尤其是设置了 vault 和安全启动保护的设备（译者注：即，工具仅作调试用）。</p>
+<p><em>注</em>：选择工具（比如 UEFI shell）是很危险的事情，利用这些工具可以轻易地绕过安全启动链，所以 <strong>千万不要</strong> 出现在生产环境配置中，尤其是设置了 vault 和安全启动保护的设备（译者注：即，工具仅作调试用）。</p>
 <h2 id="8-3-Boot-Properties"><a href="#8-3-Boot-Properties" class="headerlink" title="8.3 Boot Properties"></a>8.3 Boot Properties</h2><h3 id="ConsoleAttributes"><a href="#ConsoleAttributes" class="headerlink" title="ConsoleAttributes"></a><code>ConsoleAttributes</code></h3><p><strong>Type</strong>: <code>plist integer</code><br><strong>Failsafe</strong>: <code>0</code><br><strong>Description</strong>: 为控制台设置特定的属性。</p>
 <p>根据 UEFI 规范，文本渲染器支持的颜色参数为前景色与背景色之和。黑色背景色和黑色前景色 (<code>0</code>) 的值是预留的。以下是颜色名称一览：</p>
 <ul>
@@ -423,7 +423,7 @@
 <p><em>警告</em>：有些固件的 NVRAM 垃圾收集据说存在问题，它们可能无法做到在每次变量删除后都释放空间。在这类设备上，没有额外需要的话，请不要使用非易失性 NVRAM 日志。</p>
 <p>虽然 OpenCore 的引导日志已经包含了基本的版本信息（包括 build 类型和日期），但即使在禁用引导日志的情况下，这些数据也可以在 NVRAM 中的 <code>opencore-version</code> 变量中找到。</p>
 <p>文件记录会在 EFI 卷宗的根目录下创建一个名为 <code>opencore-YYYY-MM-DD-HHMMSS.txt</code> 的文件，其中包含了日志的内容（大写字母部分会被替换为固件中的日期和时间）请注意，固件中的一些文件系统驱动程序不可靠，并且可能会通过 UEFI 写入文件时损坏数据。日志是尝试用最安全的方式来写入的，因此速度很慢。当你使用慢速硬盘时，请确保已将 <code>DisableWatchDog</code> 设置为 <code>true</code>。</p>
-<p>When interpreting the log, note that the lines are prefixed with a tag describing the relevant location (module) of the log line allowing one to better attribute the line to the functionality. The list of currently used tags is provided below.</p>
+<p>注意，每一行日志都包含有一个描述日志类型的前缀，从而确定该行日志的归属。以下是已知的前缀列表：</p>
 <p><strong>Drivers and tools</strong>:</p>
 <ul>
 <li><code>BMF</code> — OpenCanopy, bitmap font</li>
@@ -483,9 +483,9 @@
 <h2 id="8-5-Security-Properties"><a href="#8-5-Security-Properties" class="headerlink" title="8.5 Security Properties"></a>8.5 Security Properties</h2><h3 id="AllowNvramReset"><a href="#AllowNvramReset" class="headerlink" title="AllowNvramReset"></a><code>AllowNvramReset</code></h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: <code>false</code><br><strong>Description</strong>: 启用这一选项后将允许使用 <code>CMD+OPT+P+R</code> 快捷键重置 NVRAM，同时 <code>NVRAM Reset</code> 条目也会出现在开机引导菜单中。</p>
 <h3 id="AllowSetDefault"><a href="#AllowSetDefault" class="headerlink" title="AllowSetDefault"></a><code>AllowSetDefault</code></h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: <code>false</code><br><strong>Description</strong>: 允许使用 <code>CTRL+Enter</code> 和 <code>CTRL+[数字]</code> 设置默认启动项。</p>
 <h3 id="AuthRestart"><a href="#AuthRestart" class="headerlink" title="AuthRestart"></a><code>AuthRestart</code></h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: <code>false</code><br><strong>Description</strong>: 启用与 <code>VirtualSMC</code> 兼容的 authenticated restart。</p>
-<p>authenticated restart 可以在重启 FileVault2 分区时不用再次输入密码。你可以使用下述指令执行一次 authenticated restart：<code>sudo fdesetup authrestart</code>。macOS 在安装系统更新使用的也是 authenticated restart。</p>
+<p><code>authenticated restart</code> 可以在重启 FileVault2 分区时不用再次输入密码。你可以使用下述指令执行一次 <code>authenticated restart</code>：<code>sudo fdesetup authrestart</code>。macOS 在安装系统更新使用的也是 <code>authenticated restart</code>。</p>
 <p>VirtualSMC 通过将磁盘加密密钥拆分保存在 NVRAM 和 RTC 中来执行 authenticated restart。虽然 OpenCore 在启动系统后立刻删除密钥，但是这仍然可能被视为安全隐患。</p>
-<h3 id="BlacklistAppleUpdate"><a href="#BlacklistAppleUpdate" class="headerlink" title="BlacklistAppleUpdate"></a><code>BlacklistAppleUpdate</code></h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: <code>false</code><br><strong>Description</strong>: Ignore boot options trying to update Apple peripheral firmware. (e.g. <code>MultiUpdater.efi</code>).</p>
+<h3 id="BlacklistAppleUpdate"><a href="#BlacklistAppleUpdate" class="headerlink" title="BlacklistAppleUpdate"></a><code>BlacklistAppleUpdate</code></h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: <code>false</code><br><strong>Description</strong>: 忽略 Apple 硬件更新（如 BCM 网卡蓝牙固件更新）的启动项（例如 <code>MultiUpdater.efi</code>）。</p>
 <h3 id="BootProtect"><a href="#BootProtect" class="headerlink" title="BootProtect"></a><code>BootProtect</code></h3><p><strong>Type</strong>: <code>plist string</code><br><strong>Failsafe</strong>: <code>None</code><br><strong>Description</strong>: 该选项试图保证 Bootloader 的持久性、一致性。</p>
 <p>可以使用的值有：</p>
 <ul>
