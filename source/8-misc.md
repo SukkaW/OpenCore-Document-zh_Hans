@@ -99,7 +99,7 @@ OpenCore 尽可能地遵循 `bless` 模式，即 `Apple Boot Policy`。`bless` �
 
 应填入 `plist dict` 类型的值来描述相应的加载条目。详见 Entry Properties 部分。
 
-*注*：选择工具（比如 UEFI shell）是很危险的事情，利用这些工具可以轻易地绕过安全启动链，所以 **千万不要** 出现在最终使用的配置中，尤其是设置了 vault 和安全启动保护的设备（译者注：即，工具仅作调试用）。
+*注*：选择工具（比如 UEFI shell）是很危险的事情，利用这些工具可以轻易地绕过安全启动链，所以 **千万不要** 出现在生产环境配置中，尤其是设置了 vault 和安全启动保护的设备（译者注：即，工具仅作调试用）。
 
 
 ## 8.3 Boot Properties
@@ -366,7 +366,7 @@ nvram 4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102:boot-log | awk '{gsub(/%0d%0a%00/,"")
 
 文件记录会在 EFI 卷宗的根目录下创建一个名为 `opencore-YYYY-MM-DD-HHMMSS.txt` 的文件，其中包含了日志的内容（大写字母部分会被替换为固件中的日期和时间）请注意，固件中的一些文件系统驱动程序不可靠，并且可能会通过 UEFI 写入文件时损坏数据。日志是尝试用最安全的方式来写入的，因此速度很慢。当你使用慢速硬盘时，请确保已将 `DisableWatchDog` 设置为 `true`。
 
-在解释日志时，请注意，这些行的前面都缀有一个描述日志行相关位置（模块）的标签，这样可以更好地将该行归属到具体功能上。以下是当前使用的标签列表：
+注意，每一行日志都包含有一个描述日志类型的前缀，从而确定该行日志的归属。以下是已知的前缀列表：
 
 **Drivers and tools**:
 
@@ -444,7 +444,7 @@ nvram 4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102:boot-log | awk '{gsub(/%0d%0a%00/,"")
 **Failsafe**: `false`
 **Description**: 启用与 `VirtualSMC` 兼容的 authenticated restart。
 
-Authenticated restart 可以在重启 FileVault2 分区时不用再次输入密码。你可以使用下述指令执行一次 authenticated restart：`sudo fdesetup authrestart`。macOS 在安装系统更新使用的也是 authenticated restart。
+`authenticated restart` 可以在重启 FileVault2 分区时不用再次输入密码。你可以使用下述指令执行一次 `authenticated restart`：`sudo fdesetup authrestart`。macOS 在安装系统更新使用的也是 `authenticated restart`。
 
 VirtualSMC 通过将磁盘加密密钥拆分保存在 NVRAM 和 RTC 中来执行 authenticated restart。虽然 OpenCore 在启动系统后立刻删除密钥，但是这仍然可能被视为安全隐患。
 
@@ -452,7 +452,7 @@ VirtualSMC 通过将磁盘加密密钥拆分保存在 NVRAM 和 RTC 中来执行
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
-**Description**: 忽略 Apple 外设固件更新的启动选项。（例如 `MultiUpdater.efi`）。
+**Description**: 忽略 Apple 硬件更新（如 BCM 网卡蓝牙固件更新）的启动项（例如 `MultiUpdater.efi`）。
 
 ### `BootProtect`
 
