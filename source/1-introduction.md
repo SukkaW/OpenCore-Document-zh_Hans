@@ -3,10 +3,12 @@ title: 1. 简介
 description: Introduction
 type: docs
 author_info: 由 Sukka 整理，由 Sukka、derbalkon 翻译
-last_updated: 2020-05-19
+last_updated: 2020-06-09
 ---
 
 本文档提供关于 OpenCore 用户配置文件的信息，以使 macOS 操作系统正常工作。你应当视本文档为 OpenCore 预期行为的解释。如果在已经发布的 OpenCore 版本中找到与文档中的描述存在偏差的行为，应当视为 OpenCore 存在 Bug 或文档出现错误，应通过 [Acidanthera Bugtracker](https://github.com/acidanthera/bugtracker) 进行反馈。
+
+> OpenCore 文档的勘误记录可在 [这里](https://github.com/acidanthera/OpenCorePkg/blob/master/Docs/Errata/Errata.pdf) 查看。
 
 本文档仅作为规范结构、并非用于提供手把手的配置教程。本文档的目标受众是程序员、工程师、有对 macOS 内部和 UEFI 有足够了解的人。因此本文档只提供英文版本，**任何通过其他来源分发的文档和文档翻译都是非官方的，并且可能存在错误。**
 

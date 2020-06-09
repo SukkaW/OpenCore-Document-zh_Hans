@@ -2,8 +2,8 @@
 title: 8. Misc
 description: 关于 OpenCore 行为的其他配置
 type: docs
-author_info: 由 xMuu、Sukka 整理、由 Sukka、derbalkon 翻译。部分翻译参考黑果小兵的「精解 OpenCore」
-last_updated: 2020-06-04
+author_info: 由 xMuu、Sukka 整理、由 Sukka、derbalkon 翻译。
+last_updated: 2020-06-09
 ---
 
 ## 8.1 Introduction
@@ -161,7 +161,7 @@ OpenCore 尽可能地遵循 `bless` 模式，即 `Apple Boot Policy`。`bless` �
 - 该引导项是 macOS Recovery 分区
 - 该引导项是 macOS Time Machine 分区
 - 该引导项被标记为 `Auxiliary`
-- 该引导项是一个系统（如 `Clean NVRAM`）
+- 该引导项是一个系统（如 `Reset NVRAM`）
 
 即使被隐藏，你仍然可以通过 `空格` 进入「扩展模式」查看所有条目（引导项菜单会被重新加载）：
 
@@ -431,6 +431,10 @@ nvram 4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102:boot-log | awk '{gsub(/%0d%0a%00/,"")
 **Type**: `plist boolean`
 **Failsafe**: `false`
 **Description**: 启用这一选项后将允许使用 `CMD+OPT+P+R` 快捷键重置 NVRAM，同时 `NVRAM Reset` 条目也会出现在开机引导菜单中。
+
+注：重置 NVRAM 后，未经过 bless 工具备份过的开机项（如 Linux）会被全部删除。
+
+> 译者注：BootCamp Windows 因为符合 bless 模型而不受影响。
 
 ### `AllowSetDefault`
 

@@ -3,7 +3,7 @@ title: 2. 配置
 description: Configuration
 type: docs
 author_info: 由 Sukka 整理，由 Sukka、derbalkon 翻译
-last_updated: 2020-06-04
+last_updated: 2020-06-09
 ---
 
 ## 2.1 配置术语
@@ -60,6 +60,6 @@ OC Config 包括以下几个独立部分，将在本文档中分别进行介绍�
 
 > 译者注：对上述部分的介绍位于文档的第 4 至 11 章节。可以在本网站左侧边栏中的目录中找到这些章节的入口。
 
-你可以使用 `ConfigValidity` 实用工具校验配置文件是否存在语法错误。请注意，`ConfigValidity` 的版本必须和 OpenCore 的版本一致，而且不一定能够检测出所有的错误。
+你可以使用 `ocvalidate` 实用工具校验配置文件是否存在语法错误。请注意，`ocvalidate` 的版本必须和 OpenCore 的版本一致，而且不一定能够检测出所有的错误。
 
 **注意**：为了保险起见，目前大多数属性都有默认值（译者注：后续文档中以 `FailSafe` 字段呈现）。如果在配置项中未指定任何值，默认值将会生效。不要依赖默认值，务必在配置中正确指定所有字段。
