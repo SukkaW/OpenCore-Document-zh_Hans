@@ -27,11 +27,21 @@ jobs:
     - run: npm i
     - run: npm run build
     - name: Deploy
-      uses: peaceiris/actions-gh-pages@v2
+      run: |
+        cd $GITHUB_WORKSPACE
+        mkdir ./public-git
+        cd ./public-git
+        git init
+        git config --global user.email "${CODING_EMAIL}"
+        git config --global user.name "${CODING_USERNAME}"
+        git remote add origin ${CODING_REPO}
+        git checkout -b master
+        cp -rf $GITHUB_WORKSPACE/public/* ./
+        git add --all .
+        DATE="$(echo $(TZ=UTC-8 date '+%Y-%m-%d %H:%M:%S'))"
+        git commit -m "Deploy: $DATE"
+        git push --quiet --force origin HEAD:master
       env:
-        PERSONAL_TOKEN: ${{ secrets.ACCESS_TOKEN }}
-        PUBLISH_BRANCH: gh-pages
-        PUBLISH_DIR: ./public
-      with:
-        username: ${{ secrets.GIT_USERNAME }}
-        useremail: ${{ secrets.GIT_EMAIL }}
+        CODING_EMAIL: ${{ secrets.CODING_EMAIL }}
+        CODING_USERNAME: ${{ secrets.CODING_USERNAME }}
+        CODING_REPO: ${{ secrets.CODING_REPO }}
