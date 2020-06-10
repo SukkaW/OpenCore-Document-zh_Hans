@@ -23,8 +23,6 @@ type: docs
 
 **本网站以及网站的维护人员和 OpenCore 的开发团队 `acidanthera` 以及 OpenCore 的文档版权所有者 `vit9696` 没有任何关系**。本网站对 OpenCore 的 Logo（商标）的使用已经过 `acidanthera` 的授权。
 
-本网站的翻译已由 OpenCore 文档版权的所有者 `vit9696` 默许，并以相同的 BSD-3 开源协议开源。黑果小兵的 `https://oc.blog.daliansky.net` 对本站的镜像不仅未经授权，且无法达到本网站的更新频率。请使用 OpenCore 的黑苹果玩家分辨真实站点，**顶栏存在「黑果小兵的部落阁」的网站为盗版镜像站点**。
-
 OpenCore 仍处于积极的维护之中，OpenCore 参考手册 仍然在高频率更新，本网站提供的内容 **仅可供参考**。本网站的内容和 OpenCore 官方的参考手册的任何出入，**请以 OpenCore 官方的参考手册为准**。
 
 > 本网站提供的翻译基于如下描述的 OpenCore 官方文档：
