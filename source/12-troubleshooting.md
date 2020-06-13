@@ -162,7 +162,7 @@ OpenCore 使用 UEFI 首选启动项 来选择默认的启动项。设置的方�
 
 ~~可以，没有必要，但请加大力度~~
 
-OpenCore 支持包括 MacPro 5,1 和虚拟机在内的大部分较新的 Mac 想好。不过，OpenCore有关在 Mac 硬件上使用的具体细节微乎其微。你可以在 [MacRumors.com](https://forums.macrumors.com/threads/opencore-on-the-mac-pro.2207814) 查看相关讨论。
+OpenCore 支持包括 MacPro 5,1 和虚拟机在内的大部分较新的 Mac 型号。不过，OpenCore有关在 Mac 硬件上使用的具体细节微乎其微。你可以在 [MacRumors.com](https://forums.macrumors.com/threads/opencore-on-the-mac-pro.2207814) 查看相关讨论。
 
 ### 7. 为什么 Find 和 Replace 的补丁的长度必须相等？
 
