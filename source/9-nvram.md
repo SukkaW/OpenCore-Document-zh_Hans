@@ -3,7 +3,7 @@ title: 9. NVRAM
 description: NVRAM 注入（如引导标识符和 SIP）
 type: docs
 author_info: 由 xMuu、Sukka 整理，由 Sukka、derbalkon 翻译
-last_updated: 2020-06-01
+last_updated: 2020-06-19
 ---
 
 ## 9.1 Introduction
@@ -223,6 +223,8 @@ last_updated: 2020-06-01
   当前保存的主机名称，格式为 ASCII 字符串。
 - `7C436110-AB2A-4BBB-A880-FE41995C9F82:nvda_drv`
   NVIDIA Web Driver 的控制变量。用 ASCII 数字 `1` 来启用或用 `0` 来禁用已安装的驱动程序。
+- `7C436110-AB2A-4BBB-A880-FE41995C9F82:run-efi-updater`
+  覆盖 macOS 中对 EFI 固件更新（MultiUpdater、ThorUtil）等的支持。将此值设置为 `No` 或其他可以转换为布尔类型的值将能够禁用 10.10 起的 macOS 固件更新。
 - `7C436110-AB2A-4BBB-A880-FE41995C9F82:StartupMute`
   开机时禁用固件引导提示音。8 进制整数。`0x00` 指代不静音、其他任何值（或缺少该值）表示静音。这一选项只影响带 T2 的机器。
 - `7C436110-AB2A-4BBB-A880-FE41995C9F82:SystemAudioVolume`

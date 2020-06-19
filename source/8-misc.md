@@ -3,7 +3,7 @@ title: 8. Misc
 description: 关于 OpenCore 行为的其他配置
 type: docs
 author_info: 由 xMuu、Sukka 整理、由 Sukka、derbalkon 翻译。
-last_updated: 2020-06-09
+last_updated: 2020-06-19
 ---
 
 ## 8.1 Introduction
@@ -364,7 +364,7 @@ nvram 4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102:boot-log | awk '{gsub(/%0d%0a%00/,"")
 
 虽然 OpenCore 的引导日志已经包含了基本的版本信息（包括 build 类型和日期），但即使在禁用引导日志的情况下，这些数据也可以在 NVRAM 中的 `opencore-version` 变量中找到。
 
-文件记录会在 EFI 卷宗的根目录下创建一个名为 `opencore-YYYY-MM-DD-HHMMSS.txt` 的文件，其中包含了日志的内容（大写字母部分会被替换为固件中的日期和时间）请注意，固件中的一些文件系统驱动程序不可靠，并且可能会通过 UEFI 写入文件时损坏数据。日志是尝试用最安全的方式来写入的，因此速度很慢。当你使用慢速硬盘时，请确保已将 `DisableWatchDog` 设置为 `true`。
+文件记录会在 EFI 卷宗的根目录下创建一个名为 `opencore-YYYY-MM-DD-HHMMSS.txt` 的文件，其中包含了日志的内容（大写字母部分会被替换为固件中的日期和时间）请注意，固件中的一些文件系统驱动程序不可靠，并且可能会通过 UEFI 写入文件时损坏数据。因此，OpenCore 会尝试用最安全同时也是最慢的方式来写入日志。当你在使用慢速存储驱动器时，请确保已将 `DisableWatchDog` 设置为 `true`。如果你在使用 SSD，应该尽量避免使用这一选项，大量的 I/O 操作会很快耗尽 SSD 的寿命。
 
 注意，每一行日志都包含有一个描述日志类型的前缀，从而确定该行日志的归属。以下是已知的前缀列表：
 
@@ -390,7 +390,7 @@ nvram 4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102:boot-log | awk '{gsub(/%0d%0a%00/,"")
 - `OCAK` — OcAppleKernelLib
 - `OCAU` — OcAudioLib
 - `OCAV` — OcAppleImageVerificationLib
-- `OCA` —- OcAcpiLib
+- `OCA` — OcAcpiLib
 - `OCBP` — OcAppleBootPolicyLib
 - `OCB` — OcBootManagementLib
 - `OCCL` — OcAppleChunkListLib
@@ -451,12 +451,6 @@ nvram 4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102:boot-log | awk '{gsub(/%0d%0a%00/,"")
 `authenticated restart` 可以在重启 FileVault2 分区时不用再次输入密码。你可以使用下述指令执行一次 `authenticated restart`：`sudo fdesetup authrestart`。macOS 在安装系统更新使用的也是 `authenticated restart`。
 
 VirtualSMC 通过将磁盘加密密钥拆分保存在 NVRAM 和 RTC 中来执行 authenticated restart。虽然 OpenCore 在启动系统后立刻删除密钥，但是这仍然可能被视为安全隐患。
-
-### `BlacklistAppleUpdate`
-
-**Type**: `plist boolean`
-**Failsafe**: `false`
-**Description**: 忽略 Apple 硬件更新（如 BCM 网卡蓝牙固件更新）的启动项（例如 `MultiUpdater.efi`）。
 
 ### `BootProtect`
 

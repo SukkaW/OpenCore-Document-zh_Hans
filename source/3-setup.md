@@ -3,7 +3,7 @@ title: 3. Setup
 description: Setup
 type: docs
 author_info: 由 Sukka 整理、由 Sukka 翻译。
-last_updated: 2020-06-01
+last_updated: 2020-06-19
 ---
 
 ## 3.1 目录结构
@@ -82,7 +82,7 @@ To compile with `XCODE5`, besides [Xcode](https://developer.apple.com/xcode), on
 command sequence may look as follows:
 
 ```bash
-git clone https://github.com/acidanthera/audk UDK
+git clone --recursive https://github.com/acidanthera/audk UDK
 cd UDK
 git clone https://github.com/acidanthera/DuetPkg
 git clone https://github.com/acidanthera/OpenCorePkg

@@ -3,7 +3,7 @@ title: 11. UEFI
 description: UEFI 驱动以及加载顺序（待翻译）
 type: docs
 author_info: 由 xMuu、Sukka 整理，由 Sukka 翻译
-last_updated: 2020-06-02
+last_updated: 2020-06-19
 ---
 
 ## 11.1 Introduction
@@ -68,7 +68,7 @@ sudo bless --verbose --file /Volumes/VOLNAME/DIR/OpenShell.efi --folder /Volumes
 - [`OpenCore Shell`](https://github.com/acidanthera/OpenCorePkg) (**内置**) - 由 OpenCore 配置的 [`UEFI Shell`](http://github.com/tianocore/edk2)，与绝大部分固件兼容。
 - [`RtcRw`](https://github.com/acidanthera/OpenCorePkg) - Utility to read and write RTC (CMOS) memory.
 - [`PavpProvision`](https://github.com/acidanthera/OpenCorePkg) - Perform EPID provisioning (requires certificate data configuration).
-- [`ResetSystem`](https://github.com/acidanthera/OpenCorePkg) - Utility to perform system reset. Takes reset type as an argument: `ColdReset`, `WarmReset`, `Shutdown`. Default to `ColdReset`.
+- [`ResetSystem`](https://github.com/acidanthera/OpenCorePkg) - Utility to perform system reset. Takes reset type as an argument: `ColdReset`, `Firmware`, `WarmReset`, `Shutdown`. Default to `ColdReset`.
 - [`VerifyMsrE2`](https://github.com/acidanthera/OpenCorePkg) (**内置**) - 检查 `CFG Lock`（MSR `0xE2` 写保护）在所有 CPU 核心之间的一致性。
 
 ## 11.4 OpenCanopy
