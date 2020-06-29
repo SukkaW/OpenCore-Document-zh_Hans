@@ -40,7 +40,7 @@ last_updated: 2020-06-01
 **Failsafe**: Empty
 **Description**: 在添加和删除驱动程序步骤之前执行的对现有 Kext 驱动程序的二进制修补。
 
-设计为使用 plist dictionary 数据填充以描述每个驱动程序。请参阅下述 Patch 属性章节。
+设计为使用 plist dictionary 数据填充以描述每个驱动程序。请参阅下述 Patch 属性章节。
 
 ### 7.2.5 Quirks
 
@@ -126,8 +126,7 @@ last_updated: 2020-06-01
 
 **Type**: `plist string`
 **Failsafe**: Empty string
-**Description**: Kext Bundle 标识符（比如
-`com.apple.driver.AppleTyMCEDriver`）。
+**Description**: Kext Bundle 标识符（比如 `com.apple.driver.AppleTyMCEDriver`）。
 
 ### 7.4.4 `MaxKernel`
 
@@ -171,10 +170,10 @@ last_updated: 2020-06-01
   `Cpuid1Data`: `D4 06 03 00 00 00 00 00 00 00 00 00 00 00 00 00`  
   `Cpuid1Mask`: `FF FF FF FF 00 00 00 00 00 00 00 00 00 00 00 00`
 
-请记住，目前以下配置并不被兼容的（至少还没有人成功过）：
+请记住，目前以下配置并不兼容（至少还没有人成功过）：
 
-- 对于消费级的 Ivy Bridge（`0x0306A9`），苹果禁用了 XCPM 并推荐用户使用传统的电源管理。如果要使用这一选项，你还需要手动添加 `_xcpm_patch` 二进制修补以强制启用 XCPM。
-- 低端处理器（如 Haswell+ 奔腾）不被 macOS 支持。如果要启用这些 CPU 请参阅 [acidanthera/bugtracker#365](https://github.com/acidanthera/bugtracker/issues/365) 中的 `Special NOTES` 相关内容。
+- 消费级的 Ivy Bridge（`0x0306A9`），因为苹果针对它禁用了 XCPM 并推荐用户使用传统的电源管理。如果要使用这一选项，你还需要手动添加 `_xcpm_patch` 二进制修补以强制启用 XCPM。
+- 低端处理器（如 Haswell+ 奔腾），因为它们不被 macOS 支持。如果要启用这些 CPU 请参阅 [acidanthera/bugtracker#365](https://github.com/acidanthera/bugtracker/issues/365) 中的 `Special NOTES` 相关内容。
 
 ### 7.5.2 `Cpuid1Mask`
 
