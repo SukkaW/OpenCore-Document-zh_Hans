@@ -70,6 +70,7 @@ sudo bless --verbose --file /Volumes/VOLNAME/DIR/OpenShell.efi --folder /Volumes
 - [`PavpProvision`](https://github.com/acidanthera/OpenCorePkg) - Perform EPID provisioning (requires certificate data configuration).
 - [`ResetSystem`](https://github.com/acidanthera/OpenCorePkg) - Utility to perform system reset. Takes reset type as an argument: `ColdReset`, `Firmware`, `WarmReset`, `Shutdown`. Default to `ColdReset`.
 - [`VerifyMsrE2`](https://github.com/acidanthera/OpenCorePkg) (**内置**) - 检查 `CFG Lock`（MSR `0xE2` 写保护）在所有 CPU 核心之间的一致性。
+- [`MemTest86`](https://www.memtest86.com) - 内存测试工具。
 
 ## 11.4 OpenCanopy
 
@@ -173,6 +174,14 @@ Audio localisation is determined separately for macOS bootloader and OpenCore. F
 **Description**: 从一个 APFS 容器中加载 APFS 驱动。
 
 APFS 的 EFI 驱动内置在所有可以作为系统启动盘的 APFS 容器之中。这一选项将会根据基于 `ScanPolicy` 找到的 APFS 容器，从中加载 APFS 驱动。更多详情请查看 [苹果 APFS 文件系统参考手册](https://developer.apple.com/support/apple-file-system/Apple-File-System-Reference.pdf) 中的 `EFI Jummpstart` 章节。
+
+### `GlobalConnect`
+
+**Type**: `plist boolean`
+**Failsafe**: `false`
+**Description**: 在 APFS 加载期间执行完整的设备连接。
+
+代替通常情况下用于 APFS 驱动程序加载的分区句柄连接，每一个句柄都是递归连接的。这可能会比平时花费更多的时间，但是是某些固件访问 APFS 分区的唯一方法，比如在旧的惠普笔记本电脑上发现的那样。
 
 ### `HideVerbose`
 
@@ -318,6 +327,8 @@ Apparently some boards like GA Z77P-D3 may return uninitialised data in `EFI_INP
 `AppleKeyMapAggregator` 协议应该包含当前按下的键的固定长度的缓冲。但是大部分驱动程序仅将按键按下报告为中断、并且按住按键会导致在一定的时间间隔后再提交按下行为。一旦超时到期，我们就是用超时从缓冲区中删除一次按下的键，并且没有新提交。
 
 此选项允许根据你的平台设置此超时。在大多数平台上有效的推荐值为 `5` 毫秒。作为参考，在 VMWare 上按住一个键大约每 2 毫秒就会重复一次，而在 APTIO V 上是 3 - 4 毫秒。因此，可以在较快的平台上设置稍低的值、在较慢的平台设置稍高的值，以提高响应速度。
+
+*注*：某些平台可能需要更高或者更低的值。例如，当 OpenCanopy 检测到按键丢失的时候，尝试稍高的值（比如增加到 `10`），当检测到按键停滞时，尝试稍低的值。由于每个平台各不相同，因此检查从 `1` 到 `25` 的每个值可能会比较合理。
 
 ### `KeyMergeThreshold`
 

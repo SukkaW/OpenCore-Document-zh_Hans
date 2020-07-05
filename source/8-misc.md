@@ -3,7 +3,7 @@ title: 8. Misc
 description: 关于 OpenCore 行为的其他配置
 type: docs
 author_info: 由 xMuu、Sukka 整理、由 Sukka、derbalkon 翻译。
-last_updated: 2020-06-19
+last_updated: 2020-07-05
 ---
 
 ## 8.1 Introduction
@@ -25,14 +25,12 @@ OpenCore 尽可能地遵循 `bless` 模式，即 `Apple Boot Policy`。`bless` �
   - 在分区句柄列表中找到设备句柄（缺失时忽略）。
   - 对磁盘设备路径（不指定引导程序）执行 `bless`（可能返回不止一个条目）。
   - 对文件设备路径直接检查其文件系统。
-  - 排除所有带有黑名单文件名的选项（参考 `BlacklistAppleUpdate` 选项）。
   - 在 OpenCore 启动分区中，通过 Header Check 排除所有 OpenCore Bootstrap 文件。
   - 如果有分区句柄列表，则在列表中将设备句柄标记为 *used*。
   - 将生成的条目注册为主选项，并确定他们的类型。某些类型的选项作为辅助选项（如 Apple HFS Recovery）。
 
 4. 对于每个分区句柄：
   - 如果分区句柄被标记为 *unused*，则执行 `bless` 主选项列表检索。如果设置了 `BlessOverride` 列表，那么不仅能找到标准的 `bless` 路径，还能找到自定义的路径。
-  - 排除带有黑名单文件名的选项（参考 `BlacklistAppleUpdate` 选项）。
   - 在 OpenCore 启动分区中，通过 Header Check 排除所有 OpenCore Bootstrap 文件。
   - 将生成的条目注册为主选项，并确定他们的类型。某些类型的选项作为辅助选项（如 Apple HFS Recovery）。
   - 如果分区已经具有来 `Apple Recovery` 类型的主选项，则继续处理下一个句柄。
@@ -432,7 +430,9 @@ nvram 4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102:boot-log | awk '{gsub(/%0d%0a%00/,"")
 **Failsafe**: `false`
 **Description**: 启用这一选项后将允许使用 `CMD+OPT+P+R` 快捷键重置 NVRAM，同时 `NVRAM Reset` 条目也会出现在开机引导菜单中。
 
-注：重置 NVRAM 后，未经过 bless 工具备份过的开机项（如 Linux）会被全部删除。
+*注 1*：据说部分联想笔记本存在固件 bug，执行 NVRAM 重置后无法启动。更多细节请参见 [acidanthera/bugtracker#995](https://github.com/acidanthera/bugtracker/issues/995)。
+
+*注 2*：重置 NVRAM 后，未经过 bless 工具备份过的开机项（如 Linux）会被全部删除。
 
 > 译者注：BootCamp Windows 因为符合 bless 模型而不受影响。
 

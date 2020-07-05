@@ -82,7 +82,7 @@ To compile with `XCODE5`, besides [Xcode](https://developer.apple.com/xcode), on
 command sequence may look as follows:
 
 ```bash
-git clone --recursive https://github.com/acidanthera/audk UDK
+git clone --recursive --depth=1 https://github.com/acidanthera/audk UDK
 cd UDK
 git clone https://github.com/acidanthera/DuetPkg
 git clone https://github.com/acidanthera/OpenCorePkg
