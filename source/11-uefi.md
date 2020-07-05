@@ -56,7 +56,7 @@ sudo bless --verbose --file /Volumes/VOLNAME/DIR/OpenShell.efi --folder /Volumes
 *注 2*：为了能够使用 `bless`，你可能需要 [禁用 System Integrity Protection](https://developer.apple.com/library/archive/documentation/Security/Conceptual/System_Integrity_Protection_Guide/ConfiguringSystemIntegrityProtection/ConfiguringSystemIntegrityProtection.html)。
 *注 3*：为了能够正常启动，你可能需要 [禁用 Secure Boot](https://support.apple.com/HT208330)（如果有的话）。
 
-一些已知的 UEFI 工具（内置工具用已用 `*` 标出）：
+一些已知的 UEFI 工具（内置工具已用 `*` 标出）：
 
 - [`BootKicker`](https://github.com/acidanthera/OpenCorePkg)* --- 进入 Apple 的 BootPicker 菜单（仅 Mac 同款显卡才可以使用）。
 - [`ChipTune`](https://github.com/acidanthera/OpenCorePkg)* --- 测试 BeepGen 协议，生成不同频率和长度的音频信号。
