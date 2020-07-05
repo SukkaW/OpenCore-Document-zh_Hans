@@ -2,8 +2,8 @@
 title: 3. Setup
 description: Setup
 type: docs
-author_info: 由 Sukka 整理、由 Sukka 翻译。
-last_updated: 2020-06-19
+author_info: 由 Sukka 整理、由 Sukka、derbalkon 翻译。
+last_updated: 2020-07-05
 ---
 
 ## 3.1 目录结构
@@ -74,12 +74,11 @@ OpenCore 的配置文件可以使用任何常规的文本编辑器（如 nano、
 
 ## 3.3 贡献代码
 
-OpenCore can be compiled as an ordinary [EDK II](https://github.com/tianocore/tianocore.github.io/wiki/EDK-II). Since [UDK](https://github.com/tianocore/tianocore.github.io/wiki/UDK) development was abandoned by TianoCore, OpenCore requires the use of [EDK II Stable](https://github.com/tianocore/tianocore.github.io/wiki/EDK-II#stable-tags). Currently supported EDK II release is hosted in [acidanthera/audk](https://github.com/acidanthera/audk). The required patches for the package are present in `Patches` directory.
+OpenCore 可以作为普通的 [EDK II](https://github.com/tianocore/tianocore.github.io/wiki/EDK-II) 进行编译。由于 TianoCore 放弃了对 [UDK](https://github.com/tianocore/tianocore.github.io/wiki/UDK) 的开发，因此 OpenCore 需要使用 [EDK II Stable](https://github.com/tianocore/tianocore.github.io/wiki/EDK-II#stable-tags)。目前支持的 EDK II 版本托管在 [acidanthera/audk](https://github.com/acidanthera/audk)。软件包所需的补丁在 `Patches` 目录下。
 
-The only officially supported toolchain is `XCODE5`. Other toolchains might work, but are neither supported, nor recommended. Contribution of clean patches is welcome. Please do follow [EDK II C Codestyle](https://github.com/tianocore/tianocore.github.io/wiki/Code-Style-C).
+`XCODE5` 是官方唯一支持的工具链。使用其他工具链虽然也有可能正常工作，但我们的态度是既不推荐、也不支持。也欢迎贡献一些干净、简洁的补丁，代码规范务必遵循 [EDK II C Codestyle](https://github.com/tianocore/tianocore.github.io/wiki/Code-Style-C)。
 
-To compile with `XCODE5`, besides [Xcode](https://developer.apple.com/xcode), one should also install [NASM](https://www.nasm.us) and [MTOC](https://github.com/acidanthera/ocbuild/tree/master/external). The latest Xcode version is recommended for use despite the toolchain name. Example
-command sequence may look as follows:
+要使用 `XCODE5` 编译，除了 [Xcode](https://developer.apple.com/xcode) 之外，还需要安装 [NASM](https://www.nasm.us) 和 [MTOC](https://github.com/acidanthera/ocbuild/tree/master/external)。建议使用最新的 Xcode 版本，不必因为工具链叫 `XCODE5` 而纠结于 Xcode 的版本号。命令行举例如下：
 
 ```bash
 git clone --recursive --depth=1 https://github.com/acidanthera/audk UDK
@@ -91,7 +90,7 @@ make -C BaseTools
 build -a X64 -b RELEASE -t XCODE5 -p OpenCorePkg/OpenCorePkg.dsc
 ```
 
-For IDE usage Xcode projects are available in the root of the repositories. Another approach could be [Sublime Text](https://www.sublimetext.com) with [EasyClangComplete](https://niosus.github.io/EasyClangComplete) plugin. Add `.clang_complete` file with similar content to your UDK root:
+对于 IDE 的用法，Xcode 项目可在资源库的根目录下使用。还有一种方法是使用 [Sublime Text](https://www.sublimetext.com) 并带有 [EasyClangComplete](https://niosus.github.io/EasyClangComplete) 插件。在你的 UDK 根目录下添加类似内容的 `.clang_complete` 文件：
 
 ```
 -I/UefiPackages/MdePkg
@@ -125,57 +124,54 @@ For IDE usage Xcode projects are available in the root of the repositories. Anot
 -DNO_MSABI_VA_FUNCS=1
 ```
 
-> **Warning:** Tool developers modifying `config.plist` or any other OpenCore files must ensure that their tool checks for `opencore-version` NVRAM variable (see `Debug Properties` section below) and warn the user if the version listed is unsupported or prerelease. OpenCore configuration may change across the releases and the tool shall ensure that it carefully follows this document. Failure to do so may result in this tool to be considered as malware and blocked with all possible means.
+> **警告**：工具开发人员修改 `config.plist` 或其他任何 OpenCore 文件时，都务必检查 `opencore-version` NVRAM 变量（详见后面的 `Debug Properties` 章节），如果版本号不支持或尚未发布，则需警告用户。OpenCore 配置可能因版本不同而改变，因此工具开发应仔细遵循本文档，否则可能会当作恶意软件并阻止发布。
 
 ## 3.4 代码约定
 
-Just like any other project we have conventions that we follow during the development. All third-party contributors are highly recommended to read and follow the conventions listed below before submitting their patches. In general it is also recommended to firstly discuss the issue in [Acidanthera Bugtracker](https://github.com/acidanthera/bugtracker) before sending the patch to ensure no double work and to avoid your patch being rejected.
+和其他项目一样，我们在开发过程中也有一些约定。强烈建议所有第三方贡献者在提交补丁之前仔细阅读并遵循以下约定。另外，我们也建议在发送补丁之前先在 [Acidanthera Bugtracker](https://github.com/acidanthera/bugtracker) 里讨论一下，以免与其他人的工作重复，导致你的补丁被拒绝。
 
-**Organisation**. The codebase is contained in `OpenCorePkg` repo. which is the primary EDK II package.
+**组织结构**。代码库包含在 `OpenCorePkg` 仓库中，它是主要的 EDK II 软件包。
 
-- Whenever changes are required in multiple repositories, separate pull requests should be sent to each.
-- Committing the changes should happen firstly to dependent repositories, secondly to primary repositories to avoid automatic build errors.
-- Each unique commit should compile with `XCODE5` and preferably with other toolchains. In the majority of the cases it can be checked by accessing the [CI interface](https://travis-ci.com/acidanthera). Ensuring that static analysis finds no warnings is preferred.
-- External pull requests and tagged commits must be validated. That said, commits in master may build but may not necessarily work.
-- Internal branches should be named as follows: `author-name-date`, e.g. `vit9696-ballooning-20191026`.
-- Commit messages should be prefixed with the primary module (e.g. library or code module) the changes were made in. For example, `OcGuardLib: Add OC_ALIGNED macro`. For non-library changes `Docs` or `Build` prefixes are used.
+- 每当需要在多个仓库中进行修改时，都应当分别向每个仓库发送拉取请求（Pull Requests）。
+- 提交更改应该首先提交至依赖仓库，其次才是主仓库，以避免自动构建错误。
+- 每个独立的提交都应该用 `XCODE5` 编译，并最好也用其他工具链编译。在大多数情况下都可以通过 [CI interface](https://travis-ci.com/acidanthera) 进行检查。最好确保静态分析不提示任何警告。
+- 外部的拉取请求和标记的提交都必须经过验证。也就是说，在 master 中的提交可能会被构建，但并不一定成功。
+- 内部分支应命名如下：`作者-名字-日期`，比如 `vit9696-ballooning-20191026`。
+- 提交说明（Commit Messages）应该以更改的主要模块（如库或代码模块）为前缀。例如，`OcGuardLib: Add OC_ALIGNED macro`。对于非库的改变，则应使用 `Docs` 或者 `Build` 作为前缀。
 
-**Design**. The codebase is written in a subset of freestanding C11 (C17) supported by most modern toolchains used by EDK II. Applying common software development practices or requesting clarification is recommended if any particular case is not discussed below.
+**设计**。代码库是使用独立的 C11 (C17) 子集编写的，能够被 EDK II 使用的大多数较新的工具链支持。如果下面没有讨论特殊情况，建议使用常见的软件开发操作，或者另附解释说明。
 
-- Never rely on undefined behaviour and try to avoid implementation defined behaviour unless explicitly covered below (feel free to create an issue when a relevant case is not present).
-- Use `OcGuardLib` to ensure safe integral arithmetics avoiding overflows. Unsigned wraparound should be relied on with care and reduced to the necessary amount.
-- Check pointers for correct alignment with `OcGuardLib` and do not rely on the architecture being able to dereference unaligned pointers.
-- Use flexible array members instead of zero-length or one-length arrays where necessary.
-- Use static assertions (`STATIC_ASSERT`) for type and value assumptions, and runtime assertions (`ASSERT`) for precondition and invariant sanity checking. Do not use runtime assertions to check for errors as they should never alter control flow and potentially be excluded.
-- Assume `UINT32`/`INT32` to be `int`-sized and use `%u`, `%d`, and `%x` to print them.
-- Assume `UINTN`/`INTN` to be of unspecified size, and cast them to `UINT64`/`INT64` for printing with `%Lu`, `%Ld` and so on as normal.
-- Do not rely on integer promotions for numeric literals. Use explicit casts when the type is
-implementation-dependent or suffixes when type size is known. Assume `U` for `UINT32` and `ULL` for `UINT64`.
-- Do ensure unsigned arithmetics especially in bitwise maths, shifts in particular.
-- `sizeof` operator should take variables instead of types where possible to be error prone. Use `ARRAY_SIZE` to obtain array size in elements. Use `L_STR_LEN` and `L_STR_SIZE` macros from `OcStringLib` to obtain string literal sizes to ensure compiler optimisation.
-- Do not use `goto` keyword. Prefer early `return`, `break`, or `continue` after failing to pass error checking instead of nesting conditionals.
-- Use `EFIAPI`, force UEFI calling convention, only in protocols, external callbacks between modules, and functions with variadic arguments.
-- Provide inline documentation to every added function, at least describing its inputs, outputs, precondition, postcondition, and giving a brief description.
-- Do not use `RETURN_STATUS`. Assume `EFI_STATUS` to be a matching superset that is to be always used when `BOOLEAN` is not enough.
-- Security violations should halt the system or cause a forced reboot.
+- 永远不要依赖未定义的行为，也要尽量避免实施定义的行为，除非明确涉及到下面的情况（如果缺少相关案例，随时都可以创建一个 Issue，不必拘谨）。
+- 使用 `OcGuardLib` 来确保安全的积分运算，避免溢出。依赖无符号数回绕（Unsigned Wraparound）时应当谨慎，不要增加不必要的数量。
+- 用 `OcGuardLib` 检查指针是否正确对齐，虽然架构能够反引用未对齐的指针，但是不要依赖它。
+- 必要时使用柔性数组成员（Flexible Array Member）替代长度为 0 或为 1 的数组。
+- 使用静态断言（`STATIC_ASSERT`）进行类型和值的假设，使用运行时断言（`ASSERT`）进行前提条件和不变指标的合理性检查。不要使用运行时断言来检查错误，因为他们绝不应该控制业务流程，并且有可能被排除。
+- 把 `UINT32`/`INT32` 默认为 `int` 大小，并用 `%u`、`%d` 和 `%x` 来打印。
+- 把 `UINTN`/`INTN` 默认为未定大小，转换为 `UINT64`/`INT64`，与 `%Lu`、`%Ld` 等正常打印。
+- 不要为了数字字面量而依赖整型提升。当类型为实现依赖（implementation-dependent）的时候，使用显式转换（Explicit Cast）；当类型大小已知的时候，使用后缀。默认 `U` 代表 `UINT32`， `ULL` 代表 `UINT64`。
+- 尤其要确保按位运算时、特别是按位移位时，作无符号的算术。
+- `sizeof` 运算符应该尽可能地采用变量，而不是类型，否则容易出错。使用 `ARRAY_SIZE` 获取数组的元素大小。使用 `OcStringLib` 中的 `L_STR_LEN` 和 `L_STR_SIZE` 宏，获取字符串文字大小，以保证编译器的优化。
+- 不要使用 `goto` 关键词。宁可在未能通过错误检查时，提前使用 `return`、`break` 或 `continue`，也不要嵌套条件语句。
+- 使用 `EFIAPI`，强制执行 UEFI 调用约定，只在模块之间的协议、外部回调和带有变量参数的函数中使用。
+- 为每一个新增函数提供行内注释，至少要描述其输入、输出、前置条件、后置条件，并给出简要说明。
+- 不要使用 `RETURN_STATUS`。把 `EFI_STATUS` 默认为一个当 `BOOLEAN` 不够用时将始终使用的、相匹配的超集。
+- 违反安全规定的行为应停止系统运行或强制重启。
 
-**Codestyle**. The codebase follows
-[EDK II codestyle](https://github.com/tianocore/tianocore.github.io/wiki/Code-Style-C) with few changes
-and clarifications.
+**代码规范**。代码库遵循 [EDK II codestyle](https://github.com/tianocore/tianocore.github.io/wiki/Code-Style-C)，并作了些许改动和解释。
 
-- Write inline documentation for the functions and variables only once: in headers, where a header prototype is available, and inline for `static` variables and functions.
-- Use line length of 120 characters or less, preferably 100 characters.
-- Use spaces after casts, e.g. `(VOID *)(UINTN) Variable`.
-- Use SPDX license headers as shown in [acidanthera/bugtracker#483](https://github.com/acidanthera/bugtracker/issues/483).
+- 只为函数和变量写一次行内注释：在头文件中（如果有头文件原型）和 `static` 变量、函数的行内书写。
+- 行长在 120 个字符（100 个字符更好）以内。
+- 在转换后使用空格，如 `(VOID *)(UINTN) Variable`。
+- 使用 SPDX 许可证标头，如 [acidanthera/bugtracker#483](https://github.com/acidanthera/bugtracker/issues/483) 所示。
 
-**Debugging**. The codebase incorporates EDK II debugging and few custom features to improve the experience.
+**排错**。代码库中加入了 EDK II 调试和一些自定义功能，以改善体验。
 
-- Use module prefixes, 2-5 letters followed by a colon (`:`), for debug messages. For `OpenCorePkg` use `OC:`, for libraries and drivers use their own unique prefixes.
-- Do not use dots (`.`) in the end of debug messages and separate `EFI_STATUS`, printed by `%r`, with a hyphen (e.g. `OCRAM: Allocation of %u bytes failed - **%rtextbackslash n`).**
-- Use `DEBUG_CODE_BEGIN ()` and `DEBUG_CODE_END ()` constructions to guard debug checks that may potentially reduce the performance of release builds and are otherwise unnecessary.
-- Use `DEBUG` macro to print debug messages during normal functioning, and `RUNTIME_DEBUG` for debugging after `EXIT_BOOT_SERVICES`.
-- Use `DEBUG_VERBOSE` debug level to leave debug messages for future debugging of the code, which are currently not necessary. By default `DEBUG_VERBOSE` messages are ignored even in `DEBUG` builds.
-- Use `DEBUG_INFO` debug level for all non critical messages (including errors) and `DEBUG_BULK_INFO` for extensive messages that should not appear in NVRAM log that is heavily limited in size. These messages are ignored in `RELEASE` builds.
-- Use `DEBUG_ERROR` to print critical human visible messages that may potentially halt the boot process, and `DEBUG_WARN` for all other human visible errors, `RELEASE` builds included.
+- 调试信息应使用模块前缀，2-5 个字母，后面加一个冒号（`:`）。对于 `OpenCorePkg` 使用 `OC:`，对于库和驱动程序则使用自己独特的前缀。
+- 不要在调试信息结尾使用句点（`.`），要将 `%r` 打印的 `EFI_STATUS` 用连字符隔开（例如 `OCRAM: Allocation of %u bytes failed - **%rtextbackslash n`）。
+- 使用 `DEBUG_CODE_BEGIN ()` 和 `DEBUG_CODE_END ()` 结构来看守 可能会降低版本构建性能的 和 在其他方面不必要的 调试检查。
+- 在正常工作时，使用 `DEBUG` 宏打印调试信息，在 `EXIT_BOOT_SERVICES` 后使用 `RUNTIME_DEBUG` 进行调试。
+- 使用 `DEBUG_VERBOSE` 调试级别留下信息，这些信息虽然目前用不到，但可以方便用于以后的调试。默认情况下， `DEBUG_VERBOSE` 信息即使在 `DEBUG` 构建中也会被忽略。
+- 使用 `DEBUG_INFO` 调试级别来处理所有非关键信息（包括错误），使用 `DEBUG_BULK_INFO` 来处理不应该出现在 NVRAM  日志中的大量信息，因为 NVRAM 日志的大小十分受限。这些信息在 `RELEASE` 构建中会被忽略。
+- 使用 `DEBUG_ERROR` 来打印关键的、可以看见的、可能会停止启动过程的信息，使用 `DEBUG_WARN` 来打印所有其他可被看见的错误信息，这些都包含在 `RELEASE` 构建中。
 
-When trying to find the problematic change it is useful to rely on [`git-bisect`](https://git-scm.com/docs/git-bisect) functionality.
+当试图找到有问题的更改时，依靠 [`git-bisect`](https://git-scm.com/docs/git-bisect) 功能会很有帮助。

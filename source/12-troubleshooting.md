@@ -3,7 +3,7 @@ title: 12. 排错
 description: 当你遇到问题的时候应该看看这个
 type: docs
 author_info: 由 xMuu、Sukka 整理，由 Sukka 翻译
-last_updated: 2020-06-01
+last_updated: 2020-07-05
 ---
 
 ## 12.1 Windows 支持
@@ -115,11 +115,11 @@ The operation has completed successfully.
 
 与其他硬件相关的项目类似，OpenCore 也支持审计与调试。使用 NOOPT 或 DEBUG 构建版本（而非 RELEASE 构建版本）可以产生更多的调试输出。对于 NOOPT 构建版本，你还可以使用 GDB 或 IDA Pro 进行调试。对于 GDB 请查看 [OpenCore Debug](https://github.com/acidanthera/OpenCorePkg/tree/master/Debug) 相关页面；对于 IDA Pro，你需要 7.3 或更高版本，更多详细信息请参考 IDA Pro 提供的页面：[Debugging the XNU Kernel with IDA Pro](https://www.hex-rays.com/products/ida/support/tutorials/index.shtml)。
 
-To obtain the log during boot you can make the use of serial port debugging. Serial port debugging is enabled in `Target`, e.g. `0xB` for onscreen with serial. OpenCore uses `115200` baud rate, `8` data bits, no parity, and `1` stop bit. For macOS your best choice are CP2102-based UART devices. Connect motherboard `TX` to USB UART `RX`, and motherboard `GND` to USB UART `GND`. Use `screen` utility to get the output, or download GUI software, such as [CoolTerm](https://freeware.the-meiers.org).
+可以使用串口调试来获取启动过程中的日志。串口调试是在 `Target` 中开启的，例如 `0xB` 代表在屏幕上显示并输出串行。OpenCore 使用的串口参数为 `115200` 波特率，`8` 位数据位，无奇偶校验，`1` 位停止位。对于 macOS 来说，最好是选择基于 CP2102 的 UART 设备。将主板 `TX` 连接到 USB UART `RX`，主板 `GND` 连接到 USB UART `GND`。使用 `screen` 实用工具，或者下载 GUI 软件获取输出，如 [CoolTerm](https://freeware.the-meiers.org)。
 
-*注释*: On several motherboards (and possibly USB UART dongles) PIN naming may be incorrect. It is very common to have `GND` swapped with `RX`, thus you have to connect motherboard `"TX"` to USB UART `GND`, and motherboard `"GND"` to USB UART `RX`.
+*注释*：在一些主板（可能还有一些 USB UART 转换器）上，PIN 的命名可能是不正确的。`GND` 和 `RX` 互换是很常见的，因此你需要将主板 `"TX"` 连接到 USB UART `GND`，主板 `"GND"` 连接到 USB UART `RX`。
 
-Remember to enable `COM` port in firmware settings, and never use USB cables longer than 1 meter to avoid output corruption. To additionally enable XNU kernel serial output you will need `debug=0x8` boot argument.
+务必记得在固件设置中启用 `COM` 口，一定不要使用超过 1 米的 USB 线缆，以免输出数据损坏。如果要额外启用 XNU 内核串行输出，则需要添加 `debug=0x8` 启动参数。
 
 ## 12.3 技巧和窍门
 
@@ -144,7 +144,7 @@ OpenCore 遵循 Apple Bless 标准模型、从引导目录中的 `.contentDetail
 
 OpenCore 使用 UEFI 首选启动项 来选择默认的启动项。设置的方式随 BIOS 不同而不同，具体请参考 macOS [启动磁盘](https://support.apple.com/HT202796) 或 Windows [Boot Camp](https://support.apple.com/guide/bootcamp-control-panel/start-up-your-mac-in-windows-or-macos-bcmp29b8ac66/mac) 控制面板。
 
-由于使用 OpenCore 提供的 `BOOTx64.efi` 作为首选启动项会限制这项功能（可能还会导致一些固件删除不兼容的引导选项），我们强烈建议你启用 `RequestBootVarRouting` quirk，这会将你所做的选择保留在 OpenCore 变量空间中。请注意，`RequestBootVarRouting` 需要单独的 `.efi` 驱动文件（译者注：即 OpenRuntime.efi）。
+由于使用 OpenCore 提供的 `BOOTx64.efi` 作为首选启动项会限制这项功能（可能还会导致一些固件删除不兼容的引导选项），我们强烈建议你启用 `RequestBootVarRouting` Quirk，这会将你所做的选择保留在 OpenCore 变量空间中。请注意，`RequestBootVarRouting` 需要单独的 `.efi` 驱动文件（译者注：即 OpenRuntime.efi）。
 
 ### 4. 安装 macOS 最简单的方法是什么？
 
@@ -162,7 +162,7 @@ OpenCore 使用 UEFI 首选启动项 来选择默认的启动项。设置的方�
 
 ~~可以，没有必要，但请加大力度~~
 
-OpenCore 支持包括 MacPro 5,1 和虚拟机在内的大部分较新的 Mac 型号。不过，OpenCore有关在 Mac 硬件上使用的具体细节微乎其微。你可以在 [MacRumors.com](https://forums.macrumors.com/threads/opencore-on-the-mac-pro.2207814) 查看相关讨论。
+OpenCore 支持包括 MacPro 5,1 和虚拟机在内的大部分较新的 Mac 型号。不过，OpenCore 有关在 Mac 硬件上使用的具体细节微乎其微。你可以在 [MacRumors.com](https://forums.macrumors.com/threads/opencore-on-the-mac-pro.2207814) 查看相关讨论。
 
 ### 7. 为什么 Find 和 Replace 的补丁的长度必须相等？
 
