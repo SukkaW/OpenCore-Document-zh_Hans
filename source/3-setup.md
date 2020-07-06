@@ -2,7 +2,7 @@
 title: 3. Setup
 description: Setup
 type: docs
-author_info: 由 Sukka 整理、由 Sukka、derbalkon 翻译。
+author_info: 由 Sukka、derbalkon 整理、由 Sukka、derbalkon 翻译。
 last_updated: 2020-07-05
 ---
 
@@ -171,7 +171,7 @@ build -a X64 -b RELEASE -t XCODE5 -p OpenCorePkg/OpenCorePkg.dsc
 - 使用 `DEBUG_CODE_BEGIN ()` 和 `DEBUG_CODE_END ()` 结构来看守 可能会降低版本构建性能的 和 在其他方面不必要的 调试检查。
 - 在正常工作时，使用 `DEBUG` 宏打印调试信息，在 `EXIT_BOOT_SERVICES` 后使用 `RUNTIME_DEBUG` 进行调试。
 - 使用 `DEBUG_VERBOSE` 调试级别留下信息，这些信息虽然目前用不到，但可以方便用于以后的调试。默认情况下， `DEBUG_VERBOSE` 信息即使在 `DEBUG` 构建中也会被忽略。
-- 使用 `DEBUG_INFO` 调试级别来处理所有非关键信息（包括错误），使用 `DEBUG_BULK_INFO` 来处理不应该出现在 NVRAM  日志中的大量信息，因为 NVRAM 日志的大小十分受限。这些信息在 `RELEASE` 构建中会被忽略。
+- 使用 `DEBUG_INFO` 调试级别来处理所有非关键信息（包括错误），使用 `DEBUG_BULK_INFO` 来处理不应该出现在 NVRAM 日志中的大量信息，因为 NVRAM 日志的大小十分受限。这些信息在 `RELEASE` 构建中会被忽略。
 - 使用 `DEBUG_ERROR` 来打印关键的、可以看见的、可能会停止启动过程的信息，使用 `DEBUG_WARN` 来打印所有其他可被看见的错误信息，这些都包含在 `RELEASE` 构建中。
 
 当试图找到有问题的更改时，依靠 [`git-bisect`](https://git-scm.com/docs/git-bisect) 功能会很有帮助。

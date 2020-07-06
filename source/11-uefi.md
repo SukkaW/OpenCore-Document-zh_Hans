@@ -2,7 +2,7 @@
 title: 11. UEFI
 description: UEFI 驱动以及加载顺序
 type: docs
-author_info: 由 xMuu、Sukka 整理，由 Sukka、derbalkon 翻译
+author_info: 由 xMuu、Sukka、derbalkon 整理，由 Sukka、derbalkon 翻译
 last_updated: 2020-07-05
 ---
 
@@ -114,7 +114,7 @@ OpenCanopy 所需的图象资源位于 `Resources` 目录下，一些简单的�
 - 音频本地化语言由两个字母的语言代码表示（如 `en`），中文、西班牙语和葡萄牙语除外。具体请看 [`APPLE_VOICE_OVER_LANGUAGE_CODE` 的定义](https://github.com/acidanthera/OpenCorePkg/blob/master/Include/Apple/Protocol/AppleVoiceOver.h) 来了解所有支持的本地化列表。
 - 音频路径是对应于文件标识符的基本文件名。macOS 引导程序的音频路径参考 [`APPLE_VOICE_OVER_AUDIO_FILE` 的定义](https://github.com/acidanthera/OpenCorePkg/blob/master/Include/Apple/Protocol/AppleVoiceOver.h)。OpenCore 的音频路径参考 [`OC_VOICE_OVER_AUDIO_FILE` 的定义](https://github.com/acidanthera/OpenCorePkg/blob/master/Include/Protocol/OcAudio.h)。唯一例外的是 OpenCore 启动提示音文件：`OCEFIAudio_VoiceOver_Boot.wav`。
 
-macOS 引导程序和 OpenCore 的音频本地化是分开的。macOS 引导程序是在  `systemLanguage.utf8` 文件中的 `preferences.efires` 归档中设置，并由操作系统控制。OpenCore 则是使用 `prev-lang:kbd` 变量的值来控制。当某一特定文件的音频本地化缺失时，将会使用英语（`en`）来代替。示例音频文件可以在 [OcBinaryData 仓库](https://github.com/acidanthera/OcBinaryData) 中找到。
+macOS 引导程序和 OpenCore 的音频本地化是分开的。macOS 引导程序是在 `systemLanguage.utf8` 文件中的 `preferences.efires` 归档中设置，并由操作系统控制。OpenCore 则是使用 `prev-lang:kbd` 变量的值来控制。当某一特定文件的音频本地化缺失时，将会使用英语（`en`）来代替。示例音频文件可以在 [OcBinaryData 仓库](https://github.com/acidanthera/OcBinaryData) 中找到。
 
 ### `ConnectDrivers`
 

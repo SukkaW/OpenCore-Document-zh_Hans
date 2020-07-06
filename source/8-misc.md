@@ -2,7 +2,7 @@
 title: 8. Misc
 description: 关于 OpenCore 行为的其他配置
 type: docs
-author_info: 由 xMuu、Sukka 整理、由 Sukka、derbalkon 翻译。
+author_info: 由 xMuu、Sukka、derbalkon 整理、由 Sukka、derbalkon 翻译。
 last_updated: 2020-07-05
 ---
 
@@ -461,7 +461,7 @@ VirtualSMC 通过将磁盘加密密钥拆分保存在 NVRAM 和 RTC 中来执行
 可以使用的值有：
 
 - `None`: 什么都不做
-- `Bootstrap`: 在启动引导程序时，在 UEFI 变量存储中创建或更新最高优先级  `\EFI\OC\Bootstrap\Bootstrap.efi` 引导选项 (`Boot9696`)。要使用这个选项，必须同时开启 `RequestBootVarRouting`。
+- `Bootstrap`: 在启动引导程序时，在 UEFI 变量存储中创建或更新最高优先级 `\EFI\OC\Bootstrap\Bootstrap.efi` 引导选项 (`Boot9696`)。要使用这个选项，必须同时开启 `RequestBootVarRouting`。
 
 在安装和升级第三方操作系统时 `\EFI\BOOT\BOOTx64.efi` 文件可能会被覆盖掉，该选项则保证了出现覆盖情况时 Bootloader 的一致性。在 `Bootstrap` 模式下创建一个自定义启动项后，`\EFI\BOOT\BOOTx64.efi` 这个文件路径将不再用于引导 OpenCore。
 
