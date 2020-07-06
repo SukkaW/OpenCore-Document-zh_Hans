@@ -2,7 +2,7 @@
 title: 12. 排错
 description: 当你遇到问题的时候应该看看这个
 type: docs
-author_info: 由 xMuu、Sukka 整理，由 Sukka 翻译
+author_info: 由 xMuu、Sukka、derbalkon 整理，由 Sukka、derbalkon 翻译
 last_updated: 2020-07-05
 ---
 
