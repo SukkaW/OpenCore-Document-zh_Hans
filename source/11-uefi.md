@@ -1,9 +1,9 @@
 ---
 title: 11. UEFI
-description: UEFI 驱动以及加载顺序（待翻译）
+description: UEFI 驱动以及加载顺序
 type: docs
-author_info: 由 xMuu、Sukka 整理，由 Sukka 翻译
-last_updated: 2020-06-19
+author_info: 由 xMuu、Sukka、derbalkon 整理，由 Sukka、derbalkon 翻译
+last_updated: 2020-07-05
 ---
 
 ## 11.1 Introduction
@@ -52,24 +52,25 @@ build -a X64 -b RELEASE -t XCODE5 -p MdeModulePkg/MdeModulePkg.dsc
 sudo bless --verbose --file /Volumes/VOLNAME/DIR/OpenShell.efi --folder /Volumes/VOLNAME/DIR/ --setBoot
 ```
 
-*Note 1*: You may have to copy `/System/Library/CoreServices/BridgeVersion.bin` to `/Volumes/VOLNAME/DIR`.
-*Note 2*: To be able to use `bless` you may have to [disable System Integrity Protection](https://developer.apple.com/library/archive/documentation/Security/Conceptual/System_Integrity_Protection_Guide/ConfiguringSystemIntegrityProtection/ConfiguringSystemIntegrityProtection.html).
-*Note 3*: To be able to boot you may have to [disable Secure Boot](https://support.apple.com/HT208330) if present.
+*注 1*：你可能需要将 `/System/Library/CoreServices/BridgeVersion.bin` 拷贝到 `/Volumes/VOLNAME/DIR`。
+*注 2*：为了能够使用 `bless`，你可能需要 [禁用 System Integrity Protection](https://developer.apple.com/library/archive/documentation/Security/Conceptual/System_Integrity_Protection_Guide/ConfiguringSystemIntegrityProtection/ConfiguringSystemIntegrityProtection.html)。
+*注 3*：为了能够正常启动，你可能需要 [禁用 Secure Boot](https://support.apple.com/HT208330)（如果有的话）。
 
-一些已知的 UEFI 工具：
+一些已知的 UEFI 工具（内置工具已用 `*` 标出）：
 
-- [`BootKicker`](https://github.com/acidanthera/OpenCorePkg) (**内置**) - 进入 Apple 的 BootPicker 菜单（仅 Mac 同款显卡才可以使用）。
-- [`ChipTune`](https://github.com/acidanthera/OpenCorePkg) (**内置**) - 测试 BeepGen 协议，生成不同频率和长度的音频信号。
-- [`CleanNvram`](https://github.com/acidanthera/OpenCorePkg) (**内置**) - 重置 NVRAM，以一个单独的工具呈现。
-- [`FwProtect`](https://github.com/acidanthera/OpenCorePkg) (**内置**) - 解锁和回锁 NVRAM 保护，让其他工具在从 OpenCore 启动时能够获得完整的 NVRAM 访问权限。
-- [`GopStop`](https://github.com/acidanthera/OpenCorePkg) (**内置**) - 用一个 [简单的场景](https://github.com/acidanthera/OpenCorePkg/tree/master/Application/GopStop) 测试 GraphicOutput 协议。
-- [`HdaCodecDump`](https://github.com/acidanthera/OpenCorePkg) (**内置**) - 解析和转储高清晰度音频编解码器（Codec）信息（需要 `AudioDxe`）。
-- [`KeyTester`](https://github.com/acidanthera/OpenCorePkg) (**内置**) - 在 `SimpleText` 模式下测试键盘输入。
-- [`OpenCore Shell`](https://github.com/acidanthera/OpenCorePkg) (**内置**) - 由 OpenCore 配置的 [`UEFI Shell`](http://github.com/tianocore/edk2)，与绝大部分固件兼容。
-- [`RtcRw`](https://github.com/acidanthera/OpenCorePkg) - Utility to read and write RTC (CMOS) memory.
-- [`PavpProvision`](https://github.com/acidanthera/OpenCorePkg) - Perform EPID provisioning (requires certificate data configuration).
-- [`ResetSystem`](https://github.com/acidanthera/OpenCorePkg) - Utility to perform system reset. Takes reset type as an argument: `ColdReset`, `Firmware`, `WarmReset`, `Shutdown`. Default to `ColdReset`.
-- [`VerifyMsrE2`](https://github.com/acidanthera/OpenCorePkg) (**内置**) - 检查 `CFG Lock`（MSR `0xE2` 写保护）在所有 CPU 核心之间的一致性。
+- [`BootKicker`](https://github.com/acidanthera/OpenCorePkg)* --- 进入 Apple 的 BootPicker 菜单（仅 Mac 同款显卡才可以使用）。
+- [`ChipTune`](https://github.com/acidanthera/OpenCorePkg)* --- 测试 BeepGen 协议，生成不同频率和长度的音频信号。
+- [`CleanNvram`](https://github.com/acidanthera/OpenCorePkg)* --- 重置 NVRAM，以一个单独的工具呈现。
+- [`FwProtect`](https://github.com/acidanthera/OpenCorePkg)* --- 解锁和回锁 NVRAM 保护，让其他工具在从 OpenCore 启动时能够获得完整的 NVRAM 访问权限。
+- [`GopStop`](https://github.com/acidanthera/OpenCorePkg)* --- 用一个 [简单的场景](https://github.com/acidanthera/OpenCorePkg/tree/master/Application/GopStop) 测试 GraphicOutput 协议。
+- [`HdaCodecDump`](https://github.com/acidanthera/OpenCorePkg)* --- 解析和转储高清晰度音频编解码器（Codec）信息（需要 `AudioDxe`）。
+- [`KeyTester`](https://github.com/acidanthera/OpenCorePkg)* --- 在 `SimpleText` 模式下测试键盘输入。
+- [`MemTest86`](https://www.memtest86.com) - 内存测试工具。
+- [`OpenCore Shell`](https://github.com/acidanthera/OpenCorePkg)* --- 由 OpenCore 配置的 [`UEFI Shell`](http://github.com/tianocore/edk2)，与绝大部分固件兼容。
+- [`PavpProvision`](https://github.com/acidanthera/OpenCorePkg) --- 执行 EPID 配置（需要配置证书数据）。
+- [`ResetSystem`](https://github.com/acidanthera/OpenCorePkg)* --- 用于执行系统重置的实用程序。以重置类型作为参数：`ColdReset`, `Firmware`, `WarmReset`, `Shutdown`。默认为 `ColdReset`。
+- [`RtcRw`](https://github.com/acidanthera/OpenCorePkg)* --- 读取和写入 RTC (CMOS) 存储器的使用程序。
+- [`VerifyMsrE2`](https://github.com/acidanthera/OpenCorePkg)* --- 检查 `CFG Lock`（MSR `0xE2` 写保护）在所有 CPU 核心之间的一致性。
 
 ## 11.4 OpenCanopy
 
@@ -78,18 +79,18 @@ OpenCanopy 是一个 OpenCore 的图形化界面接口，基于 [OpenCorePkg](ht
 OpenCanopy 所需的图象资源位于 `Resources` 目录下，一些简单的资源（字体和图标）可以在 [OcBinaryData 仓库](https://github.com/acidanthera/OcBinaryData) 中获取。
 字体为 12pt 的 Helvetica，比例缩放。
 
-Font format corresponds to [AngelCode binary BMF](https://www.angelcode.com/products/bmfont). While there are many utilities to generate font files, currently it is recommended to use [dpFontBaker](https://github.com/danpla/dpfontbaker) to generate bitmap font ([using CoreText produces best results](https://github.com/danpla/dpfontbaker/pull/1)) and [fonverter](https://github.com/usr-sse2/fonverter) to export it to binary format.
+字体格式对应于 [AngelCode binary BMF](https://www.angelcode.com/products/bmfont)。虽然有很多工具可以生成字体文件，但目前还是建议使用 [dpFontBaker](https://github.com/danpla/dpfontbaker) 来生成位图字体（[用 CoreText 达到最佳效果](https://github.com/danpla/dpfontbaker/pull/1)），并使用 [fonverter](https://github.com/usr-sse2/fonverter) 将其导出为二进制格式。
 
-*Note*: OpenCanopy 是一个试验性质的功能、不应用于日常使用。你可以在 [acidanthera/bugtracker#759](https://github.com/acidanthera/bugtracker/issues/759) 获取相关的详细信息。
+*注*：OpenCanopy 是一个试验性质的功能、不应用于日常使用。你可以在 [acidanthera/bugtracker#759](https://github.com/acidanthera/bugtracker/issues/759) 获取相关的详细信息。
 
 ## 11.5 OpenRuntime
 
 `OpenRuntime` 是一个 OpenCore 的插件，提供了对 `OC_FIRMWARE_RUNTIME` 协议的实现。该协议对 OpenCore 的部分功能提供了支持，而这部分功能由于需要 Runtime（如操作系统）中运行、因此无法内置在 OpenCore 中。该协议提供了包括但不限于如下功能：
 
-- NVRAM namespaces, allowing to isolate operating systems from accessing select variables (e.g. `RequestBootVarRouting` or `ProtectSecureBoot`).
-- Read-only and write-only NVRAM variables, enhancing the security of OpenCore, Lilu, and Lilu plugins, like VirtualSMC, which implements `AuthRestart` support.
-- NVRAM isolation, allowing to protect all variables from being written from an untrusted operating system (e.g. `DisableVariableWrite`).
-- UEFI Runtime Services memory protection management to workaround read-only mapping (e.g. `EnableWriteUnprotector`).
+- NVRAM 命名空间，允许隔离操作系统对所选变量的访问（如 `RequestBootVarRouting` 或 `ProtectSecureBoot`）。
+- 只读和只写的 NVRAM 变量，增强了 OpenCore、Lilu 以及 Lilu 插件的安全性，比如 VirtualSMC，实现了 `AuthRestart` 支持。
+- NVRAM 隔离，能够保护所有变量避免被不信任的操作系统写入（如 `DisableVariableWrite`）。
+- UEFI Runtime Services 内存保护管理，以避开只读映射的问题（如 `EnableWriteUnprotector`）。
 
 ## 11.6 Properties
 
@@ -105,15 +106,15 @@ Font format corresponds to [AngelCode binary BMF](https://www.angelcode.com/prod
 **Failsafe**: None
 **Description**: 配置音频后端支持，具体配置如下文所述。
 
-Audio support provides a way for upstream protocols to interact with the selected hardware and audio resources. All audio resources should reside in `\EFI\OC\Resources\Audio` directory. Currently the only supported audio file format is WAVE PCM. While it is driver-dependent which audio stream format is supported, most common audio cards support 16-bit signed stereo audio at 44100 or 48000 Hz.
+音频支持为上游协议提供了一种与所选硬件和音频资源交互的方式。所有音频资源应该保存在 `\EFI\OC\Resources\Audio` 目录。目前唯一支持的音频文件格式是 WAVE PCM。虽然支持哪种音频流格式取决于驱动程序，但大多数常见的音频卡都支持 44100 或 48000Hz 的 16 位立体声。
 
-Audio file path is determined by audio type, audio localisation, and audio path. Each filename looks as follows: `[audio type]_[audio localisation]_[audio path].wav`. For unlocalised files filename does not include the language code and looks as follows: `[audio type]_[audio path].wav`.
+音频文件的路径是由音频的类型、本地化语言和路径决定的。每个文件名看起来都类似于：`[audio type]_[audio localisation]_[audio path].wav`。对于没有本地化的文件，其文件名不包含语言代码，看起来类似于：`[audio type]_[audio path].wav`。
 
-- Audio type can be `OCEFIAudio` for OpenCore audio files or `AXEFIAudio` for macOS bootloader audio files.
-- Audio localisation is a two letter language code (e.g. `en`) with an exception for Chinese, Spanish, and Portuguese. Refer to [`APPLE_VOICE_OVER_LANGUAGE_CODE` definition](https://github.com/acidanthera/OpenCorePkg/blob/master/Include/Apple/Protocol/AppleVoiceOver.h) for the list of all supported localisations.
-- Audio path is the base filename corresponding to a file identifier. For macOS bootloader audio paths refer to [`APPLE_VOICE_OVER_AUDIO_FILE` definition](https://github.com/acidanthera/OpenCorePkg/blob/master/Include/Apple/Protocol/AppleVoiceOver.h). For OpenCore audio paths refer to [`OC_VOICE_OVER_AUDIO_FILE` definition](https://github.com/acidanthera/OpenCorePkg/blob/master/Include/Protocol/OcAudio.h). The only exception is OpenCore boot chime file, which is `OCEFIAudio_VoiceOver_Boot.wav`.
+- OpenCore 音频文件的音频类型可以是 `OCEFIAudio`，macOS 引导程序的音频文件的音频类型可以是 `AXEFIAudio`。
+- 音频本地化语言由两个字母的语言代码表示（如 `en`），中文、西班牙语和葡萄牙语除外。具体请看 [`APPLE_VOICE_OVER_LANGUAGE_CODE` 的定义](https://github.com/acidanthera/OpenCorePkg/blob/master/Include/Apple/Protocol/AppleVoiceOver.h) 来了解所有支持的本地化列表。
+- 音频路径是对应于文件标识符的基本文件名。macOS 引导程序的音频路径参考 [`APPLE_VOICE_OVER_AUDIO_FILE` 的定义](https://github.com/acidanthera/OpenCorePkg/blob/master/Include/Apple/Protocol/AppleVoiceOver.h)。OpenCore 的音频路径参考 [`OC_VOICE_OVER_AUDIO_FILE` 的定义](https://github.com/acidanthera/OpenCorePkg/blob/master/Include/Protocol/OcAudio.h)。唯一例外的是 OpenCore 启动提示音文件：`OCEFIAudio_VoiceOver_Boot.wav`。
 
-Audio localisation is determined separately for macOS bootloader and OpenCore. For macOS bootloader it is set in `preferences.efires` archive in `systemLanguage.utf8` file and is controlled by the operating system. For OpenCore the value of `prev-lang:kbd` variable is used. When native audio localisation of a particular file is missing, English language (`en`) localisation is used. Sample audio files can be found in [OcBinaryData repository](https://github.com/acidanthera/OcBinaryData).
+macOS 引导程序和 OpenCore 的音频本地化是分开的。macOS 引导程序是在 `systemLanguage.utf8` 文件中的 `preferences.efires` 归档中设置，并由操作系统控制。OpenCore 则是使用 `prev-lang:kbd` 变量的值来控制。当某一特定文件的音频本地化缺失时，将会使用英语（`en`）来代替。示例音频文件可以在 [OcBinaryData 仓库](https://github.com/acidanthera/OcBinaryData) 中找到。
 
 ### `ConnectDrivers`
 
@@ -129,40 +130,38 @@ Audio localisation is determined separately for macOS bootloader and OpenCore. F
 
 **Type**: `plist array`
 **Failsafe**: None
-**Description**: 从 `OC/Drivers` 目录下加载选择的驱动。
-
-设计为填充 UEFI 驱动程序加载的文件名。
+**Description**: 从 `OC/Drivers` 目录下加载选择的驱动。设计为填充 UEFI 驱动程序加载的文件名。
 
 ### `Input`
 
 **Type**: `plist dict`
 **Failsafe**: None
-**Description**: Apply individual settings designed for input (keyboard and mouse) in [Input Properties]() section below.
+**Description**: 从下面的 Input Properties 部分，应用为输入（键盘和鼠标）而设计的个性化设置。
 
 ### `Output`
 
 **Type**: `plist dict`
 **Failsafe**: None
-**Description**: Apply individual settings designed for output (text and graphics) in [Output Properties]() section below.
+**Description**: 从下面的 Output Properties 部分，应用为输出（文本和图形）而设计的个性化设置。
 
 ### `ProtocolOverrides`
 
 **Type**: `plist dict`
 **Failsafe**: None
-**Description**: Force builtin versions of select protocols described in [ProtocolOverrides Properties]() section below.
+**Description**: 强制执行从下面的 ProtocolOverrides Properties 部分所选协议的内置版本。
 
-*注*：all protocol instances are installed prior to driver loading.
+*注*：所有协议实例的安装都优先于驱动程序的加载。
 
 ### `Quirks`
 
 **Type**: `plist dict`
 **Failsafe**: None
-**Description**: Apply individual firmware quirks described in [Quirks Properties]() section below.
+**Description**: 从下面的 Quirks Properties 部分，应用个性化的固件 Quirks。
 
 ### `ReservedMemory`
 
 **Type**: `plist array`
-**Description**: Designed to be filled with `plist dict` values, describing memory areas exquisite to particular firmware and hardware functioning, which should not be used by the operating system. An example of such memory region could be second 256 MB corrupted by Intel HD 3000 or an area with faulty RAM.
+**Description**: 设计为用 `plist dict` 值填充，用于描述对特定固件和硬件功能要求很高的内存区域，这些区域不应该被操作系统使用。比如被 Intel HD 3000 破坏的第二个 256MB 区域，或是一个有错误的 RAM 的区域。
 
 ## 11.7 APFS Properties
 
@@ -173,6 +172,14 @@ Audio localisation is determined separately for macOS bootloader and OpenCore. F
 **Description**: 从一个 APFS 容器中加载 APFS 驱动。
 
 APFS 的 EFI 驱动内置在所有可以作为系统启动盘的 APFS 容器之中。这一选项将会根据基于 `ScanPolicy` 找到的 APFS 容器，从中加载 APFS 驱动。更多详情请查看 [苹果 APFS 文件系统参考手册](https://developer.apple.com/support/apple-file-system/Apple-File-System-Reference.pdf) 中的 `EFI Jummpstart` 章节。
+
+### `GlobalConnect`
+
+**Type**: `plist boolean`
+**Failsafe**: `false`
+**Description**: 在 APFS 加载期间执行完整的设备连接。
+
+代替通常情况下用于 APFS 驱动程序加载的分区句柄连接，每一个句柄都是递归连接的。这可能会比平时花费更多的时间，但是是某些固件访问 APFS 分区的唯一方法，比如在旧的惠普笔记本电脑上发现的那样。
 
 ### `HideVerbose`
 
@@ -220,43 +227,43 @@ APFS 驱动的版本号和 macOS 版本相关。较旧版本的 APFS 驱动可�
 
 **Type**: `plist integer`
 **Failsafe**: `0`
-**Description**: Codec address on the specified audio controller for audio support.
+**Description**: 特定音频控制器上的编解码器地址，用于音频支持。
 
-Normally this contains first audio codec address on the builtin analog audio controller (`HDEF`). Audio codec addresses, e.g. `2`, can be found in the debug log (marked in bold):
+一般来说，这里包含了内置模拟音频控制器（`HDEF`）上的第一个音频编解码器地址。音频编解码器地址（比如 `2`）可以在调试日志中找到（已用粗斜体标出）：
 
-`OCAU: 1/3 PciRoot(0x0)/Pci(0x1,0x0)/Pci(0x0,0x1)/VenMsg(<redacted>,00000000) (4 outputs)`
-`OCAU: 2/3 PciRoot(0x0)/Pci(0x3,0x0)/VenMsg(<redacted>,00000000) (1 outputs)`
-`OCAU: 3/3 PciRoot(0x0)/Pci(0x1B,0x0)/VenMsg(<redacted>,02000000) (7 outputs)`
+<code>OCAU: 1/3 PciRoot(0x0)/Pci(0x1,0x0)/Pci(0x0,0x1)/VenMsg(<redacted>,<strong><em>00000000</em></strong>) (4 outputs)</code>
+<code>OCAU: 2/3 PciRoot(0x0)/Pci(0x3,0x0)/VenMsg(<redacted>,<strong><em>00000000</em></strong>) (1 outputs)</code>
+<code>OCAU: 3/3 PciRoot(0x0)/Pci(0x1B,0x0)/VenMsg(<redacted>,<strong><em>02000000</em></strong>) (7 outputs)</code>
 
-As an alternative this value can be obtained from `IOHDACodecDevice` class in I/O Registry containing it in `IOHDACodecAddress` field.
+作为一种替代方案，该值可以在 I/O 注册表的 `IOHDACodecDevice` class 中获得，包含在 `IOHDACodecAddress` 字段中。
 
 ### `AudioDevice`
 
 **Type**: `plist string`
 **Failsafe**: empty string
-**Description**: Device path of the specified audio controller for audio support.
+**Description**: 特定音频控制器的设备路径，用于音频支持。
 
-Normally this contains builtin analog audio controller (`HDEF`) device path, e.g. `PciRoot(0x0)/Pci(0x1b,0x0)`. The list of recognised audio controllers can be found in the debug log (marked in bold):
+一般来说，这里包含了内置模拟音频控制器（`HDEF`）的设备路径，比如 `PciRoot(0x0)/Pci(0x1b,0x0)`。认可的音频控制器列表可以在调试日志中找到（已用粗斜体标出）：
 
-`OCAU: 1/3 PciRoot(0x0)/Pci(0x1,0x0)/Pci(0x0,0x1)/VenMsg(<redacted>,00000000) (4 outputs)`
-`OCAU: 2/3 PciRoot(0x0)/Pci(0x3,0x0)/VenMsg(<redacted>,00000000) (1 outputs)`
-`OCAU: 3/3 PciRoot(0x0)/Pci(0x1B,0x0)/VenMsg(<redacted>,02000000) (7 outputs)`
+<code>OCAU: 1/3 <strong><em>PciRoot(0x0)/Pci(0x1,0x0)/Pci(0x0,0x1)</em></strong>/VenMsg(<redacted>,00000000) (4 outputs)</code>
+<code>OCAU: 2/3 <strong><em>PciRoot(0x0)/Pci(0x3,0x0)</em></strong>/VenMsg(<redacted>,00000000) (1 outputs)</code>
+<code>OCAU: 3/3 <strong><em>PciRoot(0x0)/Pci(0x1B,0x0)</em></strong>/VenMsg(<redacted>,02000000) (7 outputs)</code>
 
-As an alternative `gfxutil -f HDEF` command can be used in macOS. Specifying empty device path will result in the first available audio controller to be used.
+作为一种替代方案，可以在 macOS 中通过 `gfxutil -f HDEF` 命令来获取。如果指定了空的设备路径，则会使用第一个可用的音频控制器。
 
 ### `AudioOut`
 
 **Type**: `plist integer`
 **Failsafe**: `0`
-**Description**: Index of the output port of the specified codec starting from 0.
+**Description**: 特定编解码器的输出端口的索引，从 `0` 开始。
 
-Normally this contains the index of the green out of the builtin analog audio controller (`HDEF`). The number of output nodes in the debug log (marked in bold):
+一般来说，这里包含了内置模拟音频控制器（`HDEF`）的绿色输出的索引。调试日志中输出节点的数量如下（已用粗斜体标出）：
 
-`OCAU: 1/3 PciRoot(0x0)/Pci(0x1,0x0)/Pci(0x0,0x1)/VenMsg(<redacted>,00000000) (4 outputs)`
-`OCAU: 2/3 PciRoot(0x0)/Pci(0x3,0x0)/VenMsg(<redacted>,00000000) (1 outputs)`
-`OCAU: 3/3 PciRoot(0x0)/Pci(0x1B,0x0)/VenMsg(<redacted>,02000000) (7 outputs)`
+<code>OCAU: 1/3 PciRoot(0x0)/Pci(0x1,0x0)/Pci(0x0,0x1)/VenMsg(<redacted>,00000000) (<strong><em>4 outputs</em></strong>)</code>
+<code>OCAU: 2/3 PciRoot(0x0)/Pci(0x3,0x0)/VenMsg(<redacted>,00000000) (<strong><em>1 outputs</em></strong>)</code>
+<code>OCAU: 3/3 PciRoot(0x0)/Pci(0x1B,0x0)/VenMsg(<redacted>,02000000) (<strong><em>7 outputs</em></strong>)</code>
 
-The quickest way to find the right port is to bruteforce the values from `0` to `N - 1`.
+找到正确端口的最快办法就是暴力地尝试 `0` 到 `N - 1` 的值。
 
 ### `AudioSupport`
 
@@ -264,15 +271,15 @@ The quickest way to find the right port is to bruteforce the values from `0` to 
 **Failsafe**: `false`
 **Description**: 通过连接到固件音频驱动程序以激活音频支持。
 
-Enabling this setting routes audio playback from builtin protocols to a dedicated audio port (`AudioOut`) of the specified codec (`AudioCodec`) located on the audio controller (`AudioDevice`).
+启用此设置可将音频播放从内置协议路由到音频控制器（`AudioDevice`）上指定编解码器（`AudioCodec`）的专用音频端口（`AudioOut`）。
 
 ### `MinimumVolume`
 
 **Type**: `plist integer`
 **Failsafe**: `0`
-**Description**: Minimal heard volume level from `0` to `100`.
+**Description**: 听到的最小音量水平，从 `0` 到 `100`。
 
-Screen reader will use this volume level, when the calculated volume level is less than `MinimumVolume`. Boot chime sound will not play if the calculated volume level is less than `MinimumVolume`.
+当计算出的音量小于 `MinimumVolume` 时，屏幕阅读器将使用这个音量。当计算出的音量小于 `MinimumVolume`，则不播放 Mac 特有的开机启动声音。
 
 ### `PlayChime`
 
@@ -280,24 +287,23 @@ Screen reader will use this volume level, when the calculated volume level is le
 **Failsafe**: `false`
 **Description**: 开机时播放 Mac 特有的风铃的声音。
 
-Enabling this setting plays boot chime through builtin audio support. Volume level is determined by `MinimumVolume` and `VolumeAmplifier` settings and `SystemAudioVolume` NVRAM variable.
+启用此设置可通过内置的音频支持来播放开机时播放的声音。音量大小由 `MinimumVolume` 和 `VolumeAmplifier` 的设置，以及 `SystemAudioVolume` NVRAM 变量来决定。
 
-*Note*: this setting is separate from `StartupMute` NVRAM variable to avoid conflicts when the firmware is able to play boot chime.
+*注*：此设置与 `StartupMute` NVRAM 变量是各自独立的，当固件能够播放开机声音时用来避免冲突。
 
 ### `VolumeAmplifier`
 
 **Type**: `plist integer`
 **Failsafe**: `0`
-**Description**: Multiplication coefficient for system volume to raw volume linear translation from `0` to `1000`.
+**Description**: 系统音量到原始音量的线性换算的乘法系数，从 `0` 到 `1000`。
 
-Volume level range read from `SystemAudioVolume` varies depending on the codec. To transform read value in `[0, 127]` range into raw volume range
-`[0, 100]` the read value is scaled to `VolumeAmplifier` percents:
+从 `SystemAudioVolume` 读取的音量范围会因编解码器的不同而不同。为了将 `[0, 127]` 范围内的值转换为原始音量范围 `[0, 100]` 内的值，所读取的值按比例调整为 `VolumeAmplifier` 的百分数：
 
 ```
 RawVolume = MIN{ [(SystemAudioVolume * VolumeAmplifier) / 100], 100 }
 ```
 
-*Note*: the transformation used in macOS is not linear, but it is very close and this nuance is thus ignored.
+*注*：macOS 中使用的转换并不是线性的，但非常接近，因此我们忽略了这种细微差别。
 
 ## 11.9 Input Properties
 
@@ -305,9 +311,9 @@ RawVolume = MIN{ [(SystemAudioVolume * VolumeAmplifier) / 100], 100 }
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
-**Description**: Enable keyboard input sanity checking.
+**Description**: 启用键盘输入的合理性检查。
 
-Apparently some boards like GA Z77P-D3 may return uninitialised data in `EFI_INPUT_KEY` with all input protocols. This option discards keys that are neither ASCII, nor are defined in the UEFI specification (see tables 107 and 108 in version 2.8).
+显然，有些主板，如 GA Z77P-D3，可能会在 `EFI_INPUT_KEY` 中返回所有输入协议的未初始化数据。这个选项会舍弃那些既不是 ASCII 码，也不是 UEFI 规范中定义的键（见版本 2.8 的表 107 和 108）。
 
 ### `KeyForgetThreshold`
 
@@ -318,6 +324,8 @@ Apparently some boards like GA Z77P-D3 may return uninitialised data in `EFI_INP
 `AppleKeyMapAggregator` 协议应该包含当前按下的键的固定长度的缓冲。但是大部分驱动程序仅将按键按下报告为中断、并且按住按键会导致在一定的时间间隔后再提交按下行为。一旦超时到期，我们就是用超时从缓冲区中删除一次按下的键，并且没有新提交。
 
 此选项允许根据你的平台设置此超时。在大多数平台上有效的推荐值为 `5` 毫秒。作为参考，在 VMWare 上按住一个键大约每 2 毫秒就会重复一次，而在 APTIO V 上是 3 - 4 毫秒。因此，可以在较快的平台上设置稍低的值、在较慢的平台设置稍高的值，以提高响应速度。
+
+*注*：某些平台可能需要更高或者更低的值。例如，当 OpenCanopy 检测到按键丢失的时候，尝试稍高的值（比如增加到 `10`），当检测到按键停滞时，尝试稍低的值。由于每个平台各不相同，因此检查从 `1` 到 `25` 的每个值可能会比较合理。
 
 ### `KeyMergeThreshold`
 
@@ -348,7 +356,7 @@ Apparently some boards like GA Z77P-D3 may return uninitialised data in `EFI_INP
 - `V2` --- UEFI 现代标准输入协议 `EFI_SIMPLE_TEXT_INPUT_EX_PROTOCOL`.
 - `AMI` --- APTIO 输入协议 `AMI_EFIKEYCODE_PROTOCOL`.
 
-*Note*: Currently `V1`, `V2`, and `AMI` unlike `Auto` only do filtering of the particular specified protocol. This may change in the future versions.
+*注*：目前 `V1`、`V2` 和 `AMI` 区别于 `Auto`，只对特定的协议进行过滤。这种情况在未来的版本中可能会改变。
 
 ### `KeySwap`
 
@@ -380,7 +388,7 @@ Apparently some boards like GA Z77P-D3 may return uninitialised data in `EFI_INP
 **Failsafe**: `0`
 **Description**: 固件始终刷新的频率（单位 100 纳秒）
 
-设置较低的值可以提高界面和输入处理性能的响应能力。建议值为 `50000`（即 5 毫秒）或稍高一些。选择 ASUS Z87 主板时，请使用 `60000`，苹果主板请使用 `100000`。你也可以将此值保留为 0，由 OpenCore 自动计算。
+设置较低的值可以提高界面和输入处理性能的响应能力。建议值为 `50000`（即 5 毫秒）或稍高一些。选择 ASUS Z87 主板时，请使用 `60000`，苹果主板请使用 `100000`。你也可以将此值保留为 `0`，由 OpenCore 自动计算。
 
 ## 11.10 Output Properties
 
@@ -389,32 +397,32 @@ Apparently some boards like GA Z77P-D3 may return uninitialised data in `EFI_INP
 **Failsafe**: `BuiltinGraphics`
 **Description**: 选择通过标准控制台输出的渲染器。
 
-Currently two renderers are supported: `Builtin` and `System`. `System` renderer uses firmware services for text rendering. `Builtin` bypassing firmware services and performs text rendering on its own. Different renderers support a different set of options. It is recommended to use `Builtin` renderer, as it supports HiDPI mode and uses full screen resolution.
+目前支持两种渲染器：`Builtin` 和 `System`。`System` 渲染器使用固件服务进行文本渲染。`Builtin` 渲染器则绕过固件服务，自行渲染文本。不同的渲染器支持的选项也不同。建议使用 `Builtin` 渲染器，因为它支持 HiDPI 模式，并能够使用全屏分辨率。
 
-UEFI firmwares generally support `ConsoleControl` with two rendering modes: `Graphics` and `Text`. Some firmwares do not support `ConsoleControl` and rendering modes. OpenCore and macOS expect text to only be shown in `Graphics` mode and graphics to be drawn in any mode. Since this is not required by UEFI specification, exact behaviour varies.
+UEFI 固件一般用两种渲染模式来支持 `ConsoleControl`：`Graphics` 和 `Text`。有些固件不支持 `ConsoleControl` 和渲染模式。OpenCore 和 macOS 希望文本只在 `Graphics` 模式下显示，而图形可以在任何模式下绘制。由于 UEFI 规范并不要求这样做，因此具体的行为各不相同。
 
-Valid values are combinations of text renderer and rendering mode:
+有效值为文本渲染器和渲染模式的组合：
 
-- `BuiltinGraphics` --- Switch to `Graphics` mode and use `Builtin` renderer with custom `ConsoleControl`.
-- `SystemGraphics` --- Switch to `Graphics` mode and use `System` renderer with custom `ConsoleControl`.
-- `SystemText` --- Switch to `Text` mode and use `System` renderer with custom `ConsoleControl`.
-- `SystemGeneric` --- Use `System` renderer with system `ConsoleControl` assuming it behaves correctly.
+- `BuiltinGraphics` --- 切换到 `Graphics` 模式，并使用 `Builtin` 渲染器和自定义 `ConsoleControl`。
+- `SystemGraphics` --- 切换到 `Graphics` 模式，并使用 `System` 渲染器和自定义 `ConsoleControl`。
+- `SystemText` --- 切换到 `Text` 模式，并使用 `System` 渲染器和自定义 `ConsoleControl`。
+- `SystemGeneric` --- 使用 `System` 渲染器和系统 `ConsoleControl`，前提是它们能正常工作。
 
-The use of `BuiltinGraphics` is generally straightforward. For most platforms it is necessary to enable `ProvideConsoleGop`, set `Resolution` to `Max`.
+`BuiltinGraphics` 的用法通常是比较直接的。对于大多数平台，需要启用 `ProvideConsoleGop`，将 `Resolution` 设置为 `Max`。
 
-The use of `System` protocols is more complicated. In general the preferred setting is `SystemGraphics` or `SystemText`. Enabling `ProvideConsoleGop`, setting `Resolution` to `Max`, enabling `ReplaceTabWithSpace` is useful on almost all platforms. `SanitiseClearScreen`, `IgnoreTextInGraphics`, and `ClearScreenOnModeSwitch` are more specific, and their use depends on the firmware.
+`System` 协议的用法比较复杂。一般来说，首选设置 `SystemGraphics` 或 `SystemText`。启用 `ProvideConsoleGop`，将 `Resolution` 设置为 `Max`，启用 `ReplaceTabWithSpace` 几乎在所有平台上都很有用。`SanitiseClearScreen`、`IgnoreTextInGraphics` 和 `ClearScreenOnModeSwitch` 比较特殊，它们的用法取决于固件。
 
-*注*：Some Macs, namely `MacPro5,1`, may have broken console output with newer GPUs, and thus only `BuiltinGraphics` may work for them.
+*注*：某些 Mac，比如 `MacPro5,1`，在使用较新的 GPU 时，可能会出现控制台输出中断的情况，因此可能只有 `BuiltinGraphics` 对它们有效。
 
 ### `ConsoleMode`
 
 **Type**: `plist string`
 **Failsafe**: Empty string
-**Description**: Sets console output mode as specified with the `WxH` (e.g. `80x24`) formatted string.
+**Description**: 按照 `WxH`（例如 `80x24`）格式的字符串所指定的方式设置控制台的输出模式。
 
-Set to empty string not to change console mode. Set to `Max` to try to use largest available console mode. Currently `Builtin` text renderer supports only one console mode, so this option is ignored.
+设置为空字符串则不会改变控制台模式。设置为 `Max` 则会尝试最大的可用控制台模式。目前 `Builtin` 文本渲染器只支持一种控制台模式，所以该选项可以忽略。
 
-*注*：This field is best to be left empty on most firmwares.
+*注*：在大多数固件上，这个字段最好留空。
 
 ### `Resolution`
 
@@ -422,13 +430,13 @@ Set to empty string not to change console mode. Set to `Max` to try to use large
 **Failsafe**: Empty string
 **Description**: 设置控制台的屏幕分辨率。
 
-- Set to `WxH@Bpp` (e.g. `1920x1080@32`) or `WxH` (e.g. `1920x1080`) formatted string to request custom resolution from GOP if available.
-- Set to empty string not to change screen resolution.
-- Set to `Max` to try to use largest available screen resolution.
+- 设置为 `WxH@Bpp`（如 `1920x1080@32`）或 `WxH`（如 `1920x1080`）格式的字符串，向 GOP 请求自定义分辨率。
+- 设置为空字符串，不改变屏幕分辨率。
+- 设置为 `Max`，尝试使用最大的可用屏幕分辨率。
 
-On HiDPI screens `APPLE_VENDOR_VARIABLE_GUID` `UIScale` NVRAM variable may need to be set to `02` to enable HiDPI scaling in in `Builtin` text renderer, FileVault 2 UEFI password interface, FileVault 2 UEFI password interface and boot screen logo. Refer to [Recommended Variables]() section for more details.
+在 HiDPI 屏幕上，`APPLE_VENDOR_VARIABLE_GUID` `UIScale` NVRAM 变量可能需要设置为 `02`，以便在 `Builtin` 文本渲染器、FileVault 2 UEFI 密码界面和启动界面 logo 启用 HiDPI 缩放。更多细节请参考 [Recommended Variables](https://oc.skk.moe/9-nvram.html#9-4-Recommended-Variables) 部分。
 
-*注*：This will fail when console handle has no GOP protocol. When the firmware does not provide it, it can be added with `ProvideConsoleGop` set to `true`.
+*注*：当控制台句柄没有 GOP 协议时，这些设置会失败。当固件不再提供时，可以将 `ProvideConsoleGop` 设置为 `true` 并添加。
 
 ### `ClearScreenOnModeSwitch`
 
@@ -442,53 +450,53 @@ On HiDPI screens `APPLE_VENDOR_VARIABLE_GUID` `UIScale` NVRAM variable may need 
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
-**Description**: Use builtin graphics output protocol renderer for console.
+**Description**: 为控制台使用内置的图形输出协议渲染器。
 
-On some firmwares this may provide better performance or even fix rendering issues, like on `MacPro5,1`. However it is recommended not to use this option unless there is an obvious benefit as it may even result in slower scrolling.
+在某些固件上，这样做可能会提供更优的性能，甚至修复渲染问题，比如 `MacPro5,1`。但是，除非有明显的好处，否则还是建议不要使用这个选项，因为可能会导致滚动速度变慢。
 
 ### `IgnoreTextInGraphics`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
-**Description**: Select firmwares output text onscreen in both graphics and text mode. This is normally unexpected, because random text may appear over graphical images and cause UI corruption. Setting this option to `true` will discard all text output when console control is in mode different from `Text`.
+**Description**: 选择固件同时在图形和文本两种模式下在屏幕上输出文本。通常不会这样做，因为随机的文本可能会出现在图形图像上，并导致用户界面出错。将此选项设置为 `true` 时，会在控制台处于与 `Text` 不同的模式时，舍弃所有文本输出。
 
-*注*：This option only applies to `System` renderer.
+*注*：这一选项只会在 `System` 渲染器上生效。
 
 ### `ReplaceTabWithSpace`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
-**Description**: Some firmwares do not print tab characters or even everything that follows them, causing difficulties or inability to use the UEFI Shell builtin text editor to edit property lists and other documents. This option makes the console output spaces instead of tabs.
+**Description**: 有些固件不会打印 tab 符号，甚至不打印 tab 后面的所有内容，导致很难或根本无法用 UEFI Shell 内置的文本编辑器来编辑属性列表和其他文档。这个选项会使控制台输出空格来替代 tab。
 
-*注*：This option only applies to `System` renderer.
+*注*：这一选项只会在 `System` 渲染器上生效。
 
 ### `ProvideConsoleGop`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
-**Description**: Ensure GOP (Graphics Output Protocol) on console handle.
+**Description**: 确保控制台句柄上有 GOP (Graphics Output Protocol)。
 
-macOS bootloader requires GOP to be present on console handle, yet the exact location of GOP is not covered by the UEFI specification. This option will ensure GOP is installed on console handle if it is present.
+macOS bootloader 要求控制台句柄上必须有 GOP 或 UGA（适用于 10.4 EfiBoot），但 UEFI 规范并未涵盖图形协议的确切位置。此选项会确保 GOP 和 UGA（如果存在）在控制台句柄上可用。
 
-*注*：This option will also replace broken GOP protocol on console handle, which may be the case on `MacPro5,1` with newer GPUs.
+*注*：这个选项也会替换掉控制台句柄上损坏的 GOP 协议，在使用较新的 GPU 的 `MacPro5,1` 时可能会出现这种情况。
 
 ### `ReconnectOnResChange`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
-**Description**: Reconnect console controllers after changing screen resolution.
+**Description**: 改变屏幕分辨率后重新连接控制台控制器。
 
-On some firmwares when screen resolution is changed via GOP, it is required to reconnect the controllers, which produce the console protocols (simple text out). Otherwise they will not produce text based on the new resolution.
+当通过 GOP 改变屏幕分辨率时，某些固件需要重新连接产生控制台协议（简单的文本输出）的控制器，否则它们不会根据新的分辨率生成文本。
 
-*注*：On several boards this logic may result in black screen when launching OpenCore from Shell and thus it is optional. In versions prior to 0.5.2 this option was mandatory and not configurable. Please do not use this unless required.
+*注*：当 OpenCore 从 Shell 启动时，这个逻辑可能会导致某些主板黑屏，因此这个选项是非必须的。在 0.5.2 之前的版本中，这个选项是强制性的，不可配置。除非需要，否则请不要使用该选项。
 
 ### `SanitiseClearScreen`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
-**Description**: Some firmwares reset screen resolution to a failsafe value (like `1024x768`) on the attempts to clear screen contents when large display (e.g. 2K or 4K) is used. This option attempts to apply a workaround.
+**Description**: 有些固件在使用较大的显示器（如 2K 或 4K）时，清除屏幕内容会导致屏幕分辨率重置为 failsafe 值（如 `1024x768`）。这个选项为这种情况提供了一个变通方法。
 
-*注*：This option only applies to `System` renderer. On all known affected systems `ConsoleMode` had to be set to empty string for this to work.
+*注*：这一选项只会在 `System` 渲染器上生效。在所有已知的受影响的系统中，`ConsoleMode` 必须设置为空字符串才能正常工作。
 
 ## 11.11 Protocols Properties
 
@@ -496,14 +504,13 @@ On some firmwares when screen resolution is changed via GOP, it is required to r
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
-**Description**: Reinstalls Apple audio protocols with builtin versions.
+**Description**: 重新安装内置版本的 Apple 音频协议。
 
-Apple audio protocols allow macOS bootloader and OpenCore to play sounds and signals for screen reading or audible error reporting. Supported
-protocols are beep generation and VoiceOver. VoiceOver protocol is specific to Gibraltar machines (T2) and is not supported before macOS High Sierra (10.13). Instead older macOS versions use AppleHDA protocol, which is currently not implemented.
+Apple 音频协议允许 macOS bootloader 和 OpenCore 播放声音和信号，用于屏幕阅读或可闻及的错误报告。支持的协议有生成「哔」声和 VoiceOver。VoiceOver 协议是带有 T2 芯片的机器特有的，不支持 macOS High Sierra (10.13) 之前的版本。旧版 macOS 版本使用的是 AppleHDA 协议，目前还没有实现。
 
-Only one set of audio protocols can be available at a time, so in order to get audio playback in OpenCore user interface on Mac system implementing some of these protocols this setting should be enabled.
+每次只能有一组音频协议可用，所以如果为了在 Mac 系统上的 OpenCore 用户界面实现其中一些协议的音频播放，这一设置应该启用。
 
-*Note*: Backend audio driver needs to be configured in `UEFI Audio` section for these protocols to be able to stream audio.
+*注*：后段音频驱动需要在 `UEFI Audio` 部分进行配置，以便这些协议能够流式传输音频。
 
 ### `AppleBootPolicy`
 
@@ -603,21 +610,21 @@ Only one set of audio protocols can be available at a time, so in order to get a
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
-**Description**: Remove duplicate entries in `BootOrder` variable in `EFI_GLOBAL_VARIABLE_GUID`.
+**Description**: 删除 `EFI_GLOBAL_VARIABLE_GUID` 中 `BootOrder` 变量的重复条目。
 
-This quirk requires `RequestBootVarRouting` to be enabled and therefore `OC_FIRMWARE_RUNTIME` protocol implemented in `OpenRuntime.efi`.
+这个 Quirk 需要启用 `RequestBootVarRouting`，因此需要 `OpenRuntime.efi` 中实现的 `OC_FIRMWARE_RUNTIME` 协议。
 
-By redirecting `Boot` prefixed variables to a separate GUID namespace with the help of `RequestBootVarRouting` quirk we achieve multiple goals:
+通过 `RequestBootVarRouting` 的帮助，将 `Boot` 前缀变量重定向到一个单独的 GUID 命名空间，我们实现了这几个目标：
 
-- Operating systems are jailed and only controlled by OpenCore boot environment to enhance security.
-- Operating systems do not mess with OpenCore boot priority, and guarantee fluent updates and hibernation wakes for cases that require reboots with OpenCore in the middle.
-- Potentially incompatible boot entries, such as macOS entries, are not deleted or anyhow corrupted.
+- 囚禁操作系统，让它只受 OpenCore 启动环境的控制，增强安全性。
+- 操作系统不会打乱 OpenCore 的启动优先级，在系统更新和休眠唤醒等需要 OpenCore 参与的需要重启的情况下，保证了流畅性。
+- 潜在的不兼容的启动项，如 macOS 项，不会被删除或被损坏。
 
-However, some firmwares do their own boot option scanning upon startup by checking file presence on the available disks. Quite often this scanning includes non-standard locations, such as Windows Bootloader paths. Normally it is not an issue, but some firmwares, ASUS firmwares on APTIO V in particular, have bugs. For them scanning is implemented improperly, and firmware preferences may get accidentally corrupted due to `BootOrder` entry duplication (each option will be added twice) making it impossible to boot without cleaning NVRAM.
+然而，一些固件会在启动时通过检查可用磁盘上的文件来进行自己的启动选项扫描。通常这种扫描包括非标准位置，如 Windows bootloader 路径。一般来说这不成问题，但某些固件，特别是 APTIO V 的华硕固件会有 bug。对于它们来说，扫描的执行并不正确，固件的首选项可能会因为 `BootOrder` 条目重复而被意外损坏（每个选项会被添加两次），导致在不重置 NVRAM 的情况下无法启动。
 
-To trigger the bug one should have some valid boot options (e.g. OpenCore) and then install Windows with `RequestBootVarRouting` enabled. As Windows bootloader option will not be created by Windows installer, the firmware will attempt to create it itself, and then corrupt its boot option list.
+要触发这个 bug，必须要有一些有效的启动选项（如 OpenCore），然后在启用 `RequestBootVarRouting` 的情况下安装 Windows。由于 Windows bootloader 选项不会被 Windows 安装程序创建，因此固件会尝试自己创建，于是破坏了它的启动选项列表。
 
-This quirk removes all duplicates in `BootOrder` variable attempting to resolve the consequences of the bugs upon OpenCore loading. It is recommended to use this key along with `BootProtect` option.
+这个 Quirk 会删除 `BootOrder` 变量中所有重复的内容，尝试解决 OpenCore 加载时出现的 bug。建议将此键值与 `BootProtect` 选项一起使用。
 
 ### `ExitBootServicesDelay`
 
@@ -631,9 +638,9 @@ This quirk removes all duplicates in `BootOrder` variable attempting to resolve 
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
-**Description**: Select firmwares, namely APTIO IV, may contain invalid values in `MSR_FLEX_RATIO` (`0x194`) MSR register. These values may cause macOS boot failure on Intel platforms.
+**Description**: 某些固件，即 APTIO IV，可能在 `MSR_FLEX_RATIO` (`0x194`) MSR 寄存器中含有无效值。这些值可能会导致 macOS 在 Intel 平台上启动失败。
 
-*注*：While the option is not supposed to induce harm on unaffected firmwares, its usage is not recommended when it is not required.
+*注*：虽然该选项不会对不受影响的固件造成损害，但在不需要的情况下不建议启用。
 
 ### `ReleaseUsbOwnership`
 
@@ -647,19 +654,19 @@ This quirk removes all duplicates in `BootOrder` variable attempting to resolve 
 **Failsafe**: `false`
 **Description**: 请求将所有带有 `Boot` 前缀的变量从 `EFI_GLOBAL_VARIABLE_GUID` 重定向到 `OC_VENDOR_VARIABLE_GUID`。
 
-This quirk requires `OC_FIRMWARE_RUNTIME` protocol implemented in `OpenRuntime.efi`（原名 `FwRuntimeServices.efi`）. 当固件删除不兼容的启动条目时，这一 Quirk 可以让默认的启动条目保存在引导菜单中。简单地说就是，如果你想使用「系统偏好设置」中的「[启动磁盘](https://support.apple.com/HT202796)」，就必须启用这一 Quirk。
+启用这个 Quirk 需要在 `OpenRuntime.efi` 中实现的 `OC_FIRMWARE_RUNTIME` 协议（原名 `FwRuntimeServices.efi`）。当固件删除不兼容的启动条目时，这一 Quirk 可以让默认的启动条目保存在引导菜单中。简单地说就是，如果你想使用「系统偏好设置」中的「[启动磁盘](https://support.apple.com/HT202796)」，就必须启用这一 Quirk。
 
 ### `TscSyncTimeout`
 
 **Type**: `plist integer`
 **Failsafe**: `0`
-**Description**: Attempts to perform TSC synchronisation with a specified timeout.
+**Description**: 尝试用指定的 Timeout 执行 TSC 同步。
 
-The primary purpose of this quirk is to enable early bootstrap TSC synchronisation on some server and laptop models when running a debug XNU kernel. For the debug kernel the TSC needs to be kept in sync across the cores before any kext could kick in rendering all other solutions problematic. The timeout is specified in microseconds and depends on the amount of cores present on the platform, the recommended starting value is `500000`.
+这个 Quirk 的主要目的是在运行 XNU 调试内核时，在一些服务器和笔记本型号上实现早期引导 TSC 同步。对于调试内核，在任何 kext 可能导致其他解决方案出现问题之前，TSC 需要在各个内核之间保持同步。Timeout 以微秒为单位，取决于平台上存在的核心数量，推荐的起始值是 `500000`。
 
-This is an experimental quirk, which should only be used for the aforementioned problem. In all other cases the quirk may render the operating system unstable and is not recommended. The recommended solution in the other cases is to install a kernel driver like [VoodooTSCSync](https://github.com/RehabMan/VoodooTSCSync), [TSCAdjustReset](https://github.com/interferenc/TSCAdjustReset) or [CpuTscSync](https://github.com/lvs1974/CpuTscSync) (a more specialised variant of VoodooTSCSync for newer laptops).
+这是一个实验性的 Quirk，只能被用于上述问题。在其他情况下，这个 Quirk 可能会导致操作系统不稳定，所以并不推荐使用。在其他情况下，推荐的解决办法是安装一个内核驱动，如 [VoodooTSCSync](https://github.com/RehabMan/VoodooTSCSync)、[TSCAdjustReset](https://github.com/interferenc/TSCAdjustReset) 或 [CpuTscSync](https://github.com/lvs1974/CpuTscSync)（是 VoodooTSCSync 的一个更有针对性的变种，适用于较新的笔记本电脑）。
 
-*Note*: The reason this quirk cannot replace the kernel driver is because it cannot operate in ACPI S3 mode (sleep wake) and because the UEFI firmwares provide very limited multicore support preventing the precise update of the MSR registers.
+*注*：这个 Quirk 不能取代内核驱动的原因是他不能在 ACPI S3 模式（睡眠唤醒）下运行，而且 UEFI 固件提供的多核心支持非常有限，无法精确地更新 MSR 寄存器。
 
 ### `UnblockFsConnect`
 
@@ -675,24 +682,24 @@ This is an experimental quirk, which should only be used for the aforementioned 
 
 **Type**: `plist integer`
 **Failsafe**: `0`
-**Description**: Start address of the reserved memory region, which should be allocated as reserved effectively marking the memory of this type inaccessible to the operating system.
+**Description**: 保留内存区域的起始地址，该区域应被分配为保留区，有效地将此类型的内存标记标记为操作系统不可访问。
 
-The addresses written here must be part of the memory map, have `EfiConventionalMemory` type, and page-aligned (4 KBs).
+这里写的地址必须是内存映射的一部分，具有 `EfiConventionalMemory` 类型，并且按页对齐（4KBs）。
 
 ### `Comment`
 
 **Type**: `plist string`
 **Failsafe**: Empty string
-**Description**: Arbitrary ASCII string used to provide human readable reference for the entry. It is implementation defined whether this value is used.
+**Description**: 用于为条目提供人类可读参考的任意 ASCII 字符串（译者注：即注释）。该值取决于具体的实现定义。
 
 ### `Size`
 
 **Type**: `plist integer`
 **Failsafe**: `0`
-**Description**: Size of the reserved memory region, must be page-aligned (4 KBs).
+**Description**: 保留的内存区域的大小，必须按页对齐（4KBs）。
 
 ### `Enabled`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
-**Description**: This region will not be reserved unless set to `true`.
+**Description**: 除非设置为 `true`，否则该区域不会被保留。
