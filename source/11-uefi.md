@@ -140,7 +140,7 @@ OpenCanopy 为 `PickerAttributes` 提供了全面的支持，并提供了一套�
 
 - OpenCore 音频文件的音频类型可以是 `OCEFIAudio`，macOS 引导程序的音频文件的音频类型可以是 `AXEFIAudio`。
 - 音频本地化语言由两个字母的语言代码表示（如 `en`），中文、西班牙语和葡萄牙语除外。具体请看 [`APPLE_VOICE_OVER_LANGUAGE_CODE` 的定义](https://github.com/acidanthera/OpenCorePkg/blob/master/Include/Apple/Protocol/AppleVoiceOver.h) 来了解所有支持的本地化列表。
-- 音频路径是对应于文件标识符的基本文件名。macOS 引导程序的音频路径参考 [`APPLE_VOICE_OVER_AUDIO_FILE` 的定义](https://github.com/acidanthera/OpenCorePkg/blob/master/Include/Apple/Protocol/AppleVoiceOver.h)。OpenCore 的音频路径参考 [`OC_VOICE_OVER_AUDIO_FILE` 的定义](https://github.com/acidanthera/OpenCorePkg/blob/master/Include/Protocol/OcAudio.h)。唯一例外的是 OpenCore 启动提示音文件：`OCEFIAudio_VoiceOver_Boot.wav`。
+- 音频路径是对应于文件标识符的基本文件名。macOS 引导程序的音频路径参考 [`APPLE_VOICE_OVER_AUDIO_FILE` 的定义](https://github.com/acidanthera/OpenCorePkg/blob/master/Include/Apple/Protocol/AppleVoiceOver.h)。OpenCore 的音频路径参考 [`OC_VOICE_OVER_AUDIO_FILE` 的定义](https://github.com/acidanthera/OpenCorePkg/blob/master/Include/Acidanthera/Protocol/OcAudio.h)。唯一例外的是 OpenCore 启动提示音文件：`OCEFIAudio_VoiceOver_Boot.wav`。
 
 macOS 引导程序和 OpenCore 的音频本地化是分开的。macOS 引导程序是在 `systemLanguage.utf8` 文件中的 `preferences.efires` 归档中设置，并由操作系统控制。OpenCore 则是使用 `prev-lang:kbd` 变量的值来控制。当某一特定文件的音频本地化缺失时，将会使用英语（`en`）来代替。示例音频文件可以在 [OcBinaryData 仓库](https://github.com/acidanthera/OcBinaryData) 中找到。
 
@@ -235,7 +235,7 @@ APFS 驱动的版本号基于其发布日期。较旧版本的 APFS 驱动可能
 
 - `0` - 使用默认数值。OpenCore 会随着未来更新，内置的默认数值也会不断更新。如果你会一直更新你的系统，我们推荐使用这一数值。目前默认数值为 `2018/06/21`。
 - `-1` - 允许使用任何版本的 APFS 驱动（强烈不推荐）。
-- 其他数值 - 数值格式应为形如 `20200401` 的格式。你可以从 OpenCore 的启动日志和 [OcApfsLib](https://github.com/acidanthera/OpenCorePkg/blob/master/Include/Library/OcApfsLib.h) 中找到 APFS 驱动的版本号。
+- 其他数值 - 数值格式应为形如 `20200401` 的格式。你可以从 OpenCore 的启动日志和 [OcApfsLib](https://github.com/acidanthera/OpenCorePkg/blob/master/Include/Acidanthera/Library/OcApfsLib.h) 中找到 APFS 驱动的版本号。
 
 ### `MinVersion`
 
@@ -247,7 +247,7 @@ APFS 驱动的版本号和 macOS 版本相关。较旧版本的 APFS 驱动可�
 
 - `0` - 使用默认数值。OpenCore 会随着未来更新，内置的默认数值也会不断更新。如果你会一直更新你的系统，我们推荐使用这一数值。目前默认数值选自 App Store 中能够下载到的 High Sierra（`748077008000000`）。
 - `-1` - 允许使用任何版本的 APFS 驱动（强烈不推荐）。
-- 其他数值 - 数值格式应为形如 `1412101001000000` 的格式（这是 macOS Catalina 10.15.4 的 APFS 驱动版本号）你可以从 OpenCore 的启动日志和 [OcApfsLib](https://github.com/acidanthera/OpenCorePkg/blob/master/Include/Library/OcApfsLib.h) 中找到 APFS 驱动的版本号。
+- 其他数值 - 数值格式应为形如 `1412101001000000` 的格式（这是 macOS Catalina 10.15.4 的 APFS 驱动版本号）你可以从 OpenCore 的启动日志和 [OcApfsLib](https://github.com/acidanthera/OpenCorePkg/blob/master/Include/Acidanthera/Library/OcApfsLib.h) 中找到 APFS 驱动的版本号。
 
 ## 11.8 Audio Properties
 
