@@ -2,8 +2,8 @@
 title: 5. Booter
 description: 配置 OpenRuntime.efi（Slide 值计算、KASLR）
 type: docs
-author_info: 由 Sukka 整理，由 Sukka、derbalkon 翻译。
-last_updated: 2020-04-23
+author_info: 由 Sukka、derbalkon 整理，由 Sukka、derbalkon 翻译。
+last_updated: 2020-07-11
 ---
 
 ## 5.1 简介
@@ -196,6 +196,16 @@ sudo pmset standby 0
 开启这个选项后，将会对固件进行内存映射分析，检查所有 slide（从 1 到 255）中是否有可用的。由于 `boot.efi` 私用 rdrand 或伪随机 rdtsc 随机生成此值，因此有可能出现冲突的 slide 值被使用并导致引导失败。如果出现潜在的冲突，这个选项将会强制为 macOS 选择一个伪随机值。这同时确保了 `slide=` 参数不会被传递给操作系统。
 
 *注*: OpenCore 会自动检查是否需要启用这一选项。如果 OpenCore 的调试日志中出现 `OCABC: Only N/256 slide values are usable!` 则请启用这一选项。
+
+### `ProvideMaxSlide`
+
+**Type**: `plist integer`
+**Failsafe**: `0`
+**Description**: 当更高的 KASLR slide 值不可用时提供最最大 KASLR slide 值。
+
+当 `ProvideCustomSlide` 启用时，该选项通过用户指定的 `1` 到 `254`（含）之间的值来覆盖上限为 `255` 的最大 slide 值。较新的固件会从上到下分配内存池中的内存，导致扫描 slide 时的空闲内存被当作内核加载时的临时内存来使用。如果这些内存不可用，启用这个选项则不会继续评估更高的 slide 值。
+
+*注*：当 `ProvideCustomSlide` 启用、并且随机化的 slide 落入不可用的范围时，如果出现随机的启动失败，则有必要开启这个 Quirk。开启 `AppleDebug` 时，调试日志通常会包含 `AAPL: [EB|‘LD:LKC] } Err(0x9)` 这样的信息。如果要找到最合适的值，请手动将 `slide=X` 追加到 `boot-args` 里，并用日志记录下不会导致启动失败的最大值。
 
 ### `RebuildAppleMemoryMap`
 
