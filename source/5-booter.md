@@ -198,6 +198,7 @@ sudo pmset standby 0
 *注*: OpenCore 会自动检查是否需要启用这一选项。如果 OpenCore 的调试日志中出现 `OCABC: Only N/256 slide values are usable!` 则请启用这一选项。
 
 ### `ProvideMaxSlide`
+
 **Type**: `plist integer`
 **Failsafe**: `0`
 **Description**: 当更高的 KASLR slide 值不可用时提供最最大 KASLR slide 值。
