@@ -3,7 +3,7 @@ title: 12. 排错
 description: 当你遇到问题的时候应该看看这个
 type: docs
 author_info: 由 xMuu、Sukka、derbalkon 整理，由 Sukka、derbalkon 翻译
-last_updated: 2020-07-05
+last_updated: 2020-07-22
 ---
 
 ## 12.1 Windows 支持

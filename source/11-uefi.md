@@ -3,7 +3,7 @@ title: 11. UEFI
 description: UEFI 驱动以及加载顺序
 type: docs
 author_info: 由 xMuu、Sukka、derbalkon 整理，由 Sukka、derbalkon 翻译
-last_updated: 2020-07-11
+last_updated: 2020-07-22
 ---
 
 ## 11.1 Introduction
@@ -107,7 +107,7 @@ OpenCanopy 为 `PickerAttributes` 提供了全面的支持，并提供了一套�
 - `Shell` --- 具有 UEFI Shell 名称的条目（如 `OpenShell`）。
 - `Tool` --- 其他工具。
 
-Label and icon generation can be performed with bundled utilities: `disklabel` and `icnspack`. Please refer to sample data for the details about the dimensions. 字体为 12pt 的 Helvetica，比例缩放。
+可以通过附带的实用程序来生成标签和图标：`disklabel` 和 `icnspack`。尺寸相关的信息请参考示例数据来了解。字体为 12pt 的 Helvetica，比例缩放。
 
 字体格式对应于 [AngelCode binary BMF](https://www.angelcode.com/products/bmfont)。虽然有很多工具可以生成字体文件，但目前还是建议使用 [dpFontBaker](https://github.com/danpla/dpfontbaker) 来生成位图字体（[用 CoreText 达到最佳效果](https://github.com/danpla/dpfontbaker/pull/1)），并使用 [fonverter](https://github.com/usr-sse2/fonverter) 将其导出为二进制格式。
 

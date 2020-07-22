@@ -3,7 +3,7 @@ title: 10. PlatformInfo
 description: SMBIOS 机型信息配置
 type: docs
 author_info: 由 xMuu、Sukka 整理，由 Sukka、derbalkon 翻译
-last_updated: 2020-07-11
+last_updated: 2020-07-22
 ---
 
 机型信息由手动生成、填充以与 macOS 服务兼容的几个标识字段组成。配置的基础部分可以从 [`AppleModels`](https://github.com/acidanthera/OpenCorePkg/blob/master/AppleModels)、一个可以从 [YAML](https://yaml.org/spec/1.2/spec.html) 格式的数据库中生成一组接口的工具包中获得。这些字段将会被写入三个位置：
@@ -24,10 +24,10 @@ last_updated: 2020-07-11
 **Failsafe**: `false`
 **Description**: 基于 `Generic` 属性而不是 `DataHub`、`NVRAM` 和 `SMBIOS` 属性生成机型信息。
 
-当 `Generic` 属性足够灵活的时候，这一选项将会变得非常有用：
+考虑到 `Generic` 部分的数据十分灵活，启用这个选项会很有用：
 
-- When enabled `SMBIOS`, `DataHub`, and `PlatformNVRAM` data is unused.
-- When disabled `Generic` section is unused.
+- 当启用这个选项时，`SMBIOS`、`DataHub` 和 `PlatformNVRAM` 中的数据将不会被使用。
+- 当禁用这个选项时，`Generic` 部分的数据将不会被使用。
 
 ### 2. `UpdateDataHub`
 
