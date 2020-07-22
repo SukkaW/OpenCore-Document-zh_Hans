@@ -3,7 +3,7 @@ title: 8. Misc
 description: 关于 OpenCore 行为的其他配置
 type: docs
 author_info: 由 xMuu、Sukka、derbalkon 整理、由 Sukka、derbalkon 翻译。
-last_updated: 2020-07-05
+last_updated: 2020-07-22
 ---
 
 ## 8.1 Introduction
@@ -176,9 +176,17 @@ OpenCore 尽可能地遵循 `bless` 模式，即 `Apple Boot Policy`。`bless` �
 目前 OpenCore 提供的值包括：
 
 - `0x0001` — `OC_ATTR_USE_VOLUME_ICON`，提供引导项自定义图标：
+  
+  对于 `Tools`，OpenCore 会尝试加载一个自定义图标，不存在自定义图标时则回退到默认图标：
+  - `ResetNVRAM` — `Resources\Image\ResetNVRAM.icns` — `ResetNVRAM.icns` 来自图标目录。
+  - `Tools\<TOOL_RELATIVE_PATH>.icns` — 工具文件附近的图标，扩展名为 `.icns`。
+  
+  对于 `Entries`，OpenCore 会尝试加载一个自定义图标，不存在自定义图标时则回退到卷宗或默认图标：
+  - `<ENTRY_PATH>.icns` — 条目文件附近的图标，扩展名为 `.icns`。
+  
+  对于其他条目，OpenCore 会尝试加载一个卷宗图标，并回退到默认图标：
   - `.VolumeIcon.icns` 文件，位于 APFS `Preboot` 根目录下。
   - `.VolumeIcon.icns` 文件，位于其他文件系统的卷宗的根目录下。
-  - `<TOOL_NAME>.icns` 文件，用来显示 `Tools` 图标。
 
   卷宗图标可以在访达中设置。注意，启用此功能可能会导致 外部可移除硬盘的图标 和 内部不可移除硬盘的图标 无法区分。
 
@@ -189,6 +197,7 @@ OpenCore 尽可能地遵循 `bless` 模式，即 `Apple Boot Policy`。`bless` �
   可用 `disklabel` 实用工具或 `bless` 命令来生成预置标签。当禁用或者缺少文本标签 (`.contentDetails` or `.disk_label.contentDetails`) 时将以它来代替渲染。
 
 - `0x0004` — `OC_ATTR_USE_GENERIC_LABEL_IMAGE`，为没有自定义条目的启动项提供预定义的标签图像。可能会缺少实际启动项的详细信息。
+- `0x0008` — `OC_ATTR_USE_ALTERNATE_ICONS`，如果支持，则将备用图标集作为当前使用的图标集。举个例子，可以在使用自定义背景颜色的时候使用旧的式样的图标（译者注：即 `Old` 前缀的图标）。
 
 ### `PickerAudioAssist`
 

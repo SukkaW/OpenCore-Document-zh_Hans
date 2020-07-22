@@ -3,7 +3,7 @@ title: 5. Booter
 description: 配置 OpenRuntime.efi（Slide 值计算、KASLR）
 type: docs
 author_info: 由 Sukka、derbalkon 整理，由 Sukka、derbalkon 翻译。
-last_updated: 2020-07-11
+last_updated: 2020-07-22
 ---
 
 ## 5.1 简介
@@ -139,7 +139,7 @@ sudo pmset standby 0
 
 这个选项会在 UEFI Runtime Services 执行过程中，删除 `CR0` 寄存器中的写保护 `WP` bit，从而绕过其代码页的 `RX̂` 权限。这个 Quirk 需要配合 `OpenRuntime.efi`（原 `FwRuntimeServices.efi`）里的 `OC_FIRMWARE_RUNTIME` 协议来实现。
 
-*注*：这个 Quirk 可能会破坏你的固件的安全性。如果你的固件支持内存属性表 (MAT)，请优先使用下文中的 `RebuildAppleMemoryMap` 那个 Quirk。
+*注*：这个 Quirk 可能会破坏你的固件的安全性。如果你的固件支持内存属性表 (MAT)，请优先使用下文中的 `RebuildAppleMemoryMap` 那个 Quirk。是否支持 MAT，请参考 `OCABC: MAT support is 1/0` 日志条目来确定。
 
 ### `ForceExitBootServices`
 
