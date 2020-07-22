@@ -139,7 +139,7 @@ sudo pmset standby 0
 
 这个选项会在 UEFI Runtime Services 执行过程中，删除 `CR0` 寄存器中的写保护 `WP` bit，从而绕过其代码页的 `RX̂` 权限。这个 Quirk 需要配合 `OpenRuntime.efi`（原 `FwRuntimeServices.efi`）里的 `OC_FIRMWARE_RUNTIME` 协议来实现。
 
-*注*：这个 Quirk 可能会破坏你的固件的安全性。如果你的固件支持内存属性表 (MAT)，请优先使用下文中的 `RebuildAppleMemoryMap` 那个 Quirk。
+*注*：这个 Quirk 可能会破坏你的固件的安全性。如果你的固件支持内存属性表 (MAT)，请优先使用下文中的 `RebuildAppleMemoryMap` 那个 Quirk。Refer to OCABC: MAT support is 1/0 log entry to determine whether MAT is supported.
 
 ### `ForceExitBootServices`
 

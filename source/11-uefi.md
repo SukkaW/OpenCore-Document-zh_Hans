@@ -76,7 +76,7 @@ sudo bless --verbose --file /Volumes/VOLNAME/DIR/OpenShell.efi --folder /Volumes
 
 OpenCanopy 是一个 OpenCore 的图形化界面接口，基于 [OpenCorePkg](https://github.com/acidanthera/OpenCorePkg) `OcBootManagementLib` 实现，提供与现有的文字模式类似的功能。当 `PickerMode` 设置为 `External` 时启用。
 
-OpenCanopy 所需的图象资源位于 `Resources` 目录下，一些简单的资源（字体和图标）可以在 [OcBinaryData 仓库](https://github.com/acidanthera/OcBinaryData) 中获取。字体为 12pt 的 Helvetica，比例缩放。
+OpenCanopy 所需的图象资源位于 `Resources` 目录下，一些简单的资源（字体和图标）可以在 [OcBinaryData 仓库](https://github.com/acidanthera/OcBinaryData) 中获取。You can find customised icons over the internet (e.g. [here](https://github.com/blackosx/OpenCanopyIcons), [there](https://applelife.ru/threads/kastomizacija-opencanopy.2945020/)).
 
 OpenCanopy 为 `PickerAttributes` 提供了全面的支持，并提供了一套可配置的内置图标集。默认选择的图标由 `DefaultBackgroundColor` 变量决定，当该变量的值定义为浅灰时，则使用 `Old` 前缀的图标，定义为其他颜色时则使用没有前缀名的图标。
 
@@ -106,6 +106,8 @@ OpenCanopy 为 `PickerAttributes` 提供了全面的支持，并提供了一套�
 - `ResetNVRAM` --- 重置 NVRAM 工具或系统动作。
 - `Shell` --- 具有 UEFI Shell 名称的条目（如 `OpenShell`）。
 - `Tool` --- 其他工具。
+
+Label and icon generation can be performed with bundled utilities: `disklabel` and `icnspack`. Please refer to sample data for the details about the dimensions. 字体为 12pt 的 Helvetica，比例缩放。
 
 字体格式对应于 [AngelCode binary BMF](https://www.angelcode.com/products/bmfont)。虽然有很多工具可以生成字体文件，但目前还是建议使用 [dpFontBaker](https://github.com/danpla/dpfontbaker) 来生成位图字体（[用 CoreText 达到最佳效果](https://github.com/danpla/dpfontbaker/pull/1)），并使用 [fonverter](https://github.com/usr-sse2/fonverter) 将其导出为二进制格式。
 
@@ -527,6 +529,7 @@ macOS bootloader 要求控制台句柄上必须有 GOP 或 UGA（适用于 10.4 
 *注*：这一选项只会在 `System` 渲染器上生效。在所有已知的受影响的系统中，`ConsoleMode` 必须设置为空字符串才能正常工作。
 
 ### `UgaPassThrough`
+
 **Type**: `plist boolean`
 **Failsafe**: `false`
 **Description**: 在 GOP 协议的顶部提供 UGA 协议实例。
@@ -568,6 +571,7 @@ Apple 音频协议允许 macOS bootloader 和 OpenCore 播放声音和信号，�
 **Description**: 重新安装内置的 Apple Event 协议，可以确保在 VM 或旧版 Mac 设备上的 Faile Vault V2 兼容性。
 
 ### `AppleFramebufferInfo`
+
 **Type**: `plist boolean`
 **Failsafe**: `false`
 **Description**: 重新安装内置的 Apple Framebuffer Info 协议。这样可以覆盖虚拟机或者旧款 Mac 上的缓冲帧信息，从而提高与旧版 EfiBoot（如 macOS 10.4 中的 EfiBoot）的兼容性。
