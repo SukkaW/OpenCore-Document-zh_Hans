@@ -3,7 +3,7 @@ title: 5. Booter
 description: 配置 OpenRuntime.efi（Slide 值计算、KASLR）
 type: docs
 author_info: 由 Sukka、derbalkon 整理，由 Sukka、derbalkon 翻译。
-last_updated: 2020-07-22
+last_updated: 2020-07-26
 ---
 
 ## 5.1 简介
@@ -77,7 +77,7 @@ sudo pmset standby 0
 
 这个选项通过提供对可变存储的支持，修复了包括日期、时间、NVRAM、电源控制等 UEFI Runtime 服务。
 
-*注*: 除 Apple 和 VMware 固件外，都需要启用此选项。
+*注*：除 Apple 和 VMware 固件外，都需要启用此选项。
 
 ### `DevirtualiseMmio`
 
@@ -107,7 +107,7 @@ sudo pmset standby 0
 
 这个选项可以限制 macOS 对 NVRAM 的写入。这个 Quirk 需要 `OpenRuntime.efi`（原名 `FwRuntimeServices.efi`）提供了 `OC_FIRMWARE_RUNTIME` 协议的实现.
 
-*注*: 这个 Quirk 也可以避免由于无法将变量写入 NVRAM 而导致的对操作系统的破坏。
+*注*：这个 Quirk 也可以避免由于无法将变量写入 NVRAM 而导致的对操作系统的破坏。
 
 > 译者注：在 Z390/HM370 等没有原生 macOS 支持 NVRAM 的主板上需要开启。
 
@@ -119,7 +119,7 @@ sudo pmset standby 0
 
 这一选项强制 XNU 内核忽略新提供的内存映射、认定设备从休眠状态唤醒后无需对其更改。如果你在使用 Windows，则 [务必启用](https://docs.microsoft.com/en-us/windows-hardware/design/device-experiences/oem-uefi#hibernation-state-s4-transition-requirements) 这一选项，因为 Windows 要求 S4 唤醒后保留运行内存的大小和未知。
 
-*注*: 这可能用于解决较旧硬件上的错误内存映射。如 Insyde 固件的 Ivy Bridge 笔记本电脑或者 Acer V3-571G。 除非您完全了解这一选项可能导致的后果，否则请勿使用此功能。
+*注*：这可能用于解决较旧硬件上的错误内存映射。如 Insyde 固件的 Ivy Bridge 笔记本电脑或者 Acer V3-571G。 除非您完全了解这一选项可能导致的后果，否则请勿使用此功能。
 
 ### `EnableSafeModeSlide`
 
@@ -129,7 +129,7 @@ sudo pmset standby 0
 
 这个选项与启动到安全模式（启动时按住 Shift 或受用了 `-x` 启动参数）有关。默认情况下，安全模式会使用 `slide=0`，这个 Quirk 试图通过修补 `boot.efi` 接触这一限制。只有当 `ProvideCustomSlide` 启用后才可以启用本 Quirks。
 
-*注*: 除非启动到安全模式失败，否则不需要启用此选项。
+*注*：除非启动到安全模式失败，否则不需要启用此选项。
 
 ### `EnableWriteUnprotector`
 
@@ -195,7 +195,7 @@ sudo pmset standby 0
 
 开启这个选项后，将会对固件进行内存映射分析，检查所有 slide（从 1 到 255）中是否有可用的。由于 `boot.efi` 私用 rdrand 或伪随机 rdtsc 随机生成此值，因此有可能出现冲突的 slide 值被使用并导致引导失败。如果出现潜在的冲突，这个选项将会强制为 macOS 选择一个伪随机值。这同时确保了 `slide=` 参数不会被传递给操作系统。
 
-*注*: OpenCore 会自动检查是否需要启用这一选项。如果 OpenCore 的调试日志中出现 `OCABC: Only N/256 slide values are usable!` 则请启用这一选项。
+*注*：OpenCore 会自动检查是否需要启用这一选项。如果 OpenCore 的调试日志中出现 `OCABC: Only N/256 slide values are usable!` 则请启用这一选项。
 
 ### `ProvideMaxSlide`
 

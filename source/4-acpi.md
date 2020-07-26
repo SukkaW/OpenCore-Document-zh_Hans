@@ -3,7 +3,7 @@ title: 4. ACPI
 description: 加载、屏蔽、修补 ACPI（DSDT/SSDT）表
 type: docs
 author_info: 由 Sukka 整理、由 Sukka、derbalkon 翻译。感谢黑果小兵提供的参考资料
-last_updated: 2020-06-01
+last_updated: 2020-07-26
 ---
 
 ## 4.1 简介
@@ -227,7 +227,7 @@ TianoCore 源文件 [AcpiAml.h](https://github.com/acidanthera/audk/blob/master/
 **Type**: `plist boolean`
 **Failsafe**: false
 **Description**: 清理 ACPI 表头字段以解决 macOS ACPI 实现错误导致的引导崩溃
-*参考*: 由 Alex James（theracermaster）在调试 AppleACPIPlatform 时发现。从 macOS Mojave (10.14) 开始，这个错误已经被修复。
+*参考*：由 Alex James（theracermaster）在调试 AppleACPIPlatform 时发现。从 macOS Mojave (10.14) 开始，这个错误已经被修复。
 
 ### 4.6.3 RebaseRegions
 
@@ -255,4 +255,4 @@ ACPI 表通常由底层固件动态生成。在与位置无关的代码中，ACP
 **Failsafe**: false
 **Description**: 将 `BGRT` 表中 `Displayed` 状态字段重置为 `false`.
 
-这适用于提供 `BGRT` 表、但随后无法处理屏幕更新的固件。如果在开机时无法显示 OEM Windows 标志的硬件可以尝试开启开启。
+这适用于提供 `BGRT` 表、但随后无法处理屏幕更新的固件。如果在开机时无法显示 OEM Windows 标志的硬件可以尝试开启。
