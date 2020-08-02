@@ -3,7 +3,7 @@ title: 8. Misc
 description: 关于 OpenCore 行为的其他配置
 type: docs
 author_info: 由 xMuu、Sukka、derbalkon 整理、由 Sukka、derbalkon 翻译。
-last_updated: 2020-07-22
+last_updated: 2020-08-02
 ---
 
 ## 8.1 Introduction
@@ -19,7 +19,7 @@ OpenCore 尽可能地遵循 `bless` 模式，即 `Apple Boot Policy`。`bless` �
 1. 通过 `Scan policy`（和驱动可用性）过滤，获取所有可用的分区句柄。
 2. 从 `BootOrder` UEFI 变量中，获取所有可用的启动选项。
 3. 对于每个找到的启动选项：
-  - 检索该启动选项的设备路径。
+  - 检索该启动选项的设style备路径。
   - 执行对设备路径的修复（如 NVMe 子类型修复）和扩展（如 Boot Camp）。
   - 通过定位到所产生的设备路径，来获取句柄（失败时忽略）。
   - 在分区句柄列表中找到设备句柄（缺失时忽略）。
@@ -88,17 +88,18 @@ OpenCore 尽可能地遵循 `bless` 模式，即 `Apple Boot Policy`。`bless` �
 应填入 `plist dict` 类型的值来描述相应的加载条目。详见 Entry Properties 部分。
 
 ### `Security`
+
 **Type**: `plist dict`
 **Description**: 应用本章节 Security Properties 中的安全相关设置。
 
 ### `Tools`
+
 **Type**: `plist array`
 **Description**: 将工具条目添加到开机引导菜单。
 
 应填入 `plist dict` 类型的值来描述相应的加载条目。详见 Entry Properties 部分。
 
 *注*：选择工具（比如 UEFI shell）是很危险的事情，利用这些工具可以轻易地绕过安全启动链，所以 **千万不要** 出现在生产环境配置中，尤其是设置了 vault 和安全启动保护的设备（译者注：即，工具仅作调试用）。
-
 
 ## 8.3 Boot Properties
 
@@ -194,7 +195,7 @@ OpenCore 尽可能地遵循 `bless` 模式，即 `Apple Boot Policy`。`bless` �
   - `.disk_label` (`.disk_label_2x`) 文件与 bootloader 相关，适用于所有文件系统。
   - `<TOOL_NAME.lbl` (`<TOOL_NAME.l2x`) 文件与工具相关，适用于 `Tools`。
 
-  可用 `disklabel` 实用工具或 `bless` 命令来生成预置标签。当禁用或者缺少文本标签 (`.contentDetails` or `.disk_label.contentDetails`) 时将以它来代替渲染。
+  可用 `disklabel` 实用工具或 `bless` 命令来生成预置标签。当禁用或者缺少文本标签 (`.contentDetails` 或 `.disk_label.contentDetails`) 时将以它来代替渲染。
 
 - `0x0004` — `OC_ATTR_USE_GENERIC_LABEL_IMAGE`，为没有自定义条目的启动项提供预定义的标签图像。可能会缺少实际启动项的详细信息。
 - `0x0008` — `OC_ATTR_USE_ALTERNATE_ICONS`，如果支持，则将备用图标集作为当前使用的图标集。举个例子，可以在使用自定义背景颜色的时候使用旧的式样的图标（译者注：即 `Old` 前缀的图标）。
@@ -215,7 +216,7 @@ macOS Bootloader 屏幕朗读 的偏好设置是存在 `isVOEnabled.int32` 文�
 **Failsafe**: `false`
 **Description**: 在开机引导菜单中启用 `modifier hotkey`。
 
-除了 `action hotkeys`（在 `PickerMode` 一节中有所描述，由 Apple BDS 处理），还有由操作系统 bootloader 处理的修饰键，即 `boot.efi`。这些键可以通过提供不同的启动模式来改变操作系统的行为。 
+除了 `action hotkeys`（在 `PickerMode` 一节中有所描述，由 Apple BDS 处理），还有由操作系统 bootloader 处理的修饰键，即 `boot.efi`。这些键可以通过提供不同的启动模式来改变操作系统的行为。
 
 在某些固件上，由于驱动程序不兼容，使用修饰键可能会有问题。为了解决问题，这个选项允许你在启动选择器中以更宽松的方式注册选择的热键，比如：在按住 `Shift` 和其他按键的同时支持敲击按键，而不是只按 `Shift`，这在许多 PS/2 键盘上是无法识别的。已知的 `modifier hotkeys` 包括：
 
@@ -277,7 +278,6 @@ OpenCore 内置的启动选择器包含了一系列在启动过程中选择的�
 
 *注 3*：有些 Mac 的 GOP 很棘手，可能很难进入 Apple 启动选择器。要解决这个问题，可以在不加载 GOP 的情况下 bless OpenCore 的 `BootKicker` 实用工具。
 
-
 ## 8.4 Debug Properties
 
 ### `AppleDebug`
@@ -326,6 +326,19 @@ cat Kernel.panic | grep macOSProcessedStackshotData | python -c 'import json,sys
 - `0x00000040` (bit `6`) --- `DEBUG_INFO` in `DEBUG`, `NOOPT`.
 - `0x00400000` (bit `22`) --- `DEBUG_VERBOSE` in custom builds.
 - `0x80000000` (bit `31`) --- `DEBUG_ERROR` in `DEBUG`, `NOOPT`, `RELEASE`.
+
+### SerialInit
+
+**Type**: `plist boolean`
+**Failsafe**: `false`
+**Description**: Perform serial port initialisation.
+
+This option will perform serial port initialisation within OpenCore prior to enabling (any) debug logging. Serial port configuration is defined via PCDs at compile time in `gEfiMdeModulePkgTokenSpaceGuid` GUID. Default values as found in `MdeModulePkg.dec` are as follows:
+
+- PcdSerialBaudRate — Baud rate: 115200.
+- PcdSerialLineControl — Line control: no parity, 8 data bits, 1 stop bit.
+
+See more details in `Debugging` section.
 
 ### `SysReport`
 
@@ -509,6 +522,7 @@ nvram 4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102:opencore-version
 ```
 
 如要获取 OEM 信息，请在 macOS 中使用以下命令：
+
 ```
 nvram 4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102:oem-product # SMBIOS Type1 ProductName
 nvram 4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102:oem-vendor # SMBIOS Type2 Manufacturer
@@ -550,6 +564,7 @@ RSA 公钥的 520 字节格式可参阅 Chromium OS 文档。如要从 X.509 证
 - 创建 `vault.sig`
 
 可以参照如下指令：
+
 ```
 cd /Volumes/EFI/EFI/OC
 /path/to/create_vault.sh .
@@ -598,7 +613,6 @@ rm vault.pub
 - `OC_SCAN_ALLOW_DEVICE_SCSI`
 - `OC_SCAN_ALLOW_DEVICE_NVME`
 
-
 ## 8.6 Entry Properties
 
 ### `Arguments`
@@ -626,6 +640,7 @@ rm vault.pub
 **Description**: 除非设置为 `true`，否则该引导条目不会显示在开机引导菜单中。
 
 ### `Name`
+
 **Type**: `plist string`
 **Failsafe**: Empty string
 **Description**: 引导条目在开机引导菜单中显示的名字。

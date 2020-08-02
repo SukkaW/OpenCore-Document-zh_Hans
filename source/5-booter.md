@@ -3,7 +3,7 @@ title: 5. Booter
 description: 配置 OpenRuntime.efi（Slide 值计算、KASLR）
 type: docs
 author_info: 由 Sukka、derbalkon 整理，由 Sukka、derbalkon 翻译。
-last_updated: 2020-07-26
+last_updated: 2020-08-02
 ---
 
 ## 5.1 简介
@@ -166,7 +166,6 @@ sudo pmset standby 0
 
 *注*：是否启用这一 Quirk 取决于你是否遇到了休眠、睡眠无法唤醒、启动失败或其他问题。一般来说，只有古董固件才需要启用。
 
-
 ### `ProtectSecureBoot`
 
 **Type**: `plist boolean`
@@ -221,7 +220,7 @@ Apple 内核在解析 UEFI 内存映射时有几个限制：
 为了解决这些限制，这个 Quirk 将内存属性表的权限应用到传递给 Apple 内核的内存映射中，如果生成的内存映射超过 4KiB，则可选择尝试统一类似类型的连续插槽。
 
 *注 1*：由于许多固件自带的内存保护不正确，所以这个 Quirk 一般要和 `SyncRuntimePermissions` 一起启用。
-*注 2*：根据是否遇到第一阶段启动失败再决定是否启用这一 Quirk。在支持内存属性表 (MAT) 的平台上，这一 Quirk 是 `EnableWriteUnprotector` 更好的替代。
+*注 2*：根据是否遇到第一阶段启动失败再决定是否启用这一 Quirk。在支持内存属性表 (MAT) 的平台上，这一 Quirk 是 `EnableWriteUnprotector` 更好的替代。This quirk is generally unnecessary when using `OpenDuetPkg`, but may be required to boot macOS 10.6 and earlier for unclear reasons.
 
 ### `SetupVirtualMap`
 

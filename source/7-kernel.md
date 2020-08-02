@@ -3,7 +3,7 @@ title: 7. Kernel
 description: OpenCore 安全配置，Kext 加载顺序以及屏蔽
 type: docs
 author_info: 由 Sukka 整理，由 Sukka、derbalkon 翻译。
-last_updated: 2020-06-01
+last_updated: 2020-08-02
 ---
 
 ## 7.1 简介
@@ -20,6 +20,10 @@ last_updated: 2020-06-01
 
 设计为使用 plist dict 数据填充以描述每个驱动程序。请参阅下述 Add 属性章节。Kext 驱动程序加载的顺序遵照数组中项目的顺序，因此如 Lilu 这种其他驱动程序的依赖驱动应该位于前面。
 
+To track the dependency order one can inspect the `OSBundleLibraries` key in the `Info.plist` of the kext. Any kext mentioned in the `OSBundleLibraries` of the other kext must be precede this kext.
+
+Note: Kexts may have inner kexts (`Plug-Ins`) in their bundle. Each inner kext must be added separately.
+
 ### 7.2.2 Delete
 
 **Type**: `plist array`
@@ -27,7 +31,6 @@ last_updated: 2020-06-01
 **Description**: 从内核中删除选定的内核驱动程序。
 
 设计为使用 plist dict 数据填充以描述每个驱动程序。请参阅下述 Delete 属性章节。Kext 驱动程序加载的顺序遵照数组中项目的顺序，因此如 Lilu 这种其他驱动程序的依赖驱动应该位于前面。
-
 
 ### 7.2.3 Emulate
 
@@ -78,6 +81,7 @@ last_updated: 2020-06-01
 > 译者注：空壳 Kext 没有可执行文件（如 `USBPorts.kext`），此项留空即可
 
 ### 7.3.5 `MaxKernel`
+
 **Type**: `plist string`
 **Failsafe**: Empty string
 **Description**: 在小于等于指定的 macOS 版本中添加该 Kext 驱动程序。
@@ -262,6 +266,7 @@ last_updated: 2020-06-01
 **Description**: 替换时使用的数据位掩码。允许通过更新掩码（设置为非 `0`）来进行模糊替换。若留空则代表忽略，否则其大小必须等于 `Replace`。
 
 ### 7.6.13 `Skip`
+
 **Type**: `plist integer`
 **Failsafe**: `0`
 **Description**: 在替换前要跳过的发现事件数。
