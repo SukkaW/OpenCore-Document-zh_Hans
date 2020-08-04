@@ -3,7 +3,7 @@ title: 7. Kernel
 description: OpenCore 安全配置，Kext 加载顺序以及屏蔽
 type: docs
 author_info: 由 Sukka 整理，由 Sukka、derbalkon 翻译。
-last_updated: 2020-08-02
+last_updated: 2020-08-04
 ---
 
 ## 7.1 简介
@@ -88,13 +88,13 @@ Note: Kexts may have inner kexts (`Plug-Ins`) in their bundle. Each inner kext m
 
 你可以使用 `uname -r` 指令获取当前内核版本，一般为三个整数、中间由半角局点分隔，如 `18.7.0` 代表的是 `10.14.6`。OpenCore 对内核版本解释的实现方式如下图所示：
 
-![7-1.png](/img/7-1.png)
+![7-1.svg](/img/7-1.svg)
 
 内核版本比较的实现如下图所示：
 
-![7-2.png](/img/7-2.png)
+![7-2.svg](/img/7-2.svg)
 
-将 Darwin 内核版本号字符串从左到右以 `.` 符号作为分隔符分割成三个整数，即为 `ParseDarwinVersion` 的三个参数。`FindDarwinVersion` 函数将会通过在内核镜像中查找形如 ![](/img/7-3.png) 的字符串来定位 Darwin 内核版本号。
+将 Darwin 内核版本号字符串从左到右以 `.` 符号作为分隔符分割成三个整数，即为 `ParseDarwinVersion` 的三个参数。`FindDarwinVersion` 函数将会通过在内核镜像中查找形如 ![7-3.svg](/img/7-3.svg) 的字符串来定位 Darwin 内核版本号。
 
 ### 7.3.6 `MinKernel`
 
