@@ -3,7 +3,7 @@ title: 11. UEFI
 description: UEFI 驱动以及加载顺序
 type: docs
 author_info: 由 xMuu、Sukka、derbalkon 整理，由 Sukka、derbalkon 翻译
-last_updated: 2020-07-22
+last_updated: 2020-08-02
 ---
 
 ## 11.1 Introduction
@@ -17,7 +17,7 @@ last_updated: 2020-07-22
 - [`CrScreenshotDxe`](https://github.com/acidanthera/OpenCorePkg) --- 截图驱动。启用后，按下 <kbd>F10</kbd> 将能够截图并保存在 EFI 分区根目录下。该驱动基于 [Nikolaj Schlej](https://github.com/NikolajSchlej ) 修改的 LongSoft 开发的 [`CrScreenshotDxe`](https://github.com/LongSoft/CrScreenshotDxe)。
 - [`OpenRuntime`](https://github.com/acidanthera/OpenCorePkg) --- （原名 `FwRuntimeServices.efi`）`OC_FIRMWARE_RUNTIME` 协议通过支持只读、只写 NVRAM 变量，提升了 OpenCore 和 Lilu 的安全性。有些 Quirks 如 `RequestBootVarRouting` 依赖此驱动程序。由于 runtime 驱动的性质（与目标操作系统并行运行），因此它不能在 OpenCore 本身实现，而是与 OpenCore 捆绑在一起。
 - [`HiiDatabase`](https://github.com/acidanthera/audk) --- 来自 `MdeModulePkg` 的 HII 服务驱动。Ivy Bridge 及其以后的大多数固件中都已内置此驱动程序。某些带有 GUI 的应用程序（例如 UEFI Shell）可能需要此驱动程序才能正常工作。
-- [`EnhancedFatDxe`](https://github.com/acidanthera/audk) --- 来自 `FatPkg` 的 FAT 文件系统驱动程序。这个驱动程序已经被嵌入到所有 UEFI 固件中，无法为 OpenCore 使用。众所周知，许多固件的 FAT 支持实现都有错误，导致在尝试写操作时损坏文件系统。如果在引导过程中需要写入 EFI 分区，则可能组要将此驱动程序嵌入固件中。
+- [`EnhancedFatDxe`](https://github.com/acidanthera/audk) --- 来自 `FatPkg` 的 FAT 文件系统驱动程序。这个驱动程序已经被嵌入到所有 UEFI 固件中，无法为 OpenCore 使用。众所周知，许多固件的 FAT 支持实现都有错误，导致在尝试写操作时损坏文件系统。如果在引导过程中需要写入 EFI 分区，则可能需要将此驱动程序嵌入固件中。
 - [`NvmExpressDxe`](https://github.com/acidanthera/audk) --- 来自`MdeModulePkg` 的 NVMe 驱动程序。从 Broadwell 一代开始的大多数固件都包含此驱动程序。对于 Haswell 以及更早的版本，如果安装了 NVMe SSD 驱动器，则将其嵌入固件中可能会更理想。
 - [`OpenUsbKbDxe`](https://github.com/acidanthera/OpenCorePkg) --- USB 键盘驱动在自定义 USB 键盘驱动程序的基础上新增了对 `AppleKeyMapAggregator` 协议的支持。这是内置的 `KeySupport` 的等效替代方案。根据固件不同，效果可能会更好或者更糟。
 - [`HfsPlus`](https://github.com/acidanthera/OcBinaryData) - Apple 固件中常见的具有 Bless 支持的专有 HFS 文件系统驱动程序。对于 `Sandy Bridge` 和更早的 CPU，由于这些 CPU 缺少 `RDRAND` 指令支持，应使用 `HfsPlusLegacy` 驱动程序。
@@ -76,7 +76,7 @@ sudo bless --verbose --file /Volumes/VOLNAME/DIR/OpenShell.efi --folder /Volumes
 
 OpenCanopy 是一个 OpenCore 的图形化界面接口，基于 [OpenCorePkg](https://github.com/acidanthera/OpenCorePkg) `OcBootManagementLib` 实现，提供与现有的文字模式类似的功能。当 `PickerMode` 设置为 `External` 时启用。
 
-OpenCanopy 所需的图象资源位于 `Resources` 目录下，一些简单的资源（字体和图标）可以在 [OcBinaryData 仓库](https://github.com/acidanthera/OcBinaryData) 中获取。You can find customised icons over the internet (e.g. [here](https://github.com/blackosx/OpenCanopyIcons), [there](https://applelife.ru/threads/kastomizacija-opencanopy.2945020/)).
+OpenCanopy 所需的图象资源位于 `Resources` 目录下，一些简单的资源（字体和图标）可以在 [OcBinaryData 仓库](https://github.com/acidanthera/OcBinaryData) 中获取。可以在网络上找到自定义图标（比如 [这里](https://github.com/blackosx/OpenCanopyIcons) 和 [这里](https://applelife.ru/threads/kastomizacija-opencanopy.2945020/)）。
 
 OpenCanopy 为 `PickerAttributes` 提供了全面的支持，并提供了一套可配置的内置图标集。默认选择的图标由 `DefaultBackgroundColor` 变量决定，当该变量的值定义为浅灰时，则使用 `Old` 前缀的图标，定义为其他颜色时则使用没有前缀名的图标。
 
@@ -261,9 +261,9 @@ APFS 驱动的版本号和 macOS 版本相关。较旧版本的 APFS 驱动可�
 
 一般来说，这里包含了内置模拟音频控制器（`HDEF`）上的第一个音频编解码器地址。音频编解码器地址（比如 `2`）可以在调试日志中找到（已用粗斜体标出）：
 
-<code>OCAU: 1/3 PciRoot(0x0)/Pci(0x1,0x0)/Pci(0x0,0x1)/VenMsg(<redacted>,<strong><em>00000000</em></strong>) (4 outputs)</code>
-<code>OCAU: 2/3 PciRoot(0x0)/Pci(0x3,0x0)/VenMsg(<redacted>,<strong><em>00000000</em></strong>) (1 outputs)</code>
-<code>OCAU: 3/3 PciRoot(0x0)/Pci(0x1B,0x0)/VenMsg(<redacted>,<strong><em>02000000</em></strong>) (7 outputs)</code>
+<code>OCAU: 1/3 PciRoot(0x0)/Pci(0x1,0x0)/Pci(0x0,0x1)/VenMsg(&lt;redacted&gt;,<strong><em>00000000</em></strong>) (4 outputs)</code>
+<code>OCAU: 2/3 PciRoot(0x0)/Pci(0x3,0x0)/VenMsg(&lt;redacted&gt;,<strong><em>00000000</em></strong>) (1 outputs)</code>
+<code>OCAU: 3/3 PciRoot(0x0)/Pci(0x1B,0x0)/VenMsg(&lt;redacted&gt;,<strong><em>02000000</em></strong>) (7 outputs)</code>
 
 作为一种替代方案，该值可以在 I/O 注册表的 `IOHDACodecDevice` class 中获得，包含在 `IOHDACodecAddress` 字段中。
 
@@ -275,9 +275,9 @@ APFS 驱动的版本号和 macOS 版本相关。较旧版本的 APFS 驱动可�
 
 一般来说，这里包含了内置模拟音频控制器（`HDEF`）的设备路径，比如 `PciRoot(0x0)/Pci(0x1b,0x0)`。认可的音频控制器列表可以在调试日志中找到（已用粗斜体标出）：
 
-<code>OCAU: 1/3 <strong><em>PciRoot(0x0)/Pci(0x1,0x0)/Pci(0x0,0x1)</em></strong>/VenMsg(<redacted>,00000000) (4 outputs)</code>
-<code>OCAU: 2/3 <strong><em>PciRoot(0x0)/Pci(0x3,0x0)</em></strong>/VenMsg(<redacted>,00000000) (1 outputs)</code>
-<code>OCAU: 3/3 <strong><em>PciRoot(0x0)/Pci(0x1B,0x0)</em></strong>/VenMsg(<redacted>,02000000) (7 outputs)</code>
+<code>OCAU: 1/3 <strong><em>PciRoot(0x0)/Pci(0x1,0x0)/Pci(0x0,0x1)</em></strong>/VenMsg(&lt;redacted&gt;,00000000) (4 outputs)</code>
+<code>OCAU: 2/3 <strong><em>PciRoot(0x0)/Pci(0x3,0x0)</em></strong>/VenMsg(&lt;redacted&gt;,00000000) (1 outputs)</code>
+<code>OCAU: 3/3 <strong><em>PciRoot(0x0)/Pci(0x1B,0x0)</em></strong>/VenMsg(&lt;redacted&gt;,02000000) (7 outputs)</code>
 
 作为一种替代方案，可以在 macOS 中通过 `gfxutil -f HDEF` 命令来获取。如果指定了空的设备路径，则会使用第一个可用的音频控制器。
 
@@ -289,9 +289,9 @@ APFS 驱动的版本号和 macOS 版本相关。较旧版本的 APFS 驱动可�
 
 一般来说，这里包含了内置模拟音频控制器（`HDEF`）的绿色输出的索引。调试日志中输出节点的数量如下（已用粗斜体标出）：
 
-<code>OCAU: 1/3 PciRoot(0x0)/Pci(0x1,0x0)/Pci(0x0,0x1)/VenMsg(<redacted>,00000000) (<strong><em>4 outputs</em></strong>)</code>
-<code>OCAU: 2/3 PciRoot(0x0)/Pci(0x3,0x0)/VenMsg(<redacted>,00000000) (<strong><em>1 outputs</em></strong>)</code>
-<code>OCAU: 3/3 PciRoot(0x0)/Pci(0x1B,0x0)/VenMsg(<redacted>,02000000) (<strong><em>7 outputs</em></strong>)</code>
+<code>OCAU: 1/3 PciRoot(0x0)/Pci(0x1,0x0)/Pci(0x0,0x1)/VenMsg(&lt;redacted&gt;,00000000) (<strong><em>4 outputs</em></strong>)</code>
+<code>OCAU: 2/3 PciRoot(0x0)/Pci(0x3,0x0)/VenMsg(&lt;redacted&gt;,00000000) (<strong><em>1 outputs</em></strong>)</code>
+<code>OCAU: 3/3 PciRoot(0x0)/Pci(0x1B,0x0)/VenMsg(&lt;redacted&gt;,02000000) (<strong><em>7 outputs</em></strong>)</code>
 
 找到正确端口的最快办法就是暴力地尝试 `0` 到 `N - 1` 的值。
 
@@ -423,6 +423,7 @@ RawVolume = MIN{ [(SystemAudioVolume * VolumeAmplifier) / 100], 100 }
 ## 11.10 Output Properties
 
 ### `TextRenderer`
+
 **Type**: `plist string`
 **Failsafe**: `BuiltinGraphics`
 **Description**: 选择通过标准控制台输出的渲染器。
@@ -648,7 +649,7 @@ Apple 音频协议允许 macOS bootloader 和 OpenCore 播放声音和信号，�
 **Failsafe**: `false`
 **Description**: 强制重新安装内置版本的 Unicode Collation 服务。建议启用这一选项以确保 UEFI Shell 的兼容性。一些较旧的固件破坏了 Unicode 排序规则, 启用后可以修复这些系统上 UEFI Shell 的兼容性 (通常为用于 IvyBridge 或更旧的设备)
 
-## 11.12 Quirks 
+## 11.12 Quirks
 
 ### `DeduplicateBootOrder`
 

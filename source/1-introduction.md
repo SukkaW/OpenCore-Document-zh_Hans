@@ -3,7 +3,7 @@ title: 1. 简介
 description: Introduction
 type: docs
 author_info: 由 Sukka 整理，由 Sukka、derbalkon 翻译
-last_updated: 2020-06-09
+last_updated: 2020-08-02
 ---
 
 本文档提供关于 OpenCore 用户配置文件的信息，以使 macOS 操作系统正常工作。你应当视本文档为 OpenCore 预期行为的解释。如果在已经发布的 OpenCore 版本中找到与文档中的描述存在偏差的行为，应当视为 OpenCore 存在 Bug 或文档出现错误，应通过 [Acidanthera Bugtracker](https://github.com/acidanthera/bugtracker) 进行反馈。
@@ -16,7 +16,7 @@ last_updated: 2020-06-09
 > 1. 此处以及之后的「本文档」都指代 OpenCore 的官方文档（而非你现在访问的网站）。
 > 2. 你应当使用英语在 Acidanthera Bugtracker 进行反馈。
 
-对于大部分用户来说，第三方提供的教程、工具可能更易于使用、受众更广。但是这类材料（译者注：即由第三方提供的，如「手把手的配置教程」）都容易收到其作者的喜好和品位、对本文档的误解、过时的理解等。如果您正在使用这些资料来源，例如 [OpenCore Desktop Guide](https://dortania.github.io/OpenCore-Desktop-Guide)（及其 [父页面](https://dortania.github.io/getting-started)）或者「OpenCore 非官方简体中文翻译」，请务必在参考本文档后再作出每个决定、并判断其后果。
+对于大部分用户来说，第三方提供的教程、工具可能更易于使用、受众更广。但是这类材料（译者注：即由第三方提供的，如「手把手的配置教程」）都容易收到其作者的喜好和品位、对本文档的误解、过时的理解等。如果您正在使用这些资料来源，例如 [OpenCore Install Guide](https://dortania.github.io/OpenCore-Install-Guide)（及其 [父页面](https://dortania.github.io/getting-started)）或者「OpenCore 非官方简体中文翻译」，请务必在参考本文档后再作出每个决定、并判断其后果。
 
 在通过 Acidanthera Bugtracker 反馈任何问题之前，请确保你彻底理解了 OpenCore 的每个配置选项及其对应的概念。
 
@@ -35,4 +35,3 @@ last_updated: 2020-06-09
 - `plist integer` --- 带符号的 10 进制，参数为 `integer`。适用于以二进制补码表示的 64 位无符号整数，除非在特定的 `plist object` 描述中明确提及一个更小的、有或无符号的整数类型。
 - `plist real` --- 浮点数，参数为 `real`，不支持。
 - `plist metadata` --- 实现将 value 强制转换为 data。 允许传递 `plist string`，此时的结果用空结果字节序列（即 C 字符串）表示；允许传递 `plist integer`，此时的结果用二进制补码形式的 32 位小尾数字节序列表示；允许传递 `plist boolean`， 此时的值为一个字节：`01` 表示 `true`，`00` 表示 `false`；允许传递 `plist data` 本身。其他类型或更大的整数会导致未定义、非预期的行为。
-
