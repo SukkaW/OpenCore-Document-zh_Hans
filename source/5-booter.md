@@ -3,7 +3,7 @@ title: 5. Booter
 description: 配置 OpenRuntime.efi（Slide 值计算、KASLR）
 type: docs
 author_info: 由 Sukka、derbalkon 整理，由 Sukka、derbalkon 翻译。
-last_updated: 2020-08-02
+last_updated: 2020-08-11
 ---
 
 ## 5.1 简介
@@ -53,7 +53,9 @@ sudo pmset standby 0
 
 **Type**: `plist integer`
 **Failsafe**: 0
-**Description**: 指排除在外的 MMIO 地址, 其内存描述符（Memory Descriptor）会被 `DevirtualiseMmio` 虚拟化（不变）。该值所在的区域会被分配一个虚拟地址，因此在操作系统运行期间，固件能够直接与该内存区域进行通信。
+**Description**: 指排除在外的 MMIO 地址，其内存描述符（Memory Descriptor）应被 `DevirtualiseMmio` 虚拟化（保持不变）。该值所在的区域会被分配一个虚拟地址，因此在操作系统运行期间，固件能够直接与该内存区域进行通信。
+
+这里写入的地址必须是内存映射的一部分，具有 `EfiMemoryMappedIO` 类型和 `EFI_MEMORY_RUNTIME` 属性（最高 bit）。可以使用调试日志找到可能的地址。
 
 ### 5.3.2 Comment
 
@@ -220,7 +222,7 @@ Apple 内核在解析 UEFI 内存映射时有几个限制：
 为了解决这些限制，这个 Quirk 将内存属性表的权限应用到传递给 Apple 内核的内存映射中，如果生成的内存映射超过 4KiB，则可选择尝试统一类似类型的连续插槽。
 
 *注 1*：由于许多固件自带的内存保护不正确，所以这个 Quirk 一般要和 `SyncRuntimePermissions` 一起启用。
-*注 2*：根据是否遇到第一阶段启动失败再决定是否启用这一 Quirk。在支持内存属性表 (MAT) 的平台上，这一 Quirk 是 `EnableWriteUnprotector` 更好的替代。This quirk is generally unnecessary when using `OpenDuetPkg`, but may be required to boot macOS 10.6 and earlier for unclear reasons.
+*注 2*：根据是否遇到第一阶段启动失败再决定是否启用这一 Quirk。在支持内存属性表 (MAT) 的平台上，这一 Quirk 是 `EnableWriteUnprotector` 更好的替代。在使用 `OpenDuetPkg` 时一般是不需要启用这个 Quirk 的，但如果要启动 macOS 10.6 或更早的版本则可能需要启用，原因暂不明确。
 
 ### `SetupVirtualMap`
 

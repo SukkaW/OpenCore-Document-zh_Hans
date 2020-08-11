@@ -3,7 +3,7 @@ title: 7. Kernel
 description: OpenCore 安全配置，Kext 加载顺序以及屏蔽
 type: docs
 author_info: 由 Sukka 整理，由 Sukka、derbalkon 翻译。
-last_updated: 2020-08-04
+last_updated: 2020-08-11
 ---
 
 ## 7.1 简介
@@ -20,9 +20,9 @@ last_updated: 2020-08-04
 
 设计为使用 plist dict 数据填充以描述每个驱动程序。请参阅下述 Add 属性章节。Kext 驱动程序加载的顺序遵照数组中项目的顺序，因此如 Lilu 这种其他驱动程序的依赖驱动应该位于前面。
 
-To track the dependency order one can inspect the `OSBundleLibraries` key in the `Info.plist` of the kext. Any kext mentioned in the `OSBundleLibraries` of the other kext must be precede this kext.
+可以通过检查 Kext 驱动中 `Info.plist` 的 `OSBundleLibraries` 值的方法来确定其依赖驱动的加载顺序。`OSBundleLibraries` 中的任何依赖驱动都必须在此 Kext 之前加载。
 
-Note: Kexts may have inner kexts (`Plug-Ins`) in their bundle. Each inner kext must be added separately.
+*注*：Kext 驱动的内部可能有捆绑的 Kext (`Plug-Ins`)，每个内部的 Kext 也都必须单独添加（参考下文 Add 属性章节）。
 
 ### 7.2.2 Delete
 
@@ -56,9 +56,9 @@ Note: Kexts may have inner kexts (`Plug-Ins`) in their bundle. Each inner kext m
 
 **Type**: `plist string`
 **Failsafe**: Empty string
-**Description**: Kext 相对于 `EFI/OC/kexts/Other/` 的路径 (e.g. `Lilu.kext` or `MyKext.kext/Contents/PlugIns/MySubKext.kext`).
+**Description**: Kext 相对于 `EFI/OC/kexts/Other/` 的路径，如 `Lilu.kext` 或 `MyKext.kext/Contents/PlugIns/MySubKext.kext`。
 
-> 注，如 `VoodooPS2Controller.kext` 这种包括其他 kext 驱动的，需要分别单独添加，如 `VoodooPS2Controller.kext/Contents/PlugIns/VoodooPS2Keyboard.kext`。
+> *注*：如 `VoodooPS2Controller.kext` 这种包括其他 Kext 驱动的，需要分别单独添加，如 `VoodooPS2Controller.kext/Contents/PlugIns/VoodooPS2Keyboard.kext`。
 
 ### 7.3.2 `Comment`
 

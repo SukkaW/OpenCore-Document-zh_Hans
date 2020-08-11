@@ -3,7 +3,7 @@ title: 6. DeviceProperties
 description: PCI 设备属性注入
 type: docs
 author_info: 由 Sukka、derbalkon 整理、由 Sukka、derbalkon 翻译。
-last_updated: 2020-08-02
+last_updated: 2020-08-11
 ---
 
 ## 6.1 简介
@@ -19,16 +19,16 @@ ioreg -lw0 -p IODeviceTree -n efi -r -x | grep device-properties |
   cat /tmp/device-properties.plist
 ```
 
-Device propertties are part of the `IODeviceTree` (`gIODT`) plane of macOS I/O Registry. This plane has several construction stages relevant for the platform initialisation. While the early construction stage is performed by the XNU kernel in the `IODeviceTreeAlloc` method, the majority of the construction is performed by the platform expert, implemented in `AppleACPIPlatformExpert.kext`.
+设备属性属于 macOS IO Registry 中的 `IODeviceTree`(`gIODT`) 层面，这个层面有很多与平台初始化相关的构建阶段（Construction Stage）。尽管早期的构建阶段是由 XNU 内核用 `IODeviceTreeAlloc` Method 来执行的，绝大部分仍然是由 Platform Expert 来构建、用 `AppleACPIPlatformExpert.kext` 来实现的。
 
-AppleACPIPlatformExpert incorporates two stages of IODeviceTree construction implemented by calling `AppleACPIPlatformExpert::mergeDeviceProperties`:
+AppleACPIPlatformExpert 包含了两个阶段的 `IODeviceTree` 构建，通过调用`AppleACPIPlatformExpert::mergeDeviceProperties` 来实现：
 
-1. During ACPI table initialisation through the recursive ACPI namespace scanning by the calls to `AppleACPIPlatformExpert::createDTNubs`.
-2. During IOService registration (`IOServices::registerService`) callbacks implemented as a part of `AppleACPIPlatformExpert::platformAdjustService` function and its private worker method `AppleACPIPlatformExpert::platformAdjustPCIDevice` specific to the PCI devices.
+1. 在 ACPI 表初始化过程中，通过调用 `AppleACPIPlatformExpert::createDTNubs` 递归扫描 ACPI 命名空间。
+2. 在 IOService 注册（`IOServices::registerService`）回调过程中，作为 `AppleACPIPlatformExpert::platformAdjustService` 函数和它私有的、针对 PCI 设备的 Worker Method `AppleACPIPlatformExpert::platformAdjustPCIDevice` 的一部分。
 
-The application of the stages depends on the device presence in ACPI tables. The first stage applies very early but exclusively to the devices present in ACPI tables. The second stage applies to all devices much later after the PCI configuration and may repeat the first stage if the device was not present in ACPI.
+各阶段的应用取决于 ACPI 表中存在的设备。第一阶段适用于很早、但只适用于存在于 ACPI 表中的设备。第二阶段适用于所有晚于 PCI 配置的设备，如果设备没有出现在 ACPI 中，则会重复第一阶段。
 
-For all kernel drivers, which may inspect the `IODeviceTree` plane without probing (e.g. Lilu and its plugins like `WhateverGreen`) it is particularly important to ensure device presence in the ACPI tables. Failing to do so may result **in all kinds of erratic behaviour** caused by ignoring the injected device properties as they were not constructed at the first stage. See `SSDT-IMEI.dsl` and `SSDT-BRG0.dsl` for an example.
+所有的内核驱动可以在不探测设备的情况下检查 `IODeviceTree` 层面（例如 Lilu 和它的插件 `WhateverGreen` 等），因此确保 ACPI 表中的设备存在是尤其重要的。如果不这样做，则可能会因为注入的设备属性被忽略而导致**各种不稳定的行为**，原因是它们没有在第一阶段被构建出来。参见 `SSDT-IMEI.dsl` 和 `SSDT-BRG0.dsl` 的例子。
 
 ## 6.2 属性列表
 

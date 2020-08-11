@@ -3,7 +3,7 @@ title: 8. Misc
 description: 关于 OpenCore 行为的其他配置
 type: docs
 author_info: 由 xMuu、Sukka、derbalkon 整理、由 Sukka、derbalkon 翻译。
-last_updated: 2020-08-02
+last_updated: 2020-08-11
 ---
 
 ## 8.1 Introduction
@@ -327,17 +327,17 @@ cat Kernel.panic | grep macOSProcessedStackshotData | python -c 'import json,sys
 - `0x00400000` (bit `22`) --- `DEBUG_VERBOSE` in custom builds.
 - `0x80000000` (bit `31`) --- `DEBUG_ERROR` in `DEBUG`, `NOOPT`, `RELEASE`.
 
-### SerialInit
+### `SerialInit`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
-**Description**: Perform serial port initialisation.
+**Description**: 执行串行端口初始化。
 
-This option will perform serial port initialisation within OpenCore prior to enabling (any) debug logging. Serial port configuration is defined via PCDs at compile time in `gEfiMdeModulePkgTokenSpaceGuid` GUID. Default values as found in `MdeModulePkg.dec` are as follows:
+该选项会在任何调试日志启用之前，初始化 OpenCore 的串行端口设置。串行端口配置是在编译时，在 `gEfiMdeModulePkgTokenSpaceGuid` GUID 中通过 PCD 来定义的。`MdeModulePkg.dec` 中的默认值如下：
 
-- PcdSerialBaudRate — Baud rate: 115200.
-- PcdSerialLineControl — Line control: no parity, 8 data bits, 1 stop bit.
-
+- `PcdSerialBaudRate` --- 波特率：115200。
+- `PcdSerialLineControl` --- 线路控制参数：无奇偶校验，`8` 位数据位，`1` 位停止位。
+具体细节见 `Debugging` 部分。
 See more details in `Debugging` section.
 
 ### `SysReport`
