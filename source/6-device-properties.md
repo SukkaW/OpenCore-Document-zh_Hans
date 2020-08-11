@@ -50,9 +50,9 @@ AppleACPIPlatformExpert 包含了两个阶段的 `IODeviceTree` 构建，通过�
 一些常见的属性包括：
 
 - `device-id`
-  用户指定的设备标识符，用于 I/O 套件匹配。数据类型为 4 byte data.
+  用户指定的设备标识符，用于 I/O 套件匹配。数据类型为 4 byte data。
 - `vendor-id`
-  用户指定的供应商标识符，用于 I/O 套件匹配。数据类型为 4 byte data.
+  用户指定的供应商标识符，用于 I/O 套件匹配。数据类型为 4 byte data。
 - `AAPL,ig-platform-id`
   Intel GPU 缓冲帧标识符，用于在 Ivy Bridge 上选择缓冲帧区域。数据类型为 4 byte data。
 - `AAPL,snb-platform-id`

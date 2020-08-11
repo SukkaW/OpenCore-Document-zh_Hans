@@ -24,13 +24,13 @@ last_updated: 2020-08-11
 
 *注*：Kext 驱动的内部可能有捆绑的 Kext (`Plug-Ins`)，每个内部的 Kext 也都必须单独添加（参考下文 Add 属性章节）。
 
-### 7.2.2 Delete
+### 7.2.2 Block
 
 **Type**: `plist array`
 **Failsafe**: Empty
 **Description**: 从内核中删除选定的内核驱动程序。
 
-设计为使用 plist dict 数据填充以描述每个驱动程序。请参阅下述 Delete 属性章节。Kext 驱动程序加载的顺序遵照数组中项目的顺序，因此如 Lilu 这种其他驱动程序的依赖驱动应该位于前面。
+设计为使用 plist dict 数据填充以描述每个驱动程序。请参阅下述 Block 属性章节。Kext 驱动程序加载的顺序遵照数组中项目的顺序，因此如 Lilu 这种其他驱动程序的依赖驱动应该位于前面。
 
 ### 7.2.3 Emulate
 
@@ -112,7 +112,7 @@ last_updated: 2020-08-11
 **Failsafe**: Empty string
 **Description**: Kext 中 `Info.plist` 文件的路径。一般为 `Contents/Info.plist`。
 
-## 7.4 Delete 属性
+## 7.4 Block 属性
 
 ### 7.4.1 `Comment`
 

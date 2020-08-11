@@ -3,7 +3,7 @@ title: 2. 配置
 description: Configuration
 type: docs
 author_info: 由 Sukka 整理，由 Sukka、derbalkon 翻译
-last_updated: 2020-06-09
+last_updated: 2020-08-11
 ---
 
 ## 2.1 配置术语
@@ -28,7 +28,7 @@ OC Config 有大小、嵌套和键值数量的限制。OC Config 的大小不得
 - 存在本文档中没有记载的 plist object
 - 违反文件大小、嵌套层级和键值数量的限制
 
-我们建议（但非强制）遇到格式错误的 OC Config 时不停止加载、然后继续进行就好像 OC Config 不存在一样。为了是先前向兼容性，建议（但非强制）要求实现对采用无效值的行为进行警告。采用无效值的建议做法是在使用的情况下遵守以下规则：
+我们建议（但非强制）遇到格式错误的 OC Config 时中止、当作 OC Config 不存在的情况来处理。为了能够向前兼容，我们建议（但非强制）对采用无效值的行为进行警告。采用无效值的建议做法是在使用的情况下遵守以下规则：
 
 | Type | Value |
 |:---|:---|

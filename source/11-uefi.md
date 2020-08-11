@@ -567,7 +567,7 @@ Apple 音频协议允许 macOS bootloader 和 OpenCore 播放声音和信号，�
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
-**Description**: 重新安装内置的 Apple Event 协议，可以确保在 VM 或旧版 Mac 设备上的 Faile Vault V2 兼容性。
+**Description**: 重新安装内置的 Apple Event 协议，可以确保在 VM 或旧版 Mac 设备上的 FileVault 2 兼容性。
 
 ### `AppleFramebufferInfo`
 
@@ -625,7 +625,7 @@ Apple 音频协议允许 macOS bootloader 和 OpenCore 播放声音和信号，�
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
-**Description**: 强制包装固件卷协议或安装新版本以支持 File Vault 2 的自定义光标图像。建议启用这一选项以确保 File Vault 2 在除 VM 和传统 Mac 设备之外的兼容性。
+**Description**: 强制包装固件卷协议或安装新版本以支持 FileVault 2 的自定义光标图像。建议启用这一选项以确保 FileVault 2 在除 VM 和传统 Mac 设备之外的兼容性。
 
 *注*：包括 VMWare 在内的多个虚拟机在 HiDPI 模式下光标会损坏，因此建议为所有虚拟机启用这一选项。
 
@@ -633,7 +633,7 @@ Apple 音频协议允许 macOS bootloader 和 OpenCore 播放声音和信号，�
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
-**Description**: 强制重新安装内置版本的 Hash Services 协议。为了在 SHA-1 哈希协议不完整的固件上确保 File Vault 2 的兼容性，这一 Quirk 应设置为 `true`。对于大多数固件来说，你可以通过将 `UIScale` 设置为 `02` 查看是否会出现禁行图标，来诊断你的固件是否需要这一 Quirk。一般来说，APTIO V（Haswell 和更早的平台）之前的平台都会受到影响。
+**Description**: 强制重新安装内置版本的 Hash Services 协议。为了在 SHA-1 哈希协议不完整的固件上确保 FileVault 2 的兼容性，这一 Quirk 应设置为 `true`。对于大多数固件来说，你可以通过将 `UIScale` 设置为 `02` 查看是否会出现禁行图标，来诊断你的固件是否需要这一 Quirk。一般来说，APTIO V（Haswell 和更早的平台）之前的平台都会受到影响。
 
 ### `OSInfo`
 

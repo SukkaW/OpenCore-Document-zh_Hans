@@ -3,7 +3,7 @@ title: 10. PlatformInfo
 description: SMBIOS 机型信息配置
 type: docs
 author_info: 由 xMuu、Sukka 整理，由 Sukka、derbalkon 翻译
-last_updated: 2020-07-22
+last_updated: 2020-08-11
 ---
 
 机型信息由手动生成、填充以与 macOS 服务兼容的几个标识字段组成。配置的基础部分可以从 [`AppleModels`](https://github.com/acidanthera/OpenCorePkg/blob/master/AppleModels)、一个可以从 [YAML](https://yaml.org/spec/1.2/spec.html) 格式的数据库中生成一组接口的工具包中获得。这些字段将会被写入三个位置：
@@ -41,7 +41,7 @@ last_updated: 2020-07-22
 **Failsafe**: `false`
 **Description**: 是否更新 NVRAM 中关于机型信息的相关字段。
 
-根据 `Automatic` 的值，这些字段会从 `Generic` 或 `PlatformNVRAM` 中读取。所有其他字段都将在 ` NVRAM` 部分中指定。
+根据 `Automatic` 的值，这些字段会从 `Generic` 或 `PlatformNVRAM` 中读取。所有其他字段都将在 `NVRAM` 部分中指定。
 
 如果将此值设置为 `false`，则可以使用 `nvram` 部分更新上述变量；反之若将此值设置为 `true`，而同时 `nvram` 部分存在任何字段，会产生意料之外的行为。
 
@@ -57,7 +57,7 @@ last_updated: 2020-07-22
 **Failsafe**: `Create`
 **Description**: 更新 SMBIOS 字段的方式有：
 
-- `TryOverwrite` --- 如果新的数据大小 小于等于 按页对齐的原始数据，且对解锁 legacy region 没有影响，则选择 `Overwrite` 方式；否则选择 `Create` 方式。在某些硬件上可能会有问题。 
+- `TryOverwrite` --- 如果新的数据大小 小于等于 按页对齐的原始数据，且对解锁 legacy region 没有影响，则选择 `Overwrite` 方式；否则选择 `Create` 方式。在某些硬件上可能会有问题。
 - `Create` --- 在 AllocateMaxAddress 将表替换为新分配的 EfiReservedMemoryType，没有回退机制。
 - `Overwrite` --- 如果数据大小合适则覆盖现有的 gEfiSmbiosTableGuid 和 gEfiSmbiosTable3Guid，否则将以不明状态中止。
 - `Custom` --- 把第一个 SMBIOS 表（`gEfiSmbios(3)TableGuid`）写入 `gOcCustomSmbios(3)TableGuid`，以此来解决固件在 ExitBootServices 覆盖 SMBIOS 内容的问题；否则等同于 `Create`。需要 AppleSmbios.kext 和 AppleACPIPlatform.kext 打补丁来读取另一个 GUID: `"EB9D2D31"` - `"EB9D2D35"` (in ASCII)， 这一步由 `CustomSMBIOSGuid` quirk 自动完成。
@@ -88,7 +88,6 @@ last_updated: 2020-07-22
 **Optional**: `Automatic` 为 `true` 时可不填
 **Description**: 更新 SMBIOS 字段。当 `Automatic` 未激活时此处为只读。
 
-
 ## 10.2 Generic Properties
 
 ### 1. `SpoofVendor`
@@ -100,6 +99,7 @@ last_updated: 2020-07-22
 由于在 `SystemManufacturer` 相关介绍中介绍的原因，在 SMBIOS 的 vendor 字段中使用 `Apple` 是危险的。但是，某些固件可能无法提供有效值，可能会导致某些软件的破坏。
 
 ### 2. `AdviseWindows`
+
 **Type**: `plist boolean`
 **Failsafe**: `false`
 **Description**: 在 `FirmwareFeatures` 中强制提供 Windows 支持。
@@ -139,40 +139,46 @@ last_updated: 2020-07-22
 **Failsafe**: all zero
 **Description**: 参考 `4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14:ROM`。
 
-
 ## 10.3 DataHub Properties
 
 ### 1. `PlatformName`
+
 **Type**: `plist string`
 **Failsafe**: Not installed
 **Description**: 在 `gEfiMiscSubClassGuid` 中设置 `name`。在 Mac 上找到的值为 ASCII 码形式的 `platform`。
 
 ### 2. `SystemProductName`
+
 **Type**: `plist string`
 **Failsafe**: Not installed
 **Description**: 在 `gEfiMiscSubClassGuid` 中设置 `Model`。在 Mac 上找到的值等于 Unicode 形式的 SMBIOS `SystemProductName`。
 
 ### 3. `SystemSerialNumber`
+
 **Type**: `plist string`
 **Failsafe**: Not installed
 **Description**: 在 `gEfiMiscSubClassGuid` 中设置 `SystemSerialNumber`。在 Mac 上找到的值等于 Unicode 形式的 SMBIOS `SystemSerialNumber`。
 
 ### 4. `SystemUUID`
+
 **Type**: `plist string`, GUID
 **Failsafe**: Not installed
 **Description**: 在 `gEfiMiscSubClassGuid` 中设置 `system-id`。在 Mac 上找到的值等于 SMBIOS `SystemUUID`。
 
 ### 5. `BoardProduct`
+
 **Type**: `plist string`
 **Failsafe**: Not installed
 **Description**: 在 `gEfiMiscSubClassGuid` 中设置 `board-id`。在 Mac 上找到的值等于 ASCII 码形式的 SMBIOS `BoardProduct`。
 
 ### 6. `BoardRevision`
+
 **Type**: `plist data`, 1 byte
 **Failsafe**: `0`
 **Description**: 在 `gEfiMiscSubClassGuid` 中设置 `board-rev`。在 Mac 上找到的值似乎与 internal board revision 相对应（e.g. `01`）。
 
 ### 7. `StartupPowerEvents`
+
 **Type**: `plist integer`, 64-bit
 **Failsafe**: `0`
 **Description**: 在 `gEfiMiscSubClassGuid Sets` 中设置 `StartupPowerEvents`。在 Mac 上找到的值是 power management state 位掩码，通常为 0。`X86PlatformPlugin.kext` 能读取的已知 bit 有：
@@ -193,11 +199,13 @@ last_updated: 2020-07-22
 - `0x00200000` --- Global reset PowerManagment Wachdog Timer event (Same as `PRSTS` bit 15)
 
 ### 8. `InitialTSC`
+
 **Type**: `plist integer`, 64-bit
 **Failsafe**: `0`
 **Description**: 在 `gEfiProcessorSubClassGuid` 中设置 `InitialTSC`。设置初始 TSC 值，通常为 0。
 
 ### 9. `FSBFrequency`
+
 **Type**: `plist integer`, 64-bit
 **Failsafe**: Automatic
 **Description**: 在 `gEfiProcessorSubClassGuid` 中设置 `FSBFrequency`。
@@ -207,6 +215,7 @@ last_updated: 2020-07-22
 *注*：此值虽然不是用于 Skylake 或更新的平台，但也可设置。
 
 ### 10. `ARTFrequency`
+
 **Type**: `plist integer`, 64-bit
 **Failsafe**: Automatic
 **Description**: 在 `gEfiProcessorSubClassGuid` 中设置 `ARTFrequency`。
@@ -216,44 +225,51 @@ last_updated: 2020-07-22
 *注*：由于 Intel Skylake X 平台特有 EMI-reduction 电路，其 ART 频率可能会比 24 或 25 MHz 有所损失（大约 0.25%）。参考 [Acidanthera Bugtracker](https://github.com/acidanthera/bugtracker/issues/448#issuecomment-524914166)。
 
 ### 11. `DevicePathsSupported`
+
 **Type**: `plist integer`, 32-bit
 **Failsafe**: Not installed
 **Description**: 在 `gEfiMiscSubClassGuid` 中设置 `DevicePathsSupported`。必须设置为 `1` 才能确保 AppleACPIPlatform.kext 将 SATA 设备路径添加到 `Boot####` 和 `efi-boot-device-data` 变量。所有新款 Mac 都设置为 `1`。
 
 ### 12. `SmcRevision`
+
 **Type**: `plist data`, 6 bytes
 **Failsafe**: Not installed
 **Description**: 在 `gEfiMiscSubClassGuid` 中设置 `REV`。自定义属性由 `VirtualSMC` 或 `FakeSMC` 读取，用于生成 SMC `REV` key。
 
 ### 13. `SmcBranch`
+
 **Type**: `plist data`, 8 bytes
 **Failsafe**: Not installed
 **Description**: 在 `gEfiMiscSubClassGuid` 中设置 `RBr`。自定义属性由 `VirtualSMC` 或 `FakeSMC` 读取，用于生成 SMC `RBr` key。
 
 ### 14. `SmcPlatform`
+
 **Type**: `plist data`, 8 bytes
 **Failsafe**: Not installed
 **Description**: 在 `gEfiMiscSubClassGuid` 中设置 `RPlt`。自定义属性由 `VirtualSMC` 或 `FakeSMC` 读取，用于生成 SMC `RPlt` key。
 
-
 ## 10.4 PlatformNVRAM Properties
 
 ### 1. `BID`
+
 **Type**: `plist string`
 **Failsafe**: Not installed
 **Description**: 指定 NVRAM 变量 `4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14:HW_BID`。
 
 ### 2. `ROM`
+
 **Type**: `plist data`, 6 bytes
 **Failsafe**: Not installed
 **Description**: 指定 NVRAM 变量 `4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14:HW_ROM` 和 `4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14:ROM`。
 
 ### 3. `MLB`
+
 **Type**: `plist string`
 **Failsafe**: Not installed
 **Description**: 指定 NVRAM 变量 `4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14:HW_MLB` 和 `4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14:MLB`。
 
 ### 4. `FirmwareFeatures`
+
 **Type**: `plist data`, 8 bytes
 **Failsafe**: Not installed
 **Description**: 此变量与 `FirmwareFeaturesMask` 配对使用。指定 NVRAM 变量：
@@ -262,13 +278,13 @@ last_updated: 2020-07-22
 - `4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14:ExtendedFirmwareFeatures`
 
 ### 5. `FirmwareFeaturesMask`
+
 **Type**: `plist data`, 8 bytes
 **Failsafe**: Not installed
 **Description**: 此变量与 `FirmwareFeatures` 配对使用。指定 NVRAM 变量：
 
 - `4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14:FirmwareFeaturesMask`
 - `4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14:ExtendedFirmwareFeaturesMask`
-
 
 ## 10.5 SMBIOS Properties
 
@@ -302,12 +318,14 @@ last_updated: 2020-07-22
 > ```
 
 ### 3. `BIOSReleaseDate`
+
 **Type**: `plist string`
 **Failsafe**: OEM specified
 **SMBIOS**: BIOS Information (Type 0) --- BIOS Release Date
 **Description**: 固件发布日期。与 `BIOSVersion` 类似，看起来像是 `12/08/2017` 这种格式。
 
 ### 4. `SystemManufacturer`
+
 **Type**: `plist string`
 **Failsafe**: OEM specified
 **SMBIOS**: System Information (Type 1) --- Manufacturer
@@ -344,90 +362,105 @@ last_updated: 2020-07-22
 **Description**: UUID 被设计为在时间和空间上都是唯一的标识符，其生成是随机与去中心化的。
 
 ### 9. `SystemSKUNumber`
+
 **Type**: `plist string`
 **Failsafe**: OEM specified
 **SMBIOS**: System Information (Type 1) --- SKU Number
 **Description**: Mac 主板 ID (`board-id`)。在旧型号的机器中看起来类似于 `Mac-7BA5B2D9E42DDD94` 或 `Mac-F221BEC8`。有时可以直接留空。
 
 ### 10. `SystemFamily`
+
 **Type**: `plist string`
 **Failsafe**: OEM specified
 **SMBIOS**: System Information (Type 1) --- Family
 **Description**: 系列名称，看起来类似于 `iMac Pro`。
 
 ### 11. `BoardManufacturer`
+
 **Type**: `plist string`
 **Failsafe**: OEM specified
 **SMBIOS**: Baseboard (or Module) Information (Type 2) - Manufacturer
 **Description**: 主板制造商。`SystemManufacturer` 的所有规则都适用。
 
 ### 12. `BoardProduct`
+
 **Type**: `plist string`
 **Failsafe**: OEM specified
 **SMBIOS**: Baseboard (or Module) Information (Type 2) - Product
 **Description**: Mac 主板 ID (`board-id`)。在旧型号机器中看起来类似于 `Mac-7BA5B2D9E42DDD94` 或 `Mac-F221BEC8`。
 
 ### 13. `BoardVersion`
+
 **Type**: `plist string`
 **Failsafe**: OEM specified
 **SMBIOS**: Baseboard (or Module) Information (Type 2) - Version
 **Description**: 主板版本号。有各种各样，可能与 `SystemProductName` 或 `SystemProductVersion` 匹配。
 
 ### 14. `BoardSerialNumber`
+
 **Type**: `plist string`
 **Failsafe**: OEM specified
 **SMBIOS**: Baseboard (or Module) Information (Type 2) --- Serial Number
 **Description**: 主板序列号，有对应的格式，具体格式见 [macserial](https://github.com/acidanthera/OpenCorePkg/blob/master/Utilities/macserial/FORMAT.md) 的描述。
 
 ### 15. `BoardAssetTag`
+
 **Type**: `plist string`
 **Failsafe**: OEM specified
 **SMBIOS**: Baseboard (or Module) Information (Type 2) --- Asset Tag
 **Description**: 资产标签号。有各种各样，可以留空或填 `Type2 - Board Asset Tag`。
 
 ### 16. `BoardType`
+
 **Type**: `plist integer`
 **Failsafe**: OEM specified
 **SMBIOS**: Baseboard (or Module) Information (Type 2) --- Board Type
 **Description**:  `0xA` (Motherboard (includes processor, memory, and I/O) 或 `0xB` (Processor/Memory Module)，详见 Table 15 -- Baseboard: Board Type for more details。
 
 ### 17. `BoardLocationInChassis`
+
 **Type**: `plist string`
 **Failsafe**: OEM specified
 **SMBIOS**: Baseboard (or Module) Information (Type 2) --- Location in Chassis
 **Description**: 各种各样，可以留空或填 `Part Component`。
 
 ### 18. `ChassisManufacturer`
+
 **Type**: `plist string`
 **Failsafe**: OEM specified
 **SMBIOS**: System Enclosure or Chassis (Type 3) --- Manufacturer
 **Description**: 主板制造商。`SystemManufacturer` 的所有规则都适用。
 
 ### 19. `ChassisType`
+
 **Type**: `plist integer`
 **Failsafe**: OEM specified
 **SMBIOS**: System Enclosure or Chassis (Type 3) --- Type
 **Description**: 机箱类型，详见 Table 17 --- System Enclosure or Chassis Types。
 
 ### 20. `ChassisVersion`
+
 **Type**: `plist string`
 **Failsafe**: OEM specified
 **SMBIOS**: System Enclosure or Chassis (Type 3) --- Version
 **Description**: 应和 `BoardProduct` 符合。
 
 ### 21. `ChassisSerialNumber`
+
 **Type**: `plist string`
 **Failsafe**: OEM specified
 **SMBIOS**: System Enclosure or Chassis (Type 3) --- Version
 **Description**: 应和 `SystemSerialNumber` 符合。
 
 ### 22. `ChassisAssetTag`
+
 **Type**: `plist string`
 **Failsafe**: OEM specified
 **SMBIOS**: System Enclosure or Chassis (Type 3) --- Asset Tag Number
 **Description**: 机箱类型名称。有各种各样，可以留空或填 `MacBook-Aluminum`。
 
 ### 23. `PlatformFeature`
+
 **Type**: `plist integer`, 32-bit
 **Failsafe**: `0xFFFFFFFF`
 **SMBIOS**: `APPLE_SMBIOS_TABLE_TYPE133` - `PlatformFeature`
@@ -441,12 +474,14 @@ last_updated: 2020-07-22
 **Description**: ASCII 字符串，包含 SMC 版本号（大写）。在基于 T2 芯片的 Mac 设备上缺少这一字段。当此值设置为零时，这一选项会被忽略。
 
 ### 25. `FirmwareFeatures`
+
 **Type**: `plist data`, 8 bytes
 **Failsafe**: `0`
 **SMBIOS**: `APPLE_SMBIOS_TABLE_TYPE128` - `FirmwareFeatures` and `ExtendedFirmwareFeatures`
 **Description**: 64 位固件功能位掩码。详见 [AppleFeatures.h](https://github.com/acidanthera/OpenCorePkg/blob/master/Apple/Include/IndustryStandard/AppleFeatures.h)。低 32 位与 `FirmwareFeatures` 匹配，高 64 位与 `ExtendedFirmwareFeatures` 匹配。
 
 ### 26.`FirmwareFeaturesMask`
+
 **Type**: `plist data`, 8 bytes
 **Failsafe**: `0`
 **SMBIOS**: `APPLE_SMBIOS_TABLE_TYPE128` - `FirmwareFeaturesMask` and `ExtendedFirmwareFeaturesMask`

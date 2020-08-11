@@ -3,7 +3,7 @@ title: 9. NVRAM
 description: NVRAM 注入（如引导标识符和 SIP）
 type: docs
 author_info: 由 xMuu、Sukka 整理，由 Sukka、derbalkon 翻译
-last_updated: 2020-06-19
+last_updated: 2020-08-11
 ---
 
 ## 9.1 Introduction
@@ -98,7 +98,6 @@ last_updated: 2020-06-19
 - `4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14:ROM`
  主要的网络适配器的 MAC 地址或替换值。存在于较新的 Mac（至少 2013 年以后）上，用来避免访问特殊内存区域，尤其是在 `boot.efi` 中。
 
-
 ## 9.4 Recommended Variables
 
 建议使用以下变量来加快启动速度或改善其他表现：
@@ -121,9 +120,8 @@ last_updated: 2020-06-19
  定义 FireWire 安全模式的 ASCII 字符串。这一变量旧版本才有，可在 [IOFireWireController.cpp](https://opensource.apple.com/source/IOFireWireFamily/IOFireWireFamily-473/IOFireWireFamily.kmodproj/IOFireWireController.cpp.auto.html) 中的 IOFireWireFamily 源码里找到。建议不要设置这个变量，这样可能会加快启动速度。设置为 `full` 等同于不设置该变量，设置为 `none` 将禁用 FireWire 安全性。
 - `4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14:UIScale`
  定义 `boot.efi` 用户界面缩放比例的一字节数据。普通屏幕应为 **01**，HiDPI 屏幕应为 **02**。
-- `4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14:DefaultBackgroundColor` 
+- `4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14:DefaultBackgroundColor`
  定义 `boot.efi` 用户界面背景色的四字节 `BGRA` 数据。标准色包括 `BF BF BF 00`（浅灰）和 `00 00 00 00`（西拉黑）。其他颜色可根据用户喜好设置。
-
 
 ## 9.5 Other Variables
 
