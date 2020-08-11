@@ -3,7 +3,7 @@ title: 11. UEFI
 description: UEFI 驱动以及加载顺序
 type: docs
 author_info: 由 xMuu、Sukka、derbalkon 整理，由 Sukka、derbalkon 翻译
-last_updated: 2020-08-02
+last_updated: 2020-08-11
 ---
 
 ## 11.1 Introduction
@@ -329,9 +329,7 @@ APFS 驱动的版本号和 macOS 版本相关。较旧版本的 APFS 驱动可�
 
 从 `SystemAudioVolume` 读取的音量范围会因编解码器的不同而不同。为了将 `[0, 127]` 范围内的值转换为原始音量范围 `[0, 100]` 内的值，所读取的值按比例调整为 `VolumeAmplifier` 的百分数：
 
-```
-RawVolume = MIN{ [(SystemAudioVolume * VolumeAmplifier) / 100], 100 }
-```
+![11-1.svg](/img/11-1.svg)
 
 *注*：macOS 中使用的转换并不是线性的，但非常接近，因此我们忽略了这种细微差别。
 
