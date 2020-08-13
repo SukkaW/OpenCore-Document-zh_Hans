@@ -3,19 +3,19 @@ title: 11. UEFI
 description: UEFI 驱动以及加载顺序
 type: docs
 author_info: 由 xMuu、Sukka、derbalkon 整理，由 Sukka、derbalkon 翻译
-last_updated: 2020-08-02
+last_updated: 2020-08-13
 ---
 
-## 11.1 Introduction
+## 11.1 简介
 
 [UEFI](https://uefi.org/specifications)（统一可扩展固件接口）是一种规范，用于定义操作系统和平台固件之间的软件接口。本部分允许加载其他 UEFI 模块 和/或 对板载固件进行调整。要检查固件内容，应用修改并执行升级，可以使用 [UEFITool](https://github.com/LongSoft/UEFITool/releases) 和其他实用程序。
 
-## 11.2 Drivers
+## 11.2 驱动列表
 
 根据固件不同、可能需要不同的驱动程序。加载不兼容的驱动程序可能会导致无法启动系统，甚至导致固件永久性损坏。OpenCore 目前对以下 UEFI 驱动提供支持。OpenCore 可能兼容对其他 UEFI 驱动，但不能确定。
 
 - [`CrScreenshotDxe`](https://github.com/acidanthera/OpenCorePkg) --- 截图驱动。启用后，按下 <kbd>F10</kbd> 将能够截图并保存在 EFI 分区根目录下。该驱动基于 [Nikolaj Schlej](https://github.com/NikolajSchlej ) 修改的 LongSoft 开发的 [`CrScreenshotDxe`](https://github.com/LongSoft/CrScreenshotDxe)。
-- [`OpenRuntime`](https://github.com/acidanthera/OpenCorePkg) --- （原名 `FwRuntimeServices.efi`）`OC_FIRMWARE_RUNTIME` 协议通过支持只读、只写 NVRAM 变量，提升了 OpenCore 和 Lilu 的安全性。有些 Quirks 如 `RequestBootVarRouting` 依赖此驱动程序。由于 runtime 驱动的性质（与目标操作系统并行运行），因此它不能在 OpenCore 本身实现，而是与 OpenCore 捆绑在一起。
+- [`OpenRuntime`](https://github.com/acidanthera/OpenCorePkg) --- （原名 `FwRuntimeServices.efi`）`OC_FIRMWARE_RUNTIME` 协议通过支持只读、只写 NVRAM 变量，提升了 OpenCore 和 Lilu 的安全性。有些 Quirks 如 `RequestBootVarRouting` 依赖此驱动程序。由于 Runtime 驱动的性质（与目标操作系统并行运行），因此它不能在 OpenCore 本身实现，而是与 OpenCore 捆绑在一起。
 - [`HiiDatabase`](https://github.com/acidanthera/audk) --- 来自 `MdeModulePkg` 的 HII 服务驱动。Ivy Bridge 及其以后的大多数固件中都已内置此驱动程序。某些带有 GUI 的应用程序（例如 UEFI Shell）可能需要此驱动程序才能正常工作。
 - [`EnhancedFatDxe`](https://github.com/acidanthera/audk) --- 来自 `FatPkg` 的 FAT 文件系统驱动程序。这个驱动程序已经被嵌入到所有 UEFI 固件中，无法为 OpenCore 使用。众所周知，许多固件的 FAT 支持实现都有错误，导致在尝试写操作时损坏文件系统。如果在引导过程中需要写入 EFI 分区，则可能需要将此驱动程序嵌入固件中。
 - [`NvmExpressDxe`](https://github.com/acidanthera/audk) --- 来自`MdeModulePkg` 的 NVMe 驱动程序。从 Broadwell 一代开始的大多数固件都包含此驱动程序。对于 Haswell 以及更早的版本，如果安装了 NVMe SSD 驱动器，则将其嵌入固件中可能会更理想。
@@ -41,7 +41,7 @@ build -a X64 -b RELEASE -t XCODE5 -p FatPkg/FatPkg.dsc
 build -a X64 -b RELEASE -t XCODE5 -p MdeModulePkg/MdeModulePkg.dsc
 ```
 
-## 11.3 Tools
+## 11.3 工具
 
 一些不依赖 OpenCore 的工具可以帮助调试固件和硬件。下面列出了一些已知的工具。虽然有些工具可以从 OpenCore 启动，但大部分工具都应该直接或从 `OpenCoreShell` 中单独运行。
 
@@ -122,13 +122,13 @@ OpenCanopy 为 `PickerAttributes` 提供了全面的支持，并提供了一套�
 - NVRAM 隔离，能够保护所有变量避免被不信任的操作系统写入（如 `DisableVariableWrite`）。
 - UEFI Runtime Services 内存保护管理，以避开只读映射的问题（如 `EnableWriteUnprotector`）。
 
-## 11.6 Properties
+## 11.6 属性列表
 
 ### `APFS`
 
 **Type**: `plist dict`
 **Failsafe**: None
-**Description**: 配置 APFS 分区驱动，具体配置内容参见下文 `APFS Properties` 部分。
+**Description**: 配置 APFS 分区驱动，具体配置内容参见下文 `APFS 属性` 部分。
 
 ### `Audio`
 
@@ -166,19 +166,19 @@ macOS 引导程序和 OpenCore 的音频本地化是分开的。macOS 引导程�
 
 **Type**: `plist dict`
 **Failsafe**: None
-**Description**: 从下面的 Input Properties 部分，应用为输入（键盘和鼠标）而设计的个性化设置。
+**Description**: 从下面的 Input 属性部分，应用为输入（键盘和鼠标）而设计的个性化设置。
 
 ### `Output`
 
 **Type**: `plist dict`
 **Failsafe**: None
-**Description**: 从下面的 Output Properties 部分，应用为输出（文本和图形）而设计的个性化设置。
+**Description**: 从下面的 Output 属性部分，应用为输出（文本和图形）而设计的个性化设置。
 
 ### `ProtocolOverrides`
 
 **Type**: `plist dict`
 **Failsafe**: None
-**Description**: 强制执行从下面的 ProtocolOverrides Properties 部分所选协议的内置版本。
+**Description**: 强制执行从下面的 ProtocolOverrides 属性部分所选协议的内置版本。
 
 *注*：所有协议实例的安装都优先于驱动程序的加载。
 
@@ -186,14 +186,14 @@ macOS 引导程序和 OpenCore 的音频本地化是分开的。macOS 引导程�
 
 **Type**: `plist dict`
 **Failsafe**: None
-**Description**: 从下面的 Quirks Properties 部分，应用个性化的固件 Quirks。
+**Description**: 从下面的 Quirks 属性部分，应用个性化的固件 Quirks。
 
 ### `ReservedMemory`
 
 **Type**: `plist array`
 **Description**: 设计为用 `plist dict` 值填充，用于描述对特定固件和硬件功能要求很高的内存区域，这些区域不应该被操作系统使用。比如被 Intel HD 3000 破坏的第二个 256MB 区域，或是一个有错误的 RAM 的区域。
 
-## 11.7 APFS Properties
+## 11.7 APFS 属性
 
 ### `EnableJumpstart`
 
@@ -251,7 +251,7 @@ APFS 驱动的版本号和 macOS 版本相关。较旧版本的 APFS 驱动可�
 - `-1` - 允许使用任何版本的 APFS 驱动（强烈不推荐）。
 - 其他数值 - 数值格式应为形如 `1412101001000000` 的格式（这是 macOS Catalina 10.15.4 的 APFS 驱动版本号）你可以从 OpenCore 的启动日志和 [OcApfsLib](https://github.com/acidanthera/OpenCorePkg/blob/master/Include/Acidanthera/Library/OcApfsLib.h) 中找到 APFS 驱动的版本号。
 
-## 11.8 Audio Properties
+## 11.8 Audio 属性
 
 ### `AudioCodec`
 
@@ -329,13 +329,11 @@ APFS 驱动的版本号和 macOS 版本相关。较旧版本的 APFS 驱动可�
 
 从 `SystemAudioVolume` 读取的音量范围会因编解码器的不同而不同。为了将 `[0, 127]` 范围内的值转换为原始音量范围 `[0, 100]` 内的值，所读取的值按比例调整为 `VolumeAmplifier` 的百分数：
 
-```
-RawVolume = MIN{ [(SystemAudioVolume * VolumeAmplifier) / 100], 100 }
-```
+![11-1.svg](/img/11-1.svg)
 
 *注*：macOS 中使用的转换并不是线性的，但非常接近，因此我们忽略了这种细微差别。
 
-## 11.9 Input Properties
+## 11.9 Input 属性
 
 ### `KeyFiltering`
 
@@ -420,7 +418,7 @@ RawVolume = MIN{ [(SystemAudioVolume * VolumeAmplifier) / 100], 100 }
 
 设置较低的值可以提高界面和输入处理性能的响应能力。建议值为 `50000`（即 5 毫秒）或稍高一些。选择 ASUS Z87 主板时，请使用 `60000`，苹果主板请使用 `100000`。你也可以将此值保留为 `0`，由 OpenCore 自动计算。
 
-## 11.10 Output Properties
+## 11.10 Output 属性
 
 ### `TextRenderer`
 
@@ -537,7 +535,7 @@ macOS bootloader 要求控制台句柄上必须有 GOP 或 UGA（适用于 10.4 
 
 有些固件不会去实现老旧的 UGA 协议，但是有些更老的 EFI 应用程序（如 10.4 的 Efiboot）可能需要用它来进行屏幕输出。
 
-## 11.11 Protocols Properties
+## 11.11 Protocols 属性
 
 ### `AppleAudio`
 
@@ -569,7 +567,7 @@ Apple 音频协议允许 macOS bootloader 和 OpenCore 播放声音和信号，�
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
-**Description**: 重新安装内置的 Apple Event 协议，可以确保在 VM 或旧版 Mac 设备上的 Faile Vault V2 兼容性。
+**Description**: 重新安装内置的 Apple Event 协议，可以确保在 VM 或旧版 Mac 设备上的 FileVault 2 兼容性。
 
 ### `AppleFramebufferInfo`
 
@@ -627,7 +625,7 @@ Apple 音频协议允许 macOS bootloader 和 OpenCore 播放声音和信号，�
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
-**Description**: 强制包装固件卷协议或安装新版本以支持 File Vault 2 的自定义光标图像。建议启用这一选项以确保 File Vault 2 在除 VM 和传统 Mac 设备之外的兼容性。
+**Description**: 强制包装固件卷协议或安装新版本以支持 FileVault 2 的自定义光标图像。建议启用这一选项以确保 FileVault 2 在除 VM 和传统 Mac 设备之外的兼容性。
 
 *注*：包括 VMWare 在内的多个虚拟机在 HiDPI 模式下光标会损坏，因此建议为所有虚拟机启用这一选项。
 
@@ -635,7 +633,7 @@ Apple 音频协议允许 macOS bootloader 和 OpenCore 播放声音和信号，�
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
-**Description**: 强制重新安装内置版本的 Hash Services 协议。为了在 SHA-1 哈希协议不完整的固件上确保 File Vault 2 的兼容性，这一 Quirk 应设置为 `true`。对于大多数固件来说，你可以通过将 `UIScale` 设置为 `02` 查看是否会出现禁行图标，来诊断你的固件是否需要这一 Quirk。一般来说，APTIO V（Haswell 和更早的平台）之前的平台都会受到影响。
+**Description**: 强制重新安装内置版本的 Hash Services 协议。为了在 SHA-1 哈希协议不完整的固件上确保 FileVault 2 的兼容性，这一 Quirk 应设置为 `true`。对于大多数固件来说，你可以通过将 `UIScale` 设置为 `02` 查看是否会出现禁行图标，来诊断你的固件是否需要这一 Quirk。一般来说，APTIO V（Haswell 和更早的平台）之前的平台都会受到影响。
 
 ### `OSInfo`
 
@@ -721,7 +719,7 @@ Apple 音频协议允许 macOS bootloader 和 OpenCore 播放声音和信号，�
 
 *注*：如果惠普笔记本在 OpenCore 界面没有看到引导项时启用这一选项。
 
-## 11.13 ReservedMemory Properties
+## 11.13 ReservedMemory 属性
 
 ### `Address`
 

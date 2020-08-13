@@ -3,10 +3,10 @@ title: 8. Misc
 description: 关于 OpenCore 行为的其他配置
 type: docs
 author_info: 由 xMuu、Sukka、derbalkon 整理、由 Sukka、derbalkon 翻译。
-last_updated: 2020-08-02
+last_updated: 2020-08-13
 ---
 
-## 8.1 Introduction
+## 8.1 简介
 
 本部分包含关于 OpenCore 行为的其他配置，以及不能被分类到其它章节的配置条目的说明。
 
@@ -19,7 +19,7 @@ OpenCore 尽可能地遵循 `bless` 模式，即 `Apple Boot Policy`。`bless` �
 1. 通过 `Scan policy`（和驱动可用性）过滤，获取所有可用的分区句柄。
 2. 从 `BootOrder` UEFI 变量中，获取所有可用的启动选项。
 3. 对于每个找到的启动选项：
-  - 检索该启动选项的设style备路径。
+  - 检索该启动选项的设备路径。
   - 执行对设备路径的修复（如 NVMe 子类型修复）和扩展（如 Boot Camp）。
   - 通过定位到所产生的设备路径，来获取句柄（失败时忽略）。
   - 在分区句柄列表中找到设备句柄（缺失时忽略）。
@@ -61,12 +61,12 @@ OpenCore 尽可能地遵循 `bless` 模式，即 `Apple Boot Policy`。`bless` �
 
 *注 3*：某些操作系统（说的就是你，Windows）会在第一次启动时，或 NVRAM 重置后，创建他们的启动选项，并将其标记为最上面的选项。这种情况发生时，默认的启动条目选择将会更新，直到下一次重新手动配置。
 
-## 8.2 Properties
+## 8.2 属性列表
 
 ### `Boot`
 
 **Type**: `plist dict`
-**Description**: 应用本章节 Boot Properties 中的引导相关设置。
+**Description**: 应用本章节 Boot 属性中的引导相关设置。
 
 ### `BlessOverride`
 
@@ -78,30 +78,30 @@ OpenCore 尽可能地遵循 `bless` 模式，即 `Apple Boot Policy`。`bless` �
 ### `Debug`
 
 **Type**: `plist dict`
-**Description**: 应用本章节 Debug Properties 中的调试相关设置。
+**Description**: 应用本章节 Debug 属性中的调试相关设置。
 
 ### `Entries`
 
 **Type**: `plist array`
 **Description**: 在开机引导菜单中添加引导项。
 
-应填入 `plist dict` 类型的值来描述相应的加载条目。详见 Entry Properties 部分。
+应填入 `plist dict` 类型的值来描述相应的加载条目。详见 Entry 属性部分。
 
 ### `Security`
 
 **Type**: `plist dict`
-**Description**: 应用本章节 Security Properties 中的安全相关设置。
+**Description**: 应用本章节 Security 属性中的安全相关设置。
 
 ### `Tools`
 
 **Type**: `plist array`
 **Description**: 将工具条目添加到开机引导菜单。
 
-应填入 `plist dict` 类型的值来描述相应的加载条目。详见 Entry Properties 部分。
+应填入 `plist dict` 类型的值来描述相应的加载条目。详见 Entry 属性部分。
 
 *注*：选择工具（比如 UEFI shell）是很危险的事情，利用这些工具可以轻易地绕过安全启动链，所以 **千万不要** 出现在生产环境配置中，尤其是设置了 vault 和安全启动保护的设备（译者注：即，工具仅作调试用）。
 
-## 8.3 Boot Properties
+## 8.3 Boot 属性
 
 ### `ConsoleAttributes`
 
@@ -164,7 +164,7 @@ OpenCore 尽可能地遵循 `bless` 模式，即 `Apple Boot Policy`。`bless` �
 
 即使被隐藏，你仍然可以通过 `空格` 进入「扩展模式」查看所有条目（引导项菜单会被重新加载）：
 
-一般的，隐藏辅助条目有助于加快启动速度。
+一般来说，隐藏辅助条目有助于加快启动速度。
 
 ### `PickerAttributes`
 
@@ -178,14 +178,14 @@ OpenCore 尽可能地遵循 `bless` 模式，即 `Apple Boot Policy`。`bless` �
 
 - `0x0001` — `OC_ATTR_USE_VOLUME_ICON`，提供引导项自定义图标：
   
-  对于 `Tools`，OpenCore 会尝试加载一个自定义图标，不存在自定义图标时则回退到默认图标：
-  - `ResetNVRAM` — `Resources\Image\ResetNVRAM.icns` — `ResetNVRAM.icns` 来自图标目录。
-  - `Tools\<TOOL_RELATIVE_PATH>.icns` — 工具文件附近的图标，扩展名为 `.icns`。
+  对于 `Tools`，OpenCore 会尝试优先加载以下自定义图标，不存在自定义图标时则回退到默认图标：
+  - `ResetNVRAM` — `Resources\Image\ResetNVRAM.icns` — 图标目录下的 `ResetNVRAM.icns`。
+  - `Tools\<TOOL_RELATIVE_PATH>.icns` — `Tools` 文件附近的对应图标，扩展名为 `.icns`。
   
-  对于 `Entries`，OpenCore 会尝试加载一个自定义图标，不存在自定义图标时则回退到卷宗或默认图标：
+  对于 `Entries`，OpenCore 会尝试优先加载以下自定义图标，不存在自定义图标时则回退到卷宗或默认图标：
   - `<ENTRY_PATH>.icns` — 条目文件附近的图标，扩展名为 `.icns`。
   
-  对于其他条目，OpenCore 会尝试加载一个卷宗图标，并回退到默认图标：
+  对于其他条目，OpenCore 会尝试优先加载卷宗图标，并回退到默认图标：
   - `.VolumeIcon.icns` 文件，位于 APFS `Preboot` 根目录下。
   - `.VolumeIcon.icns` 文件，位于其他文件系统的卷宗的根目录下。
 
@@ -214,14 +214,14 @@ macOS Bootloader 屏幕朗读 的偏好设置是存在 `isVOEnabled.int32` 文�
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
-**Description**: 在开机引导菜单中启用 `modifier hotkey`。
+**Description**: 在开机引导菜单中启用 `Modifier Hotkey`。
 
-除了 `action hotkeys`（在 `PickerMode` 一节中有所描述，由 Apple BDS 处理），还有由操作系统 bootloader 处理的修饰键，即 `boot.efi`。这些键可以通过提供不同的启动模式来改变操作系统的行为。
+除了 `Action Hotkey`（在 `PickerMode` 一节中有所描述，由 Apple BDS 处理），还有由操作系统 bootloader（即 `boot.efi`）处理的 `Modifier Hotkey`。这些键可以通过提供不同的启动模式来改变操作系统的行为。
 
-在某些固件上，由于驱动程序不兼容，使用修饰键可能会有问题。为了解决问题，这个选项允许你在启动选择器中以更宽松的方式注册选择的热键，比如：在按住 `Shift` 和其他按键的同时支持敲击按键，而不是只按 `Shift`，这在许多 PS/2 键盘上是无法识别的。已知的 `modifier hotkeys` 包括：
+在某些固件上，由于驱动程序不兼容，使用 `Modifier Hotkey` 可能会有问题。为了解决问题，这个选项允许你在启动选择器中以更宽松的方式注册选择的热键，比如：在按住 `Shift` 和其他按键的同时支持敲击按键，而不是只按 `Shift`，这在许多 PS/2 键盘上是无法识别的。已知的 `Modifier Hotkey` 包括：
 
 - `CMD+C+MINUS` --- 禁用主板兼容性检查。
-- `CMD+K` --- 从 release 版本的内核启动，类似于 `kcsuffix=release` 参数。
+- `CMD+K` --- 从 RELEASE 版本的内核启动，类似于 `kcsuffix=release` 参数。
 - `CMD+R` --- 从恢复分区启动。
 - `CMD+S` --- 启动至单用户模式。
 - `CMD+S+MINUS` --- 禁用 KASLR slide，需要事先禁用 SIP。
@@ -238,9 +238,9 @@ macOS Bootloader 屏幕朗读 的偏好设置是存在 `isVOEnabled.int32` 文�
 
 **Type**: `plist integer`, 32 bit
 **Failsafe**: `0`
-**Description**: 在 处理引导项启动 和 处理 `action hotkeys` 之前的延迟，以微秒为单位。
+**Description**: 在 处理引导项启动 和 处理 `Action Hotkey` 之前的延迟，以微秒为单位。
 
-引入这一延迟有助于为你争取时间去完成按住 `action hotkey` 的操作，比如启动到恢复模式。在某些平台上，可能需要把此项设置为至少 `5000-10000` 来使 `action hotkeys` 生效，具体取决于键盘驱动程序的性质。
+引入这一延迟有助于为你争取时间去完成按住 `Action Hotkey` 的操作，比如启动到恢复模式。在某些平台上，可能需要把此项设置为至少 `5000-10000` 来使 `Action Hotkey` 生效，具体取决于键盘驱动程序的性质。
 
 ### `Timeout`
 
@@ -264,7 +264,7 @@ macOS Bootloader 屏幕朗读 的偏好设置是存在 `isVOEnabled.int32` 文�
 
 `External` 模式一旦成功，就会完全禁用 OpenCore 中的除策略强制执行的所有其他启动管理器，而 `Apple` 模式下可以绕过策略的强制执行。请参阅 `ueficanopy` 插件以了解自定义用户界面的实例。
 
-OpenCore 内置的启动选择器包含了一系列在启动过程中选择的操作。支持的操作与 Apple BDS 类似，一般来说能够通过在启动过程中按住 `action hotkeys` 来实现，目前有以下几种：
+OpenCore 内置的启动选择器包含了一系列在启动过程中选择的操作。支持的操作与 Apple BDS 类似，一般来说能够通过在启动过程中按住 `Action Hotkey` 来实现，目前有以下几种：
 
 - `Default` --- 此项为默认选项，可以让 OpenCore 内置的启动选择器按照 [启动磁盘](https://support.apple.com/HT202796) 偏好设置中指定的方式加载默认的启动项。
 - `ShowPicker` --- 此项会强制显示启动选择器，通常可以在启动时按住 `OPT` 键来实现。将 `ShowPicker` 设置为 `true` 会使 `ShowPicker` 成为默认选项。
@@ -278,7 +278,7 @@ OpenCore 内置的启动选择器包含了一系列在启动过程中选择的�
 
 *注 3*：有些 Mac 的 GOP 很棘手，可能很难进入 Apple 启动选择器。要解决这个问题，可以在不加载 GOP 的情况下 bless OpenCore 的 `BootKicker` 实用工具。
 
-## 8.4 Debug Properties
+## 8.4 Debug 属性
 
 ### `AppleDebug`
 
@@ -327,18 +327,18 @@ cat Kernel.panic | grep macOSProcessedStackshotData | python -c 'import json,sys
 - `0x00400000` (bit `22`) --- `DEBUG_VERBOSE` in custom builds.
 - `0x80000000` (bit `31`) --- `DEBUG_ERROR` in `DEBUG`, `NOOPT`, `RELEASE`.
 
-### SerialInit
+### `SerialInit`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
-**Description**: Perform serial port initialisation.
+**Description**: 执行串行端口初始化。
 
-This option will perform serial port initialisation within OpenCore prior to enabling (any) debug logging. Serial port configuration is defined via PCDs at compile time in `gEfiMdeModulePkgTokenSpaceGuid` GUID. Default values as found in `MdeModulePkg.dec` are as follows:
+该选项会在任何调试日志启用之前，初始化 OpenCore 的串行端口设置。串行端口配置是在编译时，在 `gEfiMdeModulePkgTokenSpaceGuid` GUID 中通过 PCD 来定义的。`MdeModulePkg.dec` 中的默认值如下：
 
-- PcdSerialBaudRate — Baud rate: 115200.
-- PcdSerialLineControl — Line control: no parity, 8 data bits, 1 stop bit.
+- `PcdSerialBaudRate` --- 波特率：115200。
+- `PcdSerialLineControl` --- 线路控制参数：无奇偶校验，`8` 位数据位，`1` 位停止位。
 
-See more details in `Debugging` section.
+具体细节见 `Debugging` 部分。
 
 ### `SysReport`
 
@@ -348,7 +348,7 @@ See more details in `Debugging` section.
 
 启用这一选项后，EFI 分区中将会新建一个 `SysReport` 目录。这一目录中将会保存 ACPI 和 SMBIOS 的调试信息。
 
-*注*：基于安全的考虑，`Release` 构建的 OpenCore 将不会内置这一功能。如果需要使用这一功能请使用 `Debug` 构建版。
+*注*：基于安全的考虑，`RELEASE` 构建的 OpenCore 将不会内置这一功能。如果需要使用这一功能请使用 `DEBUG` 构建版。
 
 ### `Target`
 
@@ -370,13 +370,13 @@ See more details in `Debugging` section.
 
 Data Hub 日志中不包括 Kernel 和 Kext 的日志。要获取 Data Hub 日志，请使用 ioreg：
 
-```
+```bash
 ioreg -lw0 -p IODeviceTree | grep boot-log | sort | sed 's/.*<\(.*\)>.*/\1/' | xxd -r -p
 ```
 
 UEFI 变量日志中不包含某些信息，也没有性能数据。为了安全起见，日志大小被限制在 32 KB。有些固件可能会提前截断它，或者在它无内存时完全删除它。使用非易失性 flag 将会在每打印一行后把日志写入 NVRAM 闪存。如要获取 UEFI 变量日志，请在 macOS 中使用以下命令：
 
-```
+```bash
 nvram 4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102:boot-log | awk '{gsub(/%0d%0a%00/,"");gsub(/%0d%0a/,"\n")}1'
 ```
 
@@ -444,7 +444,7 @@ nvram 4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102:boot-log | awk '{gsub(/%0d%0a%00/,"")
 - `OCUT` — OcAppleUserInterfaceThemeLib
 - `OCXML` — OcXmlLib
 
-## 8.5 Security Properties
+## 8.5 Security 属性
 
 ### `AllowNvramReset`
 
@@ -504,26 +504,26 @@ VirtualSMC 通过将磁盘加密密钥拆分保存在 NVRAM 和 RTC 中来执行
 
 根据加载顺序，暴露的启动器路径指向 OpenCore.efi 或其引导器。如要获得引导器路径，请在 macOS 中使用以下命令：
 
-```
+```bash
 nvram 4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102:boot-path
 ```
 
 如要使用启动器路径加载启动器卷宗，请在 macOS 中使用以下命令：
 
-```
+```bash
 u=$(nvram 4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102:boot-path | sed 's/.*GPT,\([^,]*\),.*/\1/'); \
 if [ "$u" != "" ]; then sudo diskutil mount $u ; fi
 ```
 
 如要获取 OpenCore 版本信息，请在 macOS 中使用以下命令：
 
-```
+```bash
 nvram 4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102:opencore-version
 ```
 
 如要获取 OEM 信息，请在 macOS 中使用以下命令：
 
-```
+```bash
 nvram 4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102:oem-product # SMBIOS Type1 ProductName
 nvram 4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102:oem-vendor # SMBIOS Type2 Manufacturer
 nvram 4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102:oem-board # SMBIOS Type2 ProductName
@@ -565,7 +565,7 @@ RSA 公钥的 520 字节格式可参阅 Chromium OS 文档。如要从 X.509 证
 
 可以参照如下指令：
 
-```
+```bash
 cd /Volumes/EFI/EFI/OC
 /path/to/create_vault.sh .
 /path/to/RsaTool -sign vault.plist vault.sig vault.pub
@@ -605,6 +605,7 @@ rm vault.pub
 - `0x00800000` (bit `23`) --- `OC_SCAN_ALLOW_DEVICE_SDCARD`，允许扫描读卡器设备。
 
 *注*：举例：根据以上描述，`0xF0103` 值允许扫描带有 APFS 文件系统的 SATA、SAS、SCSI 和 NVMe 设备，不扫描 USB、CD 和 FireWire 设备上的 APFS 文件系统，也不扫描任何带有 HFS 或 FAT32 文件系统的设备。该值表示如下组合：
+
 - `OC_SCAN_FILE_SYSTEM_LOCK`
 - `OC_SCAN_DEVICE_LOCK`
 - `OC_SCAN_ALLOW_FS_APFS`
@@ -613,7 +614,7 @@ rm vault.pub
 - `OC_SCAN_ALLOW_DEVICE_SCSI`
 - `OC_SCAN_ALLOW_DEVICE_NVME`
 
-## 8.6 Entry Properties
+## 8.6 Entry 属性
 
 ### `Arguments`
 

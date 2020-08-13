@@ -3,10 +3,10 @@ title: 9. NVRAM
 description: NVRAM 注入（如引导标识符和 SIP）
 type: docs
 author_info: 由 xMuu、Sukka 整理，由 Sukka、derbalkon 翻译
-last_updated: 2020-06-19
+last_updated: 2020-08-13
 ---
 
-## 9.1 Introduction
+## 9.1 简介
 
 设置易失性 UEFI 变量（通常被称作 NVRAM 变量），数据类型为 `plist dict`。使用 `man nvram` 获取详细信息。macOS 广泛使用 NVRAM 变量使 操作系统、BootLoader、固件 之间互通，因此需要提供多个 NVRAM 变量才能正常运行 macOS。
 
@@ -23,7 +23,7 @@ last_updated: 2020-06-19
 
 - 并非所有工具都可能知道受保护的名称空间。当使用 `RequestBootVarRouting` 时，在独立的命名空间中会限制对 `Boot` 前缀的变量访问。要访问原始变量，工具必须了解 `OC_FIRMWARE_RUNTIME` 协议的工作原理。
 
-## 9.2 Properties
+## 9.2 属性列表
 
 ### 1. `Add`
 
@@ -83,7 +83,7 @@ last_updated: 2020-06-19
 
 变量列表可参照相关文档（持续更新）：[NVRAM Variables](https://docs.google.com/spreadsheets/d/1HTCBwfOBkXsHiK7os3b2CUc6k68axdJYdGl-TyXqLu0)。
 
-## 9.3 Mandatory Variables
+## 9.3 必需变量
 
 *警告*：这些变量可通过 PlatformNVRAM 或 PlatformInfo 的 Generic 部分添加。推荐使用 `PlatformInfo` 来设置这些变量。
 
@@ -98,8 +98,7 @@ last_updated: 2020-06-19
 - `4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14:ROM`
  主要的网络适配器的 MAC 地址或替换值。存在于较新的 Mac（至少 2013 年以后）上，用来避免访问特殊内存区域，尤其是在 `boot.efi` 中。
 
-
-## 9.4 Recommended Variables
+## 9.4 建议变量
 
 建议使用以下变量来加快启动速度或改善其他表现：
 
@@ -121,11 +120,10 @@ last_updated: 2020-06-19
  定义 FireWire 安全模式的 ASCII 字符串。这一变量旧版本才有，可在 [IOFireWireController.cpp](https://opensource.apple.com/source/IOFireWireFamily/IOFireWireFamily-473/IOFireWireFamily.kmodproj/IOFireWireController.cpp.auto.html) 中的 IOFireWireFamily 源码里找到。建议不要设置这个变量，这样可能会加快启动速度。设置为 `full` 等同于不设置该变量，设置为 `none` 将禁用 FireWire 安全性。
 - `4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14:UIScale`
  定义 `boot.efi` 用户界面缩放比例的一字节数据。普通屏幕应为 **01**，HiDPI 屏幕应为 **02**。
-- `4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14:DefaultBackgroundColor` 
+- `4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14:DefaultBackgroundColor`
  定义 `boot.efi` 用户界面背景色的四字节 `BGRA` 数据。标准色包括 `BF BF BF 00`（浅灰）和 `00 00 00 00`（西拉黑）。其他颜色可根据用户喜好设置。
 
-
-## 9.5 Other Variables
+## 9.5 其他变量
 
 以下变量对于某些特定的配置或进行故障排除可能会很有用：
 

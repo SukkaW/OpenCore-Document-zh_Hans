@@ -3,7 +3,7 @@ title: 5. Booter
 description: 配置 OpenRuntime.efi（Slide 值计算、KASLR）
 type: docs
 author_info: 由 Sukka、derbalkon 整理，由 Sukka、derbalkon 翻译。
-last_updated: 2020-08-02
+last_updated: 2020-08-11
 ---
 
 ## 5.1 简介
@@ -40,7 +40,7 @@ sudo pmset standby 0
 **Type**: `plist array`
 **Description**: 设计为用 `plist dict` 值填充，用来描述在启用 `DevirtualiseMmio` 这个 Quirk 时特定固件能够运作的关键地址。详见下面的 MmioWhitelist Properties 章节。
 
-> 译者注：如果开机卡在 `PCI...` 可以尝试开启 Item 1 下的 Patch
+> 译者注：如果开机卡在 `PCI...` 可以尝试开启 Item 1 下的 Patch。
 
 ### 5.2.2 Quirks
 
@@ -53,7 +53,9 @@ sudo pmset standby 0
 
 **Type**: `plist integer`
 **Failsafe**: 0
-**Description**: 指排除在外的 MMIO 地址, 其内存描述符（Memory Descriptor）会被 `DevirtualiseMmio` 虚拟化（不变）。该值所在的区域会被分配一个虚拟地址，因此在操作系统运行期间，固件能够直接与该内存区域进行通信。
+**Description**: 指排除在外的 MMIO 地址，其内存描述符（Memory Descriptor）应被 `DevirtualiseMmio` 虚拟化（保持不变）。该值所在的区域会被分配一个虚拟地址，因此在操作系统运行期间，固件能够直接与该内存区域进行通信。
+
+这里写入的地址必须是内存映射的一部分，具有 `EfiMemoryMappedIO` 类型和 `EFI_MEMORY_RUNTIME` 属性（最高 bit）。可以使用调试日志找到可能的地址。
 
 ### 5.3.2 Comment
 
@@ -65,7 +67,7 @@ sudo pmset standby 0
 
 **Type**: `plist boolean`
 **Failsafe**: false
-**Description**: 除非设置为 `true`，否则此地址将被虚拟化。
+**Description**: 设置为 `true` 时，所添加的地址将被虚拟化（保持不变）。
 
 ## 5.4 Quirks 属性
 
@@ -85,9 +87,9 @@ sudo pmset standby 0
 **Failsafe**: `false`
 **Description**: 从选定的 MMIO 区域中删除 Runtime 属性。
 
-通过删除已知内存区域的 Runtime bit，此选项可减少内存映射中 Stolen Memory Footprint。 这个 Quirk 可能会导致可用的 KASLR slides 增加，但如果没有其他措施，不一定与目标主板兼容。 通常，这会释放 64 到 256 MB的内存（具体数值会显示在调试日志中）。在某些平台上这是引导 macOS 的唯一方法，否则在引导加载程序阶段会出现内存分配错误。
+通过删除已知内存区域的 Runtime bit，此选项可减少内存映射中 Stolen Memory Footprint。 这个 Quirk 可能会使可用的 KASLR slides 增加，但如果没有其他措施，则不一定与目标主板兼容。 通常，这会释放 64 到 256 MB 的内存（具体数值会显示在调试日志中）。在某些平台上这是引导 macOS 的唯一方法，否则在引导加载程序阶段会出现内存分配错误。
 
-该选项通常对所有固件都有用，除了一些非常古老的固件（例如 Sandy Bridge）。 在某些固件上，它可能需要一个例外映射列表。为了使 NVRAM 和休眠功能正常工作，获取其虚拟地址仍然是必要的。 请参考 `MmioWhitelist` 章节来实现这个。
+该选项通常对所有固件都有用，除了一些非常古老的固件（例如 Sandy Bridge）。在某些固件上，可能需要一个例外映射列表。为了使 NVRAM 和休眠功能正常工作，获取其虚拟地址仍然是必要的。 请参考 `MmioWhitelist` 章节来实现。
 
 > 译者注：对于某些 300 系列主板是必须的
 
@@ -97,7 +99,7 @@ sudo pmset standby 0
 **Failsafe**: `false`
 **Description**: 禁用 Apple 单用户模式
 
-这个选项可以禁用 `CMD+S` 热键和 `-s` 启动参数来限制单用户模式。启用这一 Quirk 后预期行为应和 T2 的模型行为类似。请参考 Apple 的 [这篇文章](https://support.apple.com/HT201573) 以了解如何在启用这一 Quirk 后继续使用单用户模式。
+这个选项可以禁用 `CMD+S` 热键和 `-s` 启动参数来限制单用户模式。启用这一 Quirk 后预期行为应和 T2 的机型行为类似。请参考 Apple 的 [这篇文章](https://support.apple.com/HT201573) 以了解如何在启用这一 Quirk 后继续使用单用户模式。
 
 ### `DisableVariableWrite`
 
@@ -105,7 +107,7 @@ sudo pmset standby 0
 **Failsafe**: `false`
 **Description**: 防止 macOS 获取 NVRAM 的写入权限。
 
-这个选项可以限制 macOS 对 NVRAM 的写入。这个 Quirk 需要 `OpenRuntime.efi`（原名 `FwRuntimeServices.efi`）提供了 `OC_FIRMWARE_RUNTIME` 协议的实现.
+这个选项可以限制 macOS 对 NVRAM 的写入。这个 Quirk 需要 `OpenRuntime.efi`（原名 `FwRuntimeServices.efi`）提供了 `OC_FIRMWARE_RUNTIME` 协议的实现。
 
 *注*：这个 Quirk 也可以避免由于无法将变量写入 NVRAM 而导致的对操作系统的破坏。
 
@@ -119,7 +121,7 @@ sudo pmset standby 0
 
 这一选项强制 XNU 内核忽略新提供的内存映射、认定设备从休眠状态唤醒后无需对其更改。如果你在使用 Windows，则 [务必启用](https://docs.microsoft.com/en-us/windows-hardware/design/device-experiences/oem-uefi#hibernation-state-s4-transition-requirements) 这一选项，因为 Windows 要求 S4 唤醒后保留运行内存的大小和未知。
 
-*注*：这可能用于解决较旧硬件上的错误内存映射。如 Insyde 固件的 Ivy Bridge 笔记本电脑或者 Acer V3-571G。 除非您完全了解这一选项可能导致的后果，否则请勿使用此功能。
+*注*：这可能用于解决较旧硬件上的错误内存映射。如 Insyde 固件的 Ivy Bridge 笔记本电脑，比如 Acer V3-571G。除非您完全了解这一选项可能导致的后果，否则请勿使用此功能。
 
 ### `EnableSafeModeSlide`
 
@@ -127,7 +129,7 @@ sudo pmset standby 0
 **Failsafe**: `false`
 **Description**: 修补引导加载程序以在安全模式下启用 KASLR。
 
-这个选项与启动到安全模式（启动时按住 Shift 或受用了 `-x` 启动参数）有关。默认情况下，安全模式会使用 `slide=0`，这个 Quirk 试图通过修补 `boot.efi` 接触这一限制。只有当 `ProvideCustomSlide` 启用后才可以启用本 Quirks。
+这个选项与启动到安全模式（启动时按住 Shift 或用了 `-x` 启动参数）有关。默认情况下，安全模式会使用 `slide=0`，这个 Quirk 会试图通过修补 `boot.efi` 解除这一限制。只有当 `ProvideCustomSlide` 启用后才可以启用本 Quirks。
 
 *注*：除非启动到安全模式失败，否则不需要启用此选项。
 
@@ -137,7 +139,7 @@ sudo pmset standby 0
 **Failsafe**: `false`
 **Description**: 关闭 `CR0` 寄存器中的写入保护。
 
-这个选项会在 UEFI Runtime Services 执行过程中，删除 `CR0` 寄存器中的写保护 `WP` bit，从而绕过其代码页的 `RX̂` 权限。这个 Quirk 需要配合 `OpenRuntime.efi`（原 `FwRuntimeServices.efi`）里的 `OC_FIRMWARE_RUNTIME` 协议来实现。
+这个选项会在 UEFI Runtime Services 执行过程中，删除 `CR0` 寄存器中的写保护 `WP` bit，从而绕过其代码页的 `RX` 权限。这个 Quirk 需要配合 `OpenRuntime.efi`（原 `FwRuntimeServices.efi`）里的 `OC_FIRMWARE_RUNTIME` 协议来实现。
 
 *注*：这个 Quirk 可能会破坏你的固件的安全性。如果你的固件支持内存属性表 (MAT)，请优先使用下文中的 `RebuildAppleMemoryMap` 那个 Quirk。是否支持 MAT，请参考 `OCABC: MAT support is 1/0` 日志条目来确定。
 
@@ -220,7 +222,7 @@ Apple 内核在解析 UEFI 内存映射时有几个限制：
 为了解决这些限制，这个 Quirk 将内存属性表的权限应用到传递给 Apple 内核的内存映射中，如果生成的内存映射超过 4KiB，则可选择尝试统一类似类型的连续插槽。
 
 *注 1*：由于许多固件自带的内存保护不正确，所以这个 Quirk 一般要和 `SyncRuntimePermissions` 一起启用。
-*注 2*：根据是否遇到第一阶段启动失败再决定是否启用这一 Quirk。在支持内存属性表 (MAT) 的平台上，这一 Quirk 是 `EnableWriteUnprotector` 更好的替代。This quirk is generally unnecessary when using `OpenDuetPkg`, but may be required to boot macOS 10.6 and earlier for unclear reasons.
+*注 2*：根据是否遇到第一阶段启动失败再决定是否启用这一 Quirk。在支持内存属性表 (MAT) 的平台上，这一 Quirk 是 `EnableWriteUnprotector` 更好的替代。在使用 `OpenDuetPkg` 时一般是不需要启用这个 Quirk 的，但如果要启动 macOS 10.6 或更早的版本则可能需要启用，原因暂不明确。
 
 ### `SetupVirtualMap`
 

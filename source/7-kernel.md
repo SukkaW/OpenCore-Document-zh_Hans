@@ -3,7 +3,7 @@ title: 7. Kernel
 description: OpenCore 安全配置，Kext 加载顺序以及屏蔽
 type: docs
 author_info: 由 Sukka 整理，由 Sukka、derbalkon 翻译。
-last_updated: 2020-08-04
+last_updated: 2020-08-13
 ---
 
 ## 7.1 简介
@@ -20,17 +20,17 @@ last_updated: 2020-08-04
 
 设计为使用 plist dict 数据填充以描述每个驱动程序。请参阅下述 Add 属性章节。Kext 驱动程序加载的顺序遵照数组中项目的顺序，因此如 Lilu 这种其他驱动程序的依赖驱动应该位于前面。
 
-To track the dependency order one can inspect the `OSBundleLibraries` key in the `Info.plist` of the kext. Any kext mentioned in the `OSBundleLibraries` of the other kext must be precede this kext.
+可以通过检查 Kext 驱动中 `Info.plist` 的 `OSBundleLibraries` 值的方法来确定其依赖驱动的加载顺序。`OSBundleLibraries` 中的任何依赖驱动都必须在此 Kext 之前加载。
 
-Note: Kexts may have inner kexts (`Plug-Ins`) in their bundle. Each inner kext must be added separately.
+*注*：Kext 驱动的内部可能也附带另外的 Kext (`Plug-Ins`)，每个内部的 Kext 也都必须单独添加（参考下文 Add 属性章节）。
 
-### 7.2.2 Delete
+### 7.2.2 Block
 
 **Type**: `plist array`
 **Failsafe**: Empty
 **Description**: 从内核中删除选定的内核驱动程序。
 
-设计为使用 plist dict 数据填充以描述每个驱动程序。请参阅下述 Delete 属性章节。Kext 驱动程序加载的顺序遵照数组中项目的顺序，因此如 Lilu 这种其他驱动程序的依赖驱动应该位于前面。
+设计为使用 plist dict 数据填充以描述每个驱动程序。请参阅下述 Block 属性章节。Kext 驱动程序加载的顺序遵照数组中项目的顺序，因此如 Lilu 这种其他驱动程序的依赖驱动应该位于前面。
 
 ### 7.2.3 Emulate
 
@@ -56,9 +56,9 @@ Note: Kexts may have inner kexts (`Plug-Ins`) in their bundle. Each inner kext m
 
 **Type**: `plist string`
 **Failsafe**: Empty string
-**Description**: Kext 相对于 `EFI/OC/kexts/Other/` 的路径 (e.g. `Lilu.kext` or `MyKext.kext/Contents/PlugIns/MySubKext.kext`).
+**Description**: Kext 相对于 `EFI/OC/kexts/Other/` 的路径，如 `Lilu.kext` 或 `MyKext.kext/Contents/PlugIns/MySubKext.kext`。
 
-> 注，如 `VoodooPS2Controller.kext` 这种包括其他 kext 驱动的，需要分别单独添加，如 `VoodooPS2Controller.kext/Contents/PlugIns/VoodooPS2Keyboard.kext`。
+> *注*：如 `VoodooPS2Controller.kext` 这种包括其他 Kext 驱动的，需要分别单独添加，如 `VoodooPS2Controller.kext/Contents/PlugIns/VoodooPS2Keyboard.kext`。
 
 ### 7.3.2 `Comment`
 
@@ -112,7 +112,7 @@ Note: Kexts may have inner kexts (`Plug-Ins`) in their bundle. Each inner kext m
 **Failsafe**: Empty string
 **Description**: Kext 中 `Info.plist` 文件的路径。一般为 `Contents/Info.plist`。
 
-## 7.4 Delete 属性
+## 7.4 Block 属性
 
 ### 7.4.1 `Comment`
 
@@ -279,7 +279,7 @@ Note: Kexts may have inner kexts (`Plug-Ins`) in their bundle. Each inner kext m
 **Failsafe**: `false`
 **Description**: 禁用 `AppleIntelCPUPowerManagement.kext` 中的 `PKG_CST_CONFIG_CONTROL` (`0xE2`) 修改，从而避免早期 Kernel Panic。
 
-某些固件会锁定 `PKG_CST_CONFIG_CONTROL` MSR 寄存器。可以使用捆绑的 `VerifyMsrE2` 工具检查其状态。
+某些固件会锁定 `PKG_CST_CONFIG_CONTROL` MSR 寄存器。可以使用附带的 `VerifyMsrE2` 工具检查其状态。
 
 由于现代固件已经提供了 `CFG Lock` 相关设置、从而可以配置 `PKG_CST_CONFIG_CONTROL` 寄存器锁定，此选项应该尽可能避免。对于一些不显示 `CFG Lock` 配置的固件，可以按照下述配置进行修改：
 

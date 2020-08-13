@@ -3,7 +3,7 @@ title: 12. 排错
 description: 当你遇到问题的时候应该看看这个
 type: docs
 author_info: 由 xMuu、Sukka、derbalkon 整理，由 Sukka、derbalkon 翻译
-last_updated: 2020-08-02
+last_updated: 2020-08-11
 ---
 
 ## 12.1 Windows 支持
@@ -117,7 +117,7 @@ The operation has completed successfully.
 
 与其他硬件相关的项目类似，OpenCore 也支持审计与调试。使用 NOOPT 或 DEBUG 构建版本（而非 RELEASE 构建版本）可以产生更多的调试输出。对于 NOOPT 构建版本，你还可以使用 GDB 或 IDA Pro 进行调试。对于 GDB 请查看 [OpenCore Debug](https://github.com/acidanthera/OpenCorePkg/tree/master/Debug) 相关页面；对于 IDA Pro，你需要 7.3 或更高版本，更多详细信息请参考 IDA Pro 提供的页面：[Debugging the XNU Kernel with IDA Pro](https://www.hex-rays.com/products/ida/support/tutorials/index.shtml)。
 
-可以使用串口调试来获取启动过程中的日志。串口调试是在 `Target` 中开启的，例如 `0xB` 代表在屏幕上显示并输出串行。To initialise serial within OpenCore use `SerialInit` configuration option.对于 macOS 来说，最好是选择基于 CP2102 的 UART 设备。将主板 `TX` 连接到 USB UART `RX`，主板 `GND` 连接到 USB UART `GND`。使用 `screen` 实用工具，或者下载 GUI 软件获取输出，如 [CoolTerm](https://freeware.the-meiers.org)。
+可以使用串口调试来获取启动过程中的日志。串口调试是在 `Target` 中开启的，例如 `0xB` 代表在屏幕上显示并输出串行。可使用 `SerialInit` 配置选项来初始化串行。对于 macOS 来说，最好是选择基于 CP2102 的 UART 设备。将主板 `TX` 连接到 USB UART `RX`，主板 `GND` 连接到 USB UART `GND`。使用 `screen` 实用工具，或者下载 GUI 软件获取输出，如 [CoolTerm](https://freeware.the-meiers.org)。
 
 *注释*：在一些主板（可能还有一些 USB UART 转换器）上，PIN 的命名可能是不正确的。`GND` 和 `RX` 互换是很常见的，因此你需要将主板 `"TX"` 连接到 USB UART `GND`，主板 `"GND"` 连接到 USB UART `RX`。
 

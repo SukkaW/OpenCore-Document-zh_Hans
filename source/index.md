@@ -38,10 +38,10 @@ OpenCore 仍处于积极的维护之中，OpenCore 参考手册 仍然在高频�
 
 - [OpenCore 官方文档](https://github.com/acidanthera/OpenCorePkg/blob/master/Docs/Configuration.pdf)
 - [OpenCore 官方文档迭代](https://github.com/acidanthera/OpenCorePkg/blob/master/Docs/Differences/Differences.pdf)
-- [OpenCore Vanilla Guide](https://khronokernel.github.io/Opencore-Vanilla-Desktop-Guide/) --- 从零开始的 OpenCore 台式机安装指南。本网站有考虑提供对该指南的简体中文翻译
+- [OpenCore Install Guide](https://dortania.github.io/OpenCore-Install-Guide/) --- 从零开始的 OpenCore 台式机安装指南。本网站有考虑提供对该指南的简体中文翻译。
 - [从 Clover 到 OpenCore](https://blog.skk.moe/post/from-clover-to-opencore/) --- 由本网站的发起人和创始人 Sukka 编写的 Clover 迁移 OpenCore 的教程。
-- [精解 OpenCore | 黑果小兵](https://blog.daliansky.net/OpenCore-BootLoader.html) --- 本网站的部分翻译参考的就是黑果小兵前辈的这篇文章
-- [使用 OpenCore 引导黑苹果 | Xjn's Blog](https://blog.xjn819.com/?p=543) --- 提供了很多台式机上排错和完善的指南
+- [精解 OpenCore | 黑果小兵](https://blog.daliansky.net/OpenCore-BootLoader.html) --- 本网站的部分翻译参考的就是黑果小兵前辈的这篇文章。
+- [使用 OpenCore 引导黑苹果 | Xjn's Blog](https://blog.xjn819.com/?p=543) --- 提供了很多台式机上排错和完善的指南。
 
 ## 维护者
 
