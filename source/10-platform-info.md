@@ -3,20 +3,20 @@ title: 10. PlatformInfo
 description: SMBIOS 机型信息配置
 type: docs
 author_info: 由 xMuu、Sukka 整理，由 Sukka、derbalkon 翻译
-last_updated: 2020-08-11
+last_updated: 2020-08-13
 ---
 
-机型信息由手动生成、填充以与 macOS 服务兼容的几个标识字段组成。配置的基础部分可以从 [`AppleModels`](https://github.com/acidanthera/OpenCorePkg/blob/master/AppleModels)、一个可以从 [YAML](https://yaml.org/spec/1.2/spec.html) 格式的数据库中生成一组接口的工具包中获得。这些字段将会被写入三个位置：
+机型信息由手动生成或填充的字段组成，以便与 macOS 服务兼容。配置的基础部分可以从 [`AppleModels`](https://github.com/acidanthera/OpenCorePkg/blob/master/AppleModels) 获得，这是一个可以从 [YAML](https://yaml.org/spec/1.2/spec.html) 格式的数据库中生成一组接口的工具包。这些字段将会被写入三个位置：
 
 - [SMBIOS](https://www.dmtf.org/standards/smbios)
 - [DataHub](https://github.com/acidanthera/OpenCorePkg/blob/master/Include/Intel/Protocol/DataHub.h)
 - NVRAM
 
-大多数字段在 SMBIOS 中指定覆盖，并且这些字段的名称符合 EDK2 [SmBios.h](https://github.com/acidanthera/audk/blob/master/MdePkg/Include/IndustryStandard/SmBios.h) 头文件。但是，在 Data Hub 和 NVRAM 中有几个重要的字段。有些值可以在多个字段 和/或 目标中找到，因此有两种方法可以控制它们的更新过程：手动指定所有值（默认方法）；半自动。
+大多数字段会在 SMBIOS 中指定覆盖内容，字段的名称符合 EDK2 [SmBios.h](https://github.com/acidanthera/audk/blob/master/MdePkg/Include/IndustryStandard/SmBios.h) 头文件。但是，有些重要的字段会驻留在 Data Hub 和 NVRAM 中。有些值可以在多个字段 和/或 目标中找到，因此有两种方法可以控制它们的更新过程：手动指定所有值（默认方法）；半自动，仅（自动地）指定所选值用于之后的系统配置。
 
 可以使用 [dmidecode](http://www.nongnu.org/dmidecode) 工具来检查 SMBIOS 内容。你可以从 [Acidanthera/dmidecode](https://github.com/acidanthera/dmidecode/releases) 下载 Acidanthera 制作的增强版。
 
-## 10.1 Properties
+## 10.1 属性列表
 
 ### 1. `Automatic`
 
@@ -43,7 +43,7 @@ last_updated: 2020-08-11
 
 根据 `Automatic` 的值，这些字段会从 `Generic` 或 `PlatformNVRAM` 中读取。所有其他字段都将在 `NVRAM` 部分中指定。
 
-如果将此值设置为 `false`，则可以使用 `nvram` 部分更新上述变量；反之若将此值设置为 `true`，而同时 `nvram` 部分存在任何字段，会产生意料之外的行为。
+如果将此值设置为 `false`，则可以使用 `nvram` 部分更新上述变量；反之若将此值设置为 `true`，而同时 `nvram` 部分存在任何字段，会产生未定义行为。
 
 ### 4. `UpdateSMBIOS`
 
@@ -60,9 +60,9 @@ last_updated: 2020-08-11
 - `TryOverwrite` --- 如果新的数据大小 小于等于 按页对齐的原始数据，且对解锁 legacy region 没有影响，则选择 `Overwrite` 方式；否则选择 `Create` 方式。在某些硬件上可能会有问题。
 - `Create` --- 在 AllocateMaxAddress 将表替换为新分配的 EfiReservedMemoryType，没有回退机制。
 - `Overwrite` --- 如果数据大小合适则覆盖现有的 gEfiSmbiosTableGuid 和 gEfiSmbiosTable3Guid，否则将以不明状态中止。
-- `Custom` --- 把第一个 SMBIOS 表（`gEfiSmbios(3)TableGuid`）写入 `gOcCustomSmbios(3)TableGuid`，以此来解决固件在 ExitBootServices 覆盖 SMBIOS 内容的问题；否则等同于 `Create`。需要 AppleSmbios.kext 和 AppleACPIPlatform.kext 打补丁来读取另一个 GUID: `"EB9D2D31"` - `"EB9D2D35"` (in ASCII)， 这一步由 `CustomSMBIOSGuid` quirk 自动完成。
+- `Custom` --- 把第一个 SMBIOS 表（`gEfiSmbios(3)TableGuid`）写入 `gOcCustomSmbios(3)TableGuid`，以此来解决固件在 ExitBootServices 覆盖 SMBIOS 内容的问题；否则等同于 `Create`。需要 AppleSmbios.kext 和 AppleACPIPlatform.kext 打补丁来读取另一个 GUID: `"EB9D2D31"` - `"EB9D2D35"` (in ASCII)， 这一步由 `CustomSMBIOSGuid` Quirk 自动完成。
 
-*注*： 使用 `Custom` 有一个副作用（译者注：我怎么感觉是好事）使得 SMBIOS 设置只对 macOS 生效，避免了与现有的 Windows 激活和依赖机型的 OEM 设置的相关问题。不过，苹果在 Windows 下的特定工具（译者注：如 BootCamp for Windows）可能会受到影响
+*注*： 使用 `Custom` 有一个副作用（译者注：我怎么感觉是好事）使得 SMBIOS 设置只对 macOS 生效，避免了与现有的 Windows 激活和依赖机型的 OEM 设置的相关问题。不过，苹果在 Windows 下的特定工具（译者注：如 BootCamp for Windows）可能会受到影响。
 
 ### 6. `Generic`
 
@@ -88,15 +88,15 @@ last_updated: 2020-08-11
 **Optional**: `Automatic` 为 `true` 时可不填
 **Description**: 更新 SMBIOS 字段。当 `Automatic` 未激活时此处为只读。
 
-## 10.2 Generic Properties
+## 10.2 Generic 属性
 
 ### 1. `SpoofVendor`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
-**Description**: 将 SMBIOS 中的 vendor 字段设置为 `Acidanthera`。
+**Description**: 将 SMBIOS 中的 Vendor 字段设置为 `Acidanthera`。
 
-由于在 `SystemManufacturer` 相关介绍中介绍的原因，在 SMBIOS 的 vendor 字段中使用 `Apple` 是危险的。但是，某些固件可能无法提供有效值，可能会导致某些软件的破坏。
+由于在 `SystemManufacturer` 相关介绍中介绍的原因，在 SMBIOS 的 Vendor 字段中使用 `Apple` 是危险的。但是，某些固件可能无法提供有效值，可能会导致某些软件的破坏。
 
 ### 2. `AdviseWindows`
 
@@ -104,10 +104,10 @@ last_updated: 2020-08-11
 **Failsafe**: `false`
 **Description**: 在 `FirmwareFeatures` 中强制提供 Windows 支持。
 
-向 `FirmwareFeatures` 中添加如下比特：
+向 `FirmwareFeatures` 中添加如下 bit：
 
-- `FW_FEATURE_SUPPORTS_CSM_LEGACY_MODE` (`0x1`) - 如果没有此比特，且 EFI 分区不是硬盘中的第一个分区，那么则无法重新启动到硬盘里的 Windows 系统。
-- `FW_FEATURE_SUPPORTS_UEFI_WINDOWS_BOOT` (`0x20000000`) - 如果没有此比特，且 EFI 分区是硬盘中的第一个分区，那么则无法重新启动到硬盘里的 Windows 系统。
+- `FW_FEATURE_SUPPORTS_CSM_LEGACY_MODE` (`0x1`) - 如果没有此 bit，且 EFI 分区不是硬盘中的第一个分区，那么则无法重新启动到硬盘里的 Windows 系统。
+- `FW_FEATURE_SUPPORTS_UEFI_WINDOWS_BOOT` (`0x20000000`) - 如果没有此 bit，且 EFI 分区是硬盘中的第一个分区，那么则无法重新启动到硬盘里的 Windows 系统。
 
 ### 3. `SystemProductName`
 
@@ -139,7 +139,7 @@ last_updated: 2020-08-11
 **Failsafe**: all zero
 **Description**: 参考 `4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14:ROM`。
 
-## 10.3 DataHub Properties
+## 10.3 DataHub 属性
 
 ### 1. `PlatformName`
 
@@ -175,13 +175,13 @@ last_updated: 2020-08-11
 
 **Type**: `plist data`, 1 byte
 **Failsafe**: `0`
-**Description**: 在 `gEfiMiscSubClassGuid` 中设置 `board-rev`。在 Mac 上找到的值似乎与 internal board revision 相对应（e.g. `01`）。
+**Description**: 在 `gEfiMiscSubClassGuid` 中设置 `board-rev`。在 Mac 上找到的值似乎与 Internal Board Revision 相对应（如 `01`）。
 
 ### 7. `StartupPowerEvents`
 
 **Type**: `plist integer`, 64-bit
 **Failsafe**: `0`
-**Description**: 在 `gEfiMiscSubClassGuid Sets` 中设置 `StartupPowerEvents`。在 Mac 上找到的值是 power management state 位掩码，通常为 0。`X86PlatformPlugin.kext` 能读取的已知 bit 有：
+**Description**: 在 `gEfiMiscSubClassGuid Sets` 中设置 `StartupPowerEvents`。在 Mac 上找到的值是 Power Management State 位掩码，通常为 0。`X86PlatformPlugin.kext` 能读取的已知 bit 有：
 
 - `0x00000001` --- Shutdown cause was a `PWROK` event (Same as `GEN_PMCON_2` bit 0)
 - `0x00000002` --- Shutdown cause was a `SYS_PWROK` event (Same as `GEN_PMCON_2` bit 1)
@@ -248,7 +248,7 @@ last_updated: 2020-08-11
 **Failsafe**: Not installed
 **Description**: 在 `gEfiMiscSubClassGuid` 中设置 `RPlt`。自定义属性由 `VirtualSMC` 或 `FakeSMC` 读取，用于生成 SMC `RPlt` key。
 
-## 10.4 PlatformNVRAM Properties
+## 10.4 PlatformNVRAM 属性
 
 ### 1. `BID`
 
@@ -286,7 +286,7 @@ last_updated: 2020-08-11
 - `4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14:FirmwareFeaturesMask`
 - `4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14:ExtendedFirmwareFeaturesMask`
 
-## 10.5 SMBIOS Properties
+## 10.5 SMBIOS 属性
 
 ### 1. `BIOSVendor`
 
@@ -335,7 +335,7 @@ last_updated: 2020-08-11
 
 **Type**: `plist string`
 **Failsafe**: OEM specified
-**SMBIOS**: System Information (Type 1), Product Name
+**SMBIOS**: System Information (Type 1) --- Product Name
 **Description**: 选择偏好的 Mac 机型来把设备标记为系统支持的机型。在任何配置中都应指定该值，以便之后自动生成 SMBIOS 表的相关值和相关配置参数。如果 `SystemProductName` 与目标操作系统不兼容，可用引导参数 `-no_compat_check` 来覆盖。
 
 *注*：如果 `SystemProductName` 位置，并且相关字段也未指定，默认值会被设定为 `MacPro6,1`。目前已知产品的列表详见 `MacInfoPkg`。
@@ -345,7 +345,7 @@ last_updated: 2020-08-11
 **Type**: `plist string`
 **Failsafe**: OEM specified
 **SMBIOS**: System Information (Type 1) --- Version
-**Description**: 产品迭代版本号。可能与 `1.1` 类似。
+**Description**: 产品迭代版本号。看起来类似于 `1.1`。
 
 ### 7. `SystemSerialNumber`
 
@@ -379,21 +379,21 @@ last_updated: 2020-08-11
 
 **Type**: `plist string`
 **Failsafe**: OEM specified
-**SMBIOS**: Baseboard (or Module) Information (Type 2) - Manufacturer
+**SMBIOS**: Baseboard (or Module) Information (Type 2) --- Manufacturer
 **Description**: 主板制造商。`SystemManufacturer` 的所有规则都适用。
 
 ### 12. `BoardProduct`
 
 **Type**: `plist string`
 **Failsafe**: OEM specified
-**SMBIOS**: Baseboard (or Module) Information (Type 2) - Product
+**SMBIOS**: Baseboard (or Module) Information (Type 2) --- Product
 **Description**: Mac 主板 ID (`board-id`)。在旧型号机器中看起来类似于 `Mac-7BA5B2D9E42DDD94` 或 `Mac-F221BEC8`。
 
 ### 13. `BoardVersion`
 
 **Type**: `plist string`
 **Failsafe**: OEM specified
-**SMBIOS**: Baseboard (or Module) Information (Type 2) - Version
+**SMBIOS**: Baseboard (or Module) Information (Type 2) --- Version
 **Description**: 主板版本号。有各种各样，可能与 `SystemProductName` 或 `SystemProductVersion` 匹配。
 
 ### 14. `BoardSerialNumber`
@@ -415,7 +415,7 @@ last_updated: 2020-08-11
 **Type**: `plist integer`
 **Failsafe**: OEM specified
 **SMBIOS**: Baseboard (or Module) Information (Type 2) --- Board Type
-**Description**:  `0xA` (Motherboard (includes processor, memory, and I/O) 或 `0xB` (Processor/Memory Module)，详见 Table 15 -- Baseboard: Board Type for more details。
+**Description**:  `0xA` (Motherboard (includes processor, memory, and I/O)) 或 `0xB` (Processor/Memory Module)，详见 Table 15 --- Baseboard: Board Type。
 
 ### 17. `BoardLocationInChassis`
 

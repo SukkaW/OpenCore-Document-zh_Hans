@@ -3,10 +3,10 @@ title: 8. Misc
 description: 关于 OpenCore 行为的其他配置
 type: docs
 author_info: 由 xMuu、Sukka、derbalkon 整理、由 Sukka、derbalkon 翻译。
-last_updated: 2020-08-11
+last_updated: 2020-08-13
 ---
 
-## 8.1 Introduction
+## 8.1 简介
 
 本部分包含关于 OpenCore 行为的其他配置，以及不能被分类到其它章节的配置条目的说明。
 
@@ -61,12 +61,12 @@ OpenCore 尽可能地遵循 `bless` 模式，即 `Apple Boot Policy`。`bless` �
 
 *注 3*：某些操作系统（说的就是你，Windows）会在第一次启动时，或 NVRAM 重置后，创建他们的启动选项，并将其标记为最上面的选项。这种情况发生时，默认的启动条目选择将会更新，直到下一次重新手动配置。
 
-## 8.2 Properties
+## 8.2 属性列表
 
 ### `Boot`
 
 **Type**: `plist dict`
-**Description**: 应用本章节 Boot Properties 中的引导相关设置。
+**Description**: 应用本章节 Boot 属性中的引导相关设置。
 
 ### `BlessOverride`
 
@@ -78,30 +78,30 @@ OpenCore 尽可能地遵循 `bless` 模式，即 `Apple Boot Policy`。`bless` �
 ### `Debug`
 
 **Type**: `plist dict`
-**Description**: 应用本章节 Debug Properties 中的调试相关设置。
+**Description**: 应用本章节 Debug 属性中的调试相关设置。
 
 ### `Entries`
 
 **Type**: `plist array`
 **Description**: 在开机引导菜单中添加引导项。
 
-应填入 `plist dict` 类型的值来描述相应的加载条目。详见 Entry Properties 部分。
+应填入 `plist dict` 类型的值来描述相应的加载条目。详见 Entry 属性部分。
 
 ### `Security`
 
 **Type**: `plist dict`
-**Description**: 应用本章节 Security Properties 中的安全相关设置。
+**Description**: 应用本章节 Security 属性中的安全相关设置。
 
 ### `Tools`
 
 **Type**: `plist array`
 **Description**: 将工具条目添加到开机引导菜单。
 
-应填入 `plist dict` 类型的值来描述相应的加载条目。详见 Entry Properties 部分。
+应填入 `plist dict` 类型的值来描述相应的加载条目。详见 Entry 属性部分。
 
 *注*：选择工具（比如 UEFI shell）是很危险的事情，利用这些工具可以轻易地绕过安全启动链，所以 **千万不要** 出现在生产环境配置中，尤其是设置了 vault 和安全启动保护的设备（译者注：即，工具仅作调试用）。
 
-## 8.3 Boot Properties
+## 8.3 Boot 属性
 
 ### `ConsoleAttributes`
 
@@ -278,7 +278,7 @@ OpenCore 内置的启动选择器包含了一系列在启动过程中选择的�
 
 *注 3*：有些 Mac 的 GOP 很棘手，可能很难进入 Apple 启动选择器。要解决这个问题，可以在不加载 GOP 的情况下 bless OpenCore 的 `BootKicker` 实用工具。
 
-## 8.4 Debug Properties
+## 8.4 Debug 属性
 
 ### `AppleDebug`
 
@@ -444,7 +444,7 @@ nvram 4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102:boot-log | awk '{gsub(/%0d%0a%00/,"")
 - `OCUT` — OcAppleUserInterfaceThemeLib
 - `OCXML` — OcXmlLib
 
-## 8.5 Security Properties
+## 8.5 Security 属性
 
 ### `AllowNvramReset`
 
@@ -614,7 +614,7 @@ rm vault.pub
 - `OC_SCAN_ALLOW_DEVICE_SCSI`
 - `OC_SCAN_ALLOW_DEVICE_NVME`
 
-## 8.6 Entry Properties
+## 8.6 Entry 属性
 
 ### `Arguments`
 

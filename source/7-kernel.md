@@ -3,7 +3,7 @@ title: 7. Kernel
 description: OpenCore 安全配置，Kext 加载顺序以及屏蔽
 type: docs
 author_info: 由 Sukka 整理，由 Sukka、derbalkon 翻译。
-last_updated: 2020-08-11
+last_updated: 2020-08-13
 ---
 
 ## 7.1 简介
@@ -22,7 +22,7 @@ last_updated: 2020-08-11
 
 可以通过检查 Kext 驱动中 `Info.plist` 的 `OSBundleLibraries` 值的方法来确定其依赖驱动的加载顺序。`OSBundleLibraries` 中的任何依赖驱动都必须在此 Kext 之前加载。
 
-*注*：Kext 驱动的内部可能有捆绑的 Kext (`Plug-Ins`)，每个内部的 Kext 也都必须单独添加（参考下文 Add 属性章节）。
+*注*：Kext 驱动的内部可能也附带另外的 Kext (`Plug-Ins`)，每个内部的 Kext 也都必须单独添加（参考下文 Add 属性章节）。
 
 ### 7.2.2 Block
 
@@ -279,7 +279,7 @@ last_updated: 2020-08-11
 **Failsafe**: `false`
 **Description**: 禁用 `AppleIntelCPUPowerManagement.kext` 中的 `PKG_CST_CONFIG_CONTROL` (`0xE2`) 修改，从而避免早期 Kernel Panic。
 
-某些固件会锁定 `PKG_CST_CONFIG_CONTROL` MSR 寄存器。可以使用捆绑的 `VerifyMsrE2` 工具检查其状态。
+某些固件会锁定 `PKG_CST_CONFIG_CONTROL` MSR 寄存器。可以使用附带的 `VerifyMsrE2` 工具检查其状态。
 
 由于现代固件已经提供了 `CFG Lock` 相关设置、从而可以配置 `PKG_CST_CONFIG_CONTROL` 寄存器锁定，此选项应该尽可能避免。对于一些不显示 `CFG Lock` 配置的固件，可以按照下述配置进行修改：
 
