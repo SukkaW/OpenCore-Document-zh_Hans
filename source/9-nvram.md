@@ -215,6 +215,15 @@ last_updated: 2020-08-21
     - `0` --- 禁用时间戳记录
     - `1` --- 启用时间戳记录（默认）
   - `log=VALUE` --- 10.15 开始弃用
+    - `1` --- AppleLoggingConOutOrErrSet/AppleLoggingConOutOrErrPrint (classical ConOut/StdErr)
+    - `2` --- AppleLoggingStdErrSet/AppleLoggingStdErrPrint (StdErr or serial?)
+    - `4` --- AppleLoggingFileSet/AppleLoggingFilePrint (BOOTER.LOG/BOOTER.OLD file on EFI partition)
+  - `debug=VALUE` --- 10.15 开始弃用
+    - 1 --- 启用输出到 BOOTER.LOG（如果出现了被精简过的代码，则意味着可能发生过崩溃）
+    - 2 --- 启用性能日志（Perf Log），记录到 /efi/debug-log
+    - 4 --- 为调用 printf 启用时间戳输出
+  - `level=VALUE` --- 10.15 开始弃用
+    `DEBUG` 输出的详细程度。默认除 `0x80000000` 以外，其他内容都会被精简掉。
 
   *注*：如要查看现代 macOS 版本上的 `boot.efi` verbose 输出，请启用 `AppleDebug` 选项。这样会把日志保存到通用 OpenCore 日志中。对于 10.15.4 之前的版本，将 `bootercfg` 设置为 `log=1`，可以将 verbose 输出打印在屏幕上。
 
