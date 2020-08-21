@@ -3,7 +3,7 @@ title: 3. Setup
 description: Setup
 type: docs
 author_info: 由 Sukka、derbalkon 整理、由 Sukka、derbalkon 翻译。
-last_updated: 2020-07-05
+last_updated: 2020-08-21
 ---
 
 ## 3.1 目录结构
@@ -36,9 +36,9 @@ ESP
 ├── SysReport
 ├── nvram.plist
 └── opencore-YYYY-MM-DD-HHMMSS.txt
-
-# Figure 1. 目录结构
 ```
+
+<center><em><strong>Figure 1</strong>: 目录结构</em></center><br>
 
 使用目录引导时，使用的目录结构应该遵循上述目录结构。可用的条目有：
 
@@ -90,6 +90,8 @@ make -C BaseTools
 build -a X64 -b RELEASE -t XCODE5 -p OpenCorePkg/OpenCorePkg.dsc
 ```
 
+<center><em><strong>Listing 1</strong>: 编译指令</em></center><br>
+
 对于 IDE 的用法，Xcode 项目可在资源库的根目录下使用。还有一种方法是使用 [Sublime Text](https://www.sublimetext.com) 并带有 [EasyClangComplete](https://niosus.github.io/EasyClangComplete) 插件。在你的 UDK 根目录下添加类似内容的 `.clang_complete` 文件：
 
 ```
@@ -124,7 +126,11 @@ build -a X64 -b RELEASE -t XCODE5 -p OpenCorePkg/OpenCorePkg.dsc
 -DNO_MSABI_VA_FUNCS=1
 ```
 
-> **警告**：工具开发人员修改 `config.plist` 或其他任何 OpenCore 文件时，都务必检查 `opencore-version` NVRAM 变量（详见后面的 `Debug Properties` 章节），如果版本号不支持或尚未发布，则需警告用户。OpenCore 配置可能因版本不同而改变，因此工具开发应仔细遵循本文档，否则可能会当作恶意软件并阻止发布。
+<center><em><strong>Listing 2</strong>: ECC 配置</em></center><br>
+
+{% note danger 警告 %}
+工具开发人员修改 `config.plist` 或其他任何 OpenCore 文件时，都务必检查 `opencore-version` NVRAM 变量（详见后面的 `Debug Properties` 章节），如果版本号不支持或尚未发布，则需警告用户。OpenCore 配置可能因版本不同而改变，因此工具开发应仔细遵循本文档，否则可能会当作恶意软件并阻止发布。
+{% endnote %}
 
 ## 3.4 代码约定
 

@@ -53,6 +53,8 @@ build -a X64 -b RELEASE -t XCODE5 -p MdeModulePkg/MdeModulePkg.dsc
 sudo bless --verbose --file /Volumes/VOLNAME/DIR/OpenShell.efi --folder /Volumes/VOLNAME/DIR/ --setBoot
 ```
 
+<center><em><strong>Listing 3</strong>: Bless 工具</em></center><br>
+
 *注 1*：你可能需要将 `/System/Library/CoreServices/BridgeVersion.bin` 拷贝到 `/Volumes/VOLNAME/DIR`。
 
 *注 2*：为了能够使用 `bless`，你可能需要 [禁用 System Integrity Protection](https://developer.apple.com/library/archive/documentation/Security/Conceptual/System_Integrity_Protection_Guide/ConfiguringSystemIntegrityProtection/ConfiguringSystemIntegrityProtection.html)。

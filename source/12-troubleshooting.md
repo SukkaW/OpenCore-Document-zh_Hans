@@ -67,8 +67,6 @@ last_updated: 2020-08-21
 
 Boot Camp 使用 GPT 分区表获取每个引导选项的名称。独立安装 Windows 后，你必须手动重新标记分区。这可以通过许多工具完成，比如开源的 [gdisk](https://sourceforge.net/projects/gptfdisk)，使用方法如下：
 
-> **Listing 3: Relabeling Windows volume**
-
 ```powershell
 PS C:\gdisk> .\gdisk64.exe \\.\physicaldrive0
 GPT fdisk (gdisk) version 1.0.4
@@ -102,6 +100,8 @@ OK; writing new GUID partition table (GPT) to \\.\physicaldrive0.
 Disk synchronization succeeded! The computer should now use the new partition table.
 The operation has completed successfully.
 ```
+
+<center><em><strong>Listing 4</strong>: 重新标记 Windows 卷宗</em></center>
 
 ### 如何选择 NTFS 驱动程序
 
