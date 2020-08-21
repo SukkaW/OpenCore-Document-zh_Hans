@@ -3,7 +3,7 @@ title: 9. NVRAM
 description: NVRAM 注入（如引导标识符和 SIP）
 type: docs
 author_info: 由 xMuu、Sukka 整理，由 Sukka、derbalkon 翻译
-last_updated: 2020-08-13
+last_updated: 2020-08-21
 ---
 
 ## 9.1 简介
@@ -121,13 +121,14 @@ last_updated: 2020-08-13
 - `4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14:UIScale`
  定义 `boot.efi` 用户界面缩放比例的一字节数据。普通屏幕应为 **01**，HiDPI 屏幕应为 **02**。
 - `4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14:DefaultBackgroundColor`
- 定义 `boot.efi` 用户界面背景色的四字节 `BGRA` 数据。标准色包括 `BF BF BF 00`（浅灰）和 `00 00 00 00`（西拉黑）。其他颜色可根据用户喜好设置。
+  定义 `boot.efi` 用户界面背景色的四字节 `BGRA` 数据。标准色包括 **BF BF BF 00**（浅灰）和 **00 00 00 00**（西拉黑）。其他颜色可根据用户喜好设置。
 
 ## 9.5 其他变量
 
 以下变量对于某些特定的配置或进行故障排除可能会很有用：
 
-- `7C436110-AB2A-4BBB-A880-FE41995C9F82:boot-args` 内核参数，用于将配置传递给 Apple 内核和驱动程序。很多参数可以通过在内核或驱动程序代码中寻找 `PE_parse_boot_argn` 函数找到。已知的引导参数包括：
+- `7C436110-AB2A-4BBB-A880-FE41995C9F82:boot-args`
+  内核参数，用于将配置传递给 Apple 内核和驱动程序。很多参数可以通过在内核或驱动程序代码中寻找 `PE_parse_boot_argn` 函数找到。已知的引导参数包括：
 
   - `acpi_layer=0xFFFFFFFF`
   - `acpi_level=0xFFFF5F` --- 表示 [`ACPI_ALL_COMPONENTS`](https://github.com/acpica/acpica/blob/master/source/include/acoutput.h)
@@ -154,9 +155,7 @@ last_updated: 2020-08-13
   这里有一些网站收集了 macOS 内置的启动参数列表：[列表 1](https://osxeon.wordpress.com/2015/08/10/boot-argument-options-in-os-x)、[列表 2](https://superuser.com/questions/255176/is-there-a-list-of-available-boot-args-for-darwin-os-x).
 
 - `7C436110-AB2A-4BBB-A880-FE41995C9F82:bootercfg`
- Booter 参数，类似于 `boot-args`，但用于 `boot.efi` 。接受参数为一组十六进制的 64 位值，带或不带 `0x`。在不同阶段，`boot.efi` 会请求不同的调试（日志）模式（例如，在 `ExitBootServices` 之后它只会打印到串行调试接口）。
- 有些 Booter 参数会控制这些请求是否成功。
- 下面是已知请求的列表：
+  Booter 参数，类似于 `boot-args`，但用于 `boot.efi` 。接受参数为一组十六进制的 64 位值，带或不带 `0x`。在不同阶段，`boot.efi` 会请求不同的调试（日志）模式（例如，在 `ExitBootServices` 之后它只会打印到串行调试接口）。有些 Booter 参数会控制这些请求是否成功。下面是已知请求的列表：
 
   - `0x00` – `INIT`
   - `0x01` – `VERBOSE` （如 `-v`，强制控制台记录日志）

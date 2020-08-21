@@ -3,7 +3,7 @@ title: 6. DeviceProperties
 description: PCI 设备属性注入
 type: docs
 author_info: 由 Sukka、derbalkon 整理、由 Sukka、derbalkon 翻译。
-last_updated: 2020-08-11
+last_updated: 2020-08-21
 ---
 
 ## 6.1 简介
@@ -36,7 +36,8 @@ AppleACPIPlatformExpert 包含了两个阶段的 `IODeviceTree` 构建，通过�
 
 **Type**: `plist dict`
 **Description**: 将设备属性从设备路径的映射（plist dict）设置为变量名称和值的映射（plist dict），其中变量名称和值的格式为 plist metadata。设备路径必须以 canonic string 格式提供（例如： `PciRoot(0x0)/Pci(0x1,0x0)/Pci(0x0,0x0)`）。添加的属性只有在不存在且未被屏蔽的情况下才会被设置。
-**注**：目前，属性只能通过原始驱动程序添加。因此除非安装了单独的驱动程序，否则没有理由 Delete 变量。
+
+*注*：目前，属性只能通过原始驱动程序添加。因此除非安装了单独的驱动程序，否则没有理由 Delete 变量。
 
 ### 6.2.2 Delete
 

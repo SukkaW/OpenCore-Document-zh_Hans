@@ -3,7 +3,7 @@ title: 7. Kernel
 description: OpenCore 安全配置，Kext 加载顺序以及屏蔽
 type: docs
 author_info: 由 Sukka 整理，由 Sukka、derbalkon 翻译。
-last_updated: 2020-08-13
+last_updated: 2020-08-21
 ---
 
 ## 7.1 简介
@@ -58,7 +58,7 @@ last_updated: 2020-08-13
 **Failsafe**: Empty string
 **Description**: Kext 相对于 `EFI/OC/kexts/Other/` 的路径，如 `Lilu.kext` 或 `MyKext.kext/Contents/PlugIns/MySubKext.kext`。
 
-> *注*：如 `VoodooPS2Controller.kext` 这种包括其他 Kext 驱动的，需要分别单独添加，如 `VoodooPS2Controller.kext/Contents/PlugIns/VoodooPS2Keyboard.kext`。
+> 译者注：如 `VoodooPS2Controller.kext` 这种包括其他 Kext 驱动的，需要分别单独添加，如 `VoodooPS2Controller.kext/Contents/PlugIns/VoodooPS2Keyboard.kext`。
 
 ### 7.3.2 `Comment`
 
@@ -287,7 +287,7 @@ last_updated: 2020-08-13
 2. 使用 UEFITool 中打开固件镜像文件，找到 CFG Lock 的 Unicode 字符串。如果你没有找到，意味着你的固件可能不支持 CFG Lock 解锁，那么你现在可以停下来了。
 3. 从 UEFITool 菜单中的 `Extract Body` 选项提取 `Setup.bin` 中的 PE32 镜像部分。
 4. 对提取出来的文件执行 IFR-Extractor（`./ifrextract Setup.bin Setup.txt`）。
-5. 从 Setup.txt 中找到 CFG Lock，VarStoreInfo（或者 VarOffset、VarName），记住紧随其后的偏移量值（例如 `0x123`）。
+5. 从 Setup.txt 中找到 `CFG Lock`，`VarStoreInfo`（或者 `VarOffset`、`VarName`），记住紧随其后的偏移量值（例如 `0x123`）。
 6. 下载并执行由 [brainsucker](https://geektimes.com/post/258090) 编译的 [修改版 GRUB Shell](http://brains.by/posts/bootx64.7z)。你也可以是使用 [datasone](https://github.com/datasone) 制作的 [新版本 GRUB Shell](https://github.com/datasone/grub-mod-setup_var)。
 7. 在 GRUB Shell 中，使用 `setup_var 0x123 0x00`（其中 `0x123` 应该被替换为你在前几步找到的偏移值），然后重启电脑。
 
@@ -341,10 +341,9 @@ last_updated: 2020-08-13
 **Failsafe**: `false`
 **Description**: 禁用 AppleRTC 初始校验和（`0x58` - `0x59`）写入。
 
-*注*：
+*注 1*：这个选项不能确保其他区域不被覆盖，如有需要，请使用 [RTCMemoryFixup](https://github.com/acidanthera/RTCMemoryFixup)。
 
-1. 这个选项不能确保其他区域不被覆盖，如有需要，请使用 [RTCMemoryFixup](https://github.com/acidanthera/RTCMemoryFixup)。
-2. 这个选项不能确保区域在固件阶段不被覆盖（例如 macOS bootloader）。如有需要，请参阅 `AppleRtc` 协议描述。
+*注 2*: 这个选项不能确保区域在固件阶段不被覆盖（例如 macOS bootloader）。如有需要，请参阅 `AppleRtc` 协议描述。
 
 ### `DummyPowerManagement`
 

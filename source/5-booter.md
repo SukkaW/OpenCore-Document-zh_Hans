@@ -3,7 +3,7 @@ title: 5. Booter
 description: 配置 OpenRuntime.efi（Slide 值计算、KASLR）
 type: docs
 author_info: 由 Sukka、derbalkon 整理，由 Sukka、derbalkon 翻译。
-last_updated: 2020-08-11
+last_updated: 2020-08-21
 ---
 
 ## 5.1 简介
@@ -21,7 +21,7 @@ last_updated: 2020-08-11
 - 在 BIOS 中禁用 `CSM` (Compatibility Support Module)。NVIDIA 6xx / AMD 2xx 或更老的平台可能需要刷新 GOP ROM，具体步骤参考 [GopUpdate](https://www.win-raid.com/t892f16-AMD-and-Nvidia-GOP-update-No-requests-DIY.html) 或者 [AMD UEFI GOP MAKER](http://www.insanelymac.com/forum/topic/299614-asus-eah6450-video-bios-uefi-gop-upgrade-and-gop-uefi-binary-in-efi-for-many-ati-cards/page-1#entry2042163)。
 - 如果有 `EHCI / XHCI Hand-off` 功能，建议仅在出现 USB 设备连接时启动停滞的情况下启用。
 - 在 BIOS 中启用 `VT-x`、`Hyper Threading`、`Execute Disable Bit`。
-- 有时你还可能需要在 BIOS 中禁用 `Thunderbolt support`、`Intel SGX` 和 `Intel Platform Trust`。但是这一操作不是必须的。
+- 有时你还可能需要在 BIOS 中禁用 `Thunderbolt Support`、`Intel SGX` 和 `Intel Platform Trust`。但是这一操作不是必须的。
 
 在调试睡眠问题时，您可能希望（临时）禁用 Power Nap 和自动关闭电源，这似乎有时会导致在旧平台上唤醒黑屏或循环启动的问题。具体问题可能因人而异，但通常你应首先检查 ACPI 表，比如这是在 [Z68 主板](http://www.insanelymac.com/forum/topic/329624-need-cmos-reset-after-sleep-only-after-login/#entry2534645) 上找到的一些 Bug。要关闭 Power Nap 和其他功能，请在终端中运行以下命令：
 
@@ -31,7 +31,7 @@ sudo pmset powernap 0
 sudo pmset standby 0
 ```
 
-**注**：这些设置可能会在硬件更改、操作系统更新和某些其他情况下重置。要查看它们的当前状态，请在终端中使用 `pmset -g` 命令。
+*注*：这些设置可能会在硬件更改、操作系统更新和某些其他情况下重置。要查看它们的当前状态，请在终端中使用 `pmset -g` 命令。
 
 ## 5.2 属性列表
 
@@ -119,7 +119,7 @@ sudo pmset standby 0
 **Failsafe**: `false`
 **Description**: 复用原始的休眠内存映射。
 
-这一选项强制 XNU 内核忽略新提供的内存映射、认定设备从休眠状态唤醒后无需对其更改。如果你在使用 Windows，则 [务必启用](https://docs.microsoft.com/en-us/windows-hardware/design/device-experiences/oem-uefi#hibernation-state-s4-transition-requirements) 这一选项，因为 Windows 要求 S4 唤醒后保留运行内存的大小和未知。
+这一选项强制 XNU 内核忽略新提供的内存映射、认定设备从休眠状态唤醒后无需对其更改。如果你在使用 Windows，则 [务必启用](https://docs.microsoft.com/en-us/windows-hardware/design/device-experiences/oem-uefi#hibernation-state-s4-transition-requirements) 这一选项，因为 Windows 要求 S4 唤醒后保留运行内存的大小和位置。
 
 *注*：这可能用于解决较旧硬件上的错误内存映射。如 Insyde 固件的 Ivy Bridge 笔记本电脑，比如 Acer V3-571G。除非您完全了解这一选项可能导致的后果，否则请勿使用此功能。
 
@@ -141,7 +141,7 @@ sudo pmset standby 0
 
 这个选项会在 UEFI Runtime Services 执行过程中，删除 `CR0` 寄存器中的写保护 `WP` bit，从而绕过其代码页的 `RX` 权限。这个 Quirk 需要配合 `OpenRuntime.efi`（原 `FwRuntimeServices.efi`）里的 `OC_FIRMWARE_RUNTIME` 协议来实现。
 
-*注*：这个 Quirk 可能会破坏你的固件的安全性。如果你的固件支持内存属性表 (MAT)，请优先使用下文中的 `RebuildAppleMemoryMap` 那个 Quirk。是否支持 MAT，请参考 `OCABC: MAT support is 1/0` 日志条目来确定。
+*注*：这个 Quirk 可能会破坏你的固件的安全性。如果你的固件支持内存属性表 (MAT)，请优先使用下文中的 `RebuildAppleMemoryMap` Quirk。是否支持 MAT，请参考 `OCABC: MAT support is 1/0` 日志条目来确定。
 
 ### `ForceExitBootServices`
 
@@ -202,7 +202,7 @@ sudo pmset standby 0
 
 **Type**: `plist integer`
 **Failsafe**: `0`
-**Description**: 当更高的 KASLR slide 值不可用时提供最最大 KASLR slide 值。
+**Description**: 当更大的 KASLR slide 值不可用时，手动提供最大 KASLR slide 值。
 
 当 `ProvideCustomSlide` 启用时，该选项通过用户指定的 `1` 到 `254`（含）之间的值来覆盖上限为 `255` 的最大 slide 值。较新的固件会从上到下分配内存池中的内存，导致扫描 slide 时的空闲内存被当作内核加载时的临时内存来使用。如果这些内存不可用，启用这个选项则不会继续评估更高的 slide 值。
 
@@ -222,6 +222,7 @@ Apple 内核在解析 UEFI 内存映射时有几个限制：
 为了解决这些限制，这个 Quirk 将内存属性表的权限应用到传递给 Apple 内核的内存映射中，如果生成的内存映射超过 4KiB，则可选择尝试统一类似类型的连续插槽。
 
 *注 1*：由于许多固件自带的内存保护不正确，所以这个 Quirk 一般要和 `SyncRuntimePermissions` 一起启用。
+
 *注 2*：根据是否遇到第一阶段启动失败再决定是否启用这一 Quirk。在支持内存属性表 (MAT) 的平台上，这一 Quirk 是 `EnableWriteUnprotector` 更好的替代。在使用 `OpenDuetPkg` 时一般是不需要启用这个 Quirk 的，但如果要启动 macOS 10.6 或更早的版本则可能需要启用，原因暂不明确。
 
 ### `SetupVirtualMap`
@@ -238,7 +239,7 @@ Apple 内核在解析 UEFI 内存映射时有几个限制：
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
-**Description**: 不论使用什么操作系统、总是向 OSInfo 报告启动的是 macOS。
+**Description**: 不论使用什么操作系统，总是向 OS Info 报告启动的是 macOS。
 
 Mac 设备在不同的操作系统中具有不同的行为，因此如果你在使用 Mac 设备，这一功能会非常有用。例如，你可以通过启用这一选项为某些双 GPU 的 MacBook 型号中在 Windows 和 Linux 中启用 Intel GPU。
 
