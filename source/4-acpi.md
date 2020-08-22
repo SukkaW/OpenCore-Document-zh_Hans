@@ -3,7 +3,7 @@ title: 4. ACPI
 description: 加载、屏蔽、修补 ACPI（DSDT/SSDT）表
 type: docs
 author_info: 由 Sukka 整理、由 Sukka、derbalkon 翻译。感谢黑果小兵提供的参考资料
-last_updated: 2020-07-26
+last_updated: 2020-08-21
 ---
 
 ## 4.1 简介
@@ -24,7 +24,7 @@ ACPI（Advanced Configuration and Power Interface，高级配置和电源接口�
 
 在系统引导前加载补丁使得编写「代理」补丁成为可能 —— 「代理」补丁即通过重命名的方法修补 DSDT 中的原始行为，然后通过 SSDT 注入同名的行为进行替代。
 
-OpenCore、WhateverGreen、VirtualSmc、VoodooPS2 的 GitHub 仓库中都包含了部分 SSDT 和其他 ACPI 修补的方法。在 AppleLife 的 [Laboratory](https://applelife.ru/forums/xakintosh.67) 板块、[DSDT](https://applelife.ru/forums/dsdt.129) 板块提供了不少教程和样例（如 [笔记本电池修补教程](https://applelife.ru/posts/498967)）。[Dortania](https://dortania.github.io) 也编写了许多 [ACPI 有关的教程](https://dortania.github.io/Getting-Started-With-ACPI)。但是请注意，这些教程和 OpenCore 无关，他们提供的解决方法也不一定有用。
+OpenCore、WhateverGreen、VirtualSmc、VoodooPS2 的 GitHub 仓库中都包含了部分 SSDT 和其他 ACPI 修补的方法。在 AppleLife 的 [Laboratory](https://applelife.ru/forums/xakintosh.67) 版块、[DSDT](https://applelife.ru/forums/dsdt.129) 版块提供了不少教程和样例（如 [笔记本电池修补教程](https://applelife.ru/posts/498967)）。[Dortania](https://dortania.github.io) 也编写了许多 [ACPI 有关的教程](https://dortania.github.io/Getting-Started-With-ACPI)。但是请注意，这些教程和 OpenCore 无关，他们提供的解决方法也不一定有用。
 
 > 译者注：对于中国黑苹果玩家，强烈推荐 [OC-little](https://github.com/daliansky/OC-little) 项目，提供了众多 SSDT 范例和相关指导；笔记本用户电池修补请参考 [这篇教程](https://xstar-dev.github.io/hackintosh_advanced/Guide_For_Battery_Hotpatch.html)。
 
@@ -81,7 +81,7 @@ OpenCore、WhateverGreen、VirtualSmc、VoodooPS2 的 GitHub 仓库中都包含�
 
 所有 ACPI 表都从 `OC/ACPI` 目录加载，加载顺序遵循数组中的项目顺序。
 
-**注**： 除具有 DSDT 表标识符（由解析得到的数据、而非由其文件名决定）的表外，所有表都将作为新表插入 ACPI 栈。而 DSDT 表与其余的表不同，将会执行 DSDT 表的替换。
+*注*： 除具有 DSDT 表标识符（由解析得到的数据、而非由其文件名决定）的表外，所有表都将作为新表插入 ACPI 栈。而 DSDT 表与其余的表不同，将会执行 DSDT 表的替换。
 
 ## 4.4 Delete 属性
 
@@ -121,7 +121,7 @@ OpenCore、WhateverGreen、VirtualSmc、VoodooPS2 的 GitHub 仓库中都包含�
 **Failsafe**: All zero
 **Description**: 将表的签名匹配为此处的值，全部为 0 时忽略。
 
-**注**：当序列需要在多处替换的时候，务必注意不要指定表的签名，尤其是在进行不同类型的重命名操作的时候。
+*注*：当序列需要在多处替换的时候，务必注意不要指定表的签名，尤其是在进行不同类型的重命名操作的时候。
 
 ## 4.5 Patch 属性
 
@@ -226,8 +226,7 @@ TianoCore 源文件 [AcpiAml.h](https://github.com/acidanthera/audk/blob/master/
 
 **Type**: `plist boolean`
 **Failsafe**: false
-**Description**: 清理 ACPI 表头字段以解决 macOS ACPI 实现错误导致的引导崩溃
-*参考*：由 Alex James（theracermaster）在调试 AppleACPIPlatform 时发现。从 macOS Mojave (10.14) 开始，这个错误已经被修复。
+**Description**: 清理 ACPI 表头字段以解决 macOS ACPI 实现错误导致的引导崩溃。*参考*：由 Alex James（theracermaster）在调试 AppleACPIPlatform 时发现。从 macOS Mojave (10.14) 开始，这个错误已经被修复。
 
 ### 4.6.3 RebaseRegions
 
@@ -253,6 +252,6 @@ ACPI 表通常由底层固件动态生成。在与位置无关的代码中，ACP
 
 **Type**: `plist boolean`
 **Failsafe**: false
-**Description**: 将 `BGRT` 表中 `Displayed` 状态字段重置为 `false`.
+**Description**: 将 `BGRT` 表中 `Displayed` 状态字段重置为 `false`。
 
-这适用于提供 `BGRT` 表、但随后无法处理屏幕更新的固件。如果在开机时无法显示 OEM Windows 标志的硬件可以尝试开启。
+这适用于提供 `BGRT` 表、但随后无法处理屏幕更新的固件。如果在开机时无法显示 OEM Windows 标志可以尝试开启。

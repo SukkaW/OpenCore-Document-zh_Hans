@@ -3,7 +3,7 @@ title: 10. PlatformInfo
 description: SMBIOS 机型信息配置
 type: docs
 author_info: 由 xMuu、Sukka 整理，由 Sukka、derbalkon 翻译
-last_updated: 2020-08-13
+last_updated: 2020-08-21
 ---
 
 机型信息由手动生成或填充的字段组成，以便与 macOS 服务兼容。配置的基础部分可以从 [`AppleModels`](https://github.com/acidanthera/OpenCorePkg/blob/master/AppleModels) 获得，这是一个可以从 [YAML](https://yaml.org/spec/1.2/spec.html) 格式的数据库中生成一组接口的工具包。这些字段将会被写入三个位置：
@@ -302,7 +302,7 @@ last_updated: 2020-08-13
 **SMBIOS**: BIOS Information (Type 0) --- BIOS Version
 **Description**: 固件版本。此值更新时会同时影响更新推送配置文件以及 macOS 版本的兼容性。在较旧的固件中看起来类似于 `MM71.88Z.0234.B00.1809171422`，并且在 [BiosId.h](https://github.com/acidanthera/OpenCorePkg/blob/master/Include/Apple/Guid/BiosId.h) 中有所描述。在较新的固件中看起来类似于 `236.0.0.0.0` 或 `220.230.16.0.0 (iBridge: 16.16.2542.0.0,0)`。 iBridge 版本是从 `BridgeOSVersion` 变量中读取的，并且只在具有 T2 芯片的 Mac 上有显示。
 
-> ```
+> ```bash
 > Apple ROM Version
 >  BIOS ID:      MBP151.88Z.F000.B00.1811142212
 >  Model:        MBP151
@@ -417,6 +417,8 @@ last_updated: 2020-08-13
 **SMBIOS**: Baseboard (or Module) Information (Type 2) --- Board Type
 **Description**:  `0xA` (Motherboard (includes processor, memory, and I/O)) 或 `0xB` (Processor/Memory Module)，详见 Table 15 --- Baseboard: Board Type。
 
+> 译者注：此处提及的 Table 请参见 [DMTF Specifications](https://www.dmtf.org/standards/smbios) 中的相关文档。
+
 ### 17. `BoardLocationInChassis`
 
 **Type**: `plist string`
@@ -437,6 +439,8 @@ last_updated: 2020-08-13
 **Failsafe**: OEM specified
 **SMBIOS**: System Enclosure or Chassis (Type 3) --- Type
 **Description**: 机箱类型，详见 Table 17 --- System Enclosure or Chassis Types。
+
+> 译者注：此处所提及的 Table 请参见 [DMTF Specifications](https://www.dmtf.org/standards/smbios) 中的相关文档。
 
 ### 20. `ChassisVersion`
 

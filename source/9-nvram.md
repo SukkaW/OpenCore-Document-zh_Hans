@@ -3,7 +3,7 @@ title: 9. NVRAM
 description: NVRAM 注入（如引导标识符和 SIP）
 type: docs
 author_info: 由 xMuu、Sukka 整理，由 Sukka、derbalkon 翻译
-last_updated: 2020-08-13
+last_updated: 2020-08-21
 ---
 
 ## 9.1 简介
@@ -52,7 +52,9 @@ last_updated: 2020-08-13
 
 变量加载优先于 `Delete`（以及 `Add`）阶段。除非启用了 `LegacyOverwrite`，否则不会覆盖现有的任何变量。允许设置的变量必须指定于 `LegacySchema` 中。第三方脚本可以用来创建 `nvram.plist` 文件，脚本示例可参照 `Utilities`。使用第三方脚本可能要将 `ExposeSensitiveData` 设置为 `0x3` 来为 `boot-path` 变量提供 OpenCore EFI 分区的 UUID。
 
-**警告**: 这一功能非常危险，因为会将不受保护的数据传递给固件中的变量服务。只有在你的硬件不提供硬件 NVRAM 或与之不兼容时才使用。
+{% note danger 警告 %}
+这一功能非常危险，因为会将不受保护的数据传递给固件中的变量服务。只有在你的硬件不提供硬件 NVRAM 或与之不兼容时才使用。
+{% endnote %}
 
 ### 4. `LegacyOverwrite`
 
@@ -69,7 +71,9 @@ last_updated: 2020-08-13
 
 可用 `*` 值来接受所有用来选择 GUID 的变量。
 
-**警告**：选择变量要非常慎重，因为 nvram.plist 不会被存储。比如，不要把 `boot-args` 或 `csr-active-config` 放进去，因为会绕过 SIP。
+{% note danger 警告 %}
+选择变量要非常慎重，因为 nvram.plist 不会被存储。比如，不要把 `boot-args` 或 `csr-active-config` 放进去，因为会绕过 SIP。
+{% endnote %}
 
 ### 6. `WriteFlash`
 
@@ -85,49 +89,52 @@ last_updated: 2020-08-13
 
 ## 9.3 必需变量
 
-*警告*：这些变量可通过 PlatformNVRAM 或 PlatformInfo 的 Generic 部分添加。推荐使用 `PlatformInfo` 来设置这些变量。
+{% note danger 警告 %}
+这些变量可通过 PlatformNVRAM 或 PlatformInfo 的 Generic 部分添加。推荐使用 `PlatformInfo` 来设置这些变量。
+{% endnote %}
 
 以下变量为 macOS 运行必需：
 
 - `4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14:FirmwareFeatures`
- 32 位 `FirmwareFeatures`。存在于所有 Mac 上，用来避免额外解析 SMBIOS 表。
+  32 位 `FirmwareFeatures`。存在于所有 Mac 上，用来避免额外解析 SMBIOS 表。
 - `4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14:FirmwareFeaturesMask`
- 32 位 `FirmwareFeaturesMask`。存在于所有 Mac 上，用来避免额外解析 SMBIOS 表。
+  32 位 `FirmwareFeaturesMask`。存在于所有 Mac 上，用来避免额外解析 SMBIOS 表。
 - `4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14:MLB`
- `BoardSerialNumber`。存在于较新的 Mac 上（至少 2013 年以后），用来避免额外解析 SMBIOS 表，尤其是在 `boot.efi` 中。
+  `BoardSerialNumber`。存在于较新的 Mac 上（至少 2013 年以后），用来避免额外解析 SMBIOS 表，尤其是在 `boot.efi` 中。
 - `4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14:ROM`
- 主要的网络适配器的 MAC 地址或替换值。存在于较新的 Mac（至少 2013 年以后）上，用来避免访问特殊内存区域，尤其是在 `boot.efi` 中。
+  主要的网络适配器的 MAC 地址或替换值。存在于较新的 Mac（至少 2013 年以后）上，用来避免访问特殊内存区域，尤其是在 `boot.efi` 中。
 
 ## 9.4 建议变量
 
 建议使用以下变量来加快启动速度或改善其他表现：
 
 - `7C436110-AB2A-4BBB-A880-FE41995C9F82:csr-active-config`
- 32 位系统完整性保护的位掩码，声明于 XNU 源码 [csr.h](https://opensource.apple.com/source/xnu/xnu-4570.71.2/bsd/sys/csr.h.auto.html)。
+  32 位系统完整性保护的位掩码，声明于 XNU 源码 [csr.h](https://opensource.apple.com/source/xnu/xnu-4570.71.2/bsd/sys/csr.h.auto.html)。
 - `4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14:ExtendedFirmwareFeatures`
- 结合 `FirmwareFeatures` 和 `ExtendedFirmwareFeatures`。存在于较新的 Mac 上，用来避免额外解析 SMBIOS 表。
+  结合 `FirmwareFeatures` 和 `ExtendedFirmwareFeatures`。存在于较新的 Mac 上，用来避免额外解析 SMBIOS 表。
 - `4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14:ExtendedFirmwareFeaturesMask`
- 结合 `FirmwareFeaturesMask` 和 `ExtendedFirmwareFeaturesMask`。存在于较新的 Mac 上，用来避免额外解析 SMBIOS 表。
+  结合 `FirmwareFeaturesMask` 和 `ExtendedFirmwareFeaturesMask`。存在于较新的 Mac 上，用来避免额外解析 SMBIOS 表。
 - `4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14:HW_BID`
- 硬件 `BoardProduct`（如 `Mac-35C1E88140C3E6CF`）。在真正的 Mac 上不存在，但可用于避免额外解析 SMBIOS 表，尤其是在 `boot.efi` 中。
+  硬件 `BoardProduct`（如 `Mac-35C1E88140C3E6CF`）。在真正的 Mac 上不存在，但可用于避免额外解析 SMBIOS 表，尤其是在 `boot.efi` 中。
 - `4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14:HW_MLB`
- 硬件 `BoardSerialNumber`。覆盖 MLB，存在于较新的 Mac 上（至少 2013 年以后）。
+  硬件 `BoardSerialNumber`。覆盖 MLB，存在于较新的 Mac 上（至少 2013 年以后）。
 - `4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14:HW_ROM`
- 硬件 ROM。覆盖 ROM，存在于较新的 Mac 上（至少 2013 年以后）。
+  硬件 ROM。覆盖 ROM，存在于较新的 Mac 上（至少 2013 年以后）。
 - `7C436110-AB2A-4BBB-A880-FE41995C9F82:prev-lang:kbd`
- 定义默认键盘布局的 ASCII 字符串。格式为 `lang-COUNTRY:keyboard`，例如 `ru-RU:252` 代表俄语和 ABC 键盘。也接受简短形式：`ru:252` 或 `ru:0`（美国键盘，兼容 10.9）。完整的键盘列表解码来自 `AppleKeyboardLayouts-L.dat`，可前往[这里](https://github.com/acidanthera/OpenCorePkg/tree/master/Utilities/AppleKeyboardLayouts)查看。与之前或之后的 macOS 版本不同，在 10.14 上，使用非拉丁语键盘将无法启用 ABC 键盘，因此假如你需要使用 10.14 版本则不建议你使用这一变量。
+  定义默认键盘布局的 ASCII 字符串。格式为 `lang-COUNTRY:keyboard`，例如 `ru-RU:252` 代表俄语和 ABC 键盘。也接受简短形式：`ru:252` 或 `ru:0`（美国键盘，兼容 10.9）。完整的键盘列表解码来自 `AppleKeyboardLayouts-L.dat`，可前往[这里](https://github.com/acidanthera/OpenCorePkg/tree/master/Utilities/AppleKeyboardLayouts)查看。与之前或之后的 macOS 版本不同，在 10.14 上，使用非拉丁语键盘将无法启用 ABC 键盘，因此假如你需要使用 10.14 版本则不建议你使用这一变量。
 - `7C436110-AB2A-4BBB-A880-FE41995C9F82:security-mode`
- 定义 FireWire 安全模式的 ASCII 字符串。这一变量旧版本才有，可在 [IOFireWireController.cpp](https://opensource.apple.com/source/IOFireWireFamily/IOFireWireFamily-473/IOFireWireFamily.kmodproj/IOFireWireController.cpp.auto.html) 中的 IOFireWireFamily 源码里找到。建议不要设置这个变量，这样可能会加快启动速度。设置为 `full` 等同于不设置该变量，设置为 `none` 将禁用 FireWire 安全性。
+  定义 FireWire 安全模式的 ASCII 字符串。这一变量旧版本才有，可在 [IOFireWireController.cpp](https://opensource.apple.com/source/IOFireWireFamily/IOFireWireFamily-473/IOFireWireFamily.kmodproj/IOFireWireController.cpp.auto.html) 中的 IOFireWireFamily 源码里找到。建议不要设置这个变量，这样可能会加快启动速度。设置为 `full` 等同于不设置该变量，设置为 `none` 将禁用 FireWire 安全性。
 - `4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14:UIScale`
- 定义 `boot.efi` 用户界面缩放比例的一字节数据。普通屏幕应为 **01**，HiDPI 屏幕应为 **02**。
+  定义 `boot.efi` 用户界面缩放比例的一字节数据。普通屏幕应为 **01**，HiDPI 屏幕应为 **02**。
 - `4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14:DefaultBackgroundColor`
- 定义 `boot.efi` 用户界面背景色的四字节 `BGRA` 数据。标准色包括 `BF BF BF 00`（浅灰）和 `00 00 00 00`（西拉黑）。其他颜色可根据用户喜好设置。
+  定义 `boot.efi` 用户界面背景色的四字节 `BGRA` 数据。标准色包括 **BF BF BF 00**（浅灰）和 **00 00 00 00**（西拉黑）。其他颜色可根据用户喜好设置。
 
 ## 9.5 其他变量
 
 以下变量对于某些特定的配置或进行故障排除可能会很有用：
 
-- `7C436110-AB2A-4BBB-A880-FE41995C9F82:boot-args` 内核参数，用于将配置传递给 Apple 内核和驱动程序。很多参数可以通过在内核或驱动程序代码中寻找 `PE_parse_boot_argn` 函数找到。已知的引导参数包括：
+- `7C436110-AB2A-4BBB-A880-FE41995C9F82:boot-args`
+  内核参数，用于将配置传递给 Apple 内核和驱动程序。很多参数可以通过在内核或驱动程序代码中寻找 `PE_parse_boot_argn` 函数找到。已知的引导参数包括：
 
   - `acpi_layer=0xFFFFFFFF`
   - `acpi_level=0xFFFF5F` --- 表示 [`ACPI_ALL_COMPONENTS`](https://github.com/acpica/acpica/blob/master/source/include/acoutput.h)
@@ -154,9 +161,7 @@ last_updated: 2020-08-13
   这里有一些网站收集了 macOS 内置的启动参数列表：[列表 1](https://osxeon.wordpress.com/2015/08/10/boot-argument-options-in-os-x)、[列表 2](https://superuser.com/questions/255176/is-there-a-list-of-available-boot-args-for-darwin-os-x).
 
 - `7C436110-AB2A-4BBB-A880-FE41995C9F82:bootercfg`
- Booter 参数，类似于 `boot-args`，但用于 `boot.efi` 。接受参数为一组十六进制的 64 位值，带或不带 `0x`。在不同阶段，`boot.efi` 会请求不同的调试（日志）模式（例如，在 `ExitBootServices` 之后它只会打印到串行调试接口）。
- 有些 Booter 参数会控制这些请求是否成功。
- 下面是已知请求的列表：
+  Booter 参数，类似于 `boot-args`，但用于 `boot.efi` 。接受参数为一组十六进制的 64 位值，带或不带 `0x`。在不同阶段，`boot.efi` 会请求不同的调试（日志）模式（例如，在 `ExitBootServices` 之后它只会打印到串行调试接口）。有些 Booter 参数会控制这些请求是否成功。下面是已知请求的列表：
 
   - `0x00` – `INIT`
   - `0x01` – `VERBOSE` （如 `-v`，强制控制台记录日志）
@@ -172,46 +177,55 @@ last_updated: 2020-08-13
   - `0x0B` – `EXITBS:END` （仅强制的串行调试接口）
   - `0x0C` – `UNKNOWN`
 
-在 10.15 中，由于某种重构和 [新调试协议](https://github.com/acidanthera/OpenCorePkg/blob/master/Include/Apple/Protocol/AppleDebugLog.h) 的引入，10.15.4 之前的调试支持基本上不能用了。下面的一些参数和值可能不适用于 10.15.4 之前的版本。以下是已知参数的列表：
+  在 10.15 中，由于某种重构和 [新调试协议](https://github.com/acidanthera/OpenCorePkg/blob/master/Include/Apple/Protocol/AppleDebugLog.h) 的引入，10.15.4 之前的调试支持基本上不能用了。下面的一些参数和值可能不适用于 10.15.4 之前的版本。以下是已知参数的列表：
 
-- `boot-save-log=VALUE` --- 正常启动时的调试日志保存模式
-  - `0`
-  - `1`
-  - `2` --- 默认
-  - `3`
-  - `4` --- 保存到文件
-- `wake-save-log=VALUE` --- 休眠唤醒时的调试日志保存模式
-  - `0` --- 禁用
-  - `1`
-  - `2` --- 默认
-  - `3` --- 不可用
-  - `4` --- 保存到文件，不可用
-- `breakpoint=VALUE` --- 调试中断相关（在产品 `boot.efi` 中缺少）
-  - `0` --- 禁用错误时的调试中断（默认）
-  - `1` --- 启用错误时的调试中断
-- `console=VALUE` --- 启用控制台日志记录
-  - `0` --- 禁用控制台日志记录
-  - `1` --- 当缺少调试协议时，启用控制台日志记录（默认）
-  - `2` --- 无条件启用控制台日志记录（不可用）
-- `embed-log-dt=VALUE` --- 设备树日志记录相关
-  - `0` --- 禁用设备树日志记录
-  - `1` --- 启用设备树日志记录
-- `kc-read-size=VALUE` --- 用于网络或磁盘缓冲 I/O 的数据块大小，用于预链接内核读取和相关用途。默认设置为 1MB
-(0x100000)，可以通过调整使启动更快
-- `log-level=VALUE` --- 日志等级位掩码
-  - `0x01` --- 启用跟踪记录（默认）
-- `serial=VALUE` --- 串行控制台日志记录相关
-  - `0` --- 禁用串行日志记录（默认）
-  - `1` --- 从 `EXITBS:END` 开始启用串行日志记录
-  - `1` --- 从 `EXITBS:START` 开始启用串行日志记录
-  - `3` --- 当缺少调试协议时，启用串行日志记录
-  - `4` --- 无条件启用串行日志记录
-- `timestamps=VALUE` --- 时间戳日志记录相关
-  - `0` --- 禁用时间戳记录
-  - `1` --- 启用时间戳记录（默认）
-- `log=VALUE` --- 10.15 开始弃用
+  - `boot-save-log=VALUE` --- 正常启动时的调试日志保存模式
+    - `0`
+    - `1`
+    - `2` --- 默认
+    - `3`
+    - `4` --- 保存到文件
+  - `wake-save-log=VALUE` --- 休眠唤醒时的调试日志保存模式
+    - `0` --- 禁用
+    - `1`
+    - `2` --- 默认
+    - `3` --- 不可用
+    - `4` --- 保存到文件，不可用
+  - `breakpoint=VALUE` --- 调试中断相关（在产品 `boot.efi` 中缺少）
+    - `0` --- 禁用错误时的调试中断（默认）
+    - `1` --- 启用错误时的调试中断
+  - `console=VALUE` --- 启用控制台日志记录
+    - `0` --- 禁用控制台日志记录
+    - `1` --- 当缺少调试协议时，启用控制台日志记录（默认）
+    - `2` --- 无条件启用控制台日志记录（不可用）
+  - `embed-log-dt=VALUE` --- 设备树日志记录相关
+    - `0` --- 禁用设备树日志记录
+    - `1` --- 启用设备树日志记录
+  - `kc-read-size=VALUE` --- 用于网络或磁盘缓冲 I/O 的数据块大小，用于预链接内核读取和相关用途。默认设置为 1MB
+  (0x100000)，可以通过调整使启动更快
+  - `log-level=VALUE` --- 日志等级位掩码
+    - `0x01` --- 启用跟踪记录（默认）
+  - `serial=VALUE` --- 串行控制台日志记录相关
+    - `0` --- 禁用串行日志记录（默认）
+    - `1` --- 从 `EXITBS:END` 开始启用串行日志记录
+    - `1` --- 从 `EXITBS:START` 开始启用串行日志记录
+    - `3` --- 当缺少调试协议时，启用串行日志记录
+    - `4` --- 无条件启用串行日志记录
+  - `timestamps=VALUE` --- 时间戳日志记录相关
+    - `0` --- 禁用时间戳记录
+    - `1` --- 启用时间戳记录（默认）
+  - `log=VALUE` --- 10.15 开始弃用
+    - `1` --- AppleLoggingConOutOrErrSet/AppleLoggingConOutOrErrPrint (classical ConOut/StdErr)
+    - `2` --- AppleLoggingStdErrSet/AppleLoggingStdErrPrint (StdErr or serial?)
+    - `4` --- AppleLoggingFileSet/AppleLoggingFilePrint (BOOTER.LOG/BOOTER.OLD file on EFI partition)
+  - `debug=VALUE` --- 10.15 开始弃用
+    - 1 --- 启用输出到 BOOTER.LOG（如果出现了被精简过的代码，则意味着可能发生过崩溃）
+    - 2 --- 启用性能日志（Perf Log），记录到 /efi/debug-log
+    - 4 --- 为调用 printf 启用时间戳输出
+  - `level=VALUE` --- 10.15 开始弃用
+    `DEBUG` 输出的详细程度。默认除 `0x80000000` 以外，其他内容都会被精简掉。
 
- *注*：如要查看现代 macOS 版本上的 `boot.efi` verbose 输出，请启用 `AppleDebug` 选项。这样会把日志保存到通用 OpenCore 日志中。对于 10.15.4 之前的版本，将 `bootercfg` 设置为 `log=1`，可以将 verbose 输出打印在屏幕上。
+  *注*：如要查看现代 macOS 版本上的 `boot.efi` verbose 输出，请启用 `AppleDebug` 选项。这样会把日志保存到通用 OpenCore 日志中。对于 10.15.4 之前的版本，将 `bootercfg` 设置为 `log=1`，可以将 verbose 输出打印在屏幕上。
 
 - `7C436110-AB2A-4BBB-A880-FE41995C9F82:efiboot-perf-record`
   启用 `boot.efi` 中的性能日志保存功能。性能日志会被保存到物理内存中，并通过 `efiboot-perf-record-data` 和 `efiboot-perf-record-size` 变量进行指向。从 10.15.4 开始，它也可以通过 `AppleDebug` 选项保存到 OpenCore 日志中。

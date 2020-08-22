@@ -3,7 +3,7 @@ title: 12. 排错
 description: 当你遇到问题的时候应该看看这个
 type: docs
 author_info: 由 xMuu、Sukka、derbalkon 整理，由 Sukka、derbalkon 翻译
-last_updated: 2020-08-11
+last_updated: 2020-08-21
 ---
 
 ## 12.1 Windows 支持
@@ -67,8 +67,6 @@ last_updated: 2020-08-11
 
 Boot Camp 使用 GPT 分区表获取每个引导选项的名称。独立安装 Windows 后，你必须手动重新标记分区。这可以通过许多工具完成，比如开源的 [gdisk](https://sourceforge.net/projects/gptfdisk)，使用方法如下：
 
-> **Listing 3: Relabeling Windows volume**
-
 ```powershell
 PS C:\gdisk> .\gdisk64.exe \\.\physicaldrive0
 GPT fdisk (gdisk) version 1.0.4
@@ -103,6 +101,8 @@ Disk synchronization succeeded! The computer should now use the new partition ta
 The operation has completed successfully.
 ```
 
+<center><em><strong>Listing 4</strong>: 重新标记 Windows 卷宗</em></center>
+
 ### 如何选择 NTFS 驱动程序
 
 提供 NTFS 读写支持的第三方驱动程序，如 [NTFS-3G](https://www.tuxera.com/community/open-source-ntfs-3g)、Paragon NTFS、Tuxera NTFS 或 [希捷移动硬盘 Paragon 驱动程序](https://www.seagate.com/support/software/paragon) 会破坏 macOS 的功能，比如 系统偏好设置 中的 启动磁盘 选项。
@@ -119,7 +119,7 @@ The operation has completed successfully.
 
 可以使用串口调试来获取启动过程中的日志。串口调试是在 `Target` 中开启的，例如 `0xB` 代表在屏幕上显示并输出串行。可使用 `SerialInit` 配置选项来初始化串行。对于 macOS 来说，最好是选择基于 CP2102 的 UART 设备。将主板 `TX` 连接到 USB UART `RX`，主板 `GND` 连接到 USB UART `GND`。使用 `screen` 实用工具，或者下载 GUI 软件获取输出，如 [CoolTerm](https://freeware.the-meiers.org)。
 
-*注释*：在一些主板（可能还有一些 USB UART 转换器）上，PIN 的命名可能是不正确的。`GND` 和 `RX` 互换是很常见的，因此你需要将主板 `"TX"` 连接到 USB UART `GND`，主板 `"GND"` 连接到 USB UART `RX`。
+*注*：在一些主板（可能还有一些 USB UART 转换器）上，PIN 的命名可能是不正确的。`GND` 和 `RX` 互换是很常见的，因此你需要将主板 `"TX"` 连接到 USB UART `GND`，主板 `"GND"` 连接到 USB UART `RX`。
 
 务必记得在固件设置中启用 `COM` 口，一定不要使用超过 1 米的 USB 线缆，以免输出数据损坏。如果要额外启用 XNU 内核串行输出，则需要添加 `debug=0x8` 启动参数。
 
@@ -172,7 +172,7 @@ OpenCore 支持包括 MacPro 5,1 和虚拟机在内的大部分较新的 Mac 型
 
 ### 8. 我应该如何决定哪些 `Booter` Quirk 需要被启用？
 
-这些 Quirk 源自 `AptioMemoryFix` 驱动，为更多的固件提供了广泛支持。如果你正在使用 `OpenRuntime`，并且想要获得和 `AptioMemoryFix` 类似的行为，请启用下述 Quirks：
+这些 Quirk 源自 `AptioMemoryFix` 驱动，为更多的固件提供了广泛支持。如果你正在使用 `OpenRuntime`，并且想要获得和 `AptioMemoryFix` 类似的行为，请启用下述 Quirk：
 
 - `ProvideConsoleGop` （UEFI Quirk）
 - `AvoidRuntimeDefrag`
@@ -185,6 +185,6 @@ OpenCore 支持包括 MacPro 5,1 和虚拟机在内的大部分较新的 Mac 型
 - `RebuildAppleMemoryMap`
 - `SetupVirtualMap`
 
-但是，对于大部分现代的设备来说，上述 Quirks 不一定是必须的。比如 `DevirtualiseMmio` 和 `ProtectUefiServices` 通常是需要启用的，但是 `DiscardHibernateMap` 和 `ForceExitBootServices` 一般不建议启用。
+但是，对于大部分现代的设备来说，上述 Quirk 不一定是必须的。比如 `DevirtualiseMmio` 和 `ProtectUefiServices` 通常是需要启用的，但是 `DiscardHibernateMap` 和 `ForceExitBootServices` 一般不建议启用。
 
-不幸的是，对于某些 Quirks 来说（`RebuildAppleMemoryMap`, `EnableWriteUnprotector`, `ProtectMemoryRegions`, `SetupVirtualMap` 和 `SyncRuntimePermissions`）由于没有明确的参考，因此需要自行尝试最佳组合。详细内容请参考本文档中对这些 Quirks 的描述。
+不幸的是，对于某些 Quirk 来说（`RebuildAppleMemoryMap`, `EnableWriteUnprotector`, `ProtectMemoryRegions`, `SetupVirtualMap` 和 `SyncRuntimePermissions`）由于没有明确的参考，因此需要自行尝试最佳组合。详细内容请参考本文档中对这些 Quirk 的描述。
