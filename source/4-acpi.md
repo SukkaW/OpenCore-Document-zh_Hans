@@ -30,7 +30,7 @@ OpenCore、WhateverGreen、VirtualSmc、VoodooPS2 的 GitHub 仓库中都包含�
 
 ## 4.2 属性列表
 
-### 4.2.1 `Add`
+### 1. `Add`
 
 **Type**: `plist array`
 **Failsafe**: Empty
@@ -38,7 +38,7 @@ OpenCore、WhateverGreen、VirtualSmc、VoodooPS2 的 GitHub 仓库中都包含�
 
 设计为用 `plist dict` 值填充以描述每个块级项目。请参阅下面 [4.3 Add 属性](#4-3-Add-属性) 章节。
 
-### 4.2.2 `Delete`
+### 2. `Delete`
 
 **Type**: `plist array`
 **Failsafe**: Empty
@@ -46,7 +46,7 @@ OpenCore、WhateverGreen、VirtualSmc、VoodooPS2 的 GitHub 仓库中都包含�
 
 设计为用 `plist dict` 值填充以描述每个块级项目。请参阅下面 [4.4 Delete 属性](#4-4-Delete-属性) 章节。
 
-### 4.2.3 `Patch`
+### 3. `Patch`
 
 **Type**: `plist array`
 **Failsafe**: Empty
@@ -54,26 +54,26 @@ OpenCore、WhateverGreen、VirtualSmc、VoodooPS2 的 GitHub 仓库中都包含�
 
 设计为用 `plist dictionary` 值填充以描述每个块级项目。请参阅下面 [4.5 Patch 属性](#4-5-Patch-属性) 章节。
 
-### 4.2.4 `Quirks`
+### 4. `Quirks`
 
 **Type**: `plist dict`
 **Description**: 应用下文 [4.6 Quirks 属性](#4-6-Quirks-属性) 章节中描述的 Quirks。
 
 ## 4.3 Add 属性
 
-### 4.2.1 `Comment`
+### 1. `Comment`
 
 **Type**: `plist string`
 **Failsafe**: Empty string
 **Description**: 用于为条目提供人类可读参考的任意 ASCII 字符串（译者注：即注释）。
 
-### 4.2.2 `Enabled`
+### 2. `Enabled`
 
 **Type**: `plist boolean`
-**Failsafe**: false
+**Failsafe**: `false`
 **Description**: 除非此值为 `true`，否则此 ACPI 表不会被添加。
 
-### 4.2.3 `Path`
+### 3. `Path`
 
 **Type**: `plist string`
 **Failsafe**: Empty string
@@ -85,37 +85,37 @@ OpenCore、WhateverGreen、VirtualSmc、VoodooPS2 的 GitHub 仓库中都包含�
 
 ## 4.4 Delete 属性
 
-### 4.2.1 `All`
+### 1. `All`
 
 **Type**: `plist boolean`
 **Failsafe**: false
 **Description**: 如果设置为 `true`，则所有符合条件的 ACPI 表都会被舍弃。 否则，只舍弃第一个匹配到的。
 
-### 4.2.2 `Comment`
+### 2. `Comment`
 
 **Type**: `plist string`
 **Failsafe**: Empty string
 **Description**: 用于为条目提供人类可读参考的任意 ASCII 字符串（译者注：即注释）。
 
-### 4.2.3 `Enabled`
+### 3. `Enabled`
 
 **Type**: `plist boolean`
 **Failsafe**: false
 **Description**: 除非此值为 `true`，否则此 ACPI 表不会被舍弃。
 
-### 4.2.4 `OemTableId`
+### 4. `OemTableId`
 
 **Type**: `plist data, 8 bytes`
 **Failsafe**: All zero
 **Description**: 将表的 OEM ID 匹配为此处所填的值，全部为 0 时忽略。
 
-### 4.2.5 `TableLength`
+### 5. `TableLength`
 
 **Type**: `plist integer`
 **Failsafe**: 0
 **Description**: 将表的大小匹配为此处所填的值，填 0 时忽略。
 
-### 4.2.6 `TableSignature`
+### 6. `TableSignature`
 
 **Type**: `plist data, 4 bytes`
 **Failsafe**: All zero
@@ -125,77 +125,77 @@ OpenCore、WhateverGreen、VirtualSmc、VoodooPS2 的 GitHub 仓库中都包含�
 
 ## 4.5 Patch 属性
 
-### 4.5.1 Comment
+### 1. Comment
 
 **Type**: `plist string`
 **Failsafe**: Empty string
 **Description**: 用于为条目提供人类可读参考的任意 ASCII 字符串（译者注：即注释）。
 
-### 4.5.2 Count
+### 2. Count
 
 **Type**: `plist integer`
-**Failsafe**: 0
+**Failsafe**: `0`
 **Description**: 补丁应用的次数。如果将此值设置为 0，补丁将会被应用于所有匹配。
 
-### 4.5.3 Enabled
+### 3. `Enabled`
 
 **Type**: `plist boolean`
-**Failsafe**: false
+**Failsafe**: `false`
 **Description**: 除非设置为 `true`，否则此处的 ACPI 补丁不会生效。
 
-### 4.5.4 Find
+### 4. `Find`
 
 **Type**: `plist data`
 **Failsafe**: Empty data
 **Description**: 需要寻找的 Data，长度必须和 `Replace` 相等。
 
-### 4.5.5 Limit
+### 5. `Limit`
 
 **Type**: `plist integer`
-**Failsafe**: 0
-**Description**: 要搜索的最大字节数。当此值为 0 时会遍历整个 ACPI 表。
+**Failsafe**: `0`
+**Description**: 要搜索的最大字节数。当此值为 `0` 时会遍历整个 ACPI 表。
 
-### 4.5.6 Mask
+### 6. `Mask`
 
 **Type**: `plist data`
 **Failsafe**: Empty data
 **Description**: 查找比较期间使用的数据按位掩码。 通过忽略未屏蔽（设置为零）位来进行模糊搜索。可以设置为空数据以忽略，否则此值的长度必须和 `Replace` 的长度相等。
 
-### 4.5.7 OemTableId
+### 7. OemTableId
 
 **Type**: `plist data, 8 bytes`
 **Failsafe**: All zero
 **Description**: 将表的 OEM ID 匹配为此处所填的值，全部为 0 时忽略。
 
-### 4.5.8 Replace
+### 8. Replace
 
 **Type**: `plist data`
 **Failsafe**: Empty data
 **Description**: 一个或多个字节的替换数据。
 
-### 4.5.9 ReplaceMark
+### 9. `ReplaceMark`
 
 **Type**: `plist data`
 **Failsafe**: Empty data
 **Description**: 替换数据期间使用的数据按位掩码。 通过忽略未屏蔽（设置为零）位来进行模糊搜索。可以设置为空数据以忽略，否则此值的长度必须和 `Replace` 的长度相等。
 
-### 4.5.10 Skip
+### 10. `Skip`
 
 **Type**: `plist integer`
-**Failsafe**: 0
+**Failsafe**: `0`
 **Description**: 完成替换之前要跳过的匹配数。
 
-### 4.5.11 TableLength
+### 11. TableLength
 
 **Type**: `plist integer`
-**Failsafe**: 0
-**Description**: 将表的大小匹配为此处所填的值，填 0 时忽略。
+**Failsafe**: `0`
+**Description**: 将表的大小匹配为此处所填的值，填 `0` 时忽略。
 
-### 4.5.11 TableSignature
+### 12. `TableSignature`
 
 **Type**: `plist data, 4 bytes`
 **Failsafe**: All zero
-**Description**: 将表的签名匹配为此处的值，全部为 0 时忽略。
+**Description**: 将表的签名匹配为此处的值，全部为 `0` 时忽略。
 
 大多数情况下，ACPI 补丁是有害而无益的：
 
@@ -214,24 +214,24 @@ TianoCore 源文件 [AcpiAml.h](https://github.com/acidanthera/audk/blob/master/
 
 ## 4.6 Quirks 属性
 
-### 4.6.1 FadtEnableReset
+### 1. `FadtEnableReset`
 
 **Type**: `plist boolean`
-**Failsafe**: false
+**Failsafe**: `false`
 **Description**: 在 FADT 表中提供寄存器复位标志，用于修复旧硬件的重启和关机。除非需要，否则不建议启用。
 
 只有在传统硬件和少数笔记本上需要。这一 Quirk 也可以修复电源快捷键（译者注：<kbd>Command</kbd> + 电源键）。不建议启用，除非不启用就无法关机和重启。
 
-### 4.6.2 NormalizeHeaders
+### 2. `NormalizeHeaders`
 
 **Type**: `plist boolean`
-**Failsafe**: false
+**Failsafe**: `false`
 **Description**: 清理 ACPI 表头字段以解决 macOS ACPI 实现错误导致的引导崩溃。*参考*：由 Alex James（theracermaster）在调试 AppleACPIPlatform 时发现。从 macOS Mojave (10.14) 开始，这个错误已经被修复。
 
-### 4.6.3 RebaseRegions
+### 3. `RebaseRegions`
 
 **Type**: `plist boolean`
-**Failsafe**: false
+**Failsafe**: `false`
 **Description**: 尝试试探性地重定位 ACPI 内存区域。不建议启用这一选项，除非你需要自定义 DSDT。
 
 ACPI 表通常由底层固件动态生成。在与位置无关的代码中，ACPI 表可能包含用于设备配置的 MMIO 区域的物理地址，通常按区域（例如 OperationRegion）分组。 更改固件设置或硬件配置，升级或修补固件不可避免地会导致动态生成的 ACPI 代码发生变化，这有时会导致上述 OperationRegion 结构中的地址发生变化。
@@ -240,18 +240,18 @@ ACPI 表通常由底层固件动态生成。在与位置无关的代码中，ACP
 
 如果无法不得不替换 DSDT，则至少应尝试确保自定义 DSDT 基于最新的 DSDT 或避免对受影响区域的读写。如果没有其他帮助，可以尝试通过尝试修复 ACPI 地址来避免在 macOS 引导的 PCI Configuration Begin 阶段出现停顿的情况。
 
-### 4.6.4 ResetHwSig
+### 4. `ResetHwSig`
 
 **Type**: `plist boolean`
-**Failsafe**: false
+**Failsafe**: `false`
 **Description**: 将 `FACS` 表中 `HardwareSignature` 的值重置为 0。
 
 启用这一选项可以解决固件无法在重新启动过程中保持硬件签名导致的休眠唤醒问题。
 
-### 4.6.5 ResetLogoStatus
+### 5. `ResetLogoStatus`
 
 **Type**: `plist boolean`
-**Failsafe**: false
+**Failsafe**: `false`
 **Description**: 将 `BGRT` 表中 `Displayed` 状态字段重置为 `false`。
 
 这适用于提供 `BGRT` 表、但随后无法处理屏幕更新的固件。如果在开机时无法显示 OEM Windows 标志可以尝试开启。

@@ -12,7 +12,7 @@ last_updated: 2020-08-21
 
 ## 7.2 属性列表
 
-### 7.2.1 Add
+### 1. Add
 
 **Type**: `plist array`
 **Failsafe**: Empty
@@ -24,7 +24,7 @@ last_updated: 2020-08-21
 
 *注*：Kext 驱动的内部可能也附带另外的 Kext (`Plug-Ins`)，每个内部的 Kext 也都必须单独添加（参考下文 Add 属性章节）。
 
-### 7.2.2 Block
+### 2. Block
 
 **Type**: `plist array`
 **Failsafe**: Empty
@@ -32,12 +32,12 @@ last_updated: 2020-08-21
 
 设计为使用 plist dict 数据填充以描述每个驱动程序。请参阅下述 Block 属性章节。Kext 驱动程序加载的顺序遵照数组中项目的顺序，因此如 Lilu 这种其他驱动程序的依赖驱动应该位于前面。
 
-### 7.2.3 Emulate
+### 3. Emulate
 
 **Type**: `plist dict`
 **Description**: 在内核空间中仿真选定的硬件。请参考下文 Emulate 属性。
 
-### 7.2.4 Patch
+### 4. Patch
 
 **Type**: `plist array`
 **Failsafe**: Empty
@@ -45,14 +45,14 @@ last_updated: 2020-08-21
 
 设计为使用 plist dictionary 数据填充以描述每个驱动程序。请参阅下述 Patch 属性章节。
 
-### 7.2.5 Quirks
+### 5. Quirks
 
 **Type**: `plist dict`
 **Description**: 应用下面的 Quirks 属性章节中描述的各个内核和驱动程序 Quirk。
 
 ## 7.3 Add 属性
 
-### 7.3.1 `BundlePath`
+### 2. `BundlePath`
 
 **Type**: `plist string`
 **Failsafe**: Empty string
@@ -60,19 +60,19 @@ last_updated: 2020-08-21
 
 > 译者注：如 `VoodooPS2Controller.kext` 这种包括其他 Kext 驱动的，需要分别单独添加，如 `VoodooPS2Controller.kext/Contents/PlugIns/VoodooPS2Keyboard.kext`。
 
-### 7.3.2 `Comment`
+### 3. `Comment`
 
 **Type**: `plist string`
 **Failsafe**: Empty string
 **Description**: 用于为条目提供人类可读参考的任意 ASCII 字符串（译者注：即注释）。
 
-### 7.3.3 `Enabled`
+### 4. `Enabled`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
 **Description**: 是否加载该驱动.
 
-### 7.3.4 `ExecutablePath`
+### 5. `ExecutablePath`
 
 **Type**: `plist string`
 **Failsafe**: Empty string
@@ -80,7 +80,7 @@ last_updated: 2020-08-21
 
 > 译者注：空壳 Kext 没有可执行文件（如 `USBPorts.kext`），此项留空即可
 
-### 7.3.5 `MaxKernel`
+### 6. `MaxKernel`
 
 **Type**: `plist string`
 **Failsafe**: Empty string
@@ -96,7 +96,7 @@ last_updated: 2020-08-21
 
 将 Darwin 内核版本号字符串从左到右以 `.` 符号作为分隔符分割成三个整数，即为 `ParseDarwinVersion` 的三个参数。`FindDarwinVersion` 函数将会通过在内核镜像中查找形如 ![7-3.svg](/img/7-3.svg) 的字符串来定位 Darwin 内核版本号。
 
-### 7.3.6 `MinKernel`
+### 7. `MinKernel`
 
 **Type**: `plist string`
 **Failsafe**: Empty string
@@ -106,7 +106,7 @@ last_updated: 2020-08-21
 
 > 译者注：以上两个属性定义了这个驱动将在什么版本范围的 macOS 中加载。留空表示在所有的 macOS 版本下都加载。
 
-### 7.3.7 `PlistPath`
+### 8. `PlistPath`
 
 **Type**: `plist string`
 **Failsafe**: Empty string
@@ -114,25 +114,25 @@ last_updated: 2020-08-21
 
 ## 7.4 Block 属性
 
-### 7.4.1 `Comment`
+### 2. `Comment`
 
 **Type**: `plist string`
 **Failsafe**: Empty string
 **Description**: 用于为条目提供人类可读参考的任意 ASCII 字符串（译者注：即注释）。
 
-### 7.4.2 `Enabled`
+### 3. `Enabled`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
 **Description**: 除非设置为 `true`，否则这个内核驱动不会被加载。
 
-### 7.4.3 `Identifier`
+### 4. `Identifier`
 
 **Type**: `plist string`
 **Failsafe**: Empty string
 **Description**: Kext Bundle 标识符（比如 `com.apple.driver.AppleTyMCEDriver`）。
 
-### 7.4.4 `MaxKernel`
+### 5. `MaxKernel`
 
 **Type**: `plist string`
 **Failsafe**: Empty string
@@ -140,7 +140,7 @@ last_updated: 2020-08-21
 
 *注*：匹配逻辑请参阅 `Add` `MaxKernel` 的描述。
 
-### 7.4.5 `MinKernel`
+### 6. `MinKernel`
 
 **Type**: `plist string`
 **Failsafe**: Empty string
@@ -150,7 +150,7 @@ last_updated: 2020-08-21
 
 ## 7.5 Emulate 属性
 
-### 7.5.1 `Cpuid1Data`
+### 1. `Cpuid1Data`
 
 **Type**: `plist data`, 16 bytes
 **Failsafe**: All zero
@@ -179,7 +179,7 @@ last_updated: 2020-08-21
 - 消费级的 Ivy Bridge（`0x0306A9`），因为苹果针对它禁用了 XCPM 并推荐用户使用传统的电源管理。如果要使用这一选项，你还需要手动添加 `_xcpm_patch` 二进制修补以强制启用 XCPM。
 - 低端处理器（如 Haswell+ 奔腾），因为它们不被 macOS 支持。如果要启用这些 CPU 请参阅 [acidanthera/bugtracker#365](https://github.com/acidanthera/bugtracker/issues/365) 中的 `Special NOTES` 相关内容。
 
-### 7.5.2 `Cpuid1Mask`
+### 2. `Cpuid1Mask`
 
 **Type**: `plist data`, 16 bytes
 **Failsafe**: All zero
@@ -189,55 +189,55 @@ last_updated: 2020-08-21
 
 ## 7.6 Patch 属性
 
-### 7.6.1 `Base`
+### 2. `Base`
 
 **Type**: `plist string`
 **Failsafe**: Empty string
 **Description**: 通过获取所提供的 Symbol 名称的地址，来选择 Symbol 匹配的 Base 进行补丁查找（或直接替换）。可以设置为空字符串以忽略。
 
-### 7.6.2 `Comment`
+### 3. `Comment`
 
 **Type**: `plist string`
 **Failsafe**: Empty string
 **Description**: 用于为条目提供人类可读参考的任意 ASCII 字符串（译者注：即注释）。
 
-### 7.6.3 `Count`
+### 4. `Count`
 
 **Type**: `plist integer`
 **Failsafe**: `0`
 **Description**: 修补的次数，超过这一次数后便不再修补。`0` 表示修补所有查找到的。
 
-### 7.6.4 `Enabled`
+### 5. `Enabled`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
 **Description**: 除非设置为 `true`，否则不对内核进行该修补。
 
-### 7.6.5 `Find`
+### 6. `Find`
 
 **Type**: `plist data`
 **Failsafe**: Empty data
 **Description**: 需要查找的数据。可留空，在 `Base` 处直接替换。若不留空，其大小必须等于 `Replace`。
 
-### 7.6.6 `Identifier`
+### 7. `Identifier`
 
 **Type**: `plist string`
 **Failsafe**: Empty string
 **Description**: Kext Bundle 标识符（如 `com.apple.driver.AppleHDA`）或内核补丁的 `kernel`。
 
-### 7.6.7 `Limit`
+### 8. `Limit`
 
 **Type**: `plist integer`
 **Failsafe**: `0`
 **Description**: 搜索的最大字节数。可以设置为 `0` 来查找整个 ext 或内核。
 
-### 7.6.8 `Mask`
+### 9. `Mask`
 
 **Type**: `plist data`
 **Failsafe**: Empty data
 **Description**: 在查找比较中使用数据位掩码。允许通过忽略未被屏蔽的 bit（设置为 `0`）进行模糊搜索。若留空则代表忽略，否则其大小必须等于 `Replace`。
 
-### 7.6.9 `MaxKernel`
+### 10. `MaxKernel`
 
 **Type**: `plist string`
 **Failsafe**: Empty string
@@ -245,7 +245,7 @@ last_updated: 2020-08-21
 
 *注*：匹配逻辑请参阅 `Add` `MaxKernel` 的描述。
 
-### 7.6.10 `MinKernel`
+### 11. `MinKernel`
 
 **Type**: `plist string`
 **Failsafe**: Empty string
@@ -253,19 +253,19 @@ last_updated: 2020-08-21
 
 *注*：匹配逻辑请参阅 `Add` `MaxKernel` 的描述。
 
-### 7.6.11 `Replace`
+### 12. `Replace`
 
 **Type**: `plist data`
 **Failsafe**: Empty data
 **Description**: 一个或多个字节的替换数据。
 
-### 7.6.12 `ReplaceMask`
+### 13. `ReplaceMask`
 
 **Type**: `plist data`
 **Failsafe**: Empty data
 **Description**: 替换时使用的数据位掩码。允许通过更新掩码（设置为非 `0`）来进行模糊替换。若留空则代表忽略，否则其大小必须等于 `Replace`。
 
-### 7.6.13 `Skip`
+### 14. `Skip`
 
 **Type**: `plist integer`
 **Failsafe**: `0`
@@ -273,7 +273,7 @@ last_updated: 2020-08-21
 
 ## 7.7 Quirks 属性
 
-### `AppleCpuPmCfgLock`
+### 1. `AppleCpuPmCfgLock`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
@@ -295,7 +295,7 @@ last_updated: 2020-08-21
 可变偏移量对于每个主板乃至每一个固件版本都是唯一的。永远不要尝试使用别人的偏移量！
 {% endnote %}
 
-### `AppleXcpmCfgLock`
+### 2. `AppleXcpmCfgLock`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
@@ -303,7 +303,7 @@ last_updated: 2020-08-21
 
 *注*：这一选项应该避免被使用，请参考上文中关于 `AppleCpuPmCfgLock` 的介绍。
 
-### `AppleXcpmExtraMsrs`
+### 3. `AppleXcpmExtraMsrs`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
@@ -313,7 +313,7 @@ last_updated: 2020-08-21
 
 *注*：Ivy Bridge 或 Pentium CPU 将需要其他未提供的补丁。建议对前者使用 `AppleIntelCpuPowerManagement.kext`。
 
-### `AppleXcpmForceBoost`
+### 4. `AppleXcpmForceBoost`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
@@ -323,13 +323,13 @@ last_updated: 2020-08-21
 
 *注*：尽管有助于提高性能，但是在所有操作系统上都强烈建议不要启用这一选项。只有在某些 Xeon 型号的 CPU 才有可能从这个选项中受益。
 
-### `CustomSMBIOSGuid`
+### 5. `CustomSMBIOSGuid`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
 **Description**: 对 UpdateSMBIOSMode 自定义模式执行 GUID 修补，通常用于戴尔笔记本电脑。
 
-### `DisableIoMapper`
+### 6. `DisableIoMapper`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
@@ -337,7 +337,7 @@ last_updated: 2020-08-21
 
 *注*：相比直接在 ACPI 表中删除 `DMAR`，我们更推荐大家使用这一选项。这样不会破坏其他操作系统中的 VT-d 支持（总会有人需要用到的，对吧？）。
 
-### `DisableRtcChecksum`
+### 7. `DisableRtcChecksum`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
@@ -347,7 +347,7 @@ last_updated: 2020-08-21
 
 *注 2*: 这个选项不能确保区域在固件阶段不被覆盖（例如 macOS bootloader）。如有需要，请参阅 `AppleRtc` 协议描述。
 
-### `DummyPowerManagement`
+### 8. `DummyPowerManagement`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
@@ -355,7 +355,7 @@ last_updated: 2020-08-21
 
 *注*：这一选项旨在替代 `NullCpuPowerManagement.kext`，用于 macOS 中没有电源管理驱动程序的 CPU。
 
-### `ExternalDiskIcons`
+### 9. `ExternalDiskIcons`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
@@ -363,7 +363,7 @@ last_updated: 2020-08-21
 
 *注*：这一选项应尽量避免使用。现代固件通常情况下都是兼容的。
 
-### `IncreasePciBarSize`
+### 10. `IncreasePciBarSize`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
@@ -373,7 +373,7 @@ last_updated: 2020-08-21
 
 > 译者注：如果你的 BIOS 中存在 Above4GDecoding 选项，请直接在 BIOS 中启用。
 
-### `LapicKernelPanic`
+### 11. `LapicKernelPanic`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
@@ -381,13 +381,13 @@ last_updated: 2020-08-21
 
 > 译者注：惠普电脑可能需要启用这一选项。
 
-### `PanicNoKextDump`
+### 12. `PanicNoKextDump`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
 **Description**: 在发生内核崩溃时阻止输出 Kext 列表，提供可供排错参考的崩溃日志。
 
-### `PowerTimeoutKernelPanic`
+### 13. `PowerTimeoutKernelPanic`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
@@ -395,7 +395,7 @@ last_updated: 2020-08-21
 
 macOS Catalina 新增了一项额外的安全措施，导致在电源切换超时的时候会出现 Kernel Panic。配置错误的硬件可能会因此出现问题（如数字音频设备）、有的时候会导致睡眠唤醒的问题。这一 Quirk 和引导参数 `setpowerstate_panic=0` 功能大部分一致，但是后者只应该用于调试用途。
 
-### `ThirdPartyDrives`
+### 14. `ThirdPartyDrives`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
@@ -403,7 +403,7 @@ macOS Catalina 新增了一项额外的安全措施，导致在电源切换超�
 
 *注*：NVMe SSD 通常无需这一修改。对于 AHCI SSD（如 SATA SSD），macOS 从 10.15 开始提供 `trimforce`，可以将 `01 00 00 00` 值写入 `APPLE_BOOT_VARIABLE_GUID` 命名空间中的 `EnableTRIM` 变量。
 
-### `XhciPortLimit`
+### 15. `XhciPortLimit`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`

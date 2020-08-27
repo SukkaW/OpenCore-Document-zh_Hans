@@ -35,21 +35,21 @@ sudo pmset standby 0
 
 ## 5.2 属性列表
 
-### 5.2.1 MmioWhitelist
+### 1. `MmioWhitelist`
 
 **Type**: `plist array`
 **Description**: 设计为用 `plist dict` 值填充，用来描述在启用 `DevirtualiseMmio` 这个 Quirk 时特定固件能够运作的关键地址。详见下面的 MmioWhitelist Properties 章节。
 
 > 译者注：如果开机卡在 `PCI...` 可以尝试开启 Item 1 下的 Patch。
 
-### 5.2.2 Quirks
+### 2. `Quirks`
 
 **Type**: `plist dict`
 **Description**: 应用下面的 Quirks 属性部分中所述的各个引导 Quirk。
 
 ## 5.3 MmioWhitelist 属性
 
-### 5.3.1 Address
+### 1. `Address`
 
 **Type**: `plist integer`
 **Failsafe**: 0
@@ -57,21 +57,21 @@ sudo pmset standby 0
 
 这里写入的地址必须是内存映射的一部分，具有 `EfiMemoryMappedIO` 类型和 `EFI_MEMORY_RUNTIME` 属性（最高 bit）。可以使用调试日志找到可能的地址。
 
-### 5.3.2 Comment
+### 2. `Comment`
 
 **Type**: `plist string`
 **Failsafe**: Empty string
 **Description**: 用于为条目提供人类可读参考的任意 ASCII 字符串（译者注：即注释）。
 
-### 5.3.3 Enabled
+### 3. `Enabled`
 
 **Type**: `plist boolean`
-**Failsafe**: false
+**Failsafe**: `false`
 **Description**: 设置为 `true` 时，所添加的地址将被虚拟化（保持不变）。
 
 ## 5.4 Quirks 属性
 
-### `AvoidRuntimeDefrag`
+### 1. `AvoidRuntimeDefrag`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
@@ -81,7 +81,7 @@ sudo pmset standby 0
 
 *注*：除 Apple 和 VMware 固件外，都需要启用此选项。
 
-### `DevirtualiseMmio`
+### 2. `DevirtualiseMmio`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
@@ -93,7 +93,7 @@ sudo pmset standby 0
 
 > 译者注：对于某些 300 系列主板是必须的
 
-### `DisableSingleUser`
+### 3. `DisableSingleUser`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
@@ -101,7 +101,7 @@ sudo pmset standby 0
 
 这个选项可以禁用 `CMD+S` 热键和 `-s` 启动参数来限制单用户模式。启用这一 Quirk 后预期行为应和 T2 的机型行为类似。请参考 Apple 的 [这篇文章](https://support.apple.com/HT201573) 以了解如何在启用这一 Quirk 后继续使用单用户模式。
 
-### `DisableVariableWrite`
+### 4. `DisableVariableWrite`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
@@ -113,7 +113,7 @@ sudo pmset standby 0
 
 > 译者注：在 Z390/HM370 等没有原生 macOS 支持 NVRAM 的主板上需要开启。
 
-### `DiscardHibernateMap`
+### 5. `DiscardHibernateMap`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
@@ -123,7 +123,7 @@ sudo pmset standby 0
 
 *注*：这可能用于解决较旧硬件上的错误内存映射。如 Insyde 固件的 Ivy Bridge 笔记本电脑，比如 Acer V3-571G。除非您完全了解这一选项可能导致的后果，否则请勿使用此功能。
 
-### `EnableSafeModeSlide`
+### 6. `EnableSafeModeSlide`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
@@ -133,7 +133,7 @@ sudo pmset standby 0
 
 *注*：除非启动到安全模式失败，否则不需要启用此选项。
 
-### `EnableWriteUnprotector`
+### 7. `EnableWriteUnprotector`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
@@ -143,7 +143,7 @@ sudo pmset standby 0
 
 *注*：这个 Quirk 可能会破坏你的固件的安全性。如果你的固件支持内存属性表 (MAT)，请优先使用下文中的 `RebuildAppleMemoryMap` Quirk。是否支持 MAT，请参考 `OCABC: MAT support is 1/0` 日志条目来确定。
 
-### `ForceExitBootServices`
+### 8. `ForceExitBootServices`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
@@ -153,7 +153,7 @@ sudo pmset standby 0
 
 *注*：是否启用这个 Quirk 取决于你是否遇到了 Early Boot 故障。除非你详细了解这一选项可能导致的后果，否则请勿启用这一选项。
 
-### `ProtectMemoryRegions`
+### 9. `ProtectMemoryRegions`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
@@ -168,7 +168,7 @@ sudo pmset standby 0
 
 *注*：是否启用这一 Quirk 取决于你是否遇到了休眠、睡眠无法唤醒、启动失败或其他问题。一般来说，只有古董固件才需要启用。
 
-### `ProtectSecureBoot`
+### 10. `ProtectSecureBoot`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
@@ -178,7 +178,7 @@ sudo pmset standby 0
 
 *注*：这个 Quirk 主要试图避免碎片整理导致的 NVRAM 相关问题，如 Insyde 或 `MacPro5,1`。
 
-### `ProtectUefiServices`
+### 11. `ProtectUefiServices`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
@@ -188,7 +188,7 @@ sudo pmset standby 0
 
 *注*：在 VMware 上，是否需要开启这个 Quirk 取决于是否有 `Your Mac OS guest might run unreliably with more than one virtual core.` 这样的消息。
 
-### `ProvideCustomSlide`
+### 12. `ProvideCustomSlide`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
@@ -198,7 +198,7 @@ sudo pmset standby 0
 
 *注*：OpenCore 会自动检查是否需要启用这一选项。如果 OpenCore 的调试日志中出现 `OCABC: Only N/256 slide values are usable!` 则请启用这一选项。
 
-### `ProvideMaxSlide`
+### 13. `ProvideMaxSlide`
 
 **Type**: `plist integer`
 **Failsafe**: `0`
@@ -208,7 +208,7 @@ sudo pmset standby 0
 
 *注*：当 `ProvideCustomSlide` 启用、并且随机化的 slide 落入不可用的范围时，如果出现随机的启动失败，则有必要开启这个 Quirk。开启 `AppleDebug` 时，调试日志通常会包含 `AAPL: [EB|‘LD:LKC] } Err(0x9)` 这样的信息。如果要找到最合适的值，请手动将 `slide=X` 追加到 `boot-args` 里，并用日志记录下不会导致启动失败的最大值。
 
-### `RebuildAppleMemoryMap`
+### 14. `RebuildAppleMemoryMap`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
@@ -225,7 +225,7 @@ Apple 内核在解析 UEFI 内存映射时有几个限制：
 
 *注 2*：根据是否遇到第一阶段启动失败再决定是否启用这一 Quirk。在支持内存属性表 (MAT) 的平台上，这一 Quirk 是 `EnableWriteUnprotector` 更好的替代。在使用 `OpenDuetPkg` 时一般是不需要启用这个 Quirk 的，但如果要启动 macOS 10.6 或更早的版本则可能需要启用，原因暂不明确。
 
-### `SetupVirtualMap`
+### 15. `SetupVirtualMap`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
@@ -235,7 +235,7 @@ Apple 内核在解析 UEFI 内存映射时有几个限制：
 
 *注*：是否启用这个 Quirk 取决于你是否遇到了 Early Boot 故障。目前具有内存保护支持的新固件（例如 OVMF ）由于一些原因不支持此 Quirk: [acidanthera/bugtracker#719](https://github.com/acidanthera/bugtracker/issues/719)。
 
-### `SignalAppleOS`
+### 16. `SignalAppleOS`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
@@ -243,7 +243,7 @@ Apple 内核在解析 UEFI 内存映射时有几个限制：
 
 Mac 设备在不同的操作系统中具有不同的行为，因此如果你在使用 Mac 设备，这一功能会非常有用。例如，你可以通过启用这一选项为某些双 GPU 的 MacBook 型号中在 Windows 和 Linux 中启用 Intel GPU。
 
-### `SyncRuntimePermissions`
+### 17. `SyncRuntimePermissions`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`

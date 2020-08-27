@@ -129,13 +129,13 @@ OpenCanopy 为 `PickerAttributes` 提供了全面的支持，并提供了一套�
 
 ## 11.6 属性列表
 
-### `APFS`
+### 1. `APFS`
 
 **Type**: `plist dict`
 **Failsafe**: None
 **Description**: 配置 APFS 分区驱动，具体配置内容参见下文 `APFS 属性` 部分。
 
-### `Audio`
+### 2. `Audio`
 
 **Type**: `plist dict`
 **Failsafe**: None
@@ -151,7 +151,7 @@ OpenCanopy 为 `PickerAttributes` 提供了全面的支持，并提供了一套�
 
 macOS 引导程序和 OpenCore 的音频本地化是分开的。macOS 引导程序是在 `systemLanguage.utf8` 文件中的 `preferences.efires` 归档中设置，并由操作系统控制。OpenCore 则是使用 `prev-lang:kbd` 变量的值来控制。当某一特定文件的音频本地化缺失时，将会使用英语（`en`）来代替。示例音频文件可以在 [OcBinaryData 仓库](https://github.com/acidanthera/OcBinaryData) 中找到。
 
-### `ConnectDrivers`
+### 3. `ConnectDrivers`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
@@ -161,25 +161,25 @@ macOS 引导程序和 OpenCore 的音频本地化是分开的。macOS 引导程�
 
 *注*：某些固件（特别是 Apple 的）仅连接包含操作系统的驱动器以加快启动过程。启用此选项可以在拥有多个驱动器时查看所有引导选项。
 
-### `Drivers`
+### 4. `Drivers`
 
 **Type**: `plist array`
 **Failsafe**: None
 **Description**: 从 `OC/Drivers` 目录下加载选择的驱动。设计为填充 UEFI 驱动程序加载的文件名。
 
-### `Input`
+### 5. `Input`
 
 **Type**: `plist dict`
 **Failsafe**: None
 **Description**: 从下面的 Input 属性部分，应用为输入（键盘和鼠标）而设计的个性化设置。
 
-### `Output`
+### 6. `Output`
 
 **Type**: `plist dict`
 **Failsafe**: None
 **Description**: 从下面的 Output 属性部分，应用为输出（文本和图形）而设计的个性化设置。
 
-### `ProtocolOverrides`
+### 7. `ProtocolOverrides`
 
 **Type**: `plist dict`
 **Failsafe**: None
@@ -187,20 +187,20 @@ macOS 引导程序和 OpenCore 的音频本地化是分开的。macOS 引导程�
 
 *注*：所有协议实例的安装都优先于驱动程序的加载。
 
-### `Quirks`
+### 8. `Quirks`
 
 **Type**: `plist dict`
 **Failsafe**: None
 **Description**: 从下面的 Quirks 属性部分，应用个性化的固件 Quirks。
 
-### `ReservedMemory`
+### 9. `ReservedMemory`
 
 **Type**: `plist array`
 **Description**: 设计为用 `plist dict` 值填充，用于描述对特定固件和硬件功能要求很高的内存区域，这些区域不应该被操作系统使用。比如被 Intel HD 3000 破坏的第二个 256MB 区域，或是一个有错误的 RAM 的区域。
 
 ## 11.7 APFS 属性
 
-### `EnableJumpstart`
+### 1. `EnableJumpstart`
 
 **Type**: `plist boolean`
 **Failsafe**: `False`
@@ -208,7 +208,7 @@ macOS 引导程序和 OpenCore 的音频本地化是分开的。macOS 引导程�
 
 APFS 的 EFI 驱动内置在所有可以作为系统启动盘的 APFS 容器之中。这一选项将会根据基于 `ScanPolicy` 找到的 APFS 容器，从中加载 APFS 驱动。更多详情请查看 [苹果 APFS 文件系统参考手册](https://developer.apple.com/support/apple-file-system/Apple-File-System-Reference.pdf) 中的 `EFI Jummpstart` 章节。
 
-### `GlobalConnect`
+### 2. `GlobalConnect`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
@@ -216,7 +216,7 @@ APFS 的 EFI 驱动内置在所有可以作为系统启动盘的 APFS 容器之�
 
 代替通常情况下用于 APFS 驱动程序加载的分区句柄连接，每一个句柄都是递归连接的。这可能会比平时花费更多的时间，但是是某些固件访问 APFS 分区的唯一方法，比如在旧的惠普笔记本电脑上发现的那样。
 
-### `HideVerbose`
+### 3. `HideVerbose`
 
 **Type**: `plist boolean`
 **Failsafe**: `False`
@@ -224,7 +224,7 @@ APFS 的 EFI 驱动内置在所有可以作为系统启动盘的 APFS 容器之�
 
 APFS 驱动的 verbose 信息有助于 debug。
 
-### `JumpstartHotPlug`
+### 4. `JumpstartHotPlug`
 
 **Type**: `plist boolean`
 **Failsafe**: `False`
@@ -232,7 +232,7 @@ APFS 驱动的 verbose 信息有助于 debug。
 
 这一选项不仅提供了进入 OpenCore 以后再插入 U 盘的支持，而且还允许了在 OpenCore 引导菜单下 APFS U 盘的热插拔。
 
-### `MinDate`
+### 5. `MinDate`
 
 **Type**: `plist integer`
 **Failsafe**: `0`
@@ -244,7 +244,7 @@ APFS 驱动的版本号基于其发布日期。较旧版本的 APFS 驱动可能
 - `-1` - 允许使用任何版本的 APFS 驱动（强烈不推荐）。
 - 其他数值 - 数值格式应为形如 `20200401` 的格式。你可以从 OpenCore 的启动日志和 [OcApfsLib](https://github.com/acidanthera/OpenCorePkg/blob/master/Include/Acidanthera/Library/OcApfsLib.h) 中找到 APFS 驱动的版本号。
 
-### `MinVersion`
+### 6. `MinVersion`
 
 **Type**: `plist integer`
 **Failsafe**: `0`
@@ -258,7 +258,7 @@ APFS 驱动的版本号和 macOS 版本相关。较旧版本的 APFS 驱动可�
 
 ## 11.8 Audio 属性
 
-### `AudioCodec`
+### 1. `AudioCodec`
 
 **Type**: `plist integer`
 **Failsafe**: `0`
@@ -272,7 +272,7 @@ APFS 驱动的版本号和 macOS 版本相关。较旧版本的 APFS 驱动可�
 
 作为一种替代方案，该值可以在 I/O 注册表的 `IOHDACodecDevice` class 中获得，包含在 `IOHDACodecAddress` 字段中。
 
-### `AudioDevice`
+### 2. `AudioDevice`
 
 **Type**: `plist string`
 **Failsafe**: empty string
@@ -286,7 +286,7 @@ APFS 驱动的版本号和 macOS 版本相关。较旧版本的 APFS 驱动可�
 
 作为一种替代方案，可以在 macOS 中通过 `gfxutil -f HDEF` 命令来获取。如果指定了空的设备路径，则会使用第一个可用的音频控制器。
 
-### `AudioOut`
+### 3. `AudioOut`
 
 **Type**: `plist integer`
 **Failsafe**: `0`
@@ -300,7 +300,7 @@ APFS 驱动的版本号和 macOS 版本相关。较旧版本的 APFS 驱动可�
 
 找到正确端口的最快办法就是暴力地尝试 `0` 到 `N - 1` 的值。
 
-### `AudioSupport`
+### 4. `AudioSupport`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
@@ -308,7 +308,7 @@ APFS 驱动的版本号和 macOS 版本相关。较旧版本的 APFS 驱动可�
 
 启用此设置可将音频播放从内置协议路由到音频控制器（`AudioDevice`）上指定编解码器（`AudioCodec`）的专用音频端口（`AudioOut`）。
 
-### `MinimumVolume`
+### 5. `MinimumVolume`
 
 **Type**: `plist integer`
 **Failsafe**: `0`
@@ -316,7 +316,7 @@ APFS 驱动的版本号和 macOS 版本相关。较旧版本的 APFS 驱动可�
 
 当计算出的音量小于 `MinimumVolume` 时，屏幕阅读器将使用这个音量。当计算出的音量小于 `MinimumVolume`，则不播放 Mac 特有的开机启动声音。
 
-### `PlayChime`
+### 6. `PlayChime`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
@@ -326,7 +326,7 @@ APFS 驱动的版本号和 macOS 版本相关。较旧版本的 APFS 驱动可�
 
 *注*：此设置与 `StartupMute` NVRAM 变量是分开的，以避免在固件能够播放启动铃声时发生冲突。
 
-### `VolumeAmplifier`
+### 7. `VolumeAmplifier`
 
 **Type**: `plist integer`
 **Failsafe**: `0`
@@ -340,7 +340,7 @@ APFS 驱动的版本号和 macOS 版本相关。较旧版本的 APFS 驱动可�
 
 ## 11.9 Input 属性
 
-### `KeyFiltering`
+### 1. `KeyFiltering`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
@@ -348,7 +348,7 @@ APFS 驱动的版本号和 macOS 版本相关。较旧版本的 APFS 驱动可�
 
 显然，有些主板，如 GA Z77P-D3，可能会在 `EFI_INPUT_KEY` 中返回所有输入协议的未初始化数据。这个选项会舍弃那些既不是 ASCII 码，也不是 UEFI 规范中定义的键（见版本 2.8 的表 107 和 108）。
 
-### `KeyForgetThreshold`
+### 2. `KeyForgetThreshold`
 
 **Type**: `plist integer`
 **Failsafe**: `0`
@@ -360,7 +360,7 @@ APFS 驱动的版本号和 macOS 版本相关。较旧版本的 APFS 驱动可�
 
 *注*：某些平台可能需要更高或者更低的值。例如，当 OpenCanopy 检测到按键丢失的时候，尝试稍高的值（比如增加到 `10`），当检测到按键停滞时，尝试稍低的值。由于每个平台各不相同，因此检查从 `1` 到 `25` 的每个值可能会比较合理。
 
-### `KeyMergeThreshold`
+### 3. `KeyMergeThreshold`
 
 **Type**: `plist integer`
 **Failsafe**: `0`
@@ -370,7 +370,7 @@ APFS 驱动的版本号和 macOS 版本相关。较旧版本的 APFS 驱动可�
 
 对于 VMWare，同时按下多个键的间隔是 2 毫秒。对于 APTIO V 平台为 1 毫秒。一个接一个地按下按键会导致 6 毫秒和 10 毫秒的延迟。此选项的建议值为 2 毫秒，但对于较快的平台可以选取较小的值，反之亦然。
 
-### `KeySupport`
+### 4. `KeySupport`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
@@ -378,7 +378,7 @@ APFS 驱动的版本号和 macOS 版本相关。较旧版本的 APFS 驱动可�
 
 这一选项基于 `AppleGenericInput`（`AptioInputFix`），激活内部键盘拦截器驱动程序以填充 `AppleKeyMapAggregator` 数据库以实现输入功能。如果使用了单独的驱动程序（如 `AppleUsbKbDxe`），则永远不要开启这一选项。
 
-### `KeySupportMode`
+### 5. `KeySupportMode`
 
 **Type**: `plist string`
 **Failsafe**: empty string
@@ -391,7 +391,7 @@ APFS 驱动的版本号和 macOS 版本相关。较旧版本的 APFS 驱动可�
 
 *注*：目前 `V1`、`V2` 和 `AMI` 区别于 `Auto`，只对特定的协议进行过滤。这种情况在未来的版本中可能会改变。
 
-### `KeySwap`
+### 6. `KeySwap`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
@@ -399,7 +399,7 @@ APFS 驱动的版本号和 macOS 版本相关。较旧版本的 APFS 驱动可�
 
 此选项对于 `Option` 键位于 `Command` 右侧的键盘来说会很有用。
 
-### `PointerSupport`
+### 7. `PointerSupport`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
@@ -407,7 +407,7 @@ APFS 驱动的版本号和 macOS 版本相关。较旧版本的 APFS 驱动可�
 
 该选项通过选择 OEM 协议实现标准 UEFI 指针协议 `EFI_SIMPLE_POINTER_PROTOCOL`。该选项在 Z87 华硕主板可能有用（该主板的 `EFI_SIMPLE_POINTER_PROTOCOL` 存在问题）。
 
-### `PointerSupportMode`
+### 8. `PointerSupportMode`
 
 **Type**: `plist string`
 **Failsafe**: empty string
@@ -415,7 +415,7 @@ APFS 驱动的版本号和 macOS 版本相关。较旧版本的 APFS 驱动可�
 
 目前只支持 `ASUS` 值，使用的是 Z87 和 Z97主板上的特殊协议。更多详情请参考 [`LongSoft/UefiTool#116`](https://github.com/LongSoft/UEFITool/pull/116)。
 
-### `TimerResolution`
+### 9. `TimerResolution`
 
 **Type**: `plist integer`
 **Failsafe**: `0`
@@ -425,7 +425,7 @@ APFS 驱动的版本号和 macOS 版本相关。较旧版本的 APFS 驱动可�
 
 ## 11.10 Output 属性
 
-### `TextRenderer`
+### 1. `TextRenderer`
 
 **Type**: `plist string`
 **Failsafe**: `BuiltinGraphics`
@@ -448,7 +448,7 @@ UEFI 固件一般用两种渲染模式来支持 `ConsoleControl`：`Graphics` �
 
 *注*：某些 Mac，比如 `MacPro5,1`，在使用较新的 GPU 时，可能会出现控制台输出中断的情况，因此可能只有 `BuiltinGraphics` 对它们有效。
 
-### `ConsoleMode`
+### 2. `ConsoleMode`
 
 **Type**: `plist string`
 **Failsafe**: Empty string
@@ -458,7 +458,7 @@ UEFI 固件一般用两种渲染模式来支持 `ConsoleControl`：`Graphics` �
 
 *注*：在大多数固件上，这个字段最好留空。
 
-### `Resolution`
+### 3. `Resolution`
 
 **Type**: `plist string`
 **Failsafe**: Empty string
@@ -472,7 +472,7 @@ UEFI 固件一般用两种渲染模式来支持 `ConsoleControl`：`Graphics` �
 
 *注*：当控制台句柄没有 GOP 协议时，这些设置会失败。当固件不再提供时，可以将 `ProvideConsoleGop` 设置为 `true` 并添加。
 
-### `ClearScreenOnModeSwitch`
+### 4. `ClearScreenOnModeSwitch`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
@@ -480,7 +480,7 @@ UEFI 固件一般用两种渲染模式来支持 `ConsoleControl`：`Graphics` �
 
 *注*：这一选项只会在 `System` 渲染器上生效。
 
-### `DirectGopRendering`
+### 5. `DirectGopRendering`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
@@ -488,7 +488,7 @@ UEFI 固件一般用两种渲染模式来支持 `ConsoleControl`：`Graphics` �
 
 在某些固件上，这样做可能会提供更优的性能，甚至修复渲染问题，比如 `MacPro5,1`。但是，除非有明显的好处，否则还是建议不要使用这个选项，因为可能会导致滚动速度变慢。
 
-### `IgnoreTextInGraphics`
+### 6. `IgnoreTextInGraphics`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
@@ -496,7 +496,7 @@ UEFI 固件一般用两种渲染模式来支持 `ConsoleControl`：`Graphics` �
 
 *注*：这一选项只会在 `System` 渲染器上生效。
 
-### `ReplaceTabWithSpace`
+### 7. `ReplaceTabWithSpace`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
@@ -504,7 +504,7 @@ UEFI 固件一般用两种渲染模式来支持 `ConsoleControl`：`Graphics` �
 
 *注*：这一选项只会在 `System` 渲染器上生效。
 
-### `ProvideConsoleGop`
+### 8. `ProvideConsoleGop`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
@@ -514,7 +514,7 @@ macOS bootloader 要求控制台句柄上必须有 GOP 或 UGA（适用于 10.4 
 
 *注*：这个选项也会替换掉控制台句柄上损坏的 GOP 协议，在使用较新的 GPU 的 `MacPro5,1` 时可能会出现这种情况。
 
-### `ReconnectOnResChange`
+### 9. `ReconnectOnResChange`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
@@ -524,7 +524,7 @@ macOS bootloader 要求控制台句柄上必须有 GOP 或 UGA（适用于 10.4 
 
 *注*：当 OpenCore 从 Shell 启动时，这个逻辑可能会导致某些主板黑屏，因此这个选项是非必须的。在 0.5.2 之前的版本中，这个选项是强制性的，不可配置。除非需要，否则请不要使用该选项。
 
-### `SanitiseClearScreen`
+### 10. `SanitiseClearScreen`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
@@ -532,7 +532,7 @@ macOS bootloader 要求控制台句柄上必须有 GOP 或 UGA（适用于 10.4 
 
 *注*：这一选项只会在 `System` 渲染器上生效。在所有已知的受影响的系统中，`ConsoleMode` 必须设置为空字符串才能正常工作。
 
-### `UgaPassThrough`
+### 11. `UgaPassThrough`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
@@ -540,9 +540,9 @@ macOS bootloader 要求控制台句柄上必须有 GOP 或 UGA（适用于 10.4 
 
 有些固件不会去实现老旧的 UGA 协议，但是有些更老的 EFI 应用程序（如 10.4 的 Efiboot）可能需要用它来进行屏幕输出。
 
-## 11.11 Protocols 属性
+## 11.11 ProtocolOverrides 属性
 
-### `AppleAudio`
+### 1. `AppleAudio`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
@@ -554,7 +554,7 @@ Apple 音频协议允许 macOS bootloader 和 OpenCore 播放声音和信号，�
 
 *注*：后端音频驱动需要在 `UEFI Audio` 部分进行配置，以便这些协议能够流式传输音频。
 
-### `AppleBootPolicy`
+### 2. `AppleBootPolicy`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
@@ -562,37 +562,37 @@ Apple 音频协议允许 macOS bootloader 和 OpenCore 播放声音和信号，�
 
 *注*：某些 Mac 设备（如 `MacPro5,1`）虽然兼容 APFS，但是其 Apple Boot Policy 协议包含了恢复分区检测问题，因此也建议启用这一选项。
 
-### `AppleDebugLog`
+### 3. `AppleDebugLog`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
 **Description**: 重新安装内置的 Apple 调试日志输出协议。
 
-### `AppleEvent`
+### 4. `AppleEvent`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
 **Description**: 重新安装内置的 Apple Event 协议，可以确保在 VM 或旧版 Mac 设备上的 FileVault 2 兼容性。
 
-### `AppleFramebufferInfo`
+### 5. `AppleFramebufferInfo`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
 **Description**: 重新安装内置的 Apple Framebuffer Info 协议。这样可以覆盖虚拟机或者旧款 Mac 上的缓冲帧信息，从而提高与旧版 EfiBoot（如 macOS 10.4 中的 EfiBoot）的兼容性。
 
-### `AppleImageConversion`
+### 6. `AppleImageConversion`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
 **Description**: 重新安装内置的 Apple Image Conservation 协议。
 
-### `AppleKeyMap`
+### 8. `AppleKeyMap`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
 **Description**: 重新安装内置的 Apple Key Map 协议。
 
-### `AppleRtcRam`
+### 9. `AppleRtcRam`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
@@ -600,7 +600,7 @@ Apple 音频协议允许 macOS bootloader 和 OpenCore 播放声音和信号，�
 
 *注*：内置的 Apple RTC RAM 协议可能会过滤掉 RTC 内存地址的潜在 I/O。地址列表可以在 `4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102:rtc-blacklist` 中以数组的方式指定。
 
-### `AppleSmcIo`
+### 11. `AppleSmcIo`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
@@ -608,25 +608,25 @@ Apple 音频协议允许 macOS bootloader 和 OpenCore 播放声音和信号，�
 
 这一协议代替了传统的 `VirtualSmc.efi`，并与所有 SMC kext 驱动兼容。如果你在用 FakeSMC，可能需要手动往 NVRAM 中添加键值对。
 
-### `AppleUserInterfaceTheme`
+### 12. `AppleUserInterfaceTheme`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
 **Description**: 重新安装内置的 Apple User Interface Theme 协议。
 
-### `DataHub`
+### 13. `DataHub`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
 **Description**: 重新安装具有内置版本的 Data Hub 协议。如果已经安装了协议，这将删除所有先前的属性。
 
-### `DeviceProperties`
+### 14. `DeviceProperties`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
 **Description**: 重新安装内置版本的 Device Property 协议。 如果已经安装，它将删除所有以前的属性。这一选项可用于确保在 VM 或旧版 Mac 设备上的兼容性。
 
-### `FirmwareVolume`
+### 15. `FirmwareVolume`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
@@ -634,19 +634,19 @@ Apple 音频协议允许 macOS bootloader 和 OpenCore 播放声音和信号，�
 
 *注*：包括 VMWare 在内的多个虚拟机在 HiDPI 模式下光标会损坏，因此建议为所有虚拟机启用这一选项。
 
-### `HashServices`
+### 16. `HashServices`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
 **Description**: 强制重新安装内置版本的 Hash Services 协议。为了在 SHA-1 哈希协议不完整的固件上确保 FileVault 2 的兼容性，这一 Quirk 应设置为 `true`。对于大多数固件来说，你可以通过将 `UIScale` 设置为 `02` 查看是否会出现禁行图标，来诊断你的固件是否需要这一 Quirk。一般来说，APTIO V（Haswell 和更早的平台）之前的平台都会受到影响。
 
-### `OSInfo`
+### 17. `OSInfo`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
 **Description**: 强制使用内置版本重新安装 OS Info 协议。该协议通常用于通过固件或其他应用程序从 macOS 引导加载程序接收通知。
 
-### `UnicodeCollation`
+### 18. `UnicodeCollation`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
@@ -654,7 +654,7 @@ Apple 音频协议允许 macOS bootloader 和 OpenCore 播放声音和信号，�
 
 ## 11.12 Quirks
 
-### `DeduplicateBootOrder`
+### 1. `DeduplicateBootOrder`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
@@ -674,7 +674,7 @@ Apple 音频协议允许 macOS bootloader 和 OpenCore 播放声音和信号，�
 
 这个 Quirk 会删除 `BootOrder` 变量中所有重复的内容，尝试解决 OpenCore 加载时出现的 bug。建议将此键值与 `BootProtect` 选项一起使用。
 
-### `ExitBootServicesDelay`
+### 2. `ExitBootServicesDelay`
 
 **Type**: `plist integer`
 **Failsafe**: `0`
@@ -682,7 +682,7 @@ Apple 音频协议允许 macOS bootloader 和 OpenCore 播放声音和信号，�
 
 这是一个非常丑陋的 Quirks，用于修复 `Still waiting for root device` 提示信息。在使用 FileVault 2 时，特别是华硕 Z87-Pro 等 APTIO IV 固件这种错误经常发生。似乎因为某种原因，FileVault 与 `EXIT_BOOT_SERVICES` 同时执行、导致 macOS 无法访问 SATA 控制器。未来应该会找到一个更好的方法。如果需要启用这一选项，设置 3-5 秒的延时就可以了。
 
-### `IgnoreInvalidFlexRatio`
+### 3. `IgnoreInvalidFlexRatio`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
@@ -690,13 +690,13 @@ Apple 音频协议允许 macOS bootloader 和 OpenCore 播放声音和信号，�
 
 *注*：虽然该选项不会对不受影响的固件造成损害，但在不需要的情况下不建议启用。
 
-### `ReleaseUsbOwnership`
+### 4. `ReleaseUsbOwnership`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
 **Description**: 尝试从固件驱动程序中分离 USB 控制器所有权。尽管大多数固件都设法正确执行了该操作或者提供有一个选项，但某些固件没有，从而导致操作系统可能会在启动时冻结。除非需要，否则不建议启用这一选项。
 
-### `RequestBootVarRouting`
+### 5. `RequestBootVarRouting`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
@@ -704,7 +704,7 @@ Apple 音频协议允许 macOS bootloader 和 OpenCore 播放声音和信号，�
 
 启用这个 Quirk 需要在 `OpenRuntime.efi` 中实现的 `OC_FIRMWARE_RUNTIME` 协议（原名 `FwRuntimeServices.efi`）。当固件删除不兼容的启动条目时，这一 Quirk 可以让默认的启动条目保存在引导菜单中。简单地说就是，如果你想使用「系统偏好设置」中的「[启动磁盘](https://support.apple.com/HT202796)」，就必须启用这一 Quirk。
 
-### `TscSyncTimeout`
+### 6. `TscSyncTimeout`
 
 **Type**: `plist integer`
 **Failsafe**: `0`
@@ -716,7 +716,7 @@ Apple 音频协议允许 macOS bootloader 和 OpenCore 播放声音和信号，�
 
 *注*：这个 Quirk 不能取代内核驱动的原因是它不能在 ACPI S3 模式（睡眠唤醒）下运行，而且 UEFI 固件提供的多核心支持非常有限，无法精确地更新 MSR 寄存器。
 
-### `UnblockFsConnect`
+### 7. `UnblockFsConnect`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
@@ -726,7 +726,7 @@ Apple 音频协议允许 macOS bootloader 和 OpenCore 播放声音和信号，�
 
 ## 11.13 ReservedMemory 属性
 
-### `Address`
+### 1. `Address`
 
 **Type**: `plist integer`
 **Failsafe**: `0`
@@ -734,19 +734,19 @@ Apple 音频协议允许 macOS bootloader 和 OpenCore 播放声音和信号，�
 
 这里写的地址必须是内存映射的一部分，具有 `EfiConventionalMemory` 类型，并且按页对齐（4KBs）。
 
-### `Comment`
+### 2. `Comment`
 
 **Type**: `plist string`
 **Failsafe**: Empty string
 **Description**: 用于为条目提供人类可读参考的任意 ASCII 字符串（译者注：即注释）。该值取决于具体的实现定义。
 
-### `Size`
+### 3. `Size`
 
 **Type**: `plist integer`
 **Failsafe**: `0`
 **Description**: 保留的内存区域的大小，必须按页对齐（4KBs）。
 
-### `Enabled`
+### 4. `Enabled`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
