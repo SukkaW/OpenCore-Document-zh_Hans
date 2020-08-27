@@ -29,6 +29,10 @@ last_updated: 2020-08-21
 - 当启用这个选项时，`SMBIOS`、`DataHub` 和 `PlatformNVRAM` 中的数据将不会被使用。
 - 当禁用这个选项时，`Generic` 部分的数据将不会被使用。
 
+{% note danger Warning %}
+It is strongly discouraged set this option to `false` when intending to update platform information. The only reason to do that is when doing minor correction of the SMBIOS present and alike. In all other cases not using `Automatic` may lead to hard to debug errors.
+{% endnote %}
+
 ### 2. `UpdateDataHub`
 
 **Type**: `plist boolean`

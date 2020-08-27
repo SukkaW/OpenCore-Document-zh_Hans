@@ -50,7 +50,18 @@ last_updated: 2020-08-21
 **Type**: `plist dict`
 **Description**: 应用下面的 Quirks 属性章节中描述的各个内核和驱动程序 Quirk。
 
+### 6. Scheme
+
+**Type**: `plist dict`
+**Description**: Define kernelspace operation mode via parameters described in Scheme Properties section below.
+
 ## 7.3 Add 属性
+
+### 1. `Arch`
+
+**Type**: `plist string`
+**Failsafe**: Any
+**Description**: Kext architecture (`Any`, `i386`, `x86_64`).
 
 ### 2. `BundlePath`
 
@@ -113,6 +124,12 @@ last_updated: 2020-08-21
 **Description**: Kext 中 `Info.plist` 文件的路径。一般为 `Contents/Info.plist`。
 
 ## 7.4 Block 属性
+
+### 1. `Arch`
+
+**Type**: `plist string`
+**Failsafe**: `Any`
+**Description**: Kext block architecture (`Any`, `i386`, `x86_64`).
 
 ### 2. `Comment`
 
@@ -188,6 +205,12 @@ last_updated: 2020-08-21
 当每个 `Cpuid1Mask` bit 都设置为 `0` 时将使用原始的 CPU bit，否则取 `Cpuid1Data` 的值。
 
 ## 7.6 Patch 属性
+
+### 1. `Arch`
+
+**Type**: `plist string`
+**Failsafe**: `Any`
+**Description**: Kext patch architecture (`Any`, `i386`, `x86_64`).
 
 ### 2. `Base`
 
@@ -277,6 +300,7 @@ last_updated: 2020-08-21
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
+**Requirement**: 10.6 (64-bit)
 **Description**: 禁用 `AppleIntelCPUPowerManagement.kext` 中的 `PKG_CST_CONFIG_CONTROL` (`0xE2`) 修改，从而避免早期 Kernel Panic。
 
 某些固件会锁定 `PKG_CST_CONFIG_CONTROL` MSR 寄存器。可以使用附带的 `VerifyMsrE2` 工具检查其状态。
@@ -299,6 +323,7 @@ last_updated: 2020-08-21
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
+**Requirement**: 10.8 (not required for older)
 **Description**: 禁用 XNU 内核对 `PKG_CST_CONFIG_CONTROL` (`0xE2`) 修改，从而避免早期 Kernel Panic。
 
 *注*：这一选项应该避免被使用，请参考上文中关于 `AppleCpuPmCfgLock` 的介绍。
@@ -307,6 +332,7 @@ last_updated: 2020-08-21
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
+**Requirement**: 10.8 (not required for older)
 **Description**: 对于没有 XCMP 支持的设备，禁用对选定 CPU 的多 MSR 访问。
 
 通常将其与 Haswell-E，Broadwell-E，Skylake-SP 和类似 CPU 的 `Emulate` 结合使用。更多关于 XCPM 修补的信息可以在 [acidanthera/bugtracker#365](https://github.com/acidanthera/bugtracker/issues/365) 找到。
@@ -317,6 +343,7 @@ last_updated: 2020-08-21
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
+**Requirement**: 10.8 (not required for older)
 **Description**: 在 XCPM 模式下强制使用最大性能。
 
 该补丁将 `0xFF00` 写入 `MSR_IA32_PERF_CONTROL` (`0x199`)，有效地做到了一直保持最大倍数。
@@ -327,12 +354,14 @@ last_updated: 2020-08-21
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
+**Requirement**: 10.6 (64-bit)
 **Description**: 对 UpdateSMBIOSMode 自定义模式执行 GUID 修补，通常用于戴尔笔记本电脑。
 
 ### 6. `DisableIoMapper`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
+**Requirement**: 10.8 (not required for older)
 **Description**: 禁用 XNU (VT-d) 中的 `IOMapper` 支持，这可能与固件的实现相冲突。
 
 *注*：相比直接在 ACPI 表中删除 `DMAR`，我们更推荐大家使用这一选项。这样不会破坏其他操作系统中的 VT-d 支持（总会有人需要用到的，对吧？）。
@@ -341,6 +370,7 @@ last_updated: 2020-08-21
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
+**Requirement**: 10.6 (64-bit)
 **Description**: 禁用 AppleRTC 初始校验和（`0x58` - `0x59`）写入。
 
 *注 1*：这个选项不能确保其他区域不被覆盖，如有需要，请使用 [RTCMemoryFixup](https://github.com/acidanthera/RTCMemoryFixup)。
@@ -351,6 +381,7 @@ last_updated: 2020-08-21
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
+**Requirement**: 10.6 (64-bit)
 **Description**: 禁用 `AppleIntelCpuPowerManagement`。
 
 *注*：这一选项旨在替代 `NullCpuPowerManagement.kext`，用于 macOS 中没有电源管理驱动程序的 CPU。
@@ -359,6 +390,7 @@ last_updated: 2020-08-21
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
+**Requirement**: 10.6 (64-bit)
 **Description**: 修补 `AppleAHCIPort.kext` 图标，使 macOS 将所有 AHCI 存储设备显示为内部硬盘。
 
 *注*：这一选项应尽量避免使用。现代固件通常情况下都是兼容的。
@@ -367,6 +399,7 @@ last_updated: 2020-08-21
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
+**Requirement**: 10.10
 **Description**: 将 IOPCIFamily 中 32 位 PCI Bar 的大小从 1 GB 增加到 4 GB。
 
 *注*：你应该尽可能避免使用这一选项。通常这一选项只需要在配置错误或损坏的固件上开启。
@@ -377,6 +410,7 @@ last_updated: 2020-08-21
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
+**Requirement**: 10.6 (64-bit)
 **Description**: 禁用 LAPIC 中断导致的 Kernal Panic。
 
 > 译者注：惠普电脑可能需要启用这一选项。
@@ -385,12 +419,14 @@ last_updated: 2020-08-21
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
+**Requirement**: 10.13 (not required for older)
 **Description**: 在发生内核崩溃时阻止输出 Kext 列表，提供可供排错参考的崩溃日志。
 
 ### 13. `PowerTimeoutKernelPanic`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
+**Requirement**: 10.15 (not required for older)
 **Description**: 修复 macOS Catalina 中由于设备电源状态变化超时而导致的内核崩溃。
 
 macOS Catalina 新增了一项额外的安全措施，导致在电源切换超时的时候会出现 Kernel Panic。配置错误的硬件可能会因此出现问题（如数字音频设备）、有的时候会导致睡眠唤醒的问题。这一 Quirk 和引导参数 `setpowerstate_panic=0` 功能大部分一致，但是后者只应该用于调试用途。
@@ -399,6 +435,7 @@ macOS Catalina 新增了一项额外的安全措施，导致在电源切换超�
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
+**Requirement**: 10.6 (64-bit, not required for older)
 **Description**: 修补 `IOAHCIDeleteStorage.kext`，以在第三方驱动器启用 TRIM、硬盘休眠等功能。
 
 *注*：NVMe SSD 通常无需这一修改。对于 AHCI SSD（如 SATA SSD），macOS 从 10.15 开始提供 `trimforce`，可以将 `01 00 00 00` 值写入 `APPLE_BOOT_VARIABLE_GUID` 命名空间中的 `EnableTRIM` 变量。
@@ -407,6 +444,72 @@ macOS Catalina 新增了一项额外的安全措施，导致在电源切换超�
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
+**Requirement**: 10.11 (not required for older)
 **Description**: 修补 `AppleUSBXHCI.kext`、`AppleUSBXHCIPCI.kext`、`IOUSBHostFamily.kext` 以移除 15 端口限制。
 
-*注*：请尽可能避免使用这一选项。USB 端口数量限制是由 locationID 格式使用的比特数决定的。真正长期有效的解决方案是限制可用的 USB 端口个数在 15 以下（通过 USB 定制的方法）。
+*注*：请尽可能避免使用这一选项。USB 端口数量限制是由 locationID 格式使用的比特数决定的，想要移除限制就需要对操作系统进行大量修改。真正长期有效的解决方案是限制可用的 USB 端口个数在 15 以下（通过 USB 定制的方法）。
+
+## 7.8 Scheme Properties
+
+### 1. `FuzzyMatch`
+
+**Type**: `plist boolean`
+**Failsafe**: `false`
+**Description**: Use `kernelcache` with different checksums when available.
+
+On macOS 10.6 and earlier `kernelcache` filename has a checksum, which essentially is `adler32` from SMBIOS product name and EfiBoot device path. On certain firmwares EfiBoot device path differs between UEFI and macOS due to ACPI or hardware specifics, rendering `kernelcache` checksum as always different.
+
+This setting allows matching the latest `kernelcache` with a suitable architecture when the `kernelcache` without suffix is unavailable, improving macOS 10.6 boot performance on several platforms.
+
+### 2. `KernelArch`
+
+**Type**: `plist string`
+**Failsafe**: `Auto`
+**Description**: Prefer specified kernel architecture (`Auto`, `i386`, `x86_64`) when available.
+
+On macOS 10.7 and earlier XNU kernel may not boot with the usual `x86_64` architecture, and the exact choice depends on many factors including boot arguments, SMBIOS, and operating system type. This setting will use the specified architecture to boot macOS when it is supported by the macOS and the configuration. Below is the algorithm determining the kernel architecture.
+
+1. `arch` argument in image arguments (e.g. when launched via UEFI Shell) or in `boot-args` variable override any compatibility checks and force the specified architecture.
+2. Determined EfiBoot version restricts architecture choice:
+   - 10.4-10.5 — `i386`
+   - 10.6-10.7 — `i386` or `x86_64`
+   - 10.8 or newer — `x86_64`
+3. SMBIOS model information and EfiBoot version restrict architecture choice and define architecture preference
+for client and server operating systems according to the table below.
+4. `KernelArch` setting updates architecture preference for both client and server operating systems if the
+architecture is supported and `KernelArch` is not `Auto`.
+5. EfiBoot decides on server boot picking either server or client preference.
+
+   | **Model**  | **10.6 (minimal)** | **10.6 (client)** | **10.6 (server)** | **10.7 (any)**   |
+   | ---------- | ------------------ | ----------------- | ----------------- | ---------------- |
+   | Macmini    | 4,x (Mid 2010)     | 5,x (Mid 2011)    | 4,x (Mid 2010)    | 3,x (Early 2009) |
+   | MacBook    | Unsupported        | Unsupported       | Unsupported       | 5,x (2009/09)    |
+   | MacBookAir | Unsupported        | Unsupported       | Unsupported       | 2,x (Late 2008)  |
+   | MacBookPro | 4,x (Early 2008)   | 8,x (Early 2011)  | 8,x (Early 2011)  | 3,x (Mid 2007)   |
+   | iMac       | 8,x (Early 2008)   | 12,x (Mid 2011)   | 12,x (Mid 2011)   | 7,x (Mid 2007)   |
+   | MacPro     | 3,x (Early 2008)   | 5,x (Mid 2010)    | 3,x (Early 2008)  | 3,x (Early 2008) |
+   | Xserve     | 2,x (Early 2008)   | 2,x (Early 2008)  | 2,x (Early 2008)  | 2,x (Early 2008) |
+
+*Note 1*: Unlike 10.7 and newer, on 10.6 many models support 64-bit kernel loading but have it disabled by default. Information about 10.6 64-bit Mac model compatibility is incorrect on Apple support website and does not correspond to actual EfiBoot behaviour.
+
+*Note 2*: Older 10.6 server versions will start in client mode due to a bug in EfiBoot. Consider using this preference to workaround the issue.
+
+### 3. `KernelCache`
+
+**Type**: `plist string`
+**Failsafe**: `Auto`
+**Description**: Prefer specified kernel cache type (`Auto`, `Cacheless`, `Mkext`, `Prelinked`) when available.
+
+Different variants of macOS support different kernel caching variants designed to improve boot performance. This setting allows to prevent using faster kernel caching variants if slower variants are available for debugging and stability reasons. I.e. by specifying `Mkext` one will disable `Prelinked` for e.g. 10.6 but not 10.7.
+
+The list of available kernel caching types and its current support in OpenCore is listed below.
+
+| **macOS**   | **i386 NC** | **i386 MK** | **i386 PK** | **x86_64 NC** | **x86_64 MK** | **x86_64 PK** | **x86_64 KC** |
+| ----------- | ----------- | ----------- | ----------- | ------------- | ------------- | ------------- | ------------- |
+| 10.4        | NO          | NO (V1)     | NO          | —             | —             | —             | —             |
+| 10.5        | NO          | NO (V1)     | NO          | YES           | YES (V2)      | YES           | —             |
+| 10.6        | NO          | NO (V2)     | NO          | YES           | —             | YES           | —             |
+| 10.7        | NO          |             | NO          | YES           | —             | YES           | —             |
+| 10.8-10.9   | —           | —           | —           | —             | —             | YES           | —             |
+| 10.10-10.15 | —           | —           | —           | —             | —             | YES           | —             |
+| 11.0+       | —           | —           | —           | —             | —             | YES           | YES           |

@@ -116,8 +116,6 @@ OpenCanopy 为 `PickerAttributes` 提供了全面的支持，并提供了一套�
 
 字体格式对应于 [AngelCode binary BMF](https://www.angelcode.com/products/bmfont)。虽然有很多工具可以生成字体文件，但目前还是建议使用 [dpFontBaker](https://github.com/danpla/dpfontbaker) 来生成位图字体（[用 CoreText 达到最佳效果](https://github.com/danpla/dpfontbaker/pull/1)），并使用 [fonverter](https://github.com/usr-sse2/fonverter) 将其导出为二进制格式。
 
-*注*：OpenCanopy 是一个试验性质的功能、不应用于日常使用。你可以在 [acidanthera/bugtracker#759](https://github.com/acidanthera/bugtracker/issues/759) 获取相关的详细信息。
-
 ## 11.5 OpenRuntime
 
 `OpenRuntime` 是一个 OpenCore 的插件，提供了对 `OC_FIRMWARE_RUNTIME` 协议的实现。该协议对 OpenCore 的部分功能提供了支持，而这部分功能由于需要 Runtime（如操作系统）中运行、因此无法内置在 OpenCore 中。该协议提供了包括但不限于如下功能：
@@ -438,11 +436,13 @@ UEFI 固件一般用两种渲染模式来支持 `ConsoleControl`：`Graphics` �
 有效值为文本渲染器和渲染模式的组合：
 
 - `BuiltinGraphics` --- 切换到 `Graphics` 模式，并使用 `Builtin` 渲染器和自定义 `ConsoleControl`。
+- `BuiltinText` — Switch to `Text` mode and use `Builtin` renderer with custom `ConsoleControl`.
 - `SystemGraphics` --- 切换到 `Graphics` 模式，并使用 `System` 渲染器和自定义 `ConsoleControl`。
 - `SystemText` --- 切换到 `Text` 模式，并使用 `System` 渲染器和自定义 `ConsoleControl`。
 - `SystemGeneric` --- 使用 `System` 渲染器和系统 `ConsoleControl`，前提是它们能正常工作。
 
-`BuiltinGraphics` 的用法通常是比较直接的。对于大多数平台，需要启用 `ProvideConsoleGop`，将 `Resolution` 设置为 `Max`。
+`BuiltinGraphics` 的用法通常是比较直接的。对于大多数平台，需要启用 `ProvideConsoleGop`，将 `Resolution` 设置为 `Max`。`BuiltinText` variant is an alternative `BuiltinGraphics` for some
+very old and buggy laptop firmwares, which can only draw in `Text` mode.
 
 `System` 协议的用法比较复杂。一般来说，首选设置 `SystemGraphics` 或 `SystemText`。启用 `ProvideConsoleGop`，将 `Resolution` 设置为 `Max`，启用 `ReplaceTabWithSpace` 几乎在所有平台上都很有用。`SanitiseClearScreen`、`IgnoreTextInGraphics` 和 `ClearScreenOnModeSwitch` 比较特殊，它们的用法取决于固件。
 
@@ -586,6 +586,12 @@ Apple 音频协议允许 macOS bootloader 和 OpenCore 播放声音和信号，�
 **Failsafe**: `false`
 **Description**: 重新安装内置的 Apple Image Conservation 协议。
 
+### 7. `AppleImg4Verification`
+
+**Type**: `plist boolean`
+**Failsafe**: `false`
+**Description**: Reinstalls Apple IMG4 Verification protocol with a builtin version. This protocol is used to verify im4m manifest files used by Apple Secure Boot.
+
 ### 8. `AppleKeyMap`
 
 **Type**: `plist boolean`
@@ -599,6 +605,12 @@ Apple 音频协议允许 macOS bootloader 和 OpenCore 播放声音和信号，�
 **Description**: 重新安装内置的 Apple RTC RAM 协议。
 
 *注*：内置的 Apple RTC RAM 协议可能会过滤掉 RTC 内存地址的潜在 I/O。地址列表可以在 `4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102:rtc-blacklist` 中以数组的方式指定。
+
+### 10. `AppleSecureBoot`
+
+**Type**: `plist boolean`
+**Failsafe**: `false`
+**Description**: Reinstalls Apple Secure Boot protocol with a builtin version.
 
 ### 11. `AppleSmcIo`
 

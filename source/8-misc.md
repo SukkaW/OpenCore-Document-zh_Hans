@@ -99,7 +99,7 @@ OpenCore 尽可能地遵循 `bless` 模式，即 `Apple Boot Policy`。`bless` �
 
 应填入 `plist dict` 类型的值来描述相应的加载条目。详见 Entry 属性部分。
 
-*注*：选择工具（比如 UEFI shell）是很危险的事情，利用这些工具可以轻易地绕过安全启动链，所以 **千万不要** 出现在生产环境配置中，尤其是设置了 vault 和安全启动保护的设备（译者注：即，工具仅作调试用）。
+*注*：选择工具（比如 UEFI shell）是很危险的事情，利用这些工具可以轻易地绕过安全启动链，所以 **千万不要** 出现在生产环境配置中，尤其是设置了 vault 和安全启动保护的设备（译者注：即，工具仅作调试用）。For tool examples check the UEFI section of this document.
 
 ## 8.3 Boot 属性
 
@@ -276,7 +276,7 @@ OpenCore 内置的启动选择器包含了一系列在启动过程中选择的�
 
 *注 2*：当禁用 `ShowPicker` 时，除了 `OPT` 键之外，OpenCore 还支持 `Escape` 键来显示启动选项。这个键不仅适用于 `Apple` 启动选择器模式，也适用于 PS/2 键盘的固件，因为这种键盘无法提交按住 `OPT` 键的请求，需要连续点按 `Escape` 键来进入启动选择菜单。
 
-*注 3*：有些 Mac 的 GOP 很棘手，可能很难进入 Apple 启动选择器。要解决这个问题，可以在不加载 GOP 的情况下 bless OpenCore 的 `BootKicker` 实用工具。
+*注 3*：有些 Mac 的 GOP 很棘手，可能很难进入 Apple 启动选择器。`BootKicker` utility can be blessed to workaround this problem even without loading OpenCore. On some Macs `BootKicker` will not run from OpenCore.
 
 ## 8.4 Debug 属性
 
@@ -469,6 +469,16 @@ nvram 4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102:boot-log | awk '{gsub(/%0d%0a%00/,"")
 **Failsafe**: `false`
 **Description**: 允许使用 `CTRL+Enter` 和 `CTRL+[数字]` 设置默认启动项。
 
+### 3. `ApECID`
+
+**Type**: `plist integer`, 64 bit
+**Failsafe**: `0`
+**Description**: Apple Enclave Identifier.
+
+Setting this value to any non-zero 64-bit integer will allow using personalised Apple Secure Boot identifiers. If you want to use this setting, make sure to generate a random 64-bit number with a cryptographically secure random number generator. With this value set and `SecureBootModel` valid and not `Disabled` it is possible to achieve [`Full Security`](https://support.apple.com/en-us/HT208330) of Apple Secure Boot.
+
+*Note*: You will have to reinstall the operating system or use macOS recovery after setting this value to non-zero. Installing the operating system with `ApECID` value set to non-zero is only possible through macOS recovery.
+
 ### 4. `AuthRestart`
 
 **Type**: `plist boolean`
@@ -495,6 +505,18 @@ VirtualSMC 通过将磁盘加密密钥拆分保存在 NVRAM 和 RTC 中来执行
 *注 1*：某些固件的 NVRAM 本身存在问题，可能会出现无启动项支持，或者其他各种不兼容的情况。虽然可能性不大，但使用此选项可能会导致启动失败。请在已知兼容的主板上使用，风险自行考虑。
 
 *注 2*：请注意，NVRAM 重置也会同时清除 `Bootstrap` 模式下创建的启动选项。
+
+### 6. `DmgLoading`
+
+**Type**: `plist string`
+**Failsafe**: `Signed`
+**Description**: Define Disk Image (DMG) loading policy used for macOS Recovery.
+
+Valid values:
+
+- `Disabled` — loading DMG images will fail.
+- `Signed` — only Apple-signed DMG images will load.
+- `Any` — any DMG images will mount as normal filesystems.
 
 ### 7. `ExposeSensitiveData`
 
@@ -618,6 +640,37 @@ rm vault.pub
 - `OC_SCAN_ALLOW_DEVICE_SASEX`
 - `OC_SCAN_ALLOW_DEVICE_SCSI`
 - `OC_SCAN_ALLOW_DEVICE_NVME`
+
+### 11. `SecureBootModel`
+
+**Type**: `plist string`
+**Failsafe**: `Default`
+**Description**: Apple Secure Boot hardware model.
+
+Defines Apple Secure Boot hardware model and policy. Specifying this value defines which operating systems will be bootable. Operating systems shipped before the specified model was released will not boot. Valid values:
+
+- `Default` — Recent available model, currently set to j137.
+- `Disabled` — No model, Secure Boot will be disabled.
+- `j137` — iMacPro1,1 (December 2017) minimum macOS 10.13.2 (17C2111)
+- `j680` — MacBookPro15,1 (July 2018) minimum macOS 10.13.6 (17G2112)
+- `j132` — MacBookPro15,2 (July 2018) minimum macOS 10.13.6 (17G2112)
+- `j174` — Macmini8,1 (October 2018) minimum macOS 10.14 (18A2063)
+- `j140k` — MacBookAir8,1 (October 2018) minimum macOS 10.14.1 (18B2084)
+- `j780` — MacBookPro15,3 (May 2019) minimum macOS 10.14.5 (18F132)
+- `j213` — MacBookPro15,4 (July 2019) minimum macOS 10.14.5 (18F2058)
+- `j140a` — MacBookAir8,2 (July 2019) minimum macOS 10.14.5 (18F2058)
+- `j152f` — MacBookPro16,1 (November 2019) minimum macOS 10.15.1 (19B2093)
+- `j160` — MacPro7,1 (December 2019) minimum macOS 10.15.1 (19B88)
+- `j230k` — MacBookAir9,1 (March 2020) minimum macOS 10.15.3 (19D2064)
+- `j214k` — MacBookPro16,2 (May 2020) minimum macOS 10.15.4 (19E2269)
+- `j223` — MacBookPro16,3 (May 2020) minimum macOS 10.15.4 (19E2265)
+- `j215` — MacBookPro16,4 (June 2020) minimum macOS 10.15.5 (19F96)
+- `j185` — iMac20,1 (August 2020) minimum macOS 10.15.6 (19G2005)
+- `j185f` — iMac20,2 (August 2020) minimum macOS 10.15.6 (19G2005)
+
+`PlatformInfo` and `SecureBootModel` are independent, allowing to enabling Apple Secure Boot with any SMBIOS. Setting `SecureBootModel` to any valid value but `Disabled` is equivalent to [`Medium Security`](https://support.apple.com/en-us/HT208330) of Apple Secure Boot. To achieve Full Security one will need to also specify `ApECID` value.
+
+*Note*: `Default` value will increase with time to support the latest major release operating system. It is not recommended to use `ApECID` and `Default` value together.
 
 ## 8.6 Entry 属性
 
