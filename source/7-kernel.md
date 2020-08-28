@@ -2,8 +2,8 @@
 title: 7. Kernel
 description: OpenCore 安全配置，Kext 加载顺序以及屏蔽
 type: docs
-author_info: 由 Sukka 整理，由 Sukka、derbalkon 翻译。
-last_updated: 2020-08-21
+author_info: 由 Sukka、derbalkon 整理，由 Sukka、derbalkon 翻译。
+last_updated: 2020-08-28
 ---
 
 ## 7.1 简介
@@ -50,18 +50,18 @@ last_updated: 2020-08-21
 **Type**: `plist dict`
 **Description**: 应用下面的 Quirks 属性章节中描述的各个内核和驱动程序 Quirk。
 
-### 6. Scheme
+### 6. `Scheme`
 
 **Type**: `plist dict`
-**Description**: Define kernelspace operation mode via parameters described in Scheme Properties section below.
+**Description**: 通过参数来定义内核空间的操作模式，具体参数见下面 Scheme 属性部分的描述。
 
 ## 7.3 Add 属性
 
 ### 1. `Arch`
 
 **Type**: `plist string`
-**Failsafe**: Any
-**Description**: Kext architecture (`Any`, `i386`, `x86_64`).
+**Failsafe**: `Any`
+**Description**: Kext 架构（`Any`, `i386`, `x86_64`）。
 
 ### 2. `BundlePath`
 
@@ -129,7 +129,7 @@ last_updated: 2020-08-21
 
 **Type**: `plist string`
 **Failsafe**: `Any`
-**Description**: Kext block architecture (`Any`, `i386`, `x86_64`).
+**Description**: Kext block 架构（`Any`, `i386`, `x86_64`）。
 
 ### 2. `Comment`
 
@@ -210,7 +210,7 @@ last_updated: 2020-08-21
 
 **Type**: `plist string`
 **Failsafe**: `Any`
-**Description**: Kext patch architecture (`Any`, `i386`, `x86_64`).
+**Description**: Kext patch 架构（`Any`, `i386`, `x86_64`）。
 
 ### 2. `Base`
 
@@ -455,30 +455,28 @@ macOS Catalina 新增了一项额外的安全措施，导致在电源切换超�
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
-**Description**: Use `kernelcache` with different checksums when available.
+**Description**: 使用校验值不同的 `kernelcache`（如果可用）。
 
-On macOS 10.6 and earlier `kernelcache` filename has a checksum, which essentially is `adler32` from SMBIOS product name and EfiBoot device path. On certain firmwares EfiBoot device path differs between UEFI and macOS due to ACPI or hardware specifics, rendering `kernelcache` checksum as always different.
+在 macOS 10.6 和更早的版本中，`kernelcache` 文件名有一个校验值，本质上是对 SMBIOS 产品名称和 EfiBoot 设备路径进行 `adler32` 校验和的计算。在某些固件上，由于 ACPI 或硬件的特殊性，UEFI 和 macOS 的 EfiBoot 设备路径不同，使得 `kernelcache` 的校验和总是不同。
 
-This setting allows matching the latest `kernelcache` with a suitable architecture when the `kernelcache` without suffix is unavailable, improving macOS 10.6 boot performance on several platforms.
+这一设置可以在无后缀的 `kernelcache` 不可用时，将最新的 `kernelcache` 与合适的架构进行匹配，从而提高 macOS 10.6 在多个平台上的启动性能。
 
 ### 2. `KernelArch`
 
 **Type**: `plist string`
 **Failsafe**: `Auto`
-**Description**: Prefer specified kernel architecture (`Auto`, `i386`, `x86_64`) when available.
+**Description**: 如果可用，优先选择指定的内核架构（`Auto`, `i386`, `x86_64`）。
 
-On macOS 10.7 and earlier XNU kernel may not boot with the usual `x86_64` architecture, and the exact choice depends on many factors including boot arguments, SMBIOS, and operating system type. This setting will use the specified architecture to boot macOS when it is supported by the macOS and the configuration. Below is the algorithm determining the kernel architecture.
+macOS 10.7 和更早的 XNU 内核可能不会使用 `x86_64` 架构来启动，具体选择取决于很多因素，包括启动参数、SMBIOS 以及操作系统类型。当 macOS 和配置支持时，该设置将使用指定的架构来启动 macOS。下面是确定内核架构的算法：
 
-1. `arch` argument in image arguments (e.g. when launched via UEFI Shell) or in `boot-args` variable override any compatibility checks and force the specified architecture.
-2. Determined EfiBoot version restricts architecture choice:
-   - 10.4-10.5 — `i386`
-   - 10.6-10.7 — `i386` or `x86_64`
-   - 10.8 or newer — `x86_64`
-3. SMBIOS model information and EfiBoot version restrict architecture choice and define architecture preference
-for client and server operating systems according to the table below.
-4. `KernelArch` setting updates architecture preference for both client and server operating systems if the
-architecture is supported and `KernelArch` is not `Auto`.
-5. EfiBoot decides on server boot picking either server or client preference.
+1. 映像参数（比如从 UEFI Shell 启动时）或 `boot-args` 变量中的 `arch` 参数，覆盖兼容性检查并强制指定架构。
+2. 确定 EfiBoot 版本所限制的架构：
+   - 10.4-10.5 --- `i386`
+   - 10.6-10.7 --- `i386` 或 `x86_64`
+   - 10.8 及更新的版本 --- `x86_64`
+3. SMBIOS 机型信息和 EfiBoot 版本限制了架构，并根据下表定义客户端和服务器操作系统的架构偏好。
+4. `KernelArch` 设置在支持架构且 `KernelArch` 不是 `Auto` 的情况下，更新客户端和服务器操作系统的架构偏好。
+5. 服务器启动时，EfiBoot 在服务器或客户端之间选择一个作为偏好。
 
    | **Model**  | **10.6 (minimal)** | **10.6 (client)** | **10.6 (server)** | **10.7 (any)**   |
    | ---------- | ------------------ | ----------------- | ----------------- | ---------------- |
@@ -490,26 +488,26 @@ architecture is supported and `KernelArch` is not `Auto`.
    | MacPro     | 3,x (Early 2008)   | 5,x (Mid 2010)    | 3,x (Early 2008)  | 3,x (Early 2008) |
    | Xserve     | 2,x (Early 2008)   | 2,x (Early 2008)  | 2,x (Early 2008)  | 2,x (Early 2008) |
 
-*Note 1*: Unlike 10.7 and newer, on 10.6 many models support 64-bit kernel loading but have it disabled by default. Information about 10.6 64-bit Mac model compatibility is incorrect on Apple support website and does not correspond to actual EfiBoot behaviour.
+*注 1*：: 与 10.7 及更新的版本不同，在 10.6 上，许多机型支持 64 位内核加载，但默认情况下是禁用的。Apple 支持网站上关于 64 位 10.6 的 Mac 机型兼容性的信息是不正确的，并不符合实际的 EfiBoot 行为。
 
-*Note 2*: Older 10.6 server versions will start in client mode due to a bug in EfiBoot. Consider using this preference to workaround the issue.
+*注 2*：: 由于 EfiBoot 中存在一个错误，导致旧的 10.6 服务器版本会以客户端模式启动。此偏好可以用来解决这个问题。
 
 ### 3. `KernelCache`
 
 **Type**: `plist string`
 **Failsafe**: `Auto`
-**Description**: Prefer specified kernel cache type (`Auto`, `Cacheless`, `Mkext`, `Prelinked`) when available.
+**Description**: 如果可用，优先选择指定的内核缓存（Kernel Cache）类型（`Auto`, `Cacheless`, `Mkext`, `Prelinked`）。
 
-Different variants of macOS support different kernel caching variants designed to improve boot performance. This setting allows to prevent using faster kernel caching variants if slower variants are available for debugging and stability reasons. I.e. by specifying `Mkext` one will disable `Prelinked` for e.g. 10.6 but not 10.7.
+macOS 的版本不同，支持的内核缓存变量也不同，其目的是提高启动性能。如果出于调试和稳定性的考虑，可利用这个设置防止使用较快的内核缓存变量。举个例子，如果指定 `Mkext`，那么会为 10.6 禁用 `Prelinked`，10.7 则不受影响。
 
-The list of available kernel caching types and its current support in OpenCore is listed below.
+可用的内核缓存类型及其当前在 OpenCore 中的支持列表如下：
 
 | **macOS**   | **i386 NC** | **i386 MK** | **i386 PK** | **x86_64 NC** | **x86_64 MK** | **x86_64 PK** | **x86_64 KC** |
 | ----------- | ----------- | ----------- | ----------- | ------------- | ------------- | ------------- | ------------- |
 | 10.4        | NO          | NO (V1)     | NO          | —             | —             | —             | —             |
-| 10.5        | NO          | NO (V1)     | NO          | YES           | YES (V2)      | YES           | —             |
-| 10.6        | NO          | NO (V2)     | NO          | YES           | —             | YES           | —             |
-| 10.7        | NO          |             | NO          | YES           | —             | YES           | —             |
-| 10.8-10.9   | —           | —           | —           | —             | —             | YES           | —             |
+| 10.5        | NO          | NO (V1)     | NO          | —             | —             | —             | —             |
+| 10.6        | NO          | NO (V2)     | NO          | YES           | YES (V2)      | YES           | —             |
+| 10.7        | NO          | —           | NO          | YES           | —             | YES           | —             |
+| 10.8-10.9   | —           | —           | —           | YES           | —             | YES           | —             |
 | 10.10-10.15 | —           | —           | —           | —             | —             | YES           | —             |
 | 11.0+       | —           | —           | —           | —             | —             | YES           | YES           |

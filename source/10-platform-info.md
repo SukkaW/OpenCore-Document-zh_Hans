@@ -2,8 +2,8 @@
 title: 10. PlatformInfo
 description: SMBIOS 机型信息配置
 type: docs
-author_info: 由 xMuu、Sukka 整理，由 Sukka、derbalkon 翻译
-last_updated: 2020-08-21
+author_info: 由 xMuu、Sukka、derbalkon 整理，由 Sukka、derbalkon 翻译
+last_updated: 2020-08-28
 ---
 
 机型信息由手动生成或填充的字段组成，以便与 macOS 服务兼容。配置的基础部分可以从 [`AppleModels`](https://github.com/acidanthera/OpenCorePkg/blob/master/AppleModels) 获得，这是一个可以从 [YAML](https://yaml.org/spec/1.2/spec.html) 格式的数据库中生成一组接口的工具包。这些字段将会被写入三个位置：
@@ -29,8 +29,8 @@ last_updated: 2020-08-21
 - 当启用这个选项时，`SMBIOS`、`DataHub` 和 `PlatformNVRAM` 中的数据将不会被使用。
 - 当禁用这个选项时，`Generic` 部分的数据将不会被使用。
 
-{% note danger Warning %}
-It is strongly discouraged set this option to `false` when intending to update platform information. The only reason to do that is when doing minor correction of the SMBIOS present and alike. In all other cases not using `Automatic` may lead to hard to debug errors.
+{% note danger 警告 %}
+强烈不建议把此项设置为 `false`。只有在需要对 SMBIOS 进行小规模修正的情况下，才有理由不使用 `Automatic`，否则可能会导致 debug 困难。
 {% endnote %}
 
 ### 2. `UpdateDataHub`

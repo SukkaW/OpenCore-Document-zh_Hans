@@ -3,7 +3,7 @@ title: 4. ACPI
 description: 加载、屏蔽、修补 ACPI（DSDT/SSDT）表
 type: docs
 author_info: 由 Sukka 整理、由 Sukka、derbalkon 翻译。感谢黑果小兵提供的参考资料
-last_updated: 2020-08-21
+last_updated: 2020-08-28
 ---
 
 ## 4.1 简介
@@ -88,7 +88,7 @@ OpenCore、WhateverGreen、VirtualSmc、VoodooPS2 的 GitHub 仓库中都包含�
 ### 1. `All`
 
 **Type**: `plist boolean`
-**Failsafe**: false
+**Failsafe**: `false`
 **Description**: 如果设置为 `true`，则所有符合条件的 ACPI 表都会被舍弃。 否则，只舍弃第一个匹配到的。
 
 ### 2. `Comment`
@@ -100,42 +100,42 @@ OpenCore、WhateverGreen、VirtualSmc、VoodooPS2 的 GitHub 仓库中都包含�
 ### 3. `Enabled`
 
 **Type**: `plist boolean`
-**Failsafe**: false
+**Failsafe**: `false`
 **Description**: 除非此值为 `true`，否则此 ACPI 表不会被舍弃。
 
 ### 4. `OemTableId`
 
 **Type**: `plist data, 8 bytes`
 **Failsafe**: All zero
-**Description**: 将表的 OEM ID 匹配为此处所填的值，全部为 0 时忽略。
+**Description**: 将表的 OEM ID 匹配为此处所填的值，全部为 `0` 时忽略。
 
 ### 5. `TableLength`
 
 **Type**: `plist integer`
-**Failsafe**: 0
-**Description**: 将表的大小匹配为此处所填的值，填 0 时忽略。
+**Failsafe**: `0`
+**Description**: 将表的大小匹配为此处所填的值，填 `0` 时忽略。
 
 ### 6. `TableSignature`
 
 **Type**: `plist data, 4 bytes`
 **Failsafe**: All zero
-**Description**: 将表的签名匹配为此处的值，全部为 0 时忽略。
+**Description**: 将表的签名匹配为此处的值，全部为 `0` 时忽略。
 
 *注*：当序列需要在多处替换的时候，务必注意不要指定表的签名，尤其是在进行不同类型的重命名操作的时候。
 
 ## 4.5 Patch 属性
 
-### 1. Comment
+### 1. `Comment`
 
 **Type**: `plist string`
 **Failsafe**: Empty string
 **Description**: 用于为条目提供人类可读参考的任意 ASCII 字符串（译者注：即注释）。
 
-### 2. Count
+### 2. `Count`
 
 **Type**: `plist integer`
 **Failsafe**: `0`
-**Description**: 补丁应用的次数。如果将此值设置为 0，补丁将会被应用于所有匹配。
+**Description**: 补丁应用的次数。如果将此值设置为 `0`，补丁将会被应用于所有匹配。
 
 ### 3. `Enabled`
 
@@ -161,13 +161,13 @@ OpenCore、WhateverGreen、VirtualSmc、VoodooPS2 的 GitHub 仓库中都包含�
 **Failsafe**: Empty data
 **Description**: 查找比较期间使用的数据按位掩码。 通过忽略未屏蔽（设置为零）位来进行模糊搜索。可以设置为空数据以忽略，否则此值的长度必须和 `Replace` 的长度相等。
 
-### 7. OemTableId
+### 7. `OemTableId`
 
 **Type**: `plist data, 8 bytes`
 **Failsafe**: All zero
-**Description**: 将表的 OEM ID 匹配为此处所填的值，全部为 0 时忽略。
+**Description**: 将表的 OEM ID 匹配为此处所填的值，全部为 `0` 时忽略。
 
-### 8. Replace
+### 8. `Replace`
 
 **Type**: `plist data`
 **Failsafe**: Empty data
@@ -185,7 +185,7 @@ OpenCore、WhateverGreen、VirtualSmc、VoodooPS2 的 GitHub 仓库中都包含�
 **Failsafe**: `0`
 **Description**: 完成替换之前要跳过的匹配数。
 
-### 11. TableLength
+### 11. `TableLength`
 
 **Type**: `plist integer`
 **Failsafe**: `0`
@@ -244,7 +244,7 @@ ACPI 表通常由底层固件动态生成。在与位置无关的代码中，ACP
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
-**Description**: 将 `FACS` 表中 `HardwareSignature` 的值重置为 0。
+**Description**: 将 `FACS` 表中 `HardwareSignature` 的值重置为 `0`。
 
 启用这一选项可以解决固件无法在重新启动过程中保持硬件签名导致的休眠唤醒问题。
 

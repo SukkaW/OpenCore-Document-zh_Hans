@@ -3,7 +3,7 @@ title: 3. Setup
 description: Setup
 type: docs
 author_info: 由 Sukka、derbalkon 整理、由 Sukka、derbalkon 翻译。
-last_updated: 2020-08-21
+last_updated: 2020-08-28
 ---
 
 ## 3.1 目录结构
@@ -81,9 +81,10 @@ OpenCore 可以作为普通的 [EDK II](https://github.com/tianocore/tianocore.g
 要使用 `XCODE5` 编译，除了 [Xcode](https://developer.apple.com/xcode) 之外，还需要安装 [NASM](https://www.nasm.us) 和 [MTOC](https://github.com/acidanthera/ocbuild/tree/master/external)。建议使用最新的 Xcode 版本，不必因为工具链叫 `XCODE5` 而纠结于 Xcode 的版本号。命令行举例如下：
 
 ```bash
-git clone --recursive --depth=1 https://github.com/acidanthera/audk UDK
+git clone --depth=1 https://github.com/acidanthera/audk UDK
 cd UDK
-git clone https://github.com/acidanthera/OpenCorePkg
+git submodule update --init --recommend-shallow
+git clone --depth=1 https://github.com/acidanthera/OpenCorePkg
 source edksetup.sh
 make -C BaseTools
 build -a X64 -b RELEASE -t XCODE5 -p OpenCorePkg/OpenCorePkg.dsc
@@ -179,4 +180,4 @@ build -a X64 -b RELEASE -t XCODE5 -p OpenCorePkg/OpenCorePkg.dsc
 - 使用 `DEBUG_INFO` 调试级别来处理所有非关键信息（包括错误），使用 `DEBUG_BULK_INFO` 来处理不应该出现在 NVRAM 日志中的大量信息，因为 NVRAM 日志的大小十分受限。这些信息在 `RELEASE` 构建中会被忽略。
 - 使用 `DEBUG_ERROR` 来打印关键的、可以看见的、可能会停止启动过程的信息，使用 `DEBUG_WARN` 来打印所有其他可被看见的错误信息，这些都包含在 `RELEASE` 构建中。
 
-当试图找到有问题的更改时，依靠 [`git-bisect`](https://git-scm.com/docs/git-bisect) 功能会很有帮助。There also are some unnoficial resources that provide per-commit binary builds of OpenCore, like [Dortania](https://dortania.github.io/builds).
+当试图找到有问题的更改时，依靠 [`git-bisect`](https://git-scm.com/docs/git-bisect) 功能会很有帮助。另外还有一些非官方资源，提供了按照逐条 Commit 更新的 OpenCore 编译文件，如 [Dortania](https://dortania.github.io/builds)。
