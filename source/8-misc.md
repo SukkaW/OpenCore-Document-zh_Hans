@@ -3,7 +3,7 @@ title: 8. Misc
 description: 关于 OpenCore 行为的其他配置
 type: docs
 author_info: 由 xMuu、Sukka、derbalkon 整理、由 Sukka、derbalkon 翻译。
-last_updated: 2020-08-21
+last_updated: 2020-08-28
 ---
 
 ## 8.1 简介
@@ -63,47 +63,47 @@ OpenCore 尽可能地遵循 `bless` 模式，即 `Apple Boot Policy`。`bless` �
 
 ## 8.2 属性列表
 
-### `Boot`
+### 1. `Boot`
 
 **Type**: `plist dict`
 **Description**: 应用本章节 Boot 属性中的引导相关设置。
 
-### `BlessOverride`
+### 2. `BlessOverride`
 
 **Type**: `plist array`
 **Description**: 通过 Bless Model 添加自定义扫描路径。
 
 设计为填充 `plist string` 条目，其中包含指向自定义引导程序的绝对 UEFI 路径，例如，用于 Debian 引导程序的 `\EFI\debian\grubx64.efi`。这允许引导选择器自动发现异常的引导路径。在设计上它们等效于预定义的 Bless 路径（如 `\System\Library\CoreServices\boot.efi` 和 `\EFI\Microsoft\Boot\bootmgfw.efi`），但与预定义的 Bless 路径不同，它们具有最高优先级。
 
-### `Debug`
+### 3. `Debug`
 
 **Type**: `plist dict`
 **Description**: 应用本章节 Debug 属性中的调试相关设置。
 
-### `Entries`
+### 4. `Entries`
 
 **Type**: `plist array`
 **Description**: 在开机引导菜单中添加引导项。
 
 应填入 `plist dict` 类型的值来描述相应的加载条目。详见 Entry 属性部分。
 
-### `Security`
+### 5. `Security`
 
 **Type**: `plist dict`
 **Description**: 应用本章节 Security 属性中的安全相关设置。
 
-### `Tools`
+### 6. `Tools`
 
 **Type**: `plist array`
 **Description**: 将工具条目添加到开机引导菜单。
 
 应填入 `plist dict` 类型的值来描述相应的加载条目。详见 Entry 属性部分。
 
-*注*：选择工具（比如 UEFI shell）是很危险的事情，利用这些工具可以轻易地绕过安全启动链，所以 **千万不要** 出现在生产环境配置中，尤其是设置了 vault 和安全启动保护的设备（译者注：即，工具仅作调试用）。
+*注*：选择工具（比如 UEFI shell）是很危险的事情，利用这些工具可以轻易地绕过安全启动链，所以 **千万不要** 出现在生产环境配置中，尤其是设置了 vault 和安全启动保护的设备（译者注：即，工具仅作调试用）。具体的工具示例参见本文档的 UEFI 章节。
 
 ## 8.3 Boot 属性
 
-### `ConsoleAttributes`
+### 1. `ConsoleAttributes`
 
 **Type**: `plist integer`
 **Failsafe**: `0`
@@ -138,7 +138,7 @@ OpenCore 尽可能地遵循 `bless` 模式，即 `Apple Boot Policy`。`bless` �
 
 *注*：这个选项可能和 TextRenderer 的 `System` 参数有冲突，设置一个非黑的背景可以用来测试 GOP 是否正常运行。
 
-### `HibernateMode`
+### 2. `HibernateMode`
 
 **Type**: `plist string`
 **Failsafe**: `None`
@@ -149,7 +149,7 @@ OpenCore 尽可能地遵循 `bless` 模式，即 `Apple Boot Policy`。`bless` �
 - `RTC` --- 从 RTC 检测
 - `NVRAM` --- 从 NVRAM 检测
 
-### `HideAuxiliary`
+### 3. `HideAuxiliary`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
@@ -166,7 +166,7 @@ OpenCore 尽可能地遵循 `bless` 模式，即 `Apple Boot Policy`。`bless` �
 
 一般来说，隐藏辅助条目有助于加快启动速度。
 
-### `PickerAttributes`
+### 4. `PickerAttributes`
 
 **Type**: `plist integer`
 **Failsafe**: `0`
@@ -200,7 +200,7 @@ OpenCore 尽可能地遵循 `bless` 模式，即 `Apple Boot Policy`。`bless` �
 - `0x0004` — `OC_ATTR_USE_GENERIC_LABEL_IMAGE`，为没有自定义条目的启动项提供预定义的标签图像。可能会缺少实际启动项的详细信息。
 - `0x0008` — `OC_ATTR_USE_ALTERNATE_ICONS`，如果支持，则将备用图标集作为当前使用的图标集。举个例子，可以在使用自定义背景颜色的时候使用旧的式样的图标（译者注：即 `Old` 前缀的图标）。
 
-### `PickerAudioAssist`
+### 5. `PickerAudioAssist`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
@@ -210,7 +210,7 @@ macOS Bootloader 屏幕朗读 的偏好设置是存在 `isVOEnabled.int32` 文�
 
 *注*：屏幕朗读 依赖可以正常工作的音频设备。
 
-### `PollAppleHotKeys`
+### 6. `PollAppleHotKeys`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
@@ -228,13 +228,13 @@ macOS Bootloader 屏幕朗读 的偏好设置是存在 `isVOEnabled.int32` 文�
 - `CMD+V` --- 启用 `-v`。
 - `Shift` --- 启用安全模式。
 
-### `ShowPicker`
+### 7. `ShowPicker`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
 **Description**: 是否显示开机引导菜单。
 
-### `TakeoffDelay`
+### 8. `TakeoffDelay`
 
 **Type**: `plist integer`, 32 bit
 **Failsafe**: `0`
@@ -242,7 +242,7 @@ macOS Bootloader 屏幕朗读 的偏好设置是存在 `isVOEnabled.int32` 文�
 
 引入这一延迟有助于为你争取时间去完成按住 `Action Hotkey` 的操作，比如启动到恢复模式。在某些平台上，可能需要把此项设置为至少 `5000-10000` 来使 `Action Hotkey` 生效，具体取决于键盘驱动程序的性质。
 
-### `Timeout`
+### 9. `Timeout`
 
 **Type**: `plist integer`, 32 bit
 **Failsafe**: `0`
@@ -250,7 +250,7 @@ macOS Bootloader 屏幕朗读 的偏好设置是存在 `isVOEnabled.int32` 文�
 
 > 译者注：`0` 为关闭倒计时而非跳过倒计时，相当于 Clover 的 `-1`。
 
-### `PickerMode`
+### 10. `PickerMode`
 
 **Type**: `plist string`
 **Failsafe**: `Builtin`
@@ -276,11 +276,11 @@ OpenCore 内置的启动选择器包含了一系列在启动过程中选择的�
 
 *注 2*：当禁用 `ShowPicker` 时，除了 `OPT` 键之外，OpenCore 还支持 `Escape` 键来显示启动选项。这个键不仅适用于 `Apple` 启动选择器模式，也适用于 PS/2 键盘的固件，因为这种键盘无法提交按住 `OPT` 键的请求，需要连续点按 `Escape` 键来进入启动选择菜单。
 
-*注 3*：有些 Mac 的 GOP 很棘手，可能很难进入 Apple 启动选择器。要解决这个问题，可以在不加载 GOP 的情况下 bless OpenCore 的 `BootKicker` 实用工具。
+*注 3*：有些 Mac 的 GOP 很棘手，可能很难进入 Apple 启动选择器。还有一些 Mac，`BootKicker` 不能从 OpenCore 运行。可以通过直接 bless `BootKicker` 实用工具来解决这个问题，不需要加载 OpenCore。
 
 ## 8.4 Debug 属性
 
-### `AppleDebug`
+### 1. `AppleDebug`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
@@ -288,35 +288,35 @@ OpenCore 内置的启动选择器包含了一系列在启动过程中选择的�
 
 *注*：此项仅适用于 10.15.4 和更新版本。
 
-### `ApplePanic`
+### 2. `ApplePanic`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
 **Description**: 将 macOS Kernel Panic 保存到 OpenCore 根分区。
 
-保存的文件为 `panic-YYYY-MM-DD-HHMMSS.txt`。强烈建议使用 `keepsyms=1` 引导参数来查看 Panic 日志中的调试符号。如果没有，可以用 `kpdescribe.sh` 实用程序（OpenCore 绑定）来部分恢复堆栈跟踪。
+保存的文件为 `panic-YYYY-MM-DD-HHMMSS.txt`。强烈建议使用 `keepsyms=1` 引导参数来查看 Panic 日志中的调试符号。如果没有，可以用 `kpdescribe.sh` 实用工具（OpenCore 绑定）来部分恢复堆栈跟踪。
 
 开发者内核和调试内核会产生更有用的 Kernel Panic。调试的时候，可以考虑从 [developer.apple.com](https://developer.apple.com) 下载并安装 `KernelDebugKit`。如果要激活开发者内核，需要添加一个 `kcsuffix=development` 引导参数。使用 `uname -a` 命令来确保你当前加载的内核是一个开发者（或调试）内核。
 
-如果没有实用 OpenCore 的 Kernel Panic 保存机制，仍然可以在 `/Library/Logs/DiagnosticReports` 目录下找到 Panic 日志。从 macOS Catalina 开始，Kernel Panic 会以 JSON 格式储存，所以在传递给 `kpdescribe.sh` 之前需要预处理：
+如果没有使用 OpenCore 的 Kernel Panic 保存机制，仍然可以在 `/Library/Logs/DiagnosticReports` 目录下找到 Panic 日志。从 macOS Catalina 开始，Kernel Panic 会以 JSON 格式储存，所以在传递给 `kpdescribe.sh` 之前需要预处理：
 
 ```bash
 cat Kernel.panic | grep macOSProcessedStackshotData | python -c 'import json,sys;print(json.load(sys.stdin)["macOSPanicString"])'
 ```
 
-### `DisableWatchDog`
+### 3. `DisableWatchDog`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
 **Description**: 某些固件可能无法成功快速启动操作系统，尤其是在调试模式下，这会导致看门狗定时器中止引导过程。此选项关闭看门狗定时器，用于排错。
 
-### `DisplayDelay`
+### 4. `DisplayDelay`
 
 **Type**: `plist integer`
 **Failsafe**: `0`
 **Description**: 屏幕上打印每行输出之间的延迟。
 
-### `DisplayLevel`
+### 5. `DisplayLevel`
 
 **Type**: `plist integer`, 64 bit
 **Failsafe**: `0`
@@ -327,7 +327,7 @@ cat Kernel.panic | grep macOSProcessedStackshotData | python -c 'import json,sys
 - `0x00400000` (bit `22`) --- `DEBUG_VERBOSE` in custom builds.
 - `0x80000000` (bit `31`) --- `DEBUG_ERROR` in `DEBUG`, `NOOPT`, `RELEASE`.
 
-### `SerialInit`
+### 6. `SerialInit`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
@@ -340,7 +340,7 @@ cat Kernel.panic | grep macOSProcessedStackshotData | python -c 'import json,sys
 
 具体细节见 `Debugging` 部分。
 
-### `SysReport`
+### 7. `SysReport`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
@@ -350,7 +350,7 @@ cat Kernel.panic | grep macOSProcessedStackshotData | python -c 'import json,sys
 
 *注*：基于安全的考虑，`RELEASE` 构建的 OpenCore 将不会内置这一功能。如果需要使用这一功能请使用 `DEBUG` 构建版。
 
-### `Target`
+### 8. `Target`
 
 **Type**: `plist integer`
 **Failsafe**: `0`
@@ -451,7 +451,7 @@ nvram 4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102:boot-log | awk '{gsub(/%0d%0a%00/,"")
 
 ## 8.5 Security 属性
 
-### `AllowNvramReset`
+### 1. `AllowNvramReset`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
@@ -463,13 +463,23 @@ nvram 4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102:boot-log | awk '{gsub(/%0d%0a%00/,"")
 
 > 译者注：BootCamp Windows 因为符合 bless 模型而不受影响。
 
-### `AllowSetDefault`
+### 2. `AllowSetDefault`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
 **Description**: 允许使用 `CTRL+Enter` 和 `CTRL+[数字]` 设置默认启动项。
 
-### `AuthRestart`
+### 3. `ApECID`
+
+**Type**: `plist integer`, 64 bit
+**Failsafe**: `0`
+**Description**: Apple Enclave 标识符。
+
+将此值设置为任何非零的 64 位整数，将允许使用个性化的 Apple 安全启动标识符。如果你想使用此设置，请确保使用加密的随机数生成器生成一个 64 位的随机数。如果这个值设置妥当，并且 `SecureBootModel` 值有效且不是 `Disabled`，那么就可以实现 Apple 安全启动的 [完整安全性](https://support.apple.com/en-us/HT208330)。
+
+*注*：此值设置为非零后必须重新安装操作系统或使用 macOS 恢复功能（macOS Recovery）。在 `ApECID` 值设置为非零的情况下，只有通过 macOS 恢复功能才能安装操作系统。
+
+### 4. `AuthRestart`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
@@ -479,7 +489,7 @@ nvram 4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102:boot-log | awk '{gsub(/%0d%0a%00/,"")
 
 VirtualSMC 通过将磁盘加密密钥拆分保存在 NVRAM 和 RTC 中来执行 authenticated restart。虽然 OpenCore 在启动系统后立刻删除密钥，但是这仍然可能被视为安全隐患。
 
-### `BootProtect`
+### 5. `BootProtect`
 
 **Type**: `plist string`
 **Failsafe**: `None`
@@ -496,7 +506,19 @@ VirtualSMC 通过将磁盘加密密钥拆分保存在 NVRAM 和 RTC 中来执行
 
 *注 2*：请注意，NVRAM 重置也会同时清除 `Bootstrap` 模式下创建的启动选项。
 
-### `ExposeSensitiveData`
+### 6. `DmgLoading`
+
+**Type**: `plist string`
+**Failsafe**: `Signed`
+**Description**: 定义用于 macOS 恢复功能的磁盘映像（DMG）加载策略。
+
+有效值如下：
+
+- `Disabled` --- 加载 DMG 磁盘映像的行为将会失败。
+- `Signed` --- 仅加载 Apple 签名的 DMG 磁盘映像。
+- `Any` --- 任何 DMG 磁盘映像都会作为普通文件系统挂载。
+
+### 7. `ExposeSensitiveData`
 
 **Type**: `plist integer`
 **Failsafe**: `0x6`
@@ -534,13 +556,13 @@ nvram 4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102:oem-vendor # SMBIOS Type2 Manufacture
 nvram 4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102:oem-board # SMBIOS Type2 ProductName
 ```
 
-### `HaltLevel`
+### 8. `HaltLevel`
 
 **Type**: `plist integer`, 64 bit
 **Failsafe**: `0x80000000` (`DEBUG_ERROR`)
 **Description**: EDK II 调试级别的位掩码（总和），使 CPU 在获得 `HaltLevel` 消息后中止（停止执行）。可能的值与 `DisplayLevel` 值相匹配。
 
-### `Vault`
+### 9. `Vault`
 
 **Type**: `plist string`
 **Failsafe**: `Secure`
@@ -583,7 +605,7 @@ rm vault.pub
 
 *注 2*：当 `vault.plist` 存在，或者当公钥嵌入到 `OpenCore.efi` 中的时候，无论这个选项是什么，`vault.plist` 和 `vault.sig` 都会被使用。设置这个选项仅仅会确保配置的合理性，否则启动过程会中止。
 
-### `ScanPolicy`
+### 10. `ScanPolicy`
 
 **Type**: `plist integer`, 32 bit
 **Failsafe**: `0xF0103`
@@ -619,39 +641,70 @@ rm vault.pub
 - `OC_SCAN_ALLOW_DEVICE_SCSI`
 - `OC_SCAN_ALLOW_DEVICE_NVME`
 
+### 11. `SecureBootModel`
+
+**Type**: `plist string`
+**Failsafe**: `Default`
+**Description**: Apple 安全启动的机型。
+
+定义 Apple 安全启动的机型和策略。指定此值能够定义哪些操作系统可以启动。早于在指定机型发布时间的操作系统将无法启动。有效值如下：
+
+- `Default` --- 最近的可用型号，目前设置为 `j137`
+- `Disabled` --- 无机型，禁用 Apple 安全启动
+- `j137` --- iMacPro1,1 (December 2017) minimum macOS 10.13.2 (17C2111)
+- `j680` --- MacBookPro15,1 (July 2018) minimum macOS 10.13.6 (17G2112)
+- `j132` --- MacBookPro15,2 (July 2018) minimum macOS 10.13.6 (17G2112)
+- `j174` --- Macmini8,1 (October 2018) minimum macOS 10.14 (18A2063)
+- `j140k` --- MacBookAir8,1 (October 2018) minimum macOS 10.14.1 (18B2084)
+- `j780` --- MacBookPro15,3 (May 2019) minimum macOS 10.14.5 (18F132)
+- `j213` --- MacBookPro15,4 (July 2019) minimum macOS 10.14.5 (18F2058)
+- `j140a` --- MacBookAir8,2 (July 2019) minimum macOS 10.14.5 (18F2058)
+- `j152f` --- MacBookPro16,1 (November 2019) minimum macOS 10.15.1 (19B2093)
+- `j160` --- MacPro7,1 (December 2019) minimum macOS 10.15.1 (19B88)
+- `j230k` --- MacBookAir9,1 (March 2020) minimum macOS 10.15.3 (19D2064)
+- `j214k` --- MacBookPro16,2 (May 2020) minimum macOS 10.15.4 (19E2269)
+- `j223` --- MacBookPro16,3 (May 2020) minimum macOS 10.15.4 (19E2265)
+- `j215` --- MacBookPro16,4 (June 2020) minimum macOS 10.15.5 (19F96)
+- `j185` --- iMac20,1 (August 2020) minimum macOS 10.15.6 (19G2005)
+- `j185f` --- iMac20,2 (August 2020) minimum macOS 10.15.6 (19G2005)
+
+`PlatformInfo` 和 `SecureBootModel` 是相互独立的，因此可以在任何 SMBIOS 上启用 Apple 安全启动。将 `SecureBootModel` 设置为除 `Disabled` 以外的任意有效值，相当于实现了 Apple 安全启动的 [中等安全性](https://support.apple.com/en-us/HT208330)。如要实现「完整安全性」，还需要指定 `ApECID` 值。
+
+*注*：`Default` 的值会随着时间的推移而变化，以支持最新的 macOS 主版本，因此不建议同时使用 `ApECID` 和 `Default` 值。
+
 ## 8.6 Entry 属性
 
-### `Arguments`
+### 1. `Arguments`
 
 **Type**: `plist string`
 **Failsafe**: Empty string
 **Description**: 对该引导条目使用的引导参数。
 
-### `Auxiliary`
+### 2. `Auxiliary`
 
 **Type**: `plist boolean`
-**Failsafe**: false
+**Failsafe**: `false`
 **Description**: 当 `HideAuxiliary` 被启用时，这一值为 `true` 的引导条目将不会显示在开机引导菜单中。
 
-### `Comment`
+### 3. `Comment`
 
 **Type**: `plist string`
 **Failsafe**: Empty string
 **Description**: 用于为条目提供人类可读参考的任意 ASCII 字符串（译者注：即注释）。
 
-### `Enabled`
+### 4. `Enabled`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
 **Description**: 除非设置为 `true`，否则该引导条目不会显示在开机引导菜单中。
 
-### `Name`
+### 5. `Name`
 
 **Type**: `plist string`
 **Failsafe**: Empty string
 **Description**: 引导条目在开机引导菜单中显示的名字。
 
-### `Path`
+### 6. `Path`
 
 **Type**: `plist string`
 **Failsafe**: Empty string
