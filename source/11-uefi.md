@@ -42,7 +42,7 @@ build -a X64 -b RELEASE -t XCODE5 -p FatPkg/FatPkg.dsc
 build -a X64 -b RELEASE -t XCODE5 -p MdeModulePkg/MdeModulePkg.dsc
 ```
 
-## 11.3 工具
+## 11.3 工具与应用程序
 
 一些不依赖 OpenCore 的工具可以帮助调试固件和硬件。下面列出了一些已知的工具。虽然有些工具可以从 OpenCore 启动，但大部分工具都应该直接或从 `OpenCoreShell` 中单独运行。
 
@@ -101,7 +101,7 @@ OpenCanopy 为 `PickerAttributes` 提供了全面的支持，并提供了一套�
 - `Shell` --- 具有 UEFI Shell 名称的条目（如 `OpenShell`）。
 - `Tool` --- 其他工具。
 
-预定义的标签放在 `/EFI/OC/Resources/Label` 目录下。每个标签都有 `.lbl` 或 `.l2x` 的后缀，以代表缩放级别。完整的标签列表如下所示。所有标签都是必需的。
+预定义的标签放在 `\EFI\OC\Resources\Label` 目录下。每个标签都有 `.lbl` 或 `.l2x` 的后缀，以代表缩放级别。完整的标签列表如下所示。所有标签都是必需的。
 
 - `EFIBoot` --- 通用的 OS。
 - `Apple` --- Apple OS。

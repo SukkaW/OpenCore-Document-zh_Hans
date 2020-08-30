@@ -3,7 +3,7 @@ title: 7. Kernel
 description: OpenCore 安全配置，Kext 加载顺序以及屏蔽
 type: docs
 author_info: 由 Sukka、derbalkon 整理，由 Sukka、derbalkon 翻译。
-last_updated: 2020-08-28
+last_updated: 2020-08-30
 ---
 
 ## 7.1 简介
@@ -18,7 +18,7 @@ last_updated: 2020-08-28
 **Failsafe**: Empty
 **Description**: 从 `OC/Kexts` 目录加载选定的 Kext 驱动。
 
-设计为使用 plist dict 数据填充以描述每个驱动程序。请参阅下述 Add 属性章节。Kext 驱动程序加载的顺序遵照数组中项目的顺序，因此如 Lilu 这种其他驱动程序的依赖驱动应该位于前面。
+设计为使用 `plist dict` 数据填充以描述每个驱动程序。请参阅下述 Add 属性章节。Kext 驱动程序加载的顺序遵照数组中项目的顺序，因此如 Lilu 这种其他驱动程序的依赖驱动应该位于前面。
 
 可以通过检查 Kext 驱动中 `Info.plist` 的 `OSBundleLibraries` 值的方法来确定其依赖驱动的加载顺序。`OSBundleLibraries` 中的任何依赖驱动都必须在此 Kext 之前加载。
 
@@ -30,27 +30,37 @@ last_updated: 2020-08-28
 **Failsafe**: Empty
 **Description**: 从内核中删除选定的内核驱动程序。
 
-设计为使用 plist dict 数据填充以描述每个驱动程序。请参阅下述 Block 属性章节。Kext 驱动程序加载的顺序遵照数组中项目的顺序，因此如 Lilu 这种其他驱动程序的依赖驱动应该位于前面。
+设计为使用 `plist dict` 数据填充以描述每个驱动程序。请参阅下述 Block 属性章节。Kext 驱动程序加载的顺序遵照数组中项目的顺序，因此如 Lilu 这种其他驱动程序的依赖驱动应该位于前面。
 
 ### 3. Emulate
 
 **Type**: `plist dict`
 **Description**: 在内核空间中仿真选定的硬件。请参考下文 Emulate 属性。
 
-### 4. Patch
+### 4. Force
+
+**Type**: `plist array`
+**Failsafe**: Empty
+**Description**: Load kernel drivers from system volume if they are not cached.
+
+Designed to be filled with `plist dict` values, describing each driver. See Force Properties section below. This section resolves the problem of injecting drivers that depend on other drivers, which are not cached otherwise. The issue normally affects older operating systems, where various dependency kexts, like `IOAudioFamily` or `IONetworkingFamily` may not be present in the kernel cache by default. Kernel driver load order follows the item order in the array, thus the dependencies should be written prior to their consumers. `Force` happens before `Add`.
+
+*Note*: The signature of the “forced” kernel drivers is not checked anyhow, making the use of this feature extremely dangerous and undesired for secure boot. This feature may not work on encrypted partitions in newer operating systems.
+
+### 5. Patch
 
 **Type**: `plist array`
 **Failsafe**: Empty
 **Description**: 在添加和删除驱动程序步骤之前执行的对现有 Kext 驱动程序的二进制修补。
 
-设计为使用 plist dictionary 数据填充以描述每个驱动程序。请参阅下述 Patch 属性章节。
+设计为使用 `plist dictionary` 数据填充以描述每个驱动程序。请参阅下述 Patch 属性章节。
 
-### 5. Quirks
+### 6. Quirks
 
 **Type**: `plist dict`
 **Description**: 应用下面的 Quirks 属性章节中描述的各个内核和驱动程序 Quirk。
 
-### 6. `Scheme`
+### 7. Scheme
 
 **Type**: `plist dict`
 **Description**: 通过参数来定义内核空间的操作模式，具体参数见下面 Scheme 属性部分的描述。
@@ -194,7 +204,7 @@ last_updated: 2020-08-28
 请记住，目前以下配置并不兼容（至少还没有人成功过）：
 
 - 消费级的 Ivy Bridge（`0x0306A9`），因为苹果针对它禁用了 XCPM 并推荐用户使用传统的电源管理。如果要使用这一选项，你还需要手动添加 `_xcpm_patch` 二进制修补以强制启用 XCPM。
-- 低端处理器（如 Haswell+ 奔腾），因为它们不被 macOS 支持。如果要启用这些 CPU 请参阅 [acidanthera/bugtracker#365](https://github.com/acidanthera/bugtracker/issues/365) 中的 `Special NOTES` 相关内容。
+- 低端处理器（如基于 Haswell 或更新架构奔腾处理器），因为它们不被 macOS 支持。如果要启用这些 CPU 请参阅 [acidanthera/bugtracker#365](https://github.com/acidanthera/bugtracker/issues/365) 中的 `Special NOTES` 相关内容。
 
 ### 2. `Cpuid1Mask`
 
@@ -204,7 +214,67 @@ last_updated: 2020-08-28
 
 当每个 `Cpuid1Mask` bit 都设置为 `0` 时将使用原始的 CPU bit，否则取 `Cpuid1Data` 的值。
 
-## 7.6 Patch 属性
+## 7.6 Force Properties
+
+### 1. `Arch`
+
+**Type**: `plist string`
+**Failsafe**: `Any`
+**Description**: Kext architecture (`Any`, `i386`, `x86_64`).
+
+### 2. `BundlePath`
+
+**Type**: `plist string`
+**Failsafe**: Empty
+**Description**: Kext bundle path (e.g. `System/Library/Extensions/IONetworkingFamily.kext`).
+
+### 3. `Comment`
+
+**Type**: `plist string`
+**Failsafe**: Empty string
+**Description**: Arbitrary ASCII string used to provide human readable reference for the entry. It is implementation defined whether this value is used.
+
+### 4. `Enabled`
+
+**Type**: `plist boolean`
+**Failsafe**: `false`
+**Description**: This kernel driver will not be added when not present unless set to true.
+
+### 5. `ExecutablePath`
+
+**Type**: `plist string`
+**Failsafe**: Empty string
+**Description**: Kext executable path relative to bundle (e.g. `Contents/MacOS/IONetworkingFamily`).
+
+### 6. `Identifier`
+
+**Type**: `plist string`
+**Failsafe**: Empty string
+**Description**: Kext identifier to perform presence checking before adding (e.g. `com.apple.iokit.IONetworkingFamily`). Only drivers which identifiers are not be found in the cache will be added.
+
+### 7. `MaxKernel`
+
+**Type**: `plist string`
+**Failsafe**: Empty string
+**Description**: Adds kernel driver on specified macOS version or older.
+
+*Note*: Refer to `Add` `MaxKernel` description for matching logic.
+
+### 8. `MinKernel`
+
+**Type**: `plist string`
+**Failsafe**: Empty string
+**Description**: Adds kernel driver on specified macOS version or newer.
+
+*Note*: Refer to `Add` `MaxKernel` description for matching logic.
+
+### 9. `PlistPath`
+
+**Type**: `plist string`
+**Failsafe**: Empty string
+**Description**: Kext `Info.plist` path relative to bundle (e.g. `Contents/Info.plist`).
+
+## 7.7 Patch 属性
 
 ### 1. `Arch`
 
@@ -294,7 +364,7 @@ last_updated: 2020-08-28
 **Failsafe**: `0`
 **Description**: 在替换前要跳过的发现事件数。
 
-## 7.7 Quirks 属性
+## 7.8 Quirks 属性
 
 ### 1. `AppleCpuPmCfgLock`
 
@@ -449,7 +519,9 @@ macOS Catalina 新增了一项额外的安全措施，导致在电源切换超�
 
 *注*：请尽可能避免使用这一选项。USB 端口数量限制是由 locationID 格式使用的比特数决定的，想要移除限制就需要对操作系统进行大量修改。真正长期有效的解决方案是限制可用的 USB 端口个数在 15 以下（通过 USB 定制的方法）。
 
-## 7.8 Scheme Properties
+## 7.9 Scheme 属性
+
+These properties are particularly relevant for older macOS operating systems. For more details on how to install and troubleshoot such macOS installation refer to [Legacy Apple OS](12-troubleshooting.html#12-1-Legacy-Apple-OS).
 
 ### 1. `FuzzyMatch`
 
@@ -467,16 +539,27 @@ macOS Catalina 新增了一项额外的安全措施，导致在电源切换超�
 **Failsafe**: `Auto`
 **Description**: 如果可用，优先选择指定的内核架构（`Auto`, `i386`, `x86_64`）。
 
-macOS 10.7 和更早的 XNU 内核可能不会使用 `x86_64` 架构来启动，具体选择取决于很多因素，包括启动参数、SMBIOS 以及操作系统类型。当 macOS 和配置支持时，该设置将使用指定的架构来启动 macOS。下面是确定内核架构的算法：
+macOS 10.7 和更早的 XNU 内核可能不会使用 `x86_64` 架构来启动，具体选择取决于很多因素，包括启动参数、SMBIOS 以及操作系统类型。当 macOS 和配置支持时，该设置将使用指定的架构来启动 macOS:
 
-1. 映像参数（比如从 UEFI Shell 启动时）或 `boot-args` 变量中的 `arch` 参数，覆盖兼容性检查并强制指定架构。
-2. 确定 EfiBoot 版本所限制的架构：
-   - 10.4-10.5 --- `i386`
-   - 10.6-10.7 --- `i386` 或 `x86_64`
+- `Auto` — Choose the preferred architecture automatically.
+- `i386` — Use `i386` (32-bit) kernel when available.
+- `i386-user32` — Use `i386` (32-bit) kernel when available and force the use of 32-bit userspace on 64-bit capable processors. On macOS 64-bit capable processors are assumed to support `SSSE3`. This is not the case for older 64-bit capable Pentium processors, which cause some applications to crash on macOS 10.6. The behaviour corresponds to `-legacy` kernel boot argument.
+- `x86_64` — Use `x86_64` (64-bit) kernel when available.
+
+下面是确定内核架构的计算过程：
+
+1. `arch` argument in image arguments (e.g. when launched via UEFI Shell) or in `boot-args` variable overrides any compatibility checks and forces the specified architecture, completing this algorithm.
+2. OpenCore build architecture restricts capabilities to `i386` and `i386-user32` mode for the 32-bit firmware variant.
+3. 确定 EfiBoot 版本所限制的架构:
+   - 10.4-10.5 --- `i386` 或 `i386-user32`
+   - 10.6-10.7 --- `i386`、`i386-user32` 或 `x86_64`
    - 10.8 及更新的版本 --- `x86_64`
-3. SMBIOS 机型信息和 EfiBoot 版本限制了架构，并根据下表定义客户端和服务器操作系统的架构偏好。
-4. `KernelArch` 设置在支持架构且 `KernelArch` 不是 `Auto` 的情况下，更新客户端和服务器操作系统的架构偏好。
-5. 服务器启动时，EfiBoot 在服务器或客户端之间选择一个作为偏好。
+4. If `KernelArch` is set to `Auto` and `SSSE3` is not supported by the CPU, capabilities are restricted to `i386-user32` if supported by EfiBoot.
+5. Board identifier (from SMBIOS) based on EfiBoot version disables `x86_64` support on an unsupported model if any `i386` variant is supported. `Auto` is not consulted here as the list is not overridable in EfiBoot.
+6. `KernelArch` restricts the support to the explicitly specified architecture (when not set to `Auto`) if the architecture remains present in the capabilities.
+7. The best supported architecture is chosen in this order: `x86_64`, `i386`, `i386-user32`.
+
+Unlike macOS 10.7, where select boards identifiers are treated as the `i386` only machines, and macOS 10.5 or earlier, where `x86_64` is not supported by the macOS kernel, macOS 10.6 is very special. The architecture choice on macOS 10.6 depends on many factors including not only the board identifier, but also macOS product type (client vs server), macOS point release, and RAM amount. The detection of them all is complicated and not practical, because several point releases had genuine bugs and failed to properly perform the server detection in the first place. For this reason OpenCore on macOS 10.6 will fallback to `x86_64` architecture whenever it is supported by the board at all, just like on macOS 10.7. As a reference here is the 64-bit Mac model compatibility corresponding to actual EfiBoot behaviour on macOS 10.6.8 and 10.7.5.
 
    | **Model**  | **10.6 (minimal)** | **10.6 (client)** | **10.6 (server)** | **10.7 (any)**   |
    | ---------- | ------------------ | ----------------- | ----------------- | ---------------- |
@@ -487,10 +570,6 @@ macOS 10.7 和更早的 XNU 内核可能不会使用 `x86_64` 架构来启动，
    | iMac       | 8,x (Early 2008)   | 12,x (Mid 2011)   | 12,x (Mid 2011)   | 7,x (Mid 2007)   |
    | MacPro     | 3,x (Early 2008)   | 5,x (Mid 2010)    | 3,x (Early 2008)  | 3,x (Early 2008) |
    | Xserve     | 2,x (Early 2008)   | 2,x (Early 2008)  | 2,x (Early 2008)  | 2,x (Early 2008) |
-
-*注 1*：: 与 10.7 及更新的版本不同，在 10.6 上，许多机型支持 64 位内核加载，但默认情况下是禁用的。Apple 支持网站上关于 64 位 10.6 的 Mac 机型兼容性的信息是不正确的，并不符合实际的 EfiBoot 行为。
-
-*注 2*：: 由于 EfiBoot 中存在一个错误，导致旧的 10.6 服务器版本会以客户端模式启动。此偏好可以用来解决这个问题。
 
 ### 3. `KernelCache`
 

@@ -3,7 +3,7 @@ title: 5. Booter
 description: 配置 OpenRuntime.efi（Slide 值计算、KASLR）
 type: docs
 author_info: 由 Sukka、derbalkon 整理，由 Sukka、derbalkon 翻译。
-last_updated: 2020-08-21
+last_updated: 2020-08-30
 ---
 
 ## 5.1 简介
@@ -52,7 +52,7 @@ sudo pmset standby 0
 ### 1. `Address`
 
 **Type**: `plist integer`
-**Failsafe**: 0
+**Failsafe**: `0`
 **Description**: 指排除在外的 MMIO 地址，其内存描述符（Memory Descriptor）应被 `DevirtualiseMmio` 虚拟化（保持不变）。该值所在的区域会被分配一个虚拟地址，因此在操作系统运行期间，固件能够直接与该内存区域进行通信。
 
 这里写入的地址必须是内存映射的一部分，具有 `EfiMemoryMappedIO` 类型和 `EFI_MEMORY_RUNTIME` 属性（最高 bit）。可以使用调试日志找到可能的地址。
@@ -119,7 +119,7 @@ sudo pmset standby 0
 **Failsafe**: `false`
 **Description**: 复用原始的休眠内存映射。
 
-这一选项强制 XNU 内核忽略新提供的内存映射、认定设备从休眠状态唤醒后无需对其更改。如果你在使用 Windows，则 [务必启用](https://docs.microsoft.com/en-us/windows-hardware/design/device-experiences/oem-uefi#hibernation-state-s4-transition-requirements) 这一选项，因为 Windows 要求 S4 唤醒后保留运行内存的大小和位置。
+这一选项强制 XNU 内核忽略新提供的内存映射、认定设备从休眠状态唤醒后无需对其更改。如果你在使用 Windows，则 [务必启用](https://docs.microsoft.com/windows-hardware/design/device-experiences/oem-uefi#hibernation-state-s4-transition-requirements) 这一选项，因为 Windows 要求 S4 唤醒后保留运行内存的大小和位置。
 
 *注*：这可能用于解决较旧硬件上的错误内存映射。如 Insyde 固件的 Ivy Bridge 笔记本电脑，比如 Acer V3-571G。除非您完全了解这一选项可能导致的后果，否则请勿使用此功能。
 
@@ -194,7 +194,7 @@ sudo pmset standby 0
 **Failsafe**: `false`
 **Description**: 为低内存设备提供自定义 KASLR slide 值。
 
-开启这个选项后，将会对固件进行内存映射分析，检查所有 slide（从 1 到 255）中是否有可用的。由于 `boot.efi` 私用 rdrand 或伪随机 rdtsc 随机生成此值，因此有可能出现冲突的 slide 值被使用并导致引导失败。如果出现潜在的冲突，这个选项将会强制为 macOS 选择一个伪随机值。这同时确保了 `slide=` 参数不会被传递给操作系统。
+开启这个选项后，将会对固件进行内存映射分析，检查所有 slide（从 `1` 到 `255`）中是否有可用的。由于 `boot.efi` 私用 rdrand 或伪随机 rdtsc 随机生成此值，因此有可能出现冲突的 slide 值被使用并导致引导失败。如果出现潜在的冲突，这个选项将会强制为 macOS 选择一个伪随机值。这同时确保了 `slide=` 参数不会被传递给操作系统。
 
 *注*：OpenCore 会自动检查是否需要启用这一选项。如果 OpenCore 的调试日志中出现 `OCABC: Only N/256 slide values are usable!` 则请启用这一选项。
 

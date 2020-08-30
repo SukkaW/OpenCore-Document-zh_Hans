@@ -3,13 +3,13 @@ title: 2. 配置
 description: Configuration
 type: docs
 author_info: 由 Sukka 整理，由 Sukka、derbalkon 翻译
-last_updated: 2020-08-13
+last_updated: 2020-08-30
 ---
 
 ## 2.1 配置术语
 
-- `OC config` --- OpenCore 的配置文件，格式为 plist，文件名为 `config.plist`。OpenCore 的配置文件具有可扩展性，并被设计为具有多个命名空间的结构。每个命名空间下允许具有 plist array 或 plist dictionary，在本文档相应部分中对其进行了描述。
-- `valid key` --- OC Config 中的 plist key object。除了明确描述的 valid key 以外，以 `#` 符号开头的值（如 `#Hello`）也将被视为 valid key，并被表示为注释。虽然表示为注释的值会被丢弃，但是它们仍然是 valid key。其他的 plist key 都是无效、不合法的，它们的存在可能会导致未定义、非预期的行为。
+- `OC config` --- OpenCore 的配置文件，格式为 `plist`，文件名为 `config.plist`。OpenCore 的配置文件具有可扩展性，并被设计为具有多个命名空间的结构。每个命名空间下允许具有 `plist array` 或 `plist dictionary`，在本文档相应部分中对其进行了描述。
+- `valid key` --- OC Config 中的 `plist key` 对象。除了明确描述的 `valid key` 以外，以 `#` 符号开头的值（如 `#Hello`）也将被视为 valid key，并被表示为注释。虽然表示为注释的值会被丢弃，但是它们仍然是 `valid key`。其他的 `plist key` 都是无效、不合法的，它们的存在可能会导致未定义、非预期的行为。
 - `valid value` --- 有效、合法的 `plist object`，并能匹配一些特定的 `plist object` 描述中所有附加条件（若有）。
 - `invalid value` --- 指 `plist object` 本身是有效、合法的，但属于其他 `plist type`、与特定 `plist object` 描述中附加条件不符（例如取值范围）或者在对应集合中空缺。`invalid value` 会被不确定的方式读取为这个 `plist object` 的任何可能值（即，重启前后的值可能会不同），可能报错也可能不报错。尽管读取 `invalid value` 相当于读取某些已定义的 `valid value`，但是将不兼容的值应用于主机系统可能会产生未定义、非预期的行为。
 - `optional value` --- 可空缺，或以特定 `plist object` 描述提供的特定方式（区别于 `invalid value`）读取的有效值。而其他情况下（译者注：未提供读取方式）的 `invalid value` 仍然会被应用。Value 除非被明确标记为 `optional value`，否则必须存在，如果空缺则会被读取为 `invalid value`。
@@ -22,15 +22,15 @@ last_updated: 2020-08-13
 
 如果 OpenCore 发现了 OC Config，则至少会读取并处理一次。根据 OpenCore 的引导机制的不同，如果存在多个 OC Config 文件，OpenCore 可能会读取其中任何一个或数个。如果硬盘中没有 OC Config，OpenCore 将会使用可选值和无效值的规则。
 
-OC Config 有大小、嵌套和键值数量的限制。OC Config 的大小不得超过 16 MB，嵌套层数不得超过 8 层，每个 plist object 中最多有 16384 个节点（一个 plist dictionary 将被计为一对节点）。不符合上述规则的 OC Config 文件将可能导致未定义、非预期的行为。常见的 OC Config 错误格式包括：
+OC Config 有大小、嵌套和键值数量的限制。OC Config 的大小不得超过 16 MB，嵌套层数不得超过 8 层，每个 `plist object` 中最多有 16384 个节点（一个 `plist dictionary` 将被计为一对节点）。不符合上述规则的 OC Config 文件将可能导致未定义、非预期的行为。常见的 OC Config 错误格式包括：
 
-- 不符合 plist DTD
-- 存在本文档中没有记载的 plist object
+- 不符合 `plist` DTD
+- 存在本文档中没有记载的 `plist object`
 - 违反文件大小、嵌套层级和键值数量的限制
 
 我们建议（但非强制）遇到格式错误的 OC Config 时中止、当作 OC Config 不存在的情况来处理。为了能够向前兼容，我们建议（但非强制）对采用无效值的行为进行警告。采用无效值的建议做法是在使用的情况下遵守以下规则：
 
-| Type | Value |
+| **Type** | **Value** |
 |:---|:---|
 | plist string | Empty string (`<string></string>`) |
 | plist data | Empty data (`<data></data>`) |

@@ -3,7 +3,7 @@ title: 8. Misc
 description: 关于 OpenCore 行为的其他配置
 type: docs
 author_info: 由 xMuu、Sukka、derbalkon 整理、由 Sukka、derbalkon 翻译。
-last_updated: 2020-08-28
+last_updated: 2020-08-30
 ---
 
 ## 8.1 简介
@@ -427,6 +427,7 @@ nvram 4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102:boot-log | awk '{gsub(/%0d%0a%00/,"")
 - `OCFS` — OcFileLib
 - `OCFV` — OcFirmwareVolumeLib
 - `OCHS` — OcHashServicesLib
+- `OCI4` — OcAppleImg4Lib
 - `OCIC` — OcImageConversionLib
 - `OCII` — OcInputLib
 - `OCJS` — OcApfsLib
@@ -475,9 +476,11 @@ nvram 4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102:boot-log | awk '{gsub(/%0d%0a%00/,"")
 **Failsafe**: `0`
 **Description**: Apple Enclave 标识符。
 
-将此值设置为任何非零的 64 位整数，将允许使用个性化的 Apple 安全启动标识符。如果你想使用此设置，请确保使用加密的随机数生成器生成一个 64 位的随机数。如果这个值设置妥当，并且 `SecureBootModel` 值有效且不是 `Disabled`，那么就可以实现 Apple 安全启动的 [完整安全性](https://support.apple.com/en-us/HT208330)。
+将此值设置为任何非零的 64 位整数，将允许使用个性化的 Apple 安全启动标识符。如果你想使用此设置，请确保使用加密的随机数生成器生成一个 64 位的随机数。如果这个值设置妥当，并且 `SecureBootModel` 值有效且不是 `Disabled`，那么就可以实现 Apple 安全启动的 [完整安全性](https://support.apple.com/HT208330)。
 
-*注*：此值设置为非零后必须重新安装操作系统或使用 macOS 恢复功能（macOS Recovery）。在 `ApECID` 值设置为非零的情况下，只有通过 macOS 恢复功能才能安装操作系统。
+*Note 1*: You will have to reinstall the operating system or use macOS DMG recovery to `bless –personalize` your installation after setting this value to non-zero. Installing the operating system with `ApECID` value set to non-zero is only possible through macOS recovery or personalized builds created with `asr`.
+
+*Note 2*: Currently the use of this option is unrealiable (apparently to a bug in macOS installer), and thus its use is not recommended.
 
 ### 4. `AuthRestart`
 
@@ -504,7 +507,7 @@ VirtualSMC 通过将磁盘加密密钥拆分保存在 NVRAM 和 RTC 中来执行
 
 *注 1*：某些固件的 NVRAM 本身存在问题，可能会出现无启动项支持，或者其他各种不兼容的情况。虽然可能性不大，但使用此选项可能会导致启动失败。请在已知兼容的主板上使用，风险自行考虑。
 
-*注 2*：请注意，NVRAM 重置也会同时清除 `Bootstrap` 模式下创建的启动选项。
+*注 2*：请注意，虽然从 OpenCore 执行的 NVRAM 重置不会清除在 `Bootstrap` 模式中创建的启动选项，但是如果在加载 OpenCore 之前重置 NVRAM，则会同时清除 `Bootstrap` 创建的启动选项。
 
 ### 6. `DmgLoading`
 
@@ -514,9 +517,9 @@ VirtualSMC 通过将磁盘加密密钥拆分保存在 NVRAM 和 RTC 中来执行
 
 有效值如下：
 
-- `Disabled` --- 加载 DMG 磁盘映像的行为将会失败。
-- `Signed` --- 仅加载 Apple 签名的 DMG 磁盘映像。
-- `Any` --- 任何 DMG 磁盘映像都会作为普通文件系统挂载。
+- `Disabled` --- 加载 DMG 磁盘映像的行为将会失败。`Disabled` policy will still let macOS Recovery to load in most cases as there usually are `boot.efi` files compatible with Apple Secure Boot. Manually downloaded DMG images stored in `com.apple.recovery.boot` directories will not load, however.
+- `Signed` --- 仅加载 Apple 签名的 DMG 磁盘映像。Due to Apple Secure Boot design `Signed` policy will let any Apple-signed macOS Recovery to load regardless of Apple Secure Boot state, which may not always be desired.
+- `Any` --- 任何 DMG 磁盘映像都会作为普通文件系统挂载。`Any` policy is strongly not recommended and will cause a boot failure when Apple Secure Boot is activated.
 
 ### 7. `ExposeSensitiveData`
 
@@ -668,9 +671,18 @@ rm vault.pub
 - `j185` --- iMac20,1 (August 2020) minimum macOS 10.15.6 (19G2005)
 - `j185f` --- iMac20,2 (August 2020) minimum macOS 10.15.6 (19G2005)
 
-`PlatformInfo` 和 `SecureBootModel` 是相互独立的，因此可以在任何 SMBIOS 上启用 Apple 安全启动。将 `SecureBootModel` 设置为除 `Disabled` 以外的任意有效值，相当于实现了 Apple 安全启动的 [中等安全性](https://support.apple.com/en-us/HT208330)。如要实现「完整安全性」，还需要指定 `ApECID` 值。
+`PlatformInfo` 和 `SecureBootModel` 是相互独立的，因此可以在任何 SMBIOS 上启用 Apple 安全启动。将 `SecureBootModel` 设置为除 `Disabled` 以外的任意有效值，相当于实现了 Apple 安全启动的 [中等安全性](https://support.apple.com/HT208330)。如要实现「完整安全性」，还需要指定 `ApECID` 值。
 
-*注*：`Default` 的值会随着时间的推移而变化，以支持最新的 macOS 主版本，因此不建议同时使用 `ApECID` 和 `Default` 值。
+Enabling Apple Secure Boot is more demanding to incorrect configurations, buggy macOS installations, and unsupported setups. Things to keep in mind:
+
+- Just like on T2 Macs you will not be able to install any unsigned kernel drivers and several signed kernel drivers including NVIDIA Web Drivers.
+- The list of cached drivers may be different, resulting in the need to change the list of `Added` or `Forced` kernel drivers. For example, `IO80211Family` cannot be injected in this case.
+- If your platform requires certain settings, but they were not enabled, because the obvious issues did not trigger before, you may get boot failure. Be extra careful with `IgnoreInvalidFlexRatio` or `HashServices`.
+- Operating systems released before Apple Secure Boot landed (e.g. macOS 10.12 or earlier) will still boot until UEFI Secure Boot is enabled. This is so, because from Apple Secure Boot point they are treated as incompatible and are assumed to be handled by the firmware just like Microsoft Windows is.
+- On older CPUs (e.g. before Sandy Bridge) enabling Apple Secure Boot might cause slightly slower loading by up to 1 second.
+- Since `Default` value will increase with time to support the latest major release operating system, it is not recommended to use `ApECID` and `Default` value together.
+
+For more details on how to configure Apple Secure Boot with UEFI Secure Boot refer to [UEFI Secure Boot](12-troubleshooting.html#12-2-UEFI-Secure-Boot) section.
 
 ## 8.6 Entry 属性
 

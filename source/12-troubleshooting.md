@@ -3,12 +3,49 @@ title: 12. 排错
 description: 当你遇到问题的时候应该看看这个
 type: docs
 author_info: 由 xMuu、Sukka、derbalkon 整理，由 Sukka、derbalkon 翻译
-last_updated: 2020-08-21
+last_updated: 2020-08-30
 ---
 
-## 12.1 Windows 支持
+## 12.1 Legacy Apple OS
 
-### 我能安装 Windows 系统吗？
+Older operating systems may be more complicated to install, but sometimes can be necessary to use for all kinds of reasons. While a compatible board identifier and CPUID are the obvious requiremenets for proper functioning of an older operating system, there are many other less obvious things to keep in mind. This section tries to cover a common set of issues relevant to installing older macOS operating systems.
+
+### 1. macOS 10.8 and 10.9
+
+- Disk images on these systems use Apple Partitioning Scheme and will require the proprietary `PartitionDxe` driver to run DMG recovery and installation. It is possible to set `DmgLoading` to `Disabled` to run the recovery without DMG loading avoiding the need for `PartitionDxe`.
+- Cached kernel images often do not contain family drivers for networking (`IONetworkingFamily`) or audio (`IOAudioFamily`) requiring one to use `Force` loading in order to inject networking or audio drivers.
+
+### 2. macOS 10.7
+
+- All previous issues apply.
+- Many kexts, including Lilu and its plugins, are unsupported on macOS 10.7 and older as they require newer kernel APIs, which are not part of the macOS 10.7 SDK.
+- Prior to macOS 10.8 KASLR sliding is not supported, which will result in memory allocation failures on firmwares that utilise lower memory for their own purposes. Refer to [acidanthera/bugtracker#1125](https://github.com/acidanthera/bugtracker/issues/1125) for tracking.
+- 32-bit kernel interaction is unsupported and will lead to issues like kernel patching or injection failure.
+
+### 3. macOS 10.6
+
+- All previous issues apply.
+- Last released installer images for macOS 10.6 are macOS 10.6.7 builds `10J3250` and `10J4139` (without Xcode). These images are limited to certain model identifiers and have no `-no_compat_check` boot argument support. Images without such restrictions can be found [here](https://mega.nz/folder/z5YUhYTb%23gA_IRY5KMuYpnNCg7kR3ug), assuming that you legally own macOS 10.6. Read `DIGEST.txt` for more details. Keep in mind, that these are the earliest tested versions of macOS 10.6 with OpenCore.
+
+## 12.2 UEFI Secure Boot
+
+OpenCore is designed to provide a secure boot chain between your firmware and your operating system. On most x86 platforms trusted loading is implemented via [UEFI Secure Boot](https://en.wikipedia.org/wiki/UEFI_Secure_Boot) model. Not only OpenCore fully supports this model, but it also extends its capabilities to ensure sealed configuration via [vaulting](8-misc.html#9-Vault) and provide trusted loading to the operating systems using custom verification, such as [Apple Secure Boot](8-misc.html#11-SecureBootModel). Proper secure boot chain requires several steps and careful configuration of select settings as explained below:
+
+1. Enable Apple Secure Boot by setting `SecureBootModel` if you need to run macOS. Note, that not every macOS is compatible with Apple Secure Boot and there are several other restrictions as explained in [Apple Secure Boot](8-misc.html#11-SecureBootModel) section.
+2. Disable DMG loading by setting `DmgLoading` to `Disabled` if you are concerned of loading old vulnerable DMG recoveries. This is **not** required, but recommended. For the actual tradeoffs see the details in [DMG loading](8-misc.html#6-DmgLoading) section.
+3. Make sure that APFS JumpStart functionality restricts the loading of old vulnerable drivers by setting `MinDate` and `MinVersion` to `0`. More details are provided in [APFS JumpStart](11-uefi.html#11-7-APFS-属性) section. An alternative is to install `apfs.efi` driver manually.
+4. Make sure that you do not need `Force` driver loading and can still boot all the operating systems you need.
+5. Make sure that `ScanPolicy` restricts loading from undesired devices. It is a good idea to prohibit all removable drivers or unknown filesystems.
+6. Sign all the installed drivers and tools with your private key. Do not sign tools that provide administrative access to your computer, like UEFI Shell.
+7. Vault your configuration as explained [Vaulting](8-misc.html#9-Vault) section.
+8. Sign all OpenCore binaries (`BOOTX64.efi`, `BOOTIa32.efi`, `Bootstrap.efi`, `OpenCore.efi`) used on this system with the same private key.
+9. Sign all third-party operating system (not made by Microsoft or Apple) bootloaders if you need them. For Linux there is an option to install Microsoft-signed Shim bootloader as explained on e.g. [Debian Wiki](https://wiki.debian.org/SecureBoot).
+10. Enable UEFI Secure Boot in your firmware preferences and install the certificate with a private key you own. Details on how to generate a certificate can be found in various articles, like [this one](https://habr.com/en/post/273497), and are out of the scope of this document. If you need to launch Windows you will also need to add the [Microsoft Windows Production CA 2011](http://go.microsoft.com/fwlink/?LinkID=321192). If you need to launch option ROMs or decided to use signed Linux drivers you will also need the [Microsoft UEFI Driver Signing CA](http://go.microsoft.com/fwlink/?LinkId=321194).
+11. Password-protect changing firmware settings to ensure that UEFI Secure Boot cannot be disabled without your knowledge.
+
+## 12.3 Windows 支持
+
+### 1. 我能安装 Windows 系统吗？
 
 虽然 OpenCore 并没有提供官方的 Windows 支持，但是使用 Boot Camp 安装 64 位 UEFI Windows（即 Windows 8 及更高版本）应该是可以正常工作的。安装第三方 UEFI、或者仅部分支持 UEFI 引导的系统（如 Windows 7）可能需要额外注意。不论如何，记住以下几点：
 
@@ -17,7 +54,7 @@ last_updated: 2020-08-21
 - macOS 要求硬盘中的第一份分区为 EFI 分区，并且与 Windows 的默认布局不支持。尽管 OpenCore 确实提供了一个 [解决方法](https://github.com/acidanthera/bugtracker/issues/327)，但是强烈建议不要依赖这个方法。
 - Windows 系统可能需要重新激活。为了避免这种情况发生，请考虑将 SystemUUID 设置为原始固件的 UUID。请注意，在旧固件上 UUID 可能是无效的（非随机的）。如果你还遇到了什么问题，可以考虑使用 HWID 或 KMS38 的 Windows 许可证。从 OpenCore 0.5.8 开始，你还可以通过设置 `UpdateSMBIOSMode` 为 `Custom` 来避免 OEM 激活失效。Windows 激活的细节不在本文档的讨论范围内，你应该能够在网上查找到相关资料。
 
-### 我需要安装其他什么软件吗？
+### 2. 我需要安装其他什么软件吗？
 
 在大多数情况下，要启用多操作系统切换、安装相关驱动程序，你将需要 [Boot Camp](https://support.apple.com/boot-camp) 提供的 Windows 支持软件。为了简化下载过程、或者配置硬盘中已经安装好的 Windows，可以使用 [Brigadier](https://github.com/timsutton/brigadier) 这个实用软件。请注意在使用 Brigadier 之前，你可能需要先下载并安装 [7-Zip](https://www.7-zip.org)。
 
@@ -31,39 +68,39 @@ last_updated: 2020-08-21
 
 - 要反转鼠标滚轮的滚动方向，必须按照 [这个网站](https://superuser.com/a/364353) 提供的方法、设置 `FlipFlopWheel` 的值为 `1`。
 
-> 译者注：
-> 涉及到的注册表是 `HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Enum\HID\VID_???\VID_???\Device Parameters.`
-> 你可以在 PowerShell 中执行下述命令进行设置；
->
-> ```powershell
-> # 获取当前设置
-> Get-ItemProperty HKLM:\SYSTEM\CurrentControlSet\Enum\HID\*\*\Device` Parameters FlipFlopWheel -EA 0
-> # 修改设置
-> # 鼠标滚动方向 相反 FlipFlopWheel 1
-> # 鼠标滚动方向 自然滚动 FlipFlopWheel 0
-> Get-ItemProperty HKLM:\SYSTEM\CurrentControlSet\Enum\HID\*\*\Device` Parameters FlipFlopWheel -EA 0 | ForEach-Object { Set-ItemProperty $_.PSPath FlipFlopWheel 1 }
-> ```
->
-> 如果需要撤销更改，可以使用下述命令：
->
-> ```powershell
-> # 恢复鼠标滚动方向
-> Get-ItemProperty HKLM:\SYSTEM\CurrentControlSet\Enum\HID\*\*\Device` Parameters FlipFlopWheel -EA 1 | ForEach-Object { Set-ItemProperty $_.PSPath FlipFlopWheel 0 }
-> ```
+  > 译者注：
+  > 涉及到的注册表是 `HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Enum\HID\VID_???\VID_???\Device Parameters.`
+  > 你可以在 PowerShell 中执行下述命令进行设置；
+  >
+  > ```powershell
+  > # 获取当前设置
+  > Get-ItemProperty HKLM:\SYSTEM\CurrentControlSet\Enum\HID\*\*\Device` Parameters FlipFlopWheel -EA 0
+  > # 修改设置
+  > # 鼠标滚动方向 相反 FlipFlopWheel 1
+  > # 鼠标滚动方向 自然滚动 FlipFlopWheel 0
+  > Get-ItemProperty HKLM:\SYSTEM\CurrentControlSet\Enum\HID\*\*\Device` Parameters FlipFlopWheel -EA 0 | ForEach-Object { Set-ItemProperty $_.PSPath FlipFlopWheel 1 }
+  > ```
+  >
+  > 如果需要撤销更改，可以使用下述命令：
+  >
+  > ```powershell
+  > # 恢复鼠标滚动方向
+  > Get-ItemProperty HKLM:\SYSTEM\CurrentControlSet\Enum\HID\*\*\Device` Parameters FlipFlopWheel -EA 1 | ForEach-Object { Set-ItemProperty $_.PSPath FlipFlopWheel 0 }
+  > ```
 
 - `RealTimeIsUniversal` 必须设置为 `1` 以避免 Windows 和 macOS 之间的时间不同步。
 
-> 译者注：众所周知，Windows 将硬件时间视为本地时间，而 macOS 会计算 UTC 后当做系统时间。通过修改上述提到的注册表值，可以让 Windows 将硬件时间视为 UTC 时间。用到的 CMD 命令如下所示：
->
-> ```cmd
-> Reg add HKLM\SYSTEM\CurrentControlSet\Control\TimeZoneInformation /v RealTimeIsUniversal /t REG_DWORD /d 1
-> ```
+  > 译者注：众所周知，Windows 将硬件时间视为本地时间，而 macOS 会计算 UTC 后当做系统时间。通过修改上述提到的注册表值，可以让 Windows 将硬件时间视为 UTC 时间。用到的 CMD 命令如下所示：
+  >
+  > ```cmd
+  > Reg add HKLM\SYSTEM\CurrentControlSet\Control\TimeZoneInformation /v RealTimeIsUniversal /t REG_DWORD /d 1
+  > ```
 
 - 如果要访问 Apple 的文件系统（APFS、HFS），你可能需要安装单独的软件。已知的工具有 [Apple HFS+ driver](https://forums.macrumors.com/threads/apple-hfs-windows-driver-download.1368010/) ([hack for Windows 10](https://forums.macrumors.com/threads/apple-hfs-windows-driver-download.1368010/post-24180079))、[HFSExplorer](http://www.catacombae.org/hfsexplorer)、MacDrive、Paragon APFS、Paragon HFS+、TransMac，等等。
 
-> 译者注：**切记不要在 Windows 下写入 APFS 或 HFS，十有八九你会导致分区表错误和无法恢复的数据丢失。别怪我们没有警告过你！！**
+  > 译者注：**切记不要在 Windows 下写入 APFS 或 HFS，十有八九你会导致分区表错误和无法恢复的数据丢失。别怪我们没有警告过你！！**
 
-### 为什么我会在 Boot Camp 启动硬盘 控制面板 中看到 `Basic data partition`？
+### 3. 为什么我会在 Boot Camp 启动硬盘 控制面板 中看到 `Basic data partition`？
 
 Boot Camp 使用 GPT 分区表获取每个引导选项的名称。独立安装 Windows 后，你必须手动重新标记分区。这可以通过许多工具完成，比如开源的 [gdisk](https://sourceforge.net/projects/gptfdisk)，使用方法如下：
 
@@ -103,17 +140,17 @@ The operation has completed successfully.
 
 <center><em><strong>Listing 4</strong>: 重新标记 Windows 卷宗</em></center>
 
-### 如何选择 NTFS 驱动程序
+### 4. 如何选择 NTFS 驱动程序
 
-提供 NTFS 读写支持的第三方驱动程序，如 [NTFS-3G](https://www.tuxera.com/community/open-source-ntfs-3g)、Paragon NTFS、Tuxera NTFS 或 [希捷移动硬盘 Paragon 驱动程序](https://www.seagate.com/support/software/paragon) 会破坏 macOS 的功能，比如 系统偏好设置 中的 启动磁盘 选项。
-虽然我们仍然不建议使用这些经常破坏文件系统的驱动程序（我们推荐使用 macOS 内建的 NTFS 读写支持，可以通过终端或 GUI 启用），但是这些驱动程序的厂商也提供了他们各自的解决方案，在这里我们仅列举两个：
+提供 NTFS 读写支持的第三方驱动程序，如 [NTFS-3G](https://www.tuxera.com/community/open-source-ntfs-3g)、Paragon NTFS、Tuxera NTFS 或 [希捷移动硬盘 Paragon 驱动程序](https://www.seagate.com/support/software/paragon) 会破坏 macOS 的功能，比如 系统偏好设置 中的 [启动磁盘](https://support.apple.com/HT202796) 选项。
+虽然我们仍然不建议使用这些经常破坏文件系统的驱动程序（我们推荐使用 macOS 内建的 NTFS 读写支持，可以通过 [终端](http://osxdaily.com/2013/10/02/enable-ntfs-write-support-mac-os-x) 或 [GUI](https://mounty.app) 启用），但是这些驱动程序的厂商也提供了他们各自的解决方案，在这里我们仅列举两个：
 
 - [Tuxera 的常见问题解答页面](https://www.tuxera.com/products/tuxera-ntfs-for-mac/faq)
 - [Paragon 相关的技术支持文档](https://kb.paragon-software.com/article/6604)
 
 > 译者注：虽然 acidanthera 团队推荐使用 macOS 内置的 NTFS 支持，但是译者强烈反对这种方法（不论是直接方法还是使用类似 Mounty 的第三方工具）。修改 fstab 的风险是极高的。在你清楚你在做什么之前，不要轻举妄动！！
 
-## 12.2 调试
+## 12.4 调试
 
 与其他硬件相关的项目类似，OpenCore 也支持审计与调试。使用 NOOPT 或 DEBUG 构建版本（而非 RELEASE 构建版本）可以产生更多的调试输出。对于 NOOPT 构建版本，你还可以使用 GDB 或 IDA Pro 进行调试。对于 GDB 请查看 [OpenCore Debug](https://github.com/acidanthera/OpenCorePkg/tree/master/Debug) 相关页面；对于 IDA Pro，你需要 7.3 或更高版本，更多详细信息请参考 IDA Pro 提供的页面：[Debugging the XNU Kernel with IDA Pro](https://www.hex-rays.com/products/ida/support/tutorials/index.shtml)。
 
@@ -123,54 +160,62 @@ The operation has completed successfully.
 
 务必记得在固件设置中启用 `COM` 口，一定不要使用超过 1 米的 USB 线缆，以免输出数据损坏。如果要额外启用 XNU 内核串行输出，则需要添加 `debug=0x8` 启动参数。
 
-## 12.3 技巧和窍门
+## 12.5 技巧和窍门
 
 ### 1. 啊呀呀呀我系统没法启动了我该怎么看日志啊？
 
 通常情况下，获取实际的错误信息就足够了。为此，请确保：
 
-- 你正在使用 OpenCore 的 DEBUG 或 NOOPT 版本。
-- 日志已启用（`1`）并且在屏幕上显示（`2`）：`Misc => Debug => Target = 3`.
-- 将以下这些等级的日志输出到屏幕上：`DEBUG_ERROR` (`0x80000000`)、`DEBUG_WARN` (`0x00000002`) 和 `DEBUG_INFO` (`0x00000040`)：`Misc => Debug => DisplayLevel = 0x80000042`.
-- 遇到 `DEBUG_ERROR` 这样的致命错误时中止启动：`Misc => Security => HaltLevel = 0x80000000`。
-- 禁用 Watch Dog 以避免自动重启：`Misc => Debug => DisableWatchDog = true`。
-- 已启用 启动菜单 显示：`Misc => Boot => ShowPicker = true`
+- 你正在使用 OpenCore 的 `DEBUG` 或 `NOOPT` 版本。
+- 日志已启用（`1`）并且在屏幕上显示（`2`）：`Misc → Debug → Target = 3`.
+- 将以下这些等级的日志输出到屏幕上：`DEBUG_ERROR` (`0x80000000`)、`DEBUG_WARN` (`0x00000002`) 和 `DEBUG_INFO` (`0x00000040`)：`Misc → Debug → DisplayLevel = 0x80000042`.
+- 遇到 `DEBUG_ERROR` 这样的致命错误时中止启动：`Misc → Security → HaltLevel = 0x80000000`。
+- 禁用 Watch Dog 以避免自动重启：`Misc → Debug → DisableWatchDog = true`。
+- 已启用 启动菜单 显示：`Misc → Boot → ShowPicker = true`
 
-如果你在日志中看不出明显的错误，请逐一检查 Quirks 部分中可用的 hacks。例如，对于 Early Boot 出现的问题（如 OpenCore 启动菜单无法显示），通过 UEFI Shell（随 OpenCore 打包在一起）可以查看相关调试信息。
+如果你在日志中看不出明显的错误，请逐一检查 `Quirks` 部分中可用的 hacks。例如，对于 Early Boot 出现的问题（如 OpenCore 启动菜单无法显示），通过 `UEFI Shell`（随 OpenCore 打包在一起）可以查看相关调试信息。
 
-### 2. 如何自定义启动项？
+### 2. How to debug macOS boot failure?
+
+- Refer to `boot-args` values like `debug=0x100`, `keepsyms=1`, `-v`, and similar.
+- Do not forget about `AppleDebug` and `ApplePanic` properties.
+- Take care of `Booter`, `Kernel`, and `UEFI` quirks.
+- Consider using serial port to inspect early kernel boot failures. For this you may need `debug=0x108`, `serial=5`, and `msgbuf=1048576` arguments. Refer to the patches in Sample.plist when dying before serial init.
+- Always read the logs carefully.
+
+### 3. 如何自定义启动项？
 
 OpenCore 遵循 Apple Bless 标准模型、从引导目录中的 `.contentDetails` 和 `.disk_label.contentDetails` 文件中提取条目名称。这些文件包含带有输入标题的 ASCII 字符串，你可以修改它们。
 
-### 3. 如何选择默认启动的系统？
+### 4. 如何选择默认启动的系统？
 
-OpenCore 使用 UEFI 首选启动项 来选择默认的启动项。设置的方式随 BIOS 不同而不同，具体请参考 macOS [启动磁盘](https://support.apple.com/HT202796) 或 Windows [Boot Camp](https://support.apple.com/guide/bootcamp-control-panel/start-up-your-mac-in-windows-or-macos-bcmp29b8ac66/mac) 控制面板。
+OpenCore 使用 UEFI 首选启动项 来选择默认的启动项。设置的方式随 BIOS 不同而不同，具体请参考 macOS [启动磁盘](https://support.apple.com/HT202796) 或 Windows [启动转换](https://support.apple.com/guide/bootcamp-control-panel/start-up-your-mac-in-windows-or-macos-bcmp29b8ac66/mac) 控制面板。
 
 由于使用 OpenCore 提供的 `BOOTx64.efi` 作为首选启动项会限制这项功能（可能还会导致一些固件删除不兼容的引导选项），我们强烈建议你启用 `RequestBootVarRouting` Quirk，这会将你所做的选择保留在 OpenCore 变量空间中。请注意，`RequestBootVarRouting` 需要单独的 `.efi` 驱动文件（译者注：即 OpenRuntime.efi）。
 
-### 4. 安装 macOS 最简单的方法是什么？
+### 5. 安装 macOS 最简单的方法是什么？
 
 在线安装。将 Recovery 镜像（`*.dmg` 和 `*.chunklist` 文件）和 OpenCore 一起复制到一个 FAT32 分区中。加载 OpenCore 的启动菜单并选择后缀为 `.dmg` 的条目。如果你有强迫症，你可以修改 `.contentDetails` 文件改变条目显示的文字。
 
 你可能会用到 `AppleModels` 内置的 [macrecovery.py](https://github.com/acidanthera/OpenCorePkg/blob/master/Utilities/macrecovery/macrecovery.py) 来下载 Recovery 镜像。
 
-如果你需要进行离线安装，请参考 [How to create a bootable installer for macOS](https://support.apple.com/HT201372)。除了通过 App Store 或 系统更新，你还可以使用 [第三方工具](https://github.com/corpnewt/gibMacOS) 下载 macOS 镜像文件。
+如果你需要进行离线安装，请参考 [如何创建可引导的 macOS 安装器](https://support.apple.com/HT201372)。除了通过 App Store 或 系统更新，你还可以使用 [第三方工具](https://github.com/corpnewt/gibMacOS) 下载 macOS 镜像文件。
 
-### 5. 为什么无法加载 Recovery 恢复镜像 进行在线安装？
+### 6. 为什么无法加载 Recovery 恢复镜像 进行在线安装？
 
 可能是因为你没带 HFS+ 驱动。目前我们所知道的 Recovery 分区全都是 HFS+ 文件系统。
 
-### 6. 我可以在 Apple 的硬件、或虚拟机中使用 OpenCore 吗？
+### 7. 我可以在 Apple 的硬件、或虚拟机中使用 OpenCore 吗？
 
 ~~可以，没有必要，但请加大力度~~
 
 OpenCore 支持包括 MacPro 5,1 和虚拟机在内的大部分较新的 Mac 型号。不过，OpenCore 有关在 Mac 硬件上使用的具体细节微乎其微。你可以在 [MacRumors.com](https://forums.macrumors.com/threads/opencore-on-the-mac-pro.2207814) 查看相关讨论。
 
-### 7. 为什么 Find 和 Replace 的补丁的长度必须相等？
+### 8. 为什么 Find 和 Replace 的补丁的长度必须相等？
 
 对于 x86 机器码来说，[相对寻址](https://en.wikipedia.org/w/index.php?title=Relative_addressing) 无法进行大小不同的替换。对于 ACPI 代码来说这是有风险的，而且在技术上这与替换 ACPI 表等价，所以 OpenCore 没有实现。更多详细的解答可以在 [AppleLife.ru](https://applelife.ru/posts/819790) 上和本文档的 ACPI 章节找到。
 
-### 8. 我应该如何决定哪些 `Booter` Quirk 需要被启用？
+### 9. 我应该如何决定哪些 `Booter` Quirk 需要被启用？
 
 这些 Quirk 源自 `AptioMemoryFix` 驱动，为更多的固件提供了广泛支持。如果你正在使用 `OpenRuntime`，并且想要获得和 `AptioMemoryFix` 类似的行为，请启用下述 Quirk：
 
