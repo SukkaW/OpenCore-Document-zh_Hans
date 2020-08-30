@@ -3,45 +3,45 @@ title: 12. 排错
 description: 当你遇到问题的时候应该看看这个
 type: docs
 author_info: 由 xMuu、Sukka、derbalkon 整理，由 Sukka、derbalkon 翻译
-last_updated: 2020-08-30
+last_updated: 2020-08-31
 ---
 
-## 12.1 Legacy Apple OS
+## 12.1 旧版 Apple 操作系统
 
-Older operating systems may be more complicated to install, but sometimes can be necessary to use for all kinds of reasons. While a compatible board identifier and CPUID are the obvious requiremenets for proper functioning of an older operating system, there are many other less obvious things to keep in mind. This section tries to cover a common set of issues relevant to installing older macOS operating systems.
+旧版操作系统的安装可能比较复杂，但有时出于各种原因还是需要用到。主板标识符和 CPUID 的兼容性是旧版操作系统正常运行的基础，除此之外还有一些细枝末节的事情需要注意。本章节将尽量阐述与旧版 macOS 操作系统相关的一系列常见问题。
 
-### 1. macOS 10.8 and 10.9
+### 1. macOS 10.8 和 10.9
 
-- Disk images on these systems use Apple Partitioning Scheme and will require the proprietary `PartitionDxe` driver to run DMG recovery and installation. It is possible to set `DmgLoading` to `Disabled` to run the recovery without DMG loading avoiding the need for `PartitionDxe`.
-- Cached kernel images often do not contain family drivers for networking (`IONetworkingFamily`) or audio (`IOAudioFamily`) requiring one to use `Force` loading in order to inject networking or audio drivers.
+- 这两个系统的磁盘映像使用的是 Apple 分区方案（Apple Partitioning Scheme），需要用到专门的 `PartitionDxe` 驱动程序来进行 DMG 恢复和安装。可以将 `DmgLoading` 设置为 `Disabled`，这样就可以在不加载 DMG 的情况下运行恢复功能，同时也避免了 `PartitionDxe` 的需求。
+- 缓存的内核映像通常不包括网络（`IONetworkingFamily`）或音频（`IOAudioFamily`）的家族驱动，这些家族驱动往往需要使用 `Force` 加载来注入。
 
 ### 2. macOS 10.7
 
-- All previous issues apply.
-- Many kexts, including Lilu and its plugins, are unsupported on macOS 10.7 and older as they require newer kernel APIs, which are not part of the macOS 10.7 SDK.
-- Prior to macOS 10.8 KASLR sliding is not supported, which will result in memory allocation failures on firmwares that utilise lower memory for their own purposes. Refer to [acidanthera/bugtracker#1125](https://github.com/acidanthera/bugtracker/issues/1125) for tracking.
-- 32-bit kernel interaction is unsupported and will lead to issues like kernel patching or injection failure.
+- 同上。
+- 包括 Lilu 及其插件在内的许多 Kext 在 macOS 10.7 或更低版本上都不支持，它们所需的内核 API 比较新，不在 macOS 10.7 SDK 之中。
+- macOS 10.8 之前的系统不支持 KASLR slide，因此会导致内存较低的固件分配内存失败，详见 [acidanthera/bugtracker#1125](https://github.com/acidanthera/bugtracker/issues/1125)。
+- 不支持 32 位内核交互，因此内核的修补或注入是无效的。
 
 ### 3. macOS 10.6
 
-- All previous issues apply.
-- Last released installer images for macOS 10.6 are macOS 10.6.7 builds `10J3250` and `10J4139` (without Xcode). These images are limited to certain model identifiers and have no `-no_compat_check` boot argument support. Images without such restrictions can be found [here](https://mega.nz/folder/z5YUhYTb%23gA_IRY5KMuYpnNCg7kR3ug), assuming that you legally own macOS 10.6. Read `DIGEST.txt` for more details. Keep in mind, that these are the earliest tested versions of macOS 10.6 with OpenCore.
+- 上述问题均存在。
+- 最近发布的 macOS 10.6 安装镜像为 macOS 10.6.7 版本 `10J3250` 和 `10J4139`（不含 Xcode）。这些镜像仅限于特定的几款机型，并且不支持使用 `-no_compat_check` 来忽略兼容性检查。如果你拥有 macOS 10.6 的合法副本，又不想被上述限制所约束，可以在 [这里](https://mega.nz/folder/z5YUhYTb%23gA_IRY5KMuYpnNCg7kR3ug) 找到无机型限制的镜像，更多细节在 `DIGEST.txt` 中。记住，这些都是经过 OpenCore 测试的最早的 macOS 10.6 版本。
 
-## 12.2 UEFI Secure Boot
+## 12.2 UEFI 安全启动
 
-OpenCore is designed to provide a secure boot chain between your firmware and your operating system. On most x86 platforms trusted loading is implemented via [UEFI Secure Boot](https://en.wikipedia.org/wiki/UEFI_Secure_Boot) model. Not only OpenCore fully supports this model, but it also extends its capabilities to ensure sealed configuration via [vaulting](8-misc.html#9-Vault) and provide trusted loading to the operating systems using custom verification, such as [Apple Secure Boot](8-misc.html#11-SecureBootModel). Proper secure boot chain requires several steps and careful configuration of select settings as explained below:
+OpenCore 的设计初衷是为 固件 和 操作系统 之间提供一个安全的启动链。在大多数 x86 平台上，可信加载（Trusted Loading）是通过 [UEFI 安全启动](https://en.wikipedia.org/wiki/UEFI_Secure_Boot) 模式实现的。OpenCore 不仅完全支持这种模式，还扩展了它的功能，以确保通过 [Vault](8-misc.html#9-Vault) 进行配置的加密存储，并使用自定义的验证过程向操作系统提供可信加载，例如 [Apple 安全启动](8-misc.html#11-SecureBootModel)。正确的安全启动链需要通过以下步骤来仔细配置：
 
-1. Enable Apple Secure Boot by setting `SecureBootModel` if you need to run macOS. Note, that not every macOS is compatible with Apple Secure Boot and there are several other restrictions as explained in [Apple Secure Boot](8-misc.html#11-SecureBootModel) section.
-2. Disable DMG loading by setting `DmgLoading` to `Disabled` if you are concerned of loading old vulnerable DMG recoveries. This is **not** required, but recommended. For the actual tradeoffs see the details in [DMG loading](8-misc.html#6-DmgLoading) section.
-3. Make sure that APFS JumpStart functionality restricts the loading of old vulnerable drivers by setting `MinDate` and `MinVersion` to `0`. More details are provided in [APFS JumpStart](11-uefi.html#11-7-APFS-属性) section. An alternative is to install `apfs.efi` driver manually.
-4. Make sure that you do not need `Force` driver loading and can still boot all the operating systems you need.
-5. Make sure that `ScanPolicy` restricts loading from undesired devices. It is a good idea to prohibit all removable drivers or unknown filesystems.
-6. Sign all the installed drivers and tools with your private key. Do not sign tools that provide administrative access to your computer, like UEFI Shell.
-7. Vault your configuration as explained [Vaulting](8-misc.html#9-Vault) section.
-8. Sign all OpenCore binaries (`BOOTX64.efi`, `BOOTIa32.efi`, `Bootstrap.efi`, `OpenCore.efi`) used on this system with the same private key.
-9. Sign all third-party operating system (not made by Microsoft or Apple) bootloaders if you need them. For Linux there is an option to install Microsoft-signed Shim bootloader as explained on e.g. [Debian Wiki](https://wiki.debian.org/SecureBoot).
-10. Enable UEFI Secure Boot in your firmware preferences and install the certificate with a private key you own. Details on how to generate a certificate can be found in various articles, like [this one](https://habr.com/en/post/273497), and are out of the scope of this document. If you need to launch Windows you will also need to add the [Microsoft Windows Production CA 2011](http://go.microsoft.com/fwlink/?LinkID=321192). If you need to launch option ROMs or decided to use signed Linux drivers you will also need the [Microsoft UEFI Driver Signing CA](http://go.microsoft.com/fwlink/?LinkId=321194).
-11. Password-protect changing firmware settings to ensure that UEFI Secure Boot cannot be disabled without your knowledge.
+1. 如果要启动的系统是 macOS，则需要通过设置 `SecureBootModel` 来启用 Apple 安全启动。请注意，并不是每个 macOS 版本都能使用 Apple 安全启动，具体限制详见 [Apple 安全启动](8-misc.html#11-SecureBootModel) 章节。
+2. 旧的 DMG 恢复镜像往往很脆弱、易受攻击，如果担心因为加载它而突破防线，可以通过设置 `DmgLoading` 为 `Disabled` 来禁用 DMG 加载。**非必需**，但建议使用。参阅 [DMG 加载](8-misc.html#6-DmgLoading) 部分来权衡利弊。
+3. 将 `MinDate` 和 `MinVersion` 设置为 `0`，以确保 APFS JumpStart 功能限制旧的驱动程序加载。更多细节参见 [APFS JumpStart](11-uefi.html#11-7-APFS-属性) 部分。除此之外，手动安装 `apfs.efi` 驱动也可以达到相同效果。
+4. 确保你想要运行的操作系统不加载 `Force` 驱动也能正常启动。
+5. 确保使用 `ScanPolicy` 限制加载不受信任的设备。要想做到足够安全，最好的办法是禁止加载 所有可移动设备 和 未知的文件系统。
+6. 使用私钥给所有已安装的驱动程序和工具签名。不要对提供管理员权限的工具（如 UEFI Shell）签名。
+7. 加密存储你的配置，详见 [Vault](8-misc.html#9-Vault) 部分。
+8. 使用同一私钥签名该系统使用的所有 OpenCore 二进制文件（`BOOTX64.efi`, `BOOTIa32.efi`, `Bootstrap.efi`, `OpenCore.efi`）。
+9. 如果需要用到第三方操作系统（非微软或 Apple 制造）的 bootloader，也同样为它们签名。对于 Linux，可以选择安装微软签名的 Shim bootloader，具体解释见 [Debian Wiki](https://wiki.debian.org/SecureBoot)。
+10. 在 BIOS 中开启 UEFI 安全启动，并用自己的私钥安装证书。很多文章都介绍了生成证书的具体方法，比如 [这篇文章](https://habr.com/en/post/273497)，本文档不再赘述。如果需要启动 Windows，还需要添加 [Microsoft Windows Production CA 2011](http://go.microsoft.com/fwlink/?LinkID=321192) 证书。如果需要启动 Option ROM，或决定使用已签名的 Linux 驱动程序，还需要添加 [Microsoft UEFI Driver Signing CA](http://go.microsoft.com/fwlink/?LinkId=321194)。
+11. 设置密码保护防止固件设置被篡改，避免 UEFI 安全启动在你不知情的情况下被禁用。
 
 ## 12.3 Windows 支持
 
@@ -152,7 +152,7 @@ The operation has completed successfully.
 
 ## 12.4 调试
 
-与其他硬件相关的项目类似，OpenCore 也支持审计与调试。使用 NOOPT 或 DEBUG 构建版本（而非 RELEASE 构建版本）可以产生更多的调试输出。对于 NOOPT 构建版本，你还可以使用 GDB 或 IDA Pro 进行调试。对于 GDB 请查看 [OpenCore Debug](https://github.com/acidanthera/OpenCorePkg/tree/master/Debug) 相关页面；对于 IDA Pro，你需要 7.3 或更高版本，更多详细信息请参考 IDA Pro 提供的页面：[Debugging the XNU Kernel with IDA Pro](https://www.hex-rays.com/products/ida/support/tutorials/index.shtml)。
+与其他硬件相关的项目类似，OpenCore 也支持审计与调试。使用 `NOOPT` 或 `DEBUG` 构建版本（而非 `RELEASE` 构建版本）可以产生更多的调试输出。对于 `NOOPT` 构建版本，你还可以使用 GDB 或 IDA Pro 进行调试。对于 GDB 请查看 [OpenCore Debug](https://github.com/acidanthera/OpenCorePkg/tree/master/Debug) 相关页面；对于 IDA Pro，你需要 7.3 或更高版本，更多详细信息请参考 IDA Pro 提供的页面：[Debugging the XNU Kernel with IDA Pro](https://www.hex-rays.com/products/ida/support/tutorials/index.shtml)。
 
 可以使用串口调试来获取启动过程中的日志。串口调试是在 `Target` 中开启的，例如 `0xB` 代表在屏幕上显示并输出串行。可使用 `SerialInit` 配置选项来初始化串行。对于 macOS 来说，最好是选择基于 CP2102 的 UART 设备。将主板 `TX` 连接到 USB UART `RX`，主板 `GND` 连接到 USB UART `GND`。使用 `screen` 实用工具，或者下载 GUI 软件获取输出，如 [CoolTerm](https://freeware.the-meiers.org)。
 
@@ -175,13 +175,13 @@ The operation has completed successfully.
 
 如果你在日志中看不出明显的错误，请逐一检查 `Quirks` 部分中可用的 hacks。例如，对于 Early Boot 出现的问题（如 OpenCore 启动菜单无法显示），通过 `UEFI Shell`（随 OpenCore 打包在一起）可以查看相关调试信息。
 
-### 2. How to debug macOS boot failure?
+### 2. macOS 启动失败我该怎么调试？
 
-- Refer to `boot-args` values like `debug=0x100`, `keepsyms=1`, `-v`, and similar.
-- Do not forget about `AppleDebug` and `ApplePanic` properties.
-- Take care of `Booter`, `Kernel`, and `UEFI` quirks.
-- Consider using serial port to inspect early kernel boot failures. For this you may need `debug=0x108`, `serial=5`, and `msgbuf=1048576` arguments. Refer to the patches in Sample.plist when dying before serial init.
-- Always read the logs carefully.
+- 在 `boot-args` 中添加 `debug=0x100`、`keepsyms=1`、`-v` 或其他类似的值。
+- 不要忘记开启 `AppleDebug` 和 `ApplePanic` 属性。
+- 调整 `Booter`、`Kernel` 和 `UEFI` 里的 Quirk。
+- 可以考虑通过串行端口来检查早期的内核启动失败。为此你可能需要用到 `debug=0x108`、`serial=5` 和 `msgbuf=1048576` 参数。如果在串行初始化前就失败了，Sample.plist 中有相关补丁供你参考。
+- 一定要仔细阅读日志。
 
 ### 3. 如何自定义启动项？
 
@@ -230,6 +230,6 @@ OpenCore 支持包括 MacPro 5,1 和虚拟机在内的大部分较新的 Mac 型
 - `RebuildAppleMemoryMap`
 - `SetupVirtualMap`
 
-但是，对于大部分现代的设备来说，上述 Quirk 不一定是必须的。比如 `DevirtualiseMmio` 和 `ProtectUefiServices` 通常是需要启用的，但是 `DiscardHibernateMap` 和 `ForceExitBootServices` 一般不建议启用。
+但是，对于大部分现代的设备来说，上述 Quirk 不一定是必需的。比如 `DevirtualiseMmio` 和 `ProtectUefiServices` 通常是需要启用的，但是 `DiscardHibernateMap` 和 `ForceExitBootServices` 一般不建议启用。
 
 不幸的是，对于某些 Quirk 来说（`RebuildAppleMemoryMap`, `EnableWriteUnprotector`, `ProtectMemoryRegions`, `SetupVirtualMap` 和 `SyncRuntimePermissions`）由于没有明确的参考，因此需要自行尝试最佳组合。详细内容请参考本文档中对这些 Quirk 的描述。
