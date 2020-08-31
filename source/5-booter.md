@@ -8,11 +8,11 @@ last_updated: 2020-08-30
 
 ## 5.1 简介
 
-本部分允许在 Apple BootLoader（`boot.efi`）上应用不同种类的 UEFI 修改。目前，这些修改为不同的固件提供了各种补丁和环境更改。其中一些功能最初是作为 [AptioMemoryFix.efi](https://github.com/acidanthera/AptioFixPkg) 的一部分，如今 `AptioMemoryFix.efi` 已经不再维护。如果你还在使用，请参考 `Tips and Tricks` 章节提供的迁移步骤。
+本部分允许在 Apple BootLoader（`boot.efi`）上应用不同种类的 UEFI 修改。目前，这些修改为不同的固件提供了各种补丁和环境更改。其中一些功能最初是作为 [AptioMemoryFix.efi](https://github.com/acidanthera/AptioFixPkg) 的一部分，如今 `AptioMemoryFix.efi` 已经不再维护。如果你还在使用，请参考 [技巧和窍门](12-troubleshooting.html#12-5-技巧和窍门) 章节提供的迁移步骤。
 
 如果您是第一次在自定义固件上使用此功能，则首先需要执行一系列检查。开始之前，请确保您符合以下条件：
 
-- 具有最新版本的 UEFI 固件（去主板厂家的官网上看看）
+- 具有最新版本的 UEFI 固件（去主板厂家的官网上看看）。
 - 禁用了 `Fast Boot` 和 `Hardware Fast Boot`。如果 BIOS 里有相关选项，禁用掉。
 - 如果有 `Above 4G Decoding` 或类似功能，请在固件设置中启用。注意，在某些主板上（特别是 ASUS WS-X299-PRO）这个选项会造成不良影响，必须禁用掉。虽然目前还不知道是不是其他主板也有同样问题，但是如果你遇到了不稳定的启动故障，可以首先考虑检查一下这个选项。
 - 启用了 `DisableIoMapper` Quirk、或者在 BIOS 中禁用 `VT-d`、或者删去了 ACPI DMAR 表。
@@ -38,7 +38,7 @@ sudo pmset standby 0
 ### 1. `MmioWhitelist`
 
 **Type**: `plist array`
-**Description**: 设计为用 `plist dict` 值填充，用来描述在启用 `DevirtualiseMmio` 这个 Quirk 时特定固件能够运作的关键地址。详见下面的 MmioWhitelist Properties 章节。
+**Description**: 设计为用 `plist dict` 值填充，用来描述在启用 `DevirtualiseMmio` 这个 Quirk 时特定固件能够运作的关键地址。详见下面的 MmioWhitelist 属性章节。
 
 > 译者注：如果开机卡在 `PCI...` 可以尝试开启 Item 1 下的 Patch。
 
@@ -87,7 +87,7 @@ sudo pmset standby 0
 **Failsafe**: `false`
 **Description**: 从选定的 MMIO 区域中删除 Runtime 属性。
 
-通过删除已知内存区域的 Runtime bit，此选项可减少内存映射中 Stolen Memory Footprint。 这个 Quirk 可能会使可用的 KASLR slides 增加，但如果没有其他措施，则不一定与目标主板兼容。 通常，这会释放 64 到 256 MB 的内存（具体数值会显示在调试日志中）。在某些平台上这是引导 macOS 的唯一方法，否则在引导加载程序阶段会出现内存分配错误。
+通过删除已知内存区域的 Runtime bit，此选项可减少内存映射中 Stolen Memory Footprint。 这个 Quirk 可能会使可用的 KASLR slide 增加，但如果没有其他措施，则不一定与目标主板兼容。 通常，这会释放 64 到 256 MB 的内存（具体数值会显示在调试日志中）。在某些平台上这是引导 macOS 的唯一方法，否则在引导加载程序阶段会出现内存分配错误。
 
 该选项通常对所有固件都有用，除了一些非常古老的固件（例如 Sandy Bridge）。在某些固件上，可能需要一个例外映射列表。为了使 NVRAM 和休眠功能正常工作，获取其虚拟地址仍然是必要的。 请参考 `MmioWhitelist` 章节来实现。
 

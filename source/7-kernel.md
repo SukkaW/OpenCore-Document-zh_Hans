@@ -8,7 +8,7 @@ last_updated: 2020-08-30
 
 ## 7.1 简介
 
-本章节介绍了如何在 Apple Kernel（[XNU](https://opensource.apple.com/source/xnu)）上应用各种不同的内核空间修改，包括内核驱动程序（kext）注入、修补以及屏蔽。
+本章节介绍了如何在 Apple Kernel（[XNU](https://opensource.apple.com/source/xnu)）上应用各种不同的内核空间修改，包括内核驱动程序（Kext）注入、修补以及屏蔽。
 
 ## 7.2 属性列表
 
@@ -28,7 +28,7 @@ last_updated: 2020-08-30
 
 **Type**: `plist array`
 **Failsafe**: Empty
-**Description**: 从内核中删除选定的内核驱动程序。
+**Description**: 从 Prelinked Kernel 中移除选定的 Kext。
 
 设计为使用 `plist dict` 数据填充以描述每个驱动程序。请参阅下述 Block 属性章节。Kext 驱动程序加载的顺序遵照数组中项目的顺序，因此如 Lilu 这种其他驱动程序的依赖驱动应该位于前面。
 
@@ -41,11 +41,11 @@ last_updated: 2020-08-30
 
 **Type**: `plist array`
 **Failsafe**: Empty
-**Description**: Load kernel drivers from system volume if they are not cached.
+**Description**: 如果内核驱动没有被缓存，则从系统卷宗强制加载内核驱动。
 
-Designed to be filled with `plist dict` values, describing each driver. See Force Properties section below. This section resolves the problem of injecting drivers that depend on other drivers, which are not cached otherwise. The issue normally affects older operating systems, where various dependency kexts, like `IOAudioFamily` or `IONetworkingFamily` may not be present in the kernel cache by default. Kernel driver load order follows the item order in the array, thus the dependencies should be written prior to their consumers. `Force` happens before `Add`.
+设计为使用 `plist dict` 值来填充，用于描述驱动程序。参见下面的 Force 属性部分。依赖其他驱动的驱动程序不能被缓存，该部分着重解决了这种驱动程序注入的难点。这个问题会映像到旧的操作系统，在旧的操作系统中存在各种依赖性的 Kext，比如 `IOAudioFamily` 和 `IONetworkingFamily`，可能默认不存在于内核缓存中。内核驱动的加载是有顺序的，因此依赖驱动应该排在前面。`Force` 发生在 `Add`。
 
-*Note*: The signature of the “forced” kernel drivers is not checked anyhow, making the use of this feature extremely dangerous and undesired for secure boot. This feature may not work on encrypted partitions in newer operating systems.
+*注*：「强制加载」的内核驱动不会被检查，因此，使用安全启动的同时使用这个功能是不可取的。另外，这个功能可能无法在较新的操作系统的加密分区上工作。
 
 ### 5. Patch
 
@@ -91,7 +91,7 @@ Designed to be filled with `plist dict` values, describing each driver. See Forc
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
-**Description**: 是否加载该驱动.
+**Description**: 是否加载该驱动。
 
 ### 5. `ExecutablePath`
 
@@ -99,7 +99,7 @@ Designed to be filled with `plist dict` values, describing each driver. See Forc
 **Failsafe**: Empty string
 **Description**: Kext 中实际可执行文件的路径（如 `Lilu.kext` 中的可执行文件路径是 `Contents/MacOS/Lilu`）。
 
-> 译者注：空壳 Kext 没有可执行文件（如 `USBPorts.kext`），此项留空即可
+> 译者注：空壳 Kext 没有可执行文件（如 `USBPorts.kext`），此项留空即可。
 
 ### 6. `MaxKernel`
 
@@ -188,7 +188,7 @@ Designed to be filled with `plist dict` values, describing each driver. See Forc
 - 对不支持的 CPU 型号启用支持。
 - 对不支持的 CPU Variant 启用 XCPM 支持。
 
-通常来讲只需要处理 `EAX` 的值，因为它代表完整的 CPUID。剩余的字节要留为 0。字节顺序是小字节序（Little Endian），比如 `C3 06 03 00` 代表 CPUID `0x0306C3` (Haswell)。
+通常来讲只需要处理 `EAX` 的值，因为它代表完整的 CPUID。剩余的字节要留为 0。字节顺序是小端字节序（Little Endian），比如 `C3 06 03 00` 代表 CPUID `0x0306C3` (Haswell)。
 
 推荐使用下面的组合启用 XCPM 支持：
 
@@ -214,65 +214,65 @@ Designed to be filled with `plist dict` values, describing each driver. See Forc
 
 当每个 `Cpuid1Mask` bit 都设置为 `0` 时将使用原始的 CPU bit，否则取 `Cpuid1Data` 的值。
 
-## 7.6 Force Properties
+## 7.6 Force 属性
 
 ### 1. `Arch`
 
 **Type**: `plist string`
 **Failsafe**: `Any`
-**Description**: Kext architecture (`Any`, `i386`, `x86_64`).
+**Description**: Kext 架构（`Any`, `i386`, `x86_64`）。
 
 ### 2. `BundlePath`
 
 **Type**: `plist string`
 **Failsafe**: Empty
-**Description**: Kext bundle path (e.g. `System/Library/Extensions/IONetworkingFamily.kext`).
+**Description**: Kext 路径，如 `System/Library/Extensions/IONetworkingFamily.kext`。
 
 ### 3. `Comment`
 
 **Type**: `plist string`
 **Failsafe**: Empty string
-**Description**: Arbitrary ASCII string used to provide human readable reference for the entry. It is implementation defined whether this value is used.
+**Description**: 用于为条目提供人类可读参考的任意 ASCII 字符串（译者注：即注释）。
 
 ### 4. `Enabled`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
-**Description**: This kernel driver will not be added when not present unless set to true.
+**Description**: 是否加载该驱动。
 
 ### 5. `ExecutablePath`
 
 **Type**: `plist string`
 **Failsafe**: Empty string
-**Description**: Kext executable path relative to bundle (e.g. `Contents/MacOS/IONetworkingFamily`).
+**Description**: Kext 中实际可执行文件的路径，如 `Contents/MacOS/IONetworkingFamily`。
 
 ### 6. `Identifier`
 
 **Type**: `plist string`
 **Failsafe**: Empty string
-**Description**: Kext identifier to perform presence checking before adding (e.g. `com.apple.iokit.IONetworkingFamily`). Only drivers which identifiers are not be found in the cache will be added.
+**Description**: Kext 标识符，以便在添加前检查是否存在，如 `com.apple.iokit.IONetworkingFamily`。只有在缓存中找不到标识符的驱动程序才会被添加。
 
 ### 7. `MaxKernel`
 
 **Type**: `plist string`
 **Failsafe**: Empty string
-**Description**: Adds kernel driver on specified macOS version or older.
+**Description**: 在小于等于指定的 macOS 版本中添加 Kext 驱动程序。
 
-*Note*: Refer to `Add` `MaxKernel` description for matching logic.
+*注*：匹配逻辑请参阅 `Add` `MaxKernel` 的描述。
 
 ### 8. `MinKernel`
 
 **Type**: `plist string`
 **Failsafe**: Empty string
-**Description**: Adds kernel driver on specified macOS version or newer.
+**Description**: 在大于等于指定的 macOS 版本中添加 Kext 驱动程序。
 
-*Note*: Refer to `Add` `MaxKernel` description for matching logic.
+*注*：匹配逻辑请参阅 `Add` `MaxKernel` 的描述。
 
 ### 9. `PlistPath`
 
 **Type**: `plist string`
 **Failsafe**: Empty string
-**Description**: Kext `Info.plist` path relative to bundle (e.g. `Contents/Info.plist`).
+**Description**: Kext 中 `Info.plist` 文件的路径。一般为 `Contents/Info.plist`。
 
 ## 7.7 Patch 属性
 
@@ -322,13 +322,13 @@ Designed to be filled with `plist dict` values, describing each driver. See Forc
 
 **Type**: `plist integer`
 **Failsafe**: `0`
-**Description**: 搜索的最大字节数。可以设置为 `0` 来查找整个 ext 或内核。
+**Description**: 搜索的最大字节数。可以设置为 `0` 来查找整个 Kext 或内核。
 
 ### 9. `Mask`
 
 **Type**: `plist data`
 **Failsafe**: Empty data
-**Description**: 在查找比较中使用数据位掩码。允许通过忽略未被屏蔽的 bit（设置为 `0`）进行模糊搜索。若留空则代表忽略，否则其大小必须等于 `Replace`。
+**Description**: 在查找比较的过程中使用数据位掩码。允许通过忽略未被屏蔽的 bit（设置为 `0`）进行模糊搜索。若留空则代表忽略，否则其大小必须等于 `Replace`。
 
 ### 10. `MaxKernel`
 
@@ -425,7 +425,7 @@ Designed to be filled with `plist dict` values, describing each driver. See Forc
 **Type**: `plist boolean`
 **Failsafe**: `false`
 **Requirement**: 10.6 (64-bit)
-**Description**: 对 UpdateSMBIOSMode 自定义模式执行 GUID 修补，通常用于戴尔笔记本电脑。
+**Description**: 对 `UpdateSMBIOSMode` 自定义模式执行 GUID 修补，通常用于戴尔笔记本电脑。
 
 ### 6. `DisableIoMapper`
 
@@ -445,7 +445,7 @@ Designed to be filled with `plist dict` values, describing each driver. See Forc
 
 *注 1*：这个选项不能确保其他区域不被覆盖，如有需要，请使用 [RTCMemoryFixup](https://github.com/acidanthera/RTCMemoryFixup)。
 
-*注 2*: 这个选项不能确保区域在固件阶段不被覆盖（例如 macOS bootloader）。如有需要，请参阅 `AppleRtc` 协议描述。
+*注 2*：这个选项不能确保区域在固件阶段不被覆盖（例如 macOS bootloader）。如有需要，请参阅 `AppleRtc` 协议描述。
 
 ### 8. `DummyPowerManagement`
 
@@ -521,7 +521,7 @@ macOS Catalina 新增了一项额外的安全措施，导致在电源切换超�
 
 ## 7.9 Scheme 属性
 
-These properties are particularly relevant for older macOS operating systems. For more details on how to install and troubleshoot such macOS installation refer to [Legacy Apple OS](12-troubleshooting.html#12-1-Legacy-Apple-OS).
+这些属性对于旧版 macOS 操作系统尤为重要。更多关于如何安装此类 macOS 及相关排错的详细信息，请参考 [旧版 Apple 操作系统](12-troubleshooting.html#12-1-旧版-Apple-操作系统)。
 
 ### 1. `FuzzyMatch`
 
@@ -537,29 +537,29 @@ These properties are particularly relevant for older macOS operating systems. Fo
 
 **Type**: `plist string`
 **Failsafe**: `Auto`
-**Description**: 如果可用，优先选择指定的内核架构（`Auto`, `i386`, `x86_64`）。
+**Description**: 如果可用，优先选择指定的内核架构（`Auto`, `i386`, `i386-user32`, `x86_64`）。
 
 macOS 10.7 和更早的 XNU 内核可能不会使用 `x86_64` 架构来启动，具体选择取决于很多因素，包括启动参数、SMBIOS 以及操作系统类型。当 macOS 和配置支持时，该设置将使用指定的架构来启动 macOS:
 
-- `Auto` — Choose the preferred architecture automatically.
-- `i386` — Use `i386` (32-bit) kernel when available.
-- `i386-user32` — Use `i386` (32-bit) kernel when available and force the use of 32-bit userspace on 64-bit capable processors. On macOS 64-bit capable processors are assumed to support `SSSE3`. This is not the case for older 64-bit capable Pentium processors, which cause some applications to crash on macOS 10.6. The behaviour corresponds to `-legacy` kernel boot argument.
-- `x86_64` — Use `x86_64` (64-bit) kernel when available.
+- `Auto` --- 自动选择首选的架构。
+- `i386` --- 如果可用，则使用 `i386`（32 位）内核。
+- `i386-user32` — 在可用的情况下使用 `i386`（32 位）内核，并在 64 位处理器上强制使用 32 位用户空间。在 macOS 上，64 位处理器会被认为支持 `SSSE3`，但对于较老的 64 位奔腾处理器来说，实际情况并非如此，因此会导致一些应用程序在 macOS 10.6 上崩溃。该行为对应 `-legacy` 内核启动参数。
+- `x86_64` --- 如果可用，则使用 `x86_64`（64 位）内核。
 
 下面是确定内核架构的计算过程：
 
-1. `arch` argument in image arguments (e.g. when launched via UEFI Shell) or in `boot-args` variable overrides any compatibility checks and forces the specified architecture, completing this algorithm.
-2. OpenCore build architecture restricts capabilities to `i386` and `i386-user32` mode for the 32-bit firmware variant.
+1. `arch` 参数位于映像参数（比如从 UEFI Shell 启动时）或 `boot-args` 变量中，覆盖兼容性检查，强制指定架构，并完成此计算过程。
+2. 对于 32 位 CPU Variant，OpenCore 会将架构兼容性限制在 `i386` 和 `i386-user32` 模式。
 3. 确定 EfiBoot 版本所限制的架构:
    - 10.4-10.5 --- `i386` 或 `i386-user32`
    - 10.6-10.7 --- `i386`、`i386-user32` 或 `x86_64`
    - 10.8 及更新的版本 --- `x86_64`
-4. If `KernelArch` is set to `Auto` and `SSSE3` is not supported by the CPU, capabilities are restricted to `i386-user32` if supported by EfiBoot.
-5. Board identifier (from SMBIOS) based on EfiBoot version disables `x86_64` support on an unsupported model if any `i386` variant is supported. `Auto` is not consulted here as the list is not overridable in EfiBoot.
-6. `KernelArch` restricts the support to the explicitly specified architecture (when not set to `Auto`) if the architecture remains present in the capabilities.
-7. The best supported architecture is chosen in this order: `x86_64`, `i386`, `i386-user32`.
+4. 如果 `KernelArch` 被设置为 `Auto`，并且 CPU 不支持 `SSSE3`， 则兼容性会被限制为 `i386-user32`（如果 EfiBoot 支持的话）。 
+5. 主板标识符（来自 SMBIOS）基于 EfiBoot 版本，如果有任何 `i386` 的 CPU Variant 与之兼容，就会在不支持的机型上禁用 `x86_64` 架构。`Auto` 不参与这个过程，因为在 EfiBoot 中，该列表是不可覆盖的。
+6. 当没有设置为 `Auto` 时，`KernelArch` 会把系统支持限制在明确指定的架构（如果该架构兼容）。
+7. 按以下顺序选择参数可以获得最佳的架构支持：`x86_64`、`i386`、`i386-user32`。
 
-Unlike macOS 10.7, where select boards identifiers are treated as the `i386` only machines, and macOS 10.5 or earlier, where `x86_64` is not supported by the macOS kernel, macOS 10.6 is very special. The architecture choice on macOS 10.6 depends on many factors including not only the board identifier, but also macOS product type (client vs server), macOS point release, and RAM amount. The detection of them all is complicated and not practical, because several point releases had genuine bugs and failed to properly perform the server detection in the first place. For this reason OpenCore on macOS 10.6 will fallback to `x86_64` architecture whenever it is supported by the board at all, just like on macOS 10.7. As a reference here is the 64-bit Mac model compatibility corresponding to actual EfiBoot behaviour on macOS 10.6.8 and 10.7.5.
+macOS 10.7 只会将特定的主板标识符视为仅 `i386` 架构的设备，macOS 10.5 或更早版本的内核则不支持 `x86_64`，而 macOS 10.6 非常特殊，与这二者都不同。macOS 10.6 上的架构选择取决于很多因素，不仅包括主板标识符，还包括 macOS 的类型（客户端 或 服务器端）、macOS 发布时间和内存容量。检测这些因素很复杂，也不实用，因为好几个发布版本都有 bug，不能在第一时间正确地进行服务器检测。因此，对于 macOS 10.6，无论主板支持情况如何，OpenCore 都会回退到 `x86_64` 架构，就像 macOS 10.7 那样。以下是 64 位 Mac 型号的兼容性介绍，对应于 macOS 10.6.8 和 10.7.5 EfiBoot 的实际行为：
 
    | **Model**  | **10.6 (minimal)** | **10.6 (client)** | **10.6 (server)** | **10.7 (any)**   |
    | ---------- | ------------------ | ----------------- | ----------------- | ---------------- |
@@ -570,6 +570,8 @@ Unlike macOS 10.7, where select boards identifiers are treated as the `i386` onl
    | iMac       | 8,x (Early 2008)   | 12,x (Mid 2011)   | 12,x (Mid 2011)   | 7,x (Mid 2007)   |
    | MacPro     | 3,x (Early 2008)   | 5,x (Mid 2010)    | 3,x (Early 2008)  | 3,x (Early 2008) |
    | Xserve     | 2,x (Early 2008)   | 2,x (Early 2008)  | 2,x (Early 2008)  | 2,x (Early 2008) |
+
+*Note*: `3+2` and `6+4` hotkeys to choose the preferred architecture are unsupported due to being handled by EfiBoot and thus being hard to properly detect.
 
 ### 3. `KernelCache`
 

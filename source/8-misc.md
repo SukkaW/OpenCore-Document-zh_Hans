@@ -99,7 +99,7 @@ OpenCore 尽可能地遵循 `bless` 模式，即 `Apple Boot Policy`。`bless` �
 
 应填入 `plist dict` 类型的值来描述相应的加载条目。详见 Entry 属性部分。
 
-*注*：选择工具（比如 UEFI shell）是很危险的事情，利用这些工具可以轻易地绕过安全启动链，所以 **千万不要** 出现在生产环境配置中，尤其是设置了 vault 和安全启动保护的设备（译者注：即，工具仅作调试用）。具体的工具示例参见本文档的 UEFI 章节。
+*注*：选择工具（比如 UEFI shell）是很危险的事情，利用这些工具可以轻易地绕过安全启动链，所以 **千万不要** 出现在生产环境配置中，尤其是设置了 Vault 和安全启动保护的设备（译者注：即，工具仅作调试用）。具体的工具示例参见本文档的 UEFI 章节。
 
 ## 8.3 Boot 属性
 
@@ -178,12 +178,12 @@ OpenCore 尽可能地遵循 `bless` 模式，即 `Apple Boot Policy`。`bless` �
 
 - `0x0001` — `OC_ATTR_USE_VOLUME_ICON`，提供引导项自定义图标：
   
-  对于 `Tools`，OpenCore 会尝试优先加载以下自定义图标，不存在自定义图标时则回退到默认图标：
+  对于 `Tools`，OpenCore 会尝试优先加载以下自定义图标，自定义图标不存在时则回退到默认图标：
   - `ResetNVRAM` — `Resources\Image\ResetNVRAM.icns` — 图标目录下的 `ResetNVRAM.icns`。
   - `Tools\<TOOL_RELATIVE_PATH>.icns` — `Tools` 文件附近的对应图标，扩展名为 `.icns`。
   
-  对于 `Entries`，OpenCore 会尝试优先加载以下自定义图标，不存在自定义图标时则回退到卷宗或默认图标：
-  - `<ENTRY_PATH>.icns` — 条目文件附近的图标，扩展名为 `.icns`。
+  对于自定义的启动条目 `Entries`，OpenCore 会尝试优先加载以下自定义图标，自定义图标不存在时则回退到卷宗或默认图标：
+  - `<ENTRY_PATH>.icns` — 对应启动项文件附近的图标，扩展名为 `.icns`。
   
   对于其他条目，OpenCore 会尝试优先加载卷宗图标，并回退到默认图标：
   - `.VolumeIcon.icns` 文件，位于 APFS `Preboot` 根目录下。
@@ -478,9 +478,9 @@ nvram 4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102:boot-log | awk '{gsub(/%0d%0a%00/,"")
 
 将此值设置为任何非零的 64 位整数，将允许使用个性化的 Apple 安全启动标识符。如果你想使用此设置，请确保使用加密的随机数生成器生成一个 64 位的随机数。如果这个值设置妥当，并且 `SecureBootModel` 值有效且不是 `Disabled`，那么就可以实现 Apple 安全启动的 [完整安全性](https://support.apple.com/HT208330)。
 
-*Note 1*: You will have to reinstall the operating system or use macOS DMG recovery to `bless –personalize` your installation after setting this value to non-zero. Installing the operating system with `ApECID` value set to non-zero is only possible through macOS recovery or personalized builds created with `asr`.
+*注 1*：该值设置为非零的时候，必须重新安装操作系统，或使用 macOS DMG 恢复镜像 `bless –personalize` 完成安装。只有通过 macOS 恢复功能（macOS Recovery）或使用 `asr`（Apple Software Restore）创建的个性化映像，才能在 `ApECID` 值非零的情况下安装操作系统。
 
-*Note 2*: Currently the use of this option is unrealiable (apparently to a bug in macOS installer), and thus its use is not recommended.
+*注 2*：由于 macOS 安装器存在 bug，目前这个选项不太可靠，因此不建议使用。
 
 ### 4. `AuthRestart`
 
@@ -517,9 +517,9 @@ VirtualSMC 通过将磁盘加密密钥拆分保存在 NVRAM 和 RTC 中来执行
 
 有效值如下：
 
-- `Disabled` --- 加载 DMG 磁盘映像的行为将会失败。`Disabled` policy will still let macOS Recovery to load in most cases as there usually are `boot.efi` files compatible with Apple Secure Boot. Manually downloaded DMG images stored in `com.apple.recovery.boot` directories will not load, however.
-- `Signed` --- 仅加载 Apple 签名的 DMG 磁盘映像。Due to Apple Secure Boot design `Signed` policy will let any Apple-signed macOS Recovery to load regardless of Apple Secure Boot state, which may not always be desired.
-- `Any` --- 任何 DMG 磁盘映像都会作为普通文件系统挂载。`Any` policy is strongly not recommended and will cause a boot failure when Apple Secure Boot is activated.
+- `Disabled` --- 加载 DMG 磁盘映像的行为将会失败。大多数情况下 `Disabled` 策略仍会允许加载 macOS Recovery，因为通常会有 `boot.efi` 文件，它与 Apple 安全启动兼容。但是，手动下载存储在 `com.apple.recovery.boot` 目录中的 DMG 磁盘映像将无法被加载。
+- `Signed` --- 仅加载 Apple 签名的 DMG 磁盘映像。由于 Apple 安全启动的设计，不管 Apple 安全启动是什么状态，`Signed` 策略都会允许加载任何 Apple 签名的 macOS Recovery，这可能不是我们所希望的那样。
+- `Any` --- 任何 DMG 磁盘映像都会作为普通文件系统挂载。强烈不建议使用 `Any` 策略，当激活了 Apple 安全启动时会导致启动失败。
 
 ### 7. `ExposeSensitiveData`
 
@@ -569,11 +569,11 @@ nvram 4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102:oem-board # SMBIOS Type2 ProductName
 
 **Type**: `plist string`
 **Failsafe**: `Secure`
-**Description**: 启用 OpenCore 的 vault 机制。
+**Description**: 启用 OpenCore 的 Vault 机制。
 
 有效值：
 
-- `Optional` --- 无要求，vault 不加载，不安全。
+- `Optional` --- 无要求，不设置 Vault，不安全。
 - `Basic` --- 需要有 `vault.plist` 文件存放在 `OC` 目录下。这个值提供了基本的文件系统完整性验证，可以防止无意中的文件系统损坏。
 - `Secure` --- 需要有 `vault.sig` 签名的 `vault.plist` 文件存放在 `OC` 目录下。这个值包括了 `Basic` 完整性检查，但也会尝试建立一个可信的引导链。
 
@@ -650,7 +650,7 @@ rm vault.pub
 **Failsafe**: `Default`
 **Description**: Apple 安全启动的机型。
 
-定义 Apple 安全启动的机型和策略。指定此值能够定义哪些操作系统可以启动。早于在指定机型发布时间的操作系统将无法启动。有效值如下：
+定义 Apple 安全启动的机型和策略。指定此值能够定义哪些操作系统可以启动。早于指定机型发布时间的操作系统将无法启动。有效值如下：
 
 - `Default` --- 最近的可用型号，目前设置为 `j137`
 - `Disabled` --- 无机型，禁用 Apple 安全启动
@@ -673,16 +673,16 @@ rm vault.pub
 
 `PlatformInfo` 和 `SecureBootModel` 是相互独立的，因此可以在任何 SMBIOS 上启用 Apple 安全启动。将 `SecureBootModel` 设置为除 `Disabled` 以外的任意有效值，相当于实现了 Apple 安全启动的 [中等安全性](https://support.apple.com/HT208330)。如要实现「完整安全性」，还需要指定 `ApECID` 值。
 
-Enabling Apple Secure Boot is more demanding to incorrect configurations, buggy macOS installations, and unsupported setups. Things to keep in mind:
+启用 Apple 安全启动的要求很多，任何不正确的配置、错误的 macOS 安装或者不支持的安装设置都可能会增加启用难度，记住以下几点：
 
-- Just like on T2 Macs you will not be able to install any unsigned kernel drivers and several signed kernel drivers including NVIDIA Web Drivers.
-- The list of cached drivers may be different, resulting in the need to change the list of `Added` or `Forced` kernel drivers. For example, `IO80211Family` cannot be injected in this case.
-- If your platform requires certain settings, but they were not enabled, because the obvious issues did not trigger before, you may get boot failure. Be extra careful with `IgnoreInvalidFlexRatio` or `HashServices`.
-- Operating systems released before Apple Secure Boot landed (e.g. macOS 10.12 or earlier) will still boot until UEFI Secure Boot is enabled. This is so, because from Apple Secure Boot point they are treated as incompatible and are assumed to be handled by the firmware just like Microsoft Windows is.
-- On older CPUs (e.g. before Sandy Bridge) enabling Apple Secure Boot might cause slightly slower loading by up to 1 second.
-- Since `Default` value will increase with time to support the latest major release operating system, it is not recommended to use `ApECID` and `Default` value together.
+- 和配备 Apple T2 安全芯片的 Mac 电脑一样，你将无法安装任何未签名的内核驱动程序。还有一些内核驱动程序尽管已签名，但也无法安装，包括但不限于 NVIDIA Web Drivers。
+- 驱动程序缓存的列表可能不同，因此需要改变 `Add` 或 `Force` 内核驱动程序列表。比如，在这种情况下 `IO80211Family` 不能被注入。
+- 如果你的平台需要某些特定设置，但由于之前调试时没有触发明显问题而没有被启用，那么可能会导致启动失败。要格外小心 `IgnoreInvalidFlexRatio` 或 `HashServices`。
+- 在 Apple 推出安全启动功能之前发布的操作系统（如 macOS 10.12 或更早的版本）仍然会正常启动，除非启用了 UEFI 安全启动。之所以如此，是因为从 Apple 安全启动的角度来看，它们都是不兼容的系统，会被认为应该由 BIOS 来处理，就像微软的 Windows 一样。
+- 在较旧的 CPU 上（如 Sandy Bridge 之前），启用 Apple 安全启动可能会使加载速度略微变慢，最长可达 1 秒。
+- 由于 `Default` 的值会随着时间的推移而变化，以支持最新的 macOS 主版本，因此不建议同时使用 `ApECID` 和 `Default` 值。
 
-For more details on how to configure Apple Secure Boot with UEFI Secure Boot refer to [UEFI Secure Boot](12-troubleshooting.html#12-2-UEFI-Secure-Boot) section.
+关于如何结合 UEFI 安全启动来配置 Apple 安全启动的细节，请参考本文档 [UEFI 安全启动](12-troubleshooting.html#12-2-UEFI-安全启动) 部分。
 
 ## 8.6 Entry 属性
 
