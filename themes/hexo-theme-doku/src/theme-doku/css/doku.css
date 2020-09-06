@@ -279,6 +279,11 @@ html *::-webkit-scrollbar-thumb {
     color: #666;
 }
 
+.content table {
+    display: block;
+    overflow-x: auto;
+}
+
 /* override highlightjs */
 
 .content blockquote.doku-blockquote {
