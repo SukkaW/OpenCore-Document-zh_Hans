@@ -3,7 +3,7 @@ title: 8. Misc
 description: 关于 OpenCore 行为的其他配置
 type: docs
 author_info: 由 xMuu、Sukka、derbalkon 整理、由 Sukka、derbalkon 翻译。
-last_updated: 2020-08-30
+last_updated: 2020-08-31
 ---
 
 ## 8.1 简介
@@ -478,9 +478,24 @@ nvram 4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102:boot-log | awk '{gsub(/%0d%0a%00/,"")
 
 将此值设置为任何非零的 64 位整数，将允许使用个性化的 Apple 安全启动标识符。如果你想使用此设置，请确保使用加密的随机数生成器生成一个 64 位的随机数。如果这个值设置妥当，并且 `SecureBootModel` 值有效且不是 `Disabled`，那么就可以实现 Apple 安全启动的 [完整安全性](https://support.apple.com/HT208330)。
 
-*注 1*：该值设置为非零的时候，必须重新安装操作系统，或使用 macOS DMG 恢复镜像 `bless –personalize` 完成安装。只有通过 macOS 恢复功能（macOS Recovery）或使用 `asr`（Apple Software Restore）创建的个性化映像，才能在 `ApECID` 值非零的情况下安装操作系统。
+To start using personalised Apple Secure Boot you will have to reinstall the operating system or personalise it. Until your operating system is personalised you will only be able to load macOS DMG recovery. If you do not have DMG recovery you could always download it with `macrecovery` utility and put to `com.apple.recovery.boot` as explained in [Tips and Tricks]() section. Keep in mind that [DMG loading]() needs to be set to `Signed` to use any DMG with Apple Secure Boot.
 
-*注 2*：由于 macOS 安装器存在 bug，目前这个选项不太可靠，因此不建议使用。
+To personalise an existing operating system use `bless` command after loading to macOS DMG recovery. Mount the system volume partition, unless it has already been mounted, and execute the following command:
+
+```bash
+bless bless --folder "/Volumes/Macintosh HD/System/Library/CoreServices" \
+  --bootefi --personalize
+```
+
+When reinstalling the operating system, keep in mind that current versions of macOS Installer, tested as of 10.15.6, will usually run out of free memory on the `/var/tmp` partition when trying to install macOS with the personalised Apple Secure Boot. Soon after downloading the macOS installer image an `Unable to verify macOS` error message will appear. To workaround this issue allocate a dedicated RAM disk of 2 MBs for macOS personalisation by entering the following commands in macOS recovery terminal before starting the installation:
+
+```bash
+disk=$(hdiutil attach -nomount ram://4096)
+diskutil erasevolume HFS+ SecureBoot $disk
+diskutil unmount $disk
+mkdir /var/tmp/OSPersonalizationTemp
+diskutil mount -mountpoint /var/tmp/OSPersonalizationTemp $disk
+```
 
 ### 4. `AuthRestart`
 
@@ -513,7 +528,7 @@ VirtualSMC 通过将磁盘加密密钥拆分保存在 NVRAM 和 RTC 中来执行
 
 **Type**: `plist string`
 **Failsafe**: `Signed`
-**Description**: 定义用于 macOS 恢复功能的磁盘映像（DMG）加载策略。
+**Description**: 定义用于 macOS Recovery 的磁盘映像（Disk Image, DMG）加载策略。
 
 有效值如下：
 
@@ -521,7 +536,18 @@ VirtualSMC 通过将磁盘加密密钥拆分保存在 NVRAM 和 RTC 中来执行
 - `Signed` --- 仅加载 Apple 签名的 DMG 磁盘映像。由于 Apple 安全启动的设计，不管 Apple 安全启动是什么状态，`Signed` 策略都会允许加载任何 Apple 签名的 macOS Recovery，这可能不是我们所希望的那样。
 - `Any` --- 任何 DMG 磁盘映像都会作为普通文件系统挂载。强烈不建议使用 `Any` 策略，当激活了 Apple 安全启动时会导致启动失败。
 
-### 7. `ExposeSensitiveData`
+### 7. `EnablePassword`
+
+**Type**: `plist boolean`
+**Failsafe**: `false`
+**Description**: Enable password protection to allow sensitive operations.
+
+Password protection ensures that sensitive operations like booting a non-default operating system (e.g. macOS recovery or a tool), resetting NVRAM storage, trying to boot into a non-default mode (e.g. verbose mode or safe mode) are not allowed without explicit user authentication by a custom password. Currently password and salt are hashed with 5000000 iterations of SHA-512.
+
+*Note*: This functionality is currently in development and is not ready for daily usage.
+
+
+### 8. `ExposeSensitiveData`
 
 **Type**: `plist integer`
 **Failsafe**: `0x6`
@@ -559,13 +585,25 @@ nvram 4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102:oem-vendor # SMBIOS Type2 Manufacture
 nvram 4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102:oem-board # SMBIOS Type2 ProductName
 ```
 
-### 8. `HaltLevel`
+### 9. `HaltLevel`
 
 **Type**: `plist integer`, 64 bit
 **Failsafe**: `0x80000000` (`DEBUG_ERROR`)
 **Description**: EDK II 调试级别的位掩码（总和），使 CPU 在获得 `HaltLevel` 消息后中止（停止执行）。可能的值与 `DisplayLevel` 值相匹配。
 
-### 9. `Vault`
+### 10. `PasswordHash`
+
+**Type**: `plist data` 64 bytes
+**Failsafe**: all zero
+**Description**: Password hash used when `EnabledPassword` is set.
+
+### 11. `PasswordSalt`
+
+**Type**: `plist data`
+**Failsafe**: empty
+**Description**: Password salt used when `EnabledPassword` is set.
+
+### 12. `Vault`
 
 **Type**: `plist string`
 **Failsafe**: `Secure`
@@ -608,7 +646,7 @@ rm vault.pub
 
 *注 2*：当 `vault.plist` 存在，或者当公钥嵌入到 `OpenCore.efi` 中的时候，无论这个选项是什么，`vault.plist` 和 `vault.sig` 都会被使用。设置这个选项仅仅会确保配置的合理性，否则启动过程会中止。
 
-### 10. `ScanPolicy`
+### 13. `ScanPolicy`
 
 **Type**: `plist integer`, 32 bit
 **Failsafe**: `0xF0103`
@@ -644,7 +682,7 @@ rm vault.pub
 - `OC_SCAN_ALLOW_DEVICE_SCSI`
 - `OC_SCAN_ALLOW_DEVICE_NVME`
 
-### 11. `SecureBootModel`
+### 14. `SecureBootModel`
 
 **Type**: `plist string`
 **Failsafe**: `Default`
@@ -677,10 +715,13 @@ rm vault.pub
 
 - 和配备 Apple T2 安全芯片的 Mac 电脑一样，你将无法安装任何未签名的内核驱动程序。还有一些内核驱动程序尽管已签名，但也无法安装，包括但不限于 NVIDIA Web Drivers。
 - 驱动程序缓存的列表可能不同，因此需要改变 `Add` 或 `Force` 内核驱动程序列表。比如，在这种情况下 `IO80211Family` 不能被注入。
+- System volume alterations on operating systems with sealing, like macOS 11, may result in the operating system being unbootable. Do not try to disable system volume encryption unless you disable Apple Secure Boot.
 - 如果你的平台需要某些特定设置，但由于之前调试时没有触发明显问题而没有被启用，那么可能会导致启动失败。要格外小心 `IgnoreInvalidFlexRatio` 或 `HashServices`。
 - 在 Apple 推出安全启动功能之前发布的操作系统（如 macOS 10.12 或更早的版本）仍然会正常启动，除非启用了 UEFI 安全启动。之所以如此，是因为从 Apple 安全启动的角度来看，它们都是不兼容的系统，会被认为应该由 BIOS 来处理，就像微软的 Windows 一样。
 - 在较旧的 CPU 上（如 Sandy Bridge 之前），启用 Apple 安全启动可能会使加载速度略微变慢，最长可达 1 秒。
 - 由于 `Default` 的值会随着时间的推移而变化，以支持最新的 macOS 主版本，因此不建议同时使用 `ApECID` 和 `Default` 值。
+
+Sometimes the already installed operating system may have outdated Apple Secure Boot manifests on the `Preboot` partition causing boot failure. If you see the `OCB: Apple Secure Boot prohibits this boot entry, enforcing!` message, it is likely the case. When this happens you can either reinstall the operating system or copy the manifests (files with `.im4m` extension, like `boot.efi.j137.im4m`) from `/usr/standalone/i386` to `/Volumes/Preboot/<UUID>/System/Library/CoreServices`. Here `<UUID>` is your system volume identifier.
 
 关于如何结合 UEFI 安全启动来配置 Apple 安全启动的细节，请参考本文档 [UEFI 安全启动](12-troubleshooting.html#12-2-UEFI-安全启动) 部分。
 

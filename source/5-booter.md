@@ -3,7 +3,7 @@ title: 5. Booter
 description: 配置 OpenRuntime.efi（Slide 值计算、KASLR）
 type: docs
 author_info: 由 Sukka、derbalkon 整理，由 Sukka、derbalkon 翻译。
-last_updated: 2020-08-30
+last_updated: 2020-09-07
 ---
 
 ## 5.1 简介
@@ -99,7 +99,7 @@ sudo pmset standby 0
 **Failsafe**: `false`
 **Description**: 禁用 Apple 单用户模式
 
-这个选项可以禁用 `CMD+S` 热键和 `-s` 启动参数来限制单用户模式。启用这一 Quirk 后预期行为应和 T2 的机型行为类似。请参考 Apple 的 [这篇文章](https://support.apple.com/HT201573) 以了解如何在启用这一 Quirk 后继续使用单用户模式。
+这个选项可以禁用 `CMD+S` 热键和 `-s` 启动参数来限制单用户模式。启用这一 Quirk 后预期行为应和 T2 的机型行为类似。请参考 Apple 的 [这篇文章](https://web.archive.org/web/20200517125051/https://support.apple.com/zh-cn/HT201573)（译者注：原文章已被关闭，此为网站时光机的存档副本）以了解如何在启用这一 Quirk 后继续使用单用户模式。
 
 ### 4. `DisableVariableWrite`
 

@@ -3,7 +3,7 @@ title: 11. UEFI
 description: UEFI 驱动以及加载顺序
 type: docs
 author_info: 由 xMuu、Sukka、derbalkon 整理，由 Sukka、derbalkon 翻译
-last_updated: 2020-08-31
+last_updated: 2020-09-07
 ---
 
 ## 11.1 简介
@@ -744,7 +744,7 @@ Apple 音频协议允许 macOS bootloader 和 OpenCore 播放声音和信号，�
 **Failsafe**: `0`
 **Description**: 保留内存区域的起始地址，该区域应被分配为保留区，有效地将此类型的内存标记标记为操作系统不可访问。
 
-这里写的地址必须是内存映射的一部分，具有 `EfiConventionalMemory` 类型，并且按页对齐（4KBs）。
+这里写的地址必须是内存映射的一部分，具有 `EfiConventionalMemory` 类型，并且按页对齐（4KB）。
 
 ### 2. `Comment`
 
@@ -756,7 +756,7 @@ Apple 音频协议允许 macOS bootloader 和 OpenCore 播放声音和信号，�
 
 **Type**: `plist integer`
 **Failsafe**: `0`
-**Description**: 保留的内存区域的大小，必须按页对齐（4KBs）。
+**Description**: 保留的内存区域的大小，必须按页对齐（4KB）。
 
 ### 4. `Enabled`
 

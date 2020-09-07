@@ -3,7 +3,7 @@ title: 7. Kernel
 description: OpenCore 安全配置，Kext 加载顺序以及屏蔽
 type: docs
 author_info: 由 Sukka、derbalkon 整理，由 Sukka、derbalkon 翻译。
-last_updated: 2020-08-30
+last_updated: 2020-09-07
 ---
 
 ## 7.1 简介
@@ -436,7 +436,16 @@ last_updated: 2020-08-30
 
 *注*：相比直接在 ACPI 表中删除 `DMAR`，我们更推荐大家使用这一选项。这样不会破坏其他操作系统中的 VT-d 支持（总会有人需要用到的，对吧？）。
 
-### 7. `DisableRtcChecksum`
+### 7. `DisableLinkeditJettison`
+
+**Type**: `plist boolean`
+**Failsafe**: `false`
+**Requirement**: 11.0
+**Description**: Disables `__LINKEDIT` jettison code.
+
+This option lets `Lilu.kext` and possibly some others function in macOS Big Sur with best performance without `keepsyms=1` boot argument.
+
+### 8. `DisableRtcChecksum`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
@@ -447,7 +456,7 @@ last_updated: 2020-08-30
 
 *注 2*：这个选项不能确保区域在固件阶段不被覆盖（例如 macOS bootloader）。如有需要，请参阅 `AppleRtc` 协议描述。
 
-### 8. `DummyPowerManagement`
+### 9. `DummyPowerManagement`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
@@ -456,7 +465,7 @@ last_updated: 2020-08-30
 
 *注*：这一选项旨在替代 `NullCpuPowerManagement.kext`，用于 macOS 中没有电源管理驱动程序的 CPU。
 
-### 9. `ExternalDiskIcons`
+### 10. `ExternalDiskIcons`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
@@ -465,7 +474,7 @@ last_updated: 2020-08-30
 
 *注*：这一选项应尽量避免使用。现代固件通常情况下都是兼容的。
 
-### 10. `IncreasePciBarSize`
+### 11. `IncreasePciBarSize`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
@@ -476,7 +485,7 @@ last_updated: 2020-08-30
 
 > 译者注：如果你的 BIOS 中存在 Above4GDecoding 选项，请直接在 BIOS 中启用。
 
-### 11. `LapicKernelPanic`
+### 12. `LapicKernelPanic`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
@@ -485,14 +494,14 @@ last_updated: 2020-08-30
 
 > 译者注：惠普电脑可能需要启用这一选项。
 
-### 12. `PanicNoKextDump`
+### 13. `PanicNoKextDump`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
 **Requirement**: 10.13 (not required for older)
 **Description**: 在发生内核崩溃时阻止输出 Kext 列表，提供可供排错参考的崩溃日志。
 
-### 13. `PowerTimeoutKernelPanic`
+### 14. `PowerTimeoutKernelPanic`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
@@ -501,7 +510,7 @@ last_updated: 2020-08-30
 
 macOS Catalina 新增了一项额外的安全措施，导致在电源切换超时的时候会出现 Kernel Panic。配置错误的硬件可能会因此出现问题（如数字音频设备）、有的时候会导致睡眠唤醒的问题。这一 Quirk 和引导参数 `setpowerstate_panic=0` 功能大部分一致，但是后者只应该用于调试用途。
 
-### 14. `ThirdPartyDrives`
+### 15. `ThirdPartyDrives`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
@@ -510,7 +519,7 @@ macOS Catalina 新增了一项额外的安全措施，导致在电源切换超�
 
 *注*：NVMe SSD 通常无需这一修改。对于 AHCI SSD（如 SATA SSD），macOS 从 10.15 开始提供 `trimforce`，可以将 `01 00 00 00` 值写入 `APPLE_BOOT_VARIABLE_GUID` 命名空间中的 `EnableTRIM` 变量。
 
-### 15. `XhciPortLimit`
+### 16. `XhciPortLimit`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
@@ -543,7 +552,7 @@ macOS 10.7 和更早的 XNU 内核可能不会使用 `x86_64` 架构来启动，
 
 - `Auto` --- 自动选择首选的架构。
 - `i386` --- 如果可用，则使用 `i386`（32 位）内核。
-- `i386-user32` — 在可用的情况下使用 `i386`（32 位）内核，并在 64 位处理器上强制使用 32 位用户空间。在 macOS 上，64 位处理器会被认为支持 `SSSE3`，但对于较老的 64 位奔腾处理器来说，实际情况并非如此，因此会导致一些应用程序在 macOS 10.6 上崩溃。该行为对应 `-legacy` 内核启动参数。
+- `i386-user32` — 在可用的情况下使用 `i386`（32 位）内核，并在 64 位处理器上强制使用 32 位用户空间。在 macOS 上，64 位处理器会被认为支持 `SSSE3` 指令集，但对于较老的 64 位奔腾处理器来说，实际情况并非如此，因此会导致一些应用程序在 macOS 10.6 上崩溃。该行为对应 `-legacy` 内核启动参数。
 - `x86_64` --- 如果可用，则使用 `x86_64`（64 位）内核。
 
 下面是确定内核架构的计算过程：
@@ -554,7 +563,7 @@ macOS 10.7 和更早的 XNU 内核可能不会使用 `x86_64` 架构来启动，
    - 10.4-10.5 --- `i386` 或 `i386-user32`
    - 10.6-10.7 --- `i386`、`i386-user32` 或 `x86_64`
    - 10.8 及更新的版本 --- `x86_64`
-4. 如果 `KernelArch` 被设置为 `Auto`，并且 CPU 不支持 `SSSE3`， 则兼容性会被限制为 `i386-user32`（如果 EfiBoot 支持的话）。 
+4. 如果 `KernelArch` 被设置为 `Auto`，并且 CPU 不支持 `SSSE3` 指令集， 则兼容性会被限制为 `i386-user32`（如果 EfiBoot 支持的话）。 
 5. 主板标识符（来自 SMBIOS）基于 EfiBoot 版本，如果有任何 `i386` 的 CPU Variant 与之兼容，就会在不支持的机型上禁用 `x86_64` 架构。`Auto` 不参与这个过程，因为在 EfiBoot 中，该列表是不可覆盖的。
 6. 当没有设置为 `Auto` 时，`KernelArch` 会把系统支持限制在明确指定的架构（如果该架构兼容）。
 7. 按以下顺序选择参数可以获得最佳的架构支持：`x86_64`、`i386`、`i386-user32`。

@@ -3,7 +3,7 @@ title: 10. PlatformInfo
 description: SMBIOS 机型信息配置
 type: docs
 author_info: 由 xMuu、Sukka、derbalkon 整理，由 Sukka、derbalkon 翻译
-last_updated: 2020-08-28
+last_updated: 2020-09-07
 ---
 
 机型信息由手动生成或填充的字段组成，以便与 macOS 服务兼容。配置的基础部分可以从 [`AppleModels`](https://github.com/acidanthera/OpenCorePkg/blob/master/AppleModels) 获得，这是一个可以从 [YAML](https://yaml.org/spec/1.2/spec.html) 格式的数据库中生成一组接口的工具包。这些字段将会被写入三个位置：
@@ -71,7 +71,6 @@ last_updated: 2020-08-28
 ### 6. `Generic`
 
 **Type**: `plist dictonary`
-**Optional**: `Automatic` 为 `false` 时可不填
 **Description**: 更新所有字段。当 `Automatic` 激活时此处为只读。
 
 ### 7. `DataHub`
