@@ -478,16 +478,16 @@ nvram 4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102:boot-log | awk '{gsub(/%0d%0a%00/,"")
 
 将此值设置为任何非零的 64 位整数，将允许使用个性化的 Apple 安全启动标识符。如果你想使用此设置，请确保使用加密的随机数生成器生成一个 64 位的随机数。如果这个值设置妥当，并且 `SecureBootModel` 值有效且不是 `Disabled`，那么就可以实现 Apple 安全启动的 [完整安全性](https://support.apple.com/HT208330)。
 
-To start using personalised Apple Secure Boot you will have to reinstall the operating system or personalise it. Until your operating system is personalised you will only be able to load macOS DMG recovery. If you do not have DMG recovery you could always download it with `macrecovery` utility and put to `com.apple.recovery.boot` as explained in [Tips and Tricks]() section. Keep in mind that [DMG loading]() needs to be set to `Signed` to use any DMG with Apple Secure Boot.
+要使用个性化的 Apple 安全启动，必须重新安装操作系统，或对其进行个性化定制。在操作系统被个性化定制之前，只能加载 macOS DMG 恢复镜像。DMG 恢复镜像可以随时用 `macrecovery` 实用工具下载，然后放到 `com.apple.recovery.boot` 里，如 [技巧和窍门](12-troubleshooting.html#12-5-技巧和窍门) 部分所述。请记住，[`DmgLoading`](8-misc.html#6-DmgLoading) 需要设置为 `Signed` 才能通过 Apple 安全启动来加载 DMG。
 
-To personalise an existing operating system use `bless` command after loading to macOS DMG recovery. Mount the system volume partition, unless it has already been mounted, and execute the following command:
+如果要对现有的操作系统进行个性化定制，请在加载 macOS DMG 恢复镜像之后使用 `bless` 命令。确保已挂载到系统卷分区，并执行以下命令：
 
 ```bash
 bless bless --folder "/Volumes/Macintosh HD/System/Library/CoreServices" \
   --bootefi --personalize
 ```
 
-When reinstalling the operating system, keep in mind that current versions of macOS Installer, tested as of 10.15.6, will usually run out of free memory on the `/var/tmp` partition when trying to install macOS with the personalised Apple Secure Boot. Soon after downloading the macOS installer image an `Unable to verify macOS` error message will appear. To workaround this issue allocate a dedicated RAM disk of 2 MBs for macOS personalisation by entering the following commands in macOS recovery terminal before starting the installation:
+如果要使用个性化的 Apple 安全启动重新安装操作系统，请记住，当前版本的 macOS 安装器（测试版本 10.15.6）通常会把 `/var/tmp` 分区的可用内存耗尽，因此在 macOS 安装器镜像下载后不久，就会出现 `Unable to verify macOS` 的错误信息。为了解决这个问题，需要在开始安装前，在 macOS Recovery 终端输入如下命令，为 macOS 个性化分配一个 2MB 的专用 RAM 磁盘：
 
 ```bash
 disk=$(hdiutil attach -nomount ram://4096)
@@ -540,11 +540,11 @@ VirtualSMC 通过将磁盘加密密钥拆分保存在 NVRAM 和 RTC 中来执行
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
-**Description**: Enable password protection to allow sensitive operations.
+**Description**: 为敏感操作启用密码保护。
 
-Password protection ensures that sensitive operations like booting a non-default operating system (e.g. macOS recovery or a tool), resetting NVRAM storage, trying to boot into a non-default mode (e.g. verbose mode or safe mode) are not allowed without explicit user authentication by a custom password. Currently password and salt are hashed with 5000000 iterations of SHA-512.
+启动非默认操作系统（如 macOS Recovery 或工具）、启动到非默认模式（如详细模式或安全模式）或重置 NVRAM 等，以上这些行为属于敏感操作，密码保护可以很好地保证这些操作都是由本人或授权人操作。目前，密码和盐（Salt）用 5000000 次 SHA-512 迭代来进行哈希运算。
 
-*Note*: This functionality is currently in development and is not ready for daily usage.
+*注*：此功能尚在开发阶段，不推荐日常使用。
 
 
 ### 8. `ExposeSensitiveData`
@@ -595,13 +595,13 @@ nvram 4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102:oem-board # SMBIOS Type2 ProductName
 
 **Type**: `plist data` 64 bytes
 **Failsafe**: all zero
-**Description**: Password hash used when `EnabledPassword` is set.
+**Description**: 密码使用的哈希值（Hash）。
 
 ### 11. `PasswordSalt`
 
 **Type**: `plist data`
 **Failsafe**: empty
-**Description**: Password salt used when `EnabledPassword` is set.
+**Description**: 密码使用的盐值（Salt）。
 
 ### 12. `Vault`
 
@@ -715,13 +715,13 @@ rm vault.pub
 
 - 和配备 Apple T2 安全芯片的 Mac 电脑一样，你将无法安装任何未签名的内核驱动程序。还有一些内核驱动程序尽管已签名，但也无法安装，包括但不限于 NVIDIA Web Drivers。
 - 驱动程序缓存的列表可能不同，因此需要改变 `Add` 或 `Force` 内核驱动程序列表。比如，在这种情况下 `IO80211Family` 不能被注入。
-- System volume alterations on operating systems with sealing, like macOS 11, may result in the operating system being unbootable. Do not try to disable system volume encryption unless you disable Apple Secure Boot.
+- 某些系统（比如 macOS 11）是密封保护的，更改受保护的系统卷可能会导致操作系统无法启动。除非禁用了 Apple 安全启动，否则不要禁用系统卷加密。
 - 如果你的平台需要某些特定设置，但由于之前调试时没有触发明显问题而没有被启用，那么可能会导致启动失败。要格外小心 `IgnoreInvalidFlexRatio` 或 `HashServices`。
 - 在 Apple 推出安全启动功能之前发布的操作系统（如 macOS 10.12 或更早的版本）仍然会正常启动，除非启用了 UEFI 安全启动。之所以如此，是因为从 Apple 安全启动的角度来看，它们都是不兼容的系统，会被认为应该由 BIOS 来处理，就像微软的 Windows 一样。
 - 在较旧的 CPU 上（如 Sandy Bridge 之前），启用 Apple 安全启动可能会使加载速度略微变慢，最长可达 1 秒。
 - 由于 `Default` 的值会随着时间的推移而变化，以支持最新的 macOS 主版本，因此不建议同时使用 `ApECID` 和 `Default` 值。
 
-Sometimes the already installed operating system may have outdated Apple Secure Boot manifests on the `Preboot` partition causing boot failure. If you see the `OCB: Apple Secure Boot prohibits this boot entry, enforcing!` message, it is likely the case. When this happens you can either reinstall the operating system or copy the manifests (files with `.im4m` extension, like `boot.efi.j137.im4m`) from `/usr/standalone/i386` to `/Volumes/Preboot/<UUID>/System/Library/CoreServices`. Here `<UUID>` is your system volume identifier.
+有时，已安装的系统 `Preboot` 分区上的 Apple 安全启动清单是过时的，从而导致启动失败。如果你看到 `OCB: Apple Secure Boot prohibits this boot entry, enforcing!` 这样的信息，很可能就是出现了上述这种情况。想要解决这个问题，要么重新安装操作系统，要么把 `/usr/standalone/i386` 中的清单（扩展名为 `.im4m` 的文件，如 `boot.efi.j137.im4m`）复制到 `/Volumes/Preboot/<UUID>/System/Library/CoreServices`（`<UUID>` 为系统卷的标识符）。
 
 关于如何结合 UEFI 安全启动来配置 Apple 安全启动的细节，请参考本文档 [UEFI 安全启动](12-troubleshooting.html#12-2-UEFI-安全启动) 部分。
 

@@ -441,9 +441,9 @@ last_updated: 2020-09-07
 **Type**: `plist boolean`
 **Failsafe**: `false`
 **Requirement**: 11.0
-**Description**: Disables `__LINKEDIT` jettison code.
+**Description**: 禁止丢弃 `__LINKEDIT`。
 
-This option lets `Lilu.kext` and possibly some others function in macOS Big Sur with best performance without `keepsyms=1` boot argument.
+这个选项能让 `Lilu.kext` 和其他一些功能在 macOS Big Sur 中以最佳性能运行，而不需要 `keepsyms=1` 启动参数。
 
 ### 8. `DisableRtcChecksum`
 
