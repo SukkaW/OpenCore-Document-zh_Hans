@@ -3,7 +3,7 @@ title: 8. Misc
 description: 关于 OpenCore 行为的其他配置
 type: docs
 author_info: 由 xMuu、Sukka、derbalkon 整理、由 Sukka、derbalkon 翻译。
-last_updated: 2020-08-28
+last_updated: 2020-08-31
 ---
 
 ## 8.1 简介
@@ -99,7 +99,7 @@ OpenCore 尽可能地遵循 `bless` 模式，即 `Apple Boot Policy`。`bless` �
 
 应填入 `plist dict` 类型的值来描述相应的加载条目。详见 Entry 属性部分。
 
-*注*：选择工具（比如 UEFI shell）是很危险的事情，利用这些工具可以轻易地绕过安全启动链，所以 **千万不要** 出现在生产环境配置中，尤其是设置了 vault 和安全启动保护的设备（译者注：即，工具仅作调试用）。具体的工具示例参见本文档的 UEFI 章节。
+*注*：选择工具（比如 UEFI shell）是很危险的事情，利用这些工具可以轻易地绕过安全启动链，所以 **千万不要** 出现在生产环境配置中，尤其是设置了 Vault 和安全启动保护的设备（译者注：即，工具仅作调试用）。具体的工具示例参见本文档的 UEFI 章节。
 
 ## 8.3 Boot 属性
 
@@ -178,12 +178,12 @@ OpenCore 尽可能地遵循 `bless` 模式，即 `Apple Boot Policy`。`bless` �
 
 - `0x0001` — `OC_ATTR_USE_VOLUME_ICON`，提供引导项自定义图标：
   
-  对于 `Tools`，OpenCore 会尝试优先加载以下自定义图标，不存在自定义图标时则回退到默认图标：
+  对于 `Tools`，OpenCore 会尝试优先加载以下自定义图标，自定义图标不存在时则回退到默认图标：
   - `ResetNVRAM` — `Resources\Image\ResetNVRAM.icns` — 图标目录下的 `ResetNVRAM.icns`。
   - `Tools\<TOOL_RELATIVE_PATH>.icns` — `Tools` 文件附近的对应图标，扩展名为 `.icns`。
   
-  对于 `Entries`，OpenCore 会尝试优先加载以下自定义图标，不存在自定义图标时则回退到卷宗或默认图标：
-  - `<ENTRY_PATH>.icns` — 条目文件附近的图标，扩展名为 `.icns`。
+  对于自定义的启动条目 `Entries`，OpenCore 会尝试优先加载以下自定义图标，自定义图标不存在时则回退到卷宗或默认图标：
+  - `<ENTRY_PATH>.icns` — 对应启动项文件附近的图标，扩展名为 `.icns`。
   
   对于其他条目，OpenCore 会尝试优先加载卷宗图标，并回退到默认图标：
   - `.VolumeIcon.icns` 文件，位于 APFS `Preboot` 根目录下。
@@ -427,6 +427,7 @@ nvram 4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102:boot-log | awk '{gsub(/%0d%0a%00/,"")
 - `OCFS` — OcFileLib
 - `OCFV` — OcFirmwareVolumeLib
 - `OCHS` — OcHashServicesLib
+- `OCI4` — OcAppleImg4Lib
 - `OCIC` — OcImageConversionLib
 - `OCII` — OcInputLib
 - `OCJS` — OcApfsLib
@@ -475,9 +476,26 @@ nvram 4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102:boot-log | awk '{gsub(/%0d%0a%00/,"")
 **Failsafe**: `0`
 **Description**: Apple Enclave 标识符。
 
-将此值设置为任何非零的 64 位整数，将允许使用个性化的 Apple 安全启动标识符。如果你想使用此设置，请确保使用加密的随机数生成器生成一个 64 位的随机数。如果这个值设置妥当，并且 `SecureBootModel` 值有效且不是 `Disabled`，那么就可以实现 Apple 安全启动的 [完整安全性](https://support.apple.com/en-us/HT208330)。
+将此值设置为任何非零的 64 位整数，将允许使用个性化的 Apple 安全启动标识符。如果你想使用此设置，请确保使用加密的随机数生成器生成一个 64 位的随机数。如果这个值设置妥当，并且 `SecureBootModel` 值有效且不是 `Disabled`，那么就可以实现 Apple 安全启动的 [完整安全性](https://support.apple.com/HT208330)。
 
-*注*：此值设置为非零后必须重新安装操作系统或使用 macOS 恢复功能（macOS Recovery）。在 `ApECID` 值设置为非零的情况下，只有通过 macOS 恢复功能才能安装操作系统。
+要使用个性化的 Apple 安全启动，必须重新安装操作系统，或对其进行个性化定制。在操作系统被个性化定制之前，只能加载 macOS DMG 恢复镜像。DMG 恢复镜像可以随时用 `macrecovery` 实用工具下载，然后放到 `com.apple.recovery.boot` 里，如 [技巧和窍门](12-troubleshooting.html#12-5-技巧和窍门) 部分所述。请记住，[`DmgLoading`](8-misc.html#6-DmgLoading) 需要设置为 `Signed` 才能通过 Apple 安全启动来加载 DMG。
+
+如果要对现有的操作系统进行个性化定制，请在加载 macOS DMG 恢复镜像之后使用 `bless` 命令。确保已挂载到系统卷分区，并执行以下命令：
+
+```bash
+bless bless --folder "/Volumes/Macintosh HD/System/Library/CoreServices" \
+  --bootefi --personalize
+```
+
+如果要使用个性化的 Apple 安全启动重新安装操作系统，请记住，当前版本的 macOS 安装器（测试版本 10.15.6）通常会把 `/var/tmp` 分区的可用内存耗尽，因此在 macOS 安装器镜像下载后不久，就会出现 `Unable to verify macOS` 的错误信息。为了解决这个问题，需要在开始安装前，在 macOS Recovery 终端输入如下命令，为 macOS 个性化分配一个 2MB 的专用 RAM 磁盘：
+
+```bash
+disk=$(hdiutil attach -nomount ram://4096)
+diskutil erasevolume HFS+ SecureBoot $disk
+diskutil unmount $disk
+mkdir /var/tmp/OSPersonalizationTemp
+diskutil mount -mountpoint /var/tmp/OSPersonalizationTemp $disk
+```
 
 ### 4. `AuthRestart`
 
@@ -504,21 +522,32 @@ VirtualSMC 通过将磁盘加密密钥拆分保存在 NVRAM 和 RTC 中来执行
 
 *注 1*：某些固件的 NVRAM 本身存在问题，可能会出现无启动项支持，或者其他各种不兼容的情况。虽然可能性不大，但使用此选项可能会导致启动失败。请在已知兼容的主板上使用，风险自行考虑。
 
-*注 2*：请注意，NVRAM 重置也会同时清除 `Bootstrap` 模式下创建的启动选项。
+*注 2*：请注意，虽然从 OpenCore 执行的 NVRAM 重置不会清除在 `Bootstrap` 模式中创建的启动选项，但是如果在加载 OpenCore 之前重置 NVRAM，则会同时清除 `Bootstrap` 创建的启动选项。
 
 ### 6. `DmgLoading`
 
 **Type**: `plist string`
 **Failsafe**: `Signed`
-**Description**: 定义用于 macOS 恢复功能的磁盘映像（DMG）加载策略。
+**Description**: 定义用于 macOS Recovery 的磁盘映像（Disk Image, DMG）加载策略。
 
 有效值如下：
 
-- `Disabled` --- 加载 DMG 磁盘映像的行为将会失败。
-- `Signed` --- 仅加载 Apple 签名的 DMG 磁盘映像。
-- `Any` --- 任何 DMG 磁盘映像都会作为普通文件系统挂载。
+- `Disabled` --- 加载 DMG 磁盘映像的行为将会失败。大多数情况下 `Disabled` 策略仍会允许加载 macOS Recovery，因为通常会有 `boot.efi` 文件，它与 Apple 安全启动兼容。但是，手动下载存储在 `com.apple.recovery.boot` 目录中的 DMG 磁盘映像将无法被加载。
+- `Signed` --- 仅加载 Apple 签名的 DMG 磁盘映像。由于 Apple 安全启动的设计，不管 Apple 安全启动是什么状态，`Signed` 策略都会允许加载任何 Apple 签名的 macOS Recovery，这可能不是我们所希望的那样。
+- `Any` --- 任何 DMG 磁盘映像都会作为普通文件系统挂载。强烈不建议使用 `Any` 策略，当激活了 Apple 安全启动时会导致启动失败。
 
-### 7. `ExposeSensitiveData`
+### 7. `EnablePassword`
+
+**Type**: `plist boolean`
+**Failsafe**: `false`
+**Description**: 为敏感操作启用密码保护。
+
+启动非默认操作系统（如 macOS Recovery 或工具）、启动到非默认模式（如详细模式或安全模式）或重置 NVRAM 等，以上这些行为属于敏感操作，密码保护可以很好地保证这些操作都是由本人或授权人操作。目前，密码和盐（Salt）用 5000000 次 SHA-512 迭代来进行哈希运算。
+
+*注*：此功能尚在开发阶段，不推荐日常使用。
+
+
+### 8. `ExposeSensitiveData`
 
 **Type**: `plist integer`
 **Failsafe**: `0x6`
@@ -556,21 +585,33 @@ nvram 4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102:oem-vendor # SMBIOS Type2 Manufacture
 nvram 4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102:oem-board # SMBIOS Type2 ProductName
 ```
 
-### 8. `HaltLevel`
+### 9. `HaltLevel`
 
 **Type**: `plist integer`, 64 bit
 **Failsafe**: `0x80000000` (`DEBUG_ERROR`)
 **Description**: EDK II 调试级别的位掩码（总和），使 CPU 在获得 `HaltLevel` 消息后中止（停止执行）。可能的值与 `DisplayLevel` 值相匹配。
 
-### 9. `Vault`
+### 10. `PasswordHash`
+
+**Type**: `plist data` 64 bytes
+**Failsafe**: all zero
+**Description**: 密码使用的哈希值（Hash）。
+
+### 11. `PasswordSalt`
+
+**Type**: `plist data`
+**Failsafe**: empty
+**Description**: 密码使用的盐值（Salt）。
+
+### 12. `Vault`
 
 **Type**: `plist string`
 **Failsafe**: `Secure`
-**Description**: 启用 OpenCore 的 vault 机制。
+**Description**: 启用 OpenCore 的 Vault 机制。
 
 有效值：
 
-- `Optional` --- 无要求，vault 不加载，不安全。
+- `Optional` --- 无要求，不设置 Vault，不安全。
 - `Basic` --- 需要有 `vault.plist` 文件存放在 `OC` 目录下。这个值提供了基本的文件系统完整性验证，可以防止无意中的文件系统损坏。
 - `Secure` --- 需要有 `vault.sig` 签名的 `vault.plist` 文件存放在 `OC` 目录下。这个值包括了 `Basic` 完整性检查，但也会尝试建立一个可信的引导链。
 
@@ -605,7 +646,7 @@ rm vault.pub
 
 *注 2*：当 `vault.plist` 存在，或者当公钥嵌入到 `OpenCore.efi` 中的时候，无论这个选项是什么，`vault.plist` 和 `vault.sig` 都会被使用。设置这个选项仅仅会确保配置的合理性，否则启动过程会中止。
 
-### 10. `ScanPolicy`
+### 13. `ScanPolicy`
 
 **Type**: `plist integer`, 32 bit
 **Failsafe**: `0xF0103`
@@ -641,13 +682,13 @@ rm vault.pub
 - `OC_SCAN_ALLOW_DEVICE_SCSI`
 - `OC_SCAN_ALLOW_DEVICE_NVME`
 
-### 11. `SecureBootModel`
+### 14. `SecureBootModel`
 
 **Type**: `plist string`
 **Failsafe**: `Default`
 **Description**: Apple 安全启动的机型。
 
-定义 Apple 安全启动的机型和策略。指定此值能够定义哪些操作系统可以启动。早于在指定机型发布时间的操作系统将无法启动。有效值如下：
+定义 Apple 安全启动的机型和策略。指定此值能够定义哪些操作系统可以启动。早于指定机型发布时间的操作系统将无法启动。有效值如下：
 
 - `Default` --- 最近的可用型号，目前设置为 `j137`
 - `Disabled` --- 无机型，禁用 Apple 安全启动
@@ -668,9 +709,21 @@ rm vault.pub
 - `j185` --- iMac20,1 (August 2020) minimum macOS 10.15.6 (19G2005)
 - `j185f` --- iMac20,2 (August 2020) minimum macOS 10.15.6 (19G2005)
 
-`PlatformInfo` 和 `SecureBootModel` 是相互独立的，因此可以在任何 SMBIOS 上启用 Apple 安全启动。将 `SecureBootModel` 设置为除 `Disabled` 以外的任意有效值，相当于实现了 Apple 安全启动的 [中等安全性](https://support.apple.com/en-us/HT208330)。如要实现「完整安全性」，还需要指定 `ApECID` 值。
+`PlatformInfo` 和 `SecureBootModel` 是相互独立的，因此可以在任何 SMBIOS 上启用 Apple 安全启动。将 `SecureBootModel` 设置为除 `Disabled` 以外的任意有效值，相当于实现了 Apple 安全启动的 [中等安全性](https://support.apple.com/HT208330)。如要实现「完整安全性」，还需要指定 `ApECID` 值。
 
-*注*：`Default` 的值会随着时间的推移而变化，以支持最新的 macOS 主版本，因此不建议同时使用 `ApECID` 和 `Default` 值。
+启用 Apple 安全启动的要求很多，任何不正确的配置、错误的 macOS 安装或者不支持的安装设置都可能会增加启用难度，记住以下几点：
+
+- 和配备 Apple T2 安全芯片的 Mac 电脑一样，你将无法安装任何未签名的内核驱动程序。还有一些内核驱动程序尽管已签名，但也无法安装，包括但不限于 NVIDIA Web Drivers。
+- 驱动程序缓存的列表可能不同，因此需要改变 `Add` 或 `Force` 内核驱动程序列表。比如，在这种情况下 `IO80211Family` 不能被注入。
+- 某些系统（比如 macOS 11）是密封保护的，更改受保护的系统卷可能会导致操作系统无法启动。除非禁用了 Apple 安全启动，否则不要禁用系统卷加密。
+- 如果你的平台需要某些特定设置，但由于之前调试时没有触发明显问题而没有被启用，那么可能会导致启动失败。要格外小心 `IgnoreInvalidFlexRatio` 或 `HashServices`。
+- 在 Apple 推出安全启动功能之前发布的操作系统（如 macOS 10.12 或更早的版本）仍然会正常启动，除非启用了 UEFI 安全启动。之所以如此，是因为从 Apple 安全启动的角度来看，它们都是不兼容的系统，会被认为应该由 BIOS 来处理，就像微软的 Windows 一样。
+- 在较旧的 CPU 上（如 Sandy Bridge 之前），启用 Apple 安全启动可能会使加载速度略微变慢，最长可达 1 秒。
+- 由于 `Default` 的值会随着时间的推移而变化，以支持最新的 macOS 主版本，因此不建议同时使用 `ApECID` 和 `Default` 值。
+
+有时，已安装的系统 `Preboot` 分区上的 Apple 安全启动清单是过时的，从而导致启动失败。如果你看到 `OCB: Apple Secure Boot prohibits this boot entry, enforcing!` 这样的信息，很可能就是出现了上述这种情况。想要解决这个问题，要么重新安装操作系统，要么把 `/usr/standalone/i386` 中的清单（扩展名为 `.im4m` 的文件，如 `boot.efi.j137.im4m`）复制到 `/Volumes/Preboot/<UUID>/System/Library/CoreServices`（`<UUID>` 为系统卷的标识符）。
+
+关于如何结合 UEFI 安全启动来配置 Apple 安全启动的细节，请参考本文档 [UEFI 安全启动](12-troubleshooting.html#12-2-UEFI-安全启动) 部分。
 
 ## 8.6 Entry 属性
 

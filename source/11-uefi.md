@@ -3,7 +3,7 @@ title: 11. UEFI
 description: UEFI 驱动以及加载顺序
 type: docs
 author_info: 由 xMuu、Sukka、derbalkon 整理，由 Sukka、derbalkon 翻译
-last_updated: 2020-08-28
+last_updated: 2020-09-07
 ---
 
 ## 11.1 简介
@@ -12,7 +12,7 @@ last_updated: 2020-08-28
 
 ## 11.2 驱动列表
 
-根据固件不同、可能需要不同的驱动程序。加载不兼容的驱动程序可能会导致无法启动系统，甚至导致固件永久性损坏。OpenCore 目前对以下 UEFI 驱动提供支持。OpenCore 可能兼容对其他 UEFI 驱动，但不能确定。
+根据固件不同、可能需要不同的驱动程序。加载不兼容的驱动程序可能会导致无法启动系统，甚至导致固件永久性损坏。OpenCore 目前对以下 UEFI 驱动提供支持。OpenCore 可能兼容其他 UEFI 驱动，但不能确定。
 
 - [`AudioDxe`](https://github.com/acidanthera/OpenCorePkg)* --- UEFI 固件中的 HDA 音频驱动程序，适用于大多数 Intel 和其他一些模拟音频控制器。参考 [acidanthera/bugtracker#740](https://github.com/acidanthera/bugtracker/issues/740) 来了解 AudioDxe 的已知问题。
 - [`CrScreenshotDxe`](https://github.com/acidanthera/OpenCorePkg)* --- 截图驱动。启用后，按下 <kbd>F10</kbd> 将能够截图并保存在 EFI 分区根目录下。该驱动基于 [Nikolaj Schlej](https://github.com/NikolajSchlej) 修改的 LongSoft 开发的 [`CrScreenshotDxe`](https://github.com/LongSoft/CrScreenshotDxe)。
@@ -25,7 +25,7 @@ last_updated: 2020-08-28
 - [`OpenRuntime`](https://github.com/acidanthera/OpenCorePkg)* --- OpenCore 插件之一，原名 `FwRuntimeServices.efi`，用于实现 `OC_FIRMWARE_RUNTIME` 协议，通过支持只读、只写 NVRAM 变量，提升了 OpenCore 和 Lilu 的安全性。有些 Quirk 如 `RequestBootVarRouting` 依赖此驱动程序。由于 Runtime 驱动的性质（与目标操作系统并行运行），因此它不能在 OpenCore 本身实现，而是与 OpenCore 捆绑在一起。
 - [`OpenUsbKbDxe`](https://github.com/acidanthera/OpenCorePkg)* --- USB 键盘驱动，在自定义 USB 键盘驱动程序的基础上新增了对 `AppleKeyMapAggregator` 协议的支持。这是内置的 `KeySupport` 的等效替代方案。根据固件不同，效果可能会更好或者更糟。
 - [`PartitionDxe`](https://github.com/acidanthera/OcBinaryData) --- 一个专门的分区管理驱动程序，用于加载旧版 macOS 的 DMG 映像（如 macOS 10.9 的分区映像）。对于 `Sandy Bridge` 或者更早的 CPU，由于缺少 `RDRAND` 指令支持，应使用 `PartitionDxeLegacy` 驱动程序。
-- [`Ps2KeyboardDxe`](https://github.com/acidanthera/audk)* --- 从 `MdeModulePkg` 提取出来的 PS/2 键盘驱动。OpenDuetPkg 和一些固件可能不包括这个驱动，但对于 PS/2 键盘来说该驱动是必须的。注：和 `OpenUsbKbDxe` 不同，该驱动不提供对 `AppleKeyMapAggregator` 的支持、因此需要启用 `KeySupport` 这个 Quirk。
+- [`Ps2KeyboardDxe`](https://github.com/acidanthera/audk)* --- 从 `MdeModulePkg` 提取出来的 PS/2 键盘驱动。OpenDuetPkg 和一些固件可能不包括这个驱动，但对于 PS/2 键盘来说该驱动是必须的。注意，和 `OpenUsbKbDxe` 不同，该驱动不提供对 `AppleKeyMapAggregator` 的支持、因此需要启用 `KeySupport` 这个 Quirk。
 - [`Ps2MouseDxe`](https://github.com/acidanthera/audk)* --- 从 `MdeModulePkg` 提取出来的 PS/2 鼠标驱动。一些非常老旧的笔记本的固件中可能不包含该驱动，但是这些笔记本需要依赖该驱动才能在引导界面使用触控板。
 - [`UsbMouseDxe`](https://github.com/acidanthera/audk)* --- 从 `MdeModulePkg` 提取出来的 USB 鼠标驱动。一般只有虚拟机（如 OVMF）的固件中可能不包含该驱动，这些虚拟机需要依赖该驱动才能在引导界面使用鼠标。
 - [`VBoxHfs`](https://github.com/acidanthera/OpenCorePkg) --- 带有 Bless 支持的 HFS 文件系统驱动。是 Apple 固件中 `HfsPlus` 驱动的开源替代。虽然功能完善，但是启动速度比 `HFSPlus` 慢三倍，并且尚未经过安全审核。
@@ -42,7 +42,7 @@ build -a X64 -b RELEASE -t XCODE5 -p FatPkg/FatPkg.dsc
 build -a X64 -b RELEASE -t XCODE5 -p MdeModulePkg/MdeModulePkg.dsc
 ```
 
-## 11.3 工具
+## 11.3 工具与应用程序
 
 一些不依赖 OpenCore 的工具可以帮助调试固件和硬件。下面列出了一些已知的工具。虽然有些工具可以从 OpenCore 启动，但大部分工具都应该直接或从 `OpenCoreShell` 中单独运行。
 
@@ -101,7 +101,7 @@ OpenCanopy 为 `PickerAttributes` 提供了全面的支持，并提供了一套�
 - `Shell` --- 具有 UEFI Shell 名称的条目（如 `OpenShell`）。
 - `Tool` --- 其他工具。
 
-预定义的标签放在 `/EFI/OC/Resources/Label` 目录下。每个标签都有 `.lbl` 或 `.l2x` 的后缀，以代表缩放级别。完整的标签列表如下所示。所有标签都是必需的。
+预定义的标签放在 `\EFI\OC\Resources\Label` 目录下。每个标签都有 `.lbl` 或 `.l2x` 的后缀，以代表缩放级别。完整的标签列表如下所示。所有标签都是必需的。
 
 - `EFIBoot` --- 通用的 OS。
 - `Apple` --- Apple OS。
@@ -132,7 +132,7 @@ OpenCanopy 为 `PickerAttributes` 提供了全面的支持，并提供了一套�
 
 **Type**: `plist dict`
 **Failsafe**: None
-**Description**: 配置 APFS 分区驱动，具体配置内容参见下文 `APFS 属性` 部分。
+**Description**: 配置 APFS 分区驱动，具体配置内容参见下文 APFS 属性部分。
 
 ### 2. `Audio`
 
@@ -235,25 +235,25 @@ APFS 驱动的 verbose 信息有助于 debug。
 
 **Type**: `plist integer`
 **Failsafe**: `0`
-**Description**: 允许加载的最老 APFS 驱动的发布日期
+**Description**: 允许加载的最老 APFS 驱动的发布日期。
 
 APFS 驱动的版本号基于其发布日期。较旧版本的 APFS 驱动可能与较新的系统不兼容、或者有未修补的漏洞。通过这一选项可以避免 OpenCore 加载过旧版本的 APFS 驱动。
 
-- `0` - 使用默认数值。OpenCore 会随着未来更新，内置的默认数值也会不断更新。如果你会一直更新你的系统，我们推荐使用这一数值。目前默认数值为 `2018/06/21`。
-- `-1` - 允许使用任何版本的 APFS 驱动（强烈不推荐）。
-- 其他数值 - 数值格式应为形如 `20200401` 的格式。你可以从 OpenCore 的启动日志和 [OcApfsLib](https://github.com/acidanthera/OpenCorePkg/blob/master/Include/Acidanthera/Library/OcApfsLib.h) 中找到 APFS 驱动的版本号。
+- `0` --- 使用默认数值。OpenCore 会随着未来更新，内置的默认数值也会不断更新。如果你会一直更新你的系统，我们推荐使用这一数值。目前默认数值为 `2018/06/21`。
+- `-1` --- 允许使用任何版本的 APFS 驱动（强烈不推荐）。
+- 其他数值 --- 数值格式应为形如 `20200401` 的格式。你可以从 OpenCore 的启动日志和 [OcApfsLib](https://github.com/acidanthera/OpenCorePkg/blob/master/Include/Acidanthera/Library/OcApfsLib.h) 中找到 APFS 驱动的版本号。
 
 ### 6. `MinVersion`
 
 **Type**: `plist integer`
 **Failsafe**: `0`
-**Description**: 允许加载的最老 APFS 驱动的版本号
+**Description**: 允许加载的最老 APFS 驱动的版本号。
 
 APFS 驱动的版本号和 macOS 版本相关。较旧版本的 APFS 驱动可能与较新的系统不兼容、或者有未修补的漏洞。通过这一选项可以避免 OpenCore 加载过旧版本的 APFS 驱动。
 
-- `0` - 使用默认数值。OpenCore 会随着未来更新，内置的默认数值也会不断更新。如果你会一直更新你的系统，我们推荐使用这一数值。目前默认数值选自 App Store 中能够下载到的 High Sierra（`748077008000000`）。
-- `-1` - 允许使用任何版本的 APFS 驱动（强烈不推荐）。
-- 其他数值 - 数值格式应为形如 `1412101001000000` 的格式（这是 macOS Catalina 10.15.4 的 APFS 驱动版本号）你可以从 OpenCore 的启动日志和 [OcApfsLib](https://github.com/acidanthera/OpenCorePkg/blob/master/Include/Acidanthera/Library/OcApfsLib.h) 中找到 APFS 驱动的版本号。
+- `0` --- 使用默认数值。OpenCore 会随着未来更新，内置的默认数值也会不断更新。如果你会一直更新你的系统，我们推荐使用这一数值。目前默认数值选自 App Store 中能够下载到的 High Sierra（`748077008000000`）。
+- `-1` --- 允许使用任何版本的 APFS 驱动（强烈不推荐）。
+- 其他数值 --- 数值格式应为形如 `1412101001000000` 的格式（这是 macOS Catalina 10.15.4 的 APFS 驱动版本号），你可以从 OpenCore 的启动日志和 [OcApfsLib](https://github.com/acidanthera/OpenCorePkg/blob/master/Include/Acidanthera/Library/OcApfsLib.h) 中找到 APFS 驱动的版本号。
 
 ## 11.8 Audio 属性
 
@@ -269,7 +269,7 @@ APFS 驱动的版本号和 macOS 版本相关。较旧版本的 APFS 驱动可�
 <code>OCAU: 2/3 PciRoot(0x0)/Pci(0x3,0x0)/VenMsg(&lt;redacted&gt;,<strong><em>00000000</em></strong>) (1 outputs)</code>
 <code>OCAU: 3/3 PciRoot(0x0)/Pci(0x1B,0x0)/VenMsg(&lt;redacted&gt;,<strong><em>02000000</em></strong>) (7 outputs)</code>
 
-作为一种替代方案，该值可以在 I/O 注册表的 `IOHDACodecDevice` class 中获得，包含在 `IOHDACodecAddress` 字段中。
+除此之外，该值还可以在 I/O 注册表的 `IOHDACodecDevice` class 中获得，包含在 `IOHDACodecAddress` 字段中。
 
 ### 2. `AudioDevice`
 
@@ -283,7 +283,7 @@ APFS 驱动的版本号和 macOS 版本相关。较旧版本的 APFS 驱动可�
 <code>OCAU: 2/3 <strong><em>PciRoot(0x0)/Pci(0x3,0x0)</em></strong>/VenMsg(&lt;redacted&gt;,00000000) (1 outputs)</code>
 <code>OCAU: 3/3 <strong><em>PciRoot(0x0)/Pci(0x1B,0x0)</em></strong>/VenMsg(&lt;redacted&gt;,02000000) (7 outputs)</code>
 
-作为一种替代方案，可以在 macOS 中通过 `gfxutil -f HDEF` 命令来获取。如果指定了空的设备路径，则会使用第一个可用的音频控制器。
+除此之外，该值还可以在 macOS 中通过 `gfxutil -f HDEF` 命令来获取。如果指定了空的设备路径，则会使用第一个可用的音频控制器。
 
 ### 3. `AudioOut`
 
@@ -468,7 +468,7 @@ UEFI 固件一般用两种渲染模式来支持 `ConsoleControl`：`Graphics` �
 - 设置为空字符串，不改变屏幕分辨率。
 - 设置为 `Max`，尝试使用最大的可用屏幕分辨率。
 
-在 HiDPI 屏幕上，`APPLE_VENDOR_VARIABLE_GUID` `UIScale` NVRAM 变量可能需要设置为 `02`，以便在 `Builtin` 文本渲染器、FileVault 2 UEFI 密码界面和启动界面 logo 启用 HiDPI 缩放。更多细节请参考 [Recommended Variables](https://oc.skk.moe/9-nvram.html#9-4-Recommended-Variables) 部分。
+在 HiDPI 屏幕上，`APPLE_VENDOR_VARIABLE_GUID` `UIScale` NVRAM 变量可能需要设置为 `02`，以便在 `Builtin` 文本渲染器、FileVault 2 UEFI 密码界面和启动界面 logo 启用 HiDPI 缩放。更多细节请参考 [建议变量](9-nvram.html#9-4-建议变量) 部分。
 
 *注*：当控制台句柄没有 GOP 协议时，这些设置会失败。当固件不再提供时，可以将 `ProvideConsoleGop` 设置为 `true` 并添加。
 
@@ -538,7 +538,7 @@ macOS bootloader 要求控制台句柄上必须有 GOP 或 UGA（适用于 10.4 
 **Failsafe**: `false`
 **Description**: 在 GOP 协议的顶部提供 UGA 协议实例。
 
-有些固件不会去实现老旧的 UGA 协议，但是有些更老的 EFI 应用程序（如 10.4 的 Efiboot）可能需要用它来进行屏幕输出。
+有些固件不会去实现老旧的 UGA 协议，但是有些更老的 EFI 应用程序（如 10.4 的 EfiBoot）可能需要用它来进行屏幕输出。
 
 ## 11.11 ProtocolOverrides 属性
 
@@ -618,7 +618,7 @@ Apple 音频协议允许 macOS bootloader 和 OpenCore 播放声音和信号，�
 **Failsafe**: `false`
 **Description**: 重新安装内置的 SMC I/O 协议。
 
-这一协议代替了传统的 `VirtualSmc.efi`，并与所有 SMC kext 驱动兼容。如果你在用 FakeSMC，可能需要手动往 NVRAM 中添加键值对。
+这一协议代替了传统的 `VirtualSmc.efi`，并与所有 SMC Kext 驱动兼容。如果你在用 FakeSMC，可能需要手动往 NVRAM 中添加键值对。
 
 ### 12. `AppleUserInterfaceTheme`
 
@@ -662,9 +662,9 @@ Apple 音频协议允许 macOS bootloader 和 OpenCore 播放声音和信号，�
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
-**Description**: 强制重新安装内置版本的 Unicode Collation 服务。建议启用这一选项以确保 UEFI Shell 的兼容性。一些较旧的固件破坏了 Unicode 排序规则, 启用后可以修复这些系统上 UEFI Shell 的兼容性 (通常为用于 IvyBridge 或更旧的设备)
+**Description**: 强制重新安装内置版本的 Unicode Collation 服务。建议启用这一选项以确保 UEFI Shell 的兼容性。一些较旧的固件破坏了 Unicode 排序规则，启用后可以修复这些系统上 UEFI Shell 的兼容性 (通常为用于 IvyBridge 或更旧的设备)
 
-## 11.12 Quirks
+## 11.12 Quirks 属性
 
 ### 1. `DeduplicateBootOrder`
 
@@ -692,7 +692,7 @@ Apple 音频协议允许 macOS bootloader 和 OpenCore 播放声音和信号，�
 **Failsafe**: `0`
 **Description**: 在 `EXIT_BOOT_SERVICES` 事件后添加延迟，单位为毫秒。
 
-这是一个非常丑陋的 Quirks，用于修复 `Still waiting for root device` 提示信息。在使用 FileVault 2 时，特别是华硕 Z87-Pro 等 APTIO IV 固件这种错误经常发生。似乎因为某种原因，FileVault 与 `EXIT_BOOT_SERVICES` 同时执行、导致 macOS 无法访问 SATA 控制器。未来应该会找到一个更好的方法。如果需要启用这一选项，设置 3-5 秒的延时就可以了。
+这是一个非常丑陋的 Quirk，用于修复 `Still waiting for root device` 提示信息。在使用 FileVault 2 时，特别是华硕 Z87-Pro 等 APTIO IV 固件这种错误经常发生。似乎因为某种原因，FileVault 与 `EXIT_BOOT_SERVICES` 同时执行、导致 macOS 无法访问 SATA 控制器。未来应该会找到一个更好的方法。如果需要启用这一选项，设置 3-5 秒的延时就可以了。
 
 ### 3. `IgnoreInvalidFlexRatio`
 
@@ -714,7 +714,7 @@ Apple 音频协议允许 macOS bootloader 和 OpenCore 播放声音和信号，�
 **Failsafe**: `false`
 **Description**: 请求将所有带有 `Boot` 前缀的变量从 `EFI_GLOBAL_VARIABLE_GUID` 重定向到 `OC_VENDOR_VARIABLE_GUID`。
 
-启用这个 Quirk 需要在 `OpenRuntime.efi` 中实现的 `OC_FIRMWARE_RUNTIME` 协议（原名 `FwRuntimeServices.efi`）。当固件删除不兼容的启动条目时，这一 Quirk 可以让默认的启动条目保存在引导菜单中。简单地说就是，如果你想使用「系统偏好设置」中的「[启动磁盘](https://support.apple.com/HT202796)」，就必须启用这一 Quirk。
+启用这个 Quirk 需要用到在 `OpenRuntime.efi` 中实现的 `OC_FIRMWARE_RUNTIME` 协议。当固件删除不兼容的启动条目时，这一 Quirk 可以让默认的启动条目保存在引导菜单中。简单地说就是，如果你想使用「系统偏好设置」中的「[启动磁盘](https://support.apple.com/HT202796)」，就必须启用这一 Quirk。
 
 ### 6. `TscSyncTimeout`
 
@@ -722,7 +722,7 @@ Apple 音频协议允许 macOS bootloader 和 OpenCore 播放声音和信号，�
 **Failsafe**: `0`
 **Description**: 尝试用指定的 Timeout 执行 TSC 同步。
 
-这个 Quirk 的主要目的是在运行 XNU 调试内核时，在一些服务器和笔记本型号上实现早期引导 TSC 同步。对于调试内核，在任何 kext 可能导致其他解决方案出现问题之前，TSC 需要在各个内核之间保持同步。Timeout 以微秒为单位，取决于平台上存在的核心数量，推荐的起始值是 `500000`。
+这个 Quirk 的主要目的是在运行 XNU 调试内核时，在一些服务器和笔记本型号上实现早期引导 TSC 同步。对于调试内核，在任何 Kext 可能导致其他解决方案出现问题之前，TSC 需要在各个内核之间保持同步。Timeout 以微秒为单位，取决于平台上存在的核心数量，推荐的起始值是 `500000`。
 
 这是一个实验性的 Quirk，只能被用于上述问题。在其他情况下，这个 Quirk 可能会导致操作系统不稳定，所以并不推荐使用。在其他情况下，推荐的解决办法是安装一个内核驱动，如 [VoodooTSCSync](https://github.com/RehabMan/VoodooTSCSync)、[TSCAdjustReset](https://github.com/interferenc/TSCAdjustReset) 或 [CpuTscSync](https://github.com/lvs1974/CpuTscSync)（是 VoodooTSCSync 的一个更有针对性的变种，适用于较新的笔记本电脑）。
 
@@ -732,9 +732,9 @@ Apple 音频协议允许 macOS bootloader 和 OpenCore 播放声音和信号，�
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
-**Description**: 某些固件通过「按驱动程序」模式下来阻止引导项加载。
+**Description**: 某些固件通过「按驱动程序」模式下来阻止引导项加载，导致文件系统协议无法安装。
 
-*注*：如果惠普笔记本在 OpenCore 界面没有看到引导项时启用这一选项。
+*注*：如果惠普笔记本在 OpenCore 界面没有看到引导项，启用这一选项。
 
 ## 11.13 ReservedMemory 属性
 
@@ -744,7 +744,7 @@ Apple 音频协议允许 macOS bootloader 和 OpenCore 播放声音和信号，�
 **Failsafe**: `0`
 **Description**: 保留内存区域的起始地址，该区域应被分配为保留区，有效地将此类型的内存标记标记为操作系统不可访问。
 
-这里写的地址必须是内存映射的一部分，具有 `EfiConventionalMemory` 类型，并且按页对齐（4KBs）。
+这里写的地址必须是内存映射的一部分，具有 `EfiConventionalMemory` 类型，并且按页对齐（4KB）。
 
 ### 2. `Comment`
 
@@ -756,7 +756,7 @@ Apple 音频协议允许 macOS bootloader 和 OpenCore 播放声音和信号，�
 
 **Type**: `plist integer`
 **Failsafe**: `0`
-**Description**: 保留的内存区域的大小，必须按页对齐（4KBs）。
+**Description**: 保留的内存区域的大小，必须按页对齐（4KB）。
 
 ### 4. `Enabled`
 
