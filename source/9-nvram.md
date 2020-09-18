@@ -3,7 +3,7 @@ title: 9. NVRAM
 description: NVRAM 注入（如引导标识符和 SIP）
 type: docs
 author_info: 由 xMuu、Sukka 整理，由 Sukka、derbalkon 翻译
-last_updated: 2020-08-21
+last_updated: 2020-09-18
 ---
 
 ## 9.1 简介
@@ -109,7 +109,7 @@ last_updated: 2020-08-21
 建议使用以下变量来加快启动速度或改善其他表现：
 
 - `7C436110-AB2A-4BBB-A880-FE41995C9F82:csr-active-config`
-  32 位系统完整性保护的位掩码，声明于 XNU 源码 [csr.h](https://opensource.apple.com/source/xnu/xnu-4570.71.2/bsd/sys/csr.h.auto.html)。
+  系统完整性保护的位掩码（32-bit），声明于 XNU 源码 [csr.h](https://opensource.apple.com/source/xnu/xnu-4570.71.2/bsd/sys/csr.h.auto.html)。
 - `4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14:ExtendedFirmwareFeatures`
   结合 `FirmwareFeatures` 和 `ExtendedFirmwareFeatures`。存在于较新的 Mac 上，用来避免额外解析 SMBIOS 表。
 - `4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14:ExtendedFirmwareFeaturesMask`

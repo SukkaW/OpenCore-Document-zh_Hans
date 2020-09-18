@@ -3,7 +3,7 @@ title: 10. PlatformInfo
 description: SMBIOS 机型信息配置
 type: docs
 author_info: 由 xMuu、Sukka、derbalkon 整理，由 Sukka、derbalkon 翻译
-last_updated: 2020-09-07
+last_updated: 2020-09-18
 ---
 
 机型信息由手动生成或填充的字段组成，以便与 macOS 服务兼容。配置的基础部分可以从 [`AppleModels`](https://github.com/acidanthera/OpenCorePkg/blob/master/AppleModels) 获得，这是一个可以从 [YAML](https://yaml.org/spec/1.2/spec.html) 格式的数据库中生成一组接口的工具包。这些字段将会被写入三个位置：
@@ -341,7 +341,7 @@ last_updated: 2020-09-07
 **SMBIOS**: System Information (Type 1) --- Product Name
 **Description**: 选择偏好的 Mac 机型来把设备标记为系统支持的机型。在任何配置中都应指定该值，以便之后自动生成 SMBIOS 表的相关值和相关配置参数。如果 `SystemProductName` 与目标操作系统不兼容，可用引导参数 `-no_compat_check` 来覆盖。
 
-*注*：如果 `SystemProductName` 位置，并且相关字段也未指定，默认值会被设定为 `MacPro6,1`。目前已知产品的列表详见 `MacInfoPkg`。
+*注*：如果 `SystemProductName` 未知，并且相关字段也未指定，则默认值会被设定为 `MacPro6,1`。目前已知产品的列表详见 `MacInfoPkg`。
 
 ### 6. `SystemVersion`
 
@@ -376,7 +376,7 @@ last_updated: 2020-09-07
 **Type**: `plist string`
 **Failsafe**: OEM specified
 **SMBIOS**: System Information (Type 1) --- Family
-**Description**: 系列名称，看起来类似于 `iMac Pro`。
+**Description**: 家族名称，看起来类似于 `iMac Pro`。
 
 ### 11. `BoardManufacturer`
 
@@ -471,28 +471,28 @@ last_updated: 2020-09-07
 **Type**: `plist integer`, 32-bit
 **Failsafe**: `0xFFFFFFFF`
 **SMBIOS**: `APPLE_SMBIOS_TABLE_TYPE133` - `PlatformFeature`
-**Description**: 平台功能位掩码，详见 [AppleFeatures.h](https://github.com/acidanthera/OpenCorePkg/blob/master/Include/Apple/IndustryStandard/AppleFeatures.h)。填写 `0xFFFFFFFF` 值时不提供此表。
+**Description**: 平台特征位掩码，详见 [AppleFeatures.h](https://github.com/acidanthera/OpenCorePkg/blob/master/Include/Apple/IndustryStandard/AppleFeatures.h)。填写 `0xFFFFFFFF` 值时不提供此表。
 
 ### 24. `SmcVersion`
 
 **Type**: `plist data`, 16 bytes
 **Failsafe**: All zero
 **SMBIOS**: `APPLE_SMBIOS_TABLE_TYPE134` - `Version`
-**Description**: ASCII 字符串，包含 SMC 版本号（大写）。在基于 T2 芯片的 Mac 设备上缺少这一字段。当此值设置为零时，这一选项会被忽略。
+**Description**: ASCII 字符串，包含 SMC 版本号（大写）。配备 Apple T2 安全芯片的 Mac 没有这一字段。当此值设置为零时，这一选项会被忽略。
 
 ### 25. `FirmwareFeatures`
 
 **Type**: `plist data`, 8 bytes
 **Failsafe**: `0`
 **SMBIOS**: `APPLE_SMBIOS_TABLE_TYPE128` - `FirmwareFeatures` and `ExtendedFirmwareFeatures`
-**Description**: 64 位固件功能位掩码。详见 [AppleFeatures.h](https://github.com/acidanthera/OpenCorePkg/blob/master/Apple/Include/IndustryStandard/AppleFeatures.h)。低 32 位与 `FirmwareFeatures` 匹配，高 64 位与 `ExtendedFirmwareFeatures` 匹配。
+**Description**: 64 位固件特征位掩码。详见 [AppleFeatures.h](https://github.com/acidanthera/OpenCorePkg/blob/master/Apple/Include/IndustryStandard/AppleFeatures.h)。低 32 位与 `FirmwareFeatures` 匹配，高 64 位与 `ExtendedFirmwareFeatures` 匹配。
 
 ### 26.`FirmwareFeaturesMask`
 
 **Type**: `plist data`, 8 bytes
 **Failsafe**: `0`
 **SMBIOS**: `APPLE_SMBIOS_TABLE_TYPE128` - `FirmwareFeaturesMask` and `ExtendedFirmwareFeaturesMask`
-**Description**: 扩展固件功能位掩码。详见 [AppleFeatures.h](https://github.com/acidanthera/OpenCorePkg/blob/master/Apple/Include/IndustryStandard/AppleFeatures.h)。低 32 位与 `FirmwareFeatures` 匹配，高 64 位与 `ExtendedFirmwareFeatures` 匹配。
+**Description**: 扩展固件特征位掩码。详见 [AppleFeatures.h](https://github.com/acidanthera/OpenCorePkg/blob/master/Apple/Include/IndustryStandard/AppleFeatures.h)。低 32 位与 `FirmwareFeatures` 匹配，高 64 位与 `ExtendedFirmwareFeatures` 匹配。
 
 ### 27. `ProcessorType`
 
@@ -506,4 +506,4 @@ last_updated: 2020-09-07
 **Type**: `plist integer`, 8-bit
 **Failsafe**: OEM specified
 **SMBIOS**: Memory Device (Type 17) --- Form Factor
-**Description**: Memory Form Factor。在 Mac 上应为 DIMM 或 SODIMM。
+**Description**: 内存规格。在 Mac 上应为 DIMM 或 SODIMM。

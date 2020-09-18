@@ -3,7 +3,7 @@ title: 3. Setup
 description: Setup
 type: docs
 author_info: 由 Sukka、derbalkon 整理、由 Sukka、derbalkon 翻译。
-last_updated: 2020-08-28
+last_updated: 2020-09-18
 ---
 
 ## 3.1 目录结构
@@ -11,7 +11,6 @@ last_updated: 2020-08-28
 ```
 ESP
 ├── EFI
-│    │
 │    ├── BOOT
 │    │    └── BOOTx64.efi
 │    └── OC
@@ -19,6 +18,8 @@ ESP
 │        │    ├── DSDT.aml
 │        │    ├── SSDT-1.aml
 │        │    └── MYTABLE.aml
+│        ├── Bootstrap
+│        │    └── Bootstrap.efi
 │        ├── Drivers
 │        │    ├── MyDriver.efi
 │        │    └── OtherDriver.efi
@@ -26,37 +27,42 @@ ESP
 │        │    ├── MyKext.kext
 │        │    └── OtherKext.kext
 │        ├── Resources
-│        │    └── Audio
+│        │    ├── Audio
+│        │    ├── Font
+│        │    ├── Image
+│        │    └── Label
 │        ├── Tools
 │        │    └── Tool.efi
 │        ├── OpenCore.efi
-│        ├── vault.plist
 │        ├── config.plist
+│        ├── vault.plist
 │        └── vault.sig
-├── SysReport
+├── boot
 ├── nvram.plist
-└── opencore-YYYY-MM-DD-HHMMSS.txt
+├── opencore-YYYY-MM-DD-HHMMSS.txt
+├── panic-YYYY-MM-DD-HHMMSS.txt
+└── SysReport
 ```
 
 <center><em><strong>Figure 1</strong>: 目录结构</em></center><br>
 
 使用目录引导时，使用的目录结构应该遵循上述目录结构。可用的条目有：
 
-- **BOOTx64.efi** 和 **Bootstrap.efi** - 初始引导程序。除非 `OpenCore.efi` 已作为驱动程序启动，否则将用于加载 `OpenCore.efi`。对于大部分固件来说，`BOOTx64.efi` 是 UEFI 默认启动项，而 `Bootstrap.efi` 可以被注册为自定义启动项，避免 `BOOTx64.efi` 被其它操作系统所覆盖。
-- **boot** - Duet bootstrap loader，用于在传统 BIOS 固件上模拟 UEFI 环境、并加载 `OpenCore.efi`。
-- **ACPI** - 用于存储 ACPI 补充信息的目录。
-- **Drivers** - 用于存储 UEFI 补充驱动程序的目录。
-- **Kexts** - 用于存储内核驱动（kext）补充的目录。
-- **Tools** - 用于存储补充工具的目录。
-- **OpenCore.efi** - 主引导驱动程序，负责操作系统加载。
-- **vault.plist** - OC Config 可能加载的所有文件的哈希。
-- **config.plist** - OC Config（即 OpenCore 的配置文件，见「配置术语」）。这一目录同时也用于存放 GUI 界面所使用的图片，见 `OpenCanopy` 相关章节。
-- **vault.sig** - `vault.plist` 的签名文件。
-- **nvram.plist** - OpenCore 变量导入文件。
-- **Resources** - 媒体资源使用的目录，如 屏幕朗读 的语音文件（见「UEFI Audio 属性」章节）。
-- **SysReport** - 存放 `SysReport` 功能产生的系统错误报告。
-- **opencore-YYYY-MM-DD-HHMMSS.txt** - OpenCore 日志文件。
-- **panic-YYYY-MM-DD-HHMMSS.txt** - Kernal Panic 日志文件。
+- **BOOTx64.efi** 和 **Bootstrap.efi** --- 初始引导程序，用来加载 `OpenCore.efi`，除非 `OpenCore.efi` 已作为驱动程序启动。对于大部分固件来说，`BOOTx64.efi` 是 UEFI 默认启动项，而 `Bootstrap.efi` 可以被注册为自定义启动项，避免因 `BOOTx64.efi` 被其它操作系统（如 Windows）所覆盖而导致 OpenCore 无法启动。更多细节请参见 [BootProtect](8-misc.html#5-BootProtect)。
+- **boot** --- Duet bootstrap loader，用于在传统 BIOS 固件上模拟 UEFI 环境、并加载 `OpenCore.efi`。
+- **ACPI** --- 用于存储 ACPI 补充信息的目录。
+- **Drivers** --- 用于存储 UEFI 补充驱动程序的目录。
+- **Kexts** --- 用于存储内核驱动（kext）补充的目录。
+- **Resources** --- 媒体资源使用的目录，如 屏幕朗读 的语音文件（见「UEFI Audio 属性」章节）。这一目录同时也用于存放 GUI 界面所使用的图片，见 `OpenCanopy` 相关章节。
+- **Tools** --- 用于存储补充工具的目录。
+- **OpenCore.efi** --- 主引导驱动程序，负责操作系统加载。
+- **config.plist** --- OC Config（即 OpenCore 的配置文件，见「配置术语」）。
+- **vault.plist** --- OC Config 可能加载的所有文件的哈希。
+- **vault.sig** --- `vault.plist` 的签名文件。
+- **SysReport** --- 存放 `SysReport` 功能产生的系统错误报告。
+- **nvram.plist** --- OpenCore 变量导入文件。
+- **opencore-YYYY-MM-DD-HHMMSS.txt** --- OpenCore 日志文件。
+- **panic-YYYY-MM-DD-HHMMSS.txt** --- Kernal Panic 日志文件。
 
 *注*: 受限于固件的实现行为，OpenCore 可能无法访问绝对路径长度大于 `OC_STORAGE_SAFE_PATH_MAX`（默认值为 128）的目录。
 

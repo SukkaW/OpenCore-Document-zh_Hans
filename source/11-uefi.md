@@ -3,7 +3,7 @@ title: 11. UEFI
 description: UEFI 驱动以及加载顺序
 type: docs
 author_info: 由 xMuu、Sukka、derbalkon 整理，由 Sukka、derbalkon 翻译
-last_updated: 2020-09-07
+last_updated: 2020-09-18
 ---
 
 ## 11.1 简介
@@ -17,7 +17,7 @@ last_updated: 2020-09-07
 - [`AudioDxe`](https://github.com/acidanthera/OpenCorePkg)* --- UEFI 固件中的 HDA 音频驱动程序，适用于大多数 Intel 和其他一些模拟音频控制器。参考 [acidanthera/bugtracker#740](https://github.com/acidanthera/bugtracker/issues/740) 来了解 AudioDxe 的已知问题。
 - [`CrScreenshotDxe`](https://github.com/acidanthera/OpenCorePkg)* --- 截图驱动。启用后，按下 <kbd>F10</kbd> 将能够截图并保存在 EFI 分区根目录下。该驱动基于 [Nikolaj Schlej](https://github.com/NikolajSchlej) 修改的 LongSoft 开发的 [`CrScreenshotDxe`](https://github.com/LongSoft/CrScreenshotDxe)。
 - [`ExFatDxe`](https://github.com/acidanthera/OcBinaryData) --- 用于 Bootcamp 支持的专有 ExFAT 文件系统驱动程序，通常可以在 Apple 固件中找到。 对于 `Sandy Bridge` 和更早的 CPU，由于缺少 `RDRAND` 指令支持，应使用 `ExFatDxeLegacy` 驱动程序。
-- [`HfsPlus`](https://github.com/acidanthera/OcBinaryData) - Apple 固件中常见的具有 Bless 支持的专有 HFS 文件系统驱动程序。对于 `Sandy Bridge` 和更早的 CPU，由于这些 CPU 缺少 `RDRAND` 指令支持，应使用 `HfsPlusLegacy` 驱动程序。
+- [`HfsPlus`](https://github.com/acidanthera/OcBinaryData) --- Apple 固件中常见的具有 Bless 支持的专有 HFS 文件系统驱动程序。对于 `Sandy Bridge` 和更早的 CPU，由于这些 CPU 缺少 `RDRAND` 指令支持，应使用 `HfsPlusLegacy` 驱动程序。
 - [`HiiDatabase`](https://github.com/acidanthera/audk)* --- 来自 `MdeModulePkg` 的 HII 服务驱动。Ivy Bridge 及其以后的大多数固件中都已内置此驱动程序。某些带有 GUI 的应用程序（例如 UEFI Shell）可能需要此驱动程序才能正常工作。
 - [`EnhancedFatDxe`](https://github.com/acidanthera/audk) --- 来自 `FatPkg` 的 FAT 文件系统驱动程序。这个驱动程序已经被嵌入到所有 UEFI 固件中，无法为 OpenCore 使用。众所周知，许多固件的 FAT 支持实现都有错误，导致在尝试写操作时损坏文件系统。如果在引导过程中需要写入 EFI 分区，则可能需要将此驱动程序嵌入固件中。
 - [`NvmExpressDxe`](https://github.com/acidanthera/audk)* --- 来自`MdeModulePkg` 的 NVMe 驱动程序。从 Broadwell 开始的大多数固件都包含此驱动程序。对于 Haswell 以及更早的固件，如果安装了 NVMe SSD 驱动器，则将其嵌入固件中可能会更理想。
@@ -239,7 +239,7 @@ APFS 驱动的 verbose 信息有助于 debug。
 
 APFS 驱动的版本号基于其发布日期。较旧版本的 APFS 驱动可能与较新的系统不兼容、或者有未修补的漏洞。通过这一选项可以避免 OpenCore 加载过旧版本的 APFS 驱动。
 
-- `0` --- 使用默认数值。OpenCore 会随着未来更新，内置的默认数值也会不断更新。如果你会一直更新你的系统，我们推荐使用这一数值。目前默认数值为 `2018/06/21`。
+- `0` --- 使用默认数值。随着未来的更新，OpenCore 内置的默认数值也会不断更新。如果你会一直更新你的系统，我们推荐使用这一数值。目前默认数值为 `2018/06/21`。
 - `-1` --- 允许使用任何版本的 APFS 驱动（强烈不推荐）。
 - 其他数值 --- 数值格式应为形如 `20200401` 的格式。你可以从 OpenCore 的启动日志和 [OcApfsLib](https://github.com/acidanthera/OpenCorePkg/blob/master/Include/Acidanthera/Library/OcApfsLib.h) 中找到 APFS 驱动的版本号。
 
@@ -251,7 +251,7 @@ APFS 驱动的版本号基于其发布日期。较旧版本的 APFS 驱动可能
 
 APFS 驱动的版本号和 macOS 版本相关。较旧版本的 APFS 驱动可能与较新的系统不兼容、或者有未修补的漏洞。通过这一选项可以避免 OpenCore 加载过旧版本的 APFS 驱动。
 
-- `0` --- 使用默认数值。OpenCore 会随着未来更新，内置的默认数值也会不断更新。如果你会一直更新你的系统，我们推荐使用这一数值。目前默认数值选自 App Store 中能够下载到的 High Sierra（`748077008000000`）。
+- `0` --- 使用默认数值。随着未来的更新，OpenCore 内置的默认数值也会不断更新。如果你会一直更新你的系统，我们推荐使用这一数值。目前默认数值选自 App Store 中能够下载到的 High Sierra（`748077008000000`）。
 - `-1` --- 允许使用任何版本的 APFS 驱动（强烈不推荐）。
 - 其他数值 --- 数值格式应为形如 `1412101001000000` 的格式（这是 macOS Catalina 10.15.4 的 APFS 驱动版本号），你可以从 OpenCore 的启动日志和 [OcApfsLib](https://github.com/acidanthera/OpenCorePkg/blob/master/Include/Acidanthera/Library/OcApfsLib.h) 中找到 APFS 驱动的版本号。
 
@@ -412,7 +412,7 @@ APFS 驱动的版本号和 macOS 版本相关。较旧版本的 APFS 驱动可�
 **Failsafe**: empty string
 **Description**: 设置用于内部指针驱动程序的 OEM 协议。
 
-目前只支持 `ASUS` 值，使用的是 Z87 和 Z97主板上的特殊协议。更多详情请参考 [`LongSoft/UefiTool#116`](https://github.com/LongSoft/UEFITool/pull/116)。
+目前只支持 `ASUS` 值，使用的是 Z87 和 Z97 主板上的特殊协议。更多详情请参考 [`LongSoft/UefiTool#116`](https://github.com/LongSoft/UEFITool/pull/116)。
 
 ### 9. `TimerResolution`
 

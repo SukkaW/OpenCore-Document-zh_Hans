@@ -3,7 +3,7 @@ title: 5. Booter
 description: 配置 OpenRuntime.efi（Slide 值计算、KASLR）
 type: docs
 author_info: 由 Sukka、derbalkon 整理，由 Sukka、derbalkon 翻译。
-last_updated: 2020-09-07
+last_updated: 2020-09-18
 ---
 
 ## 5.1 简介
@@ -75,7 +75,7 @@ sudo pmset standby 0
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
-**Description**: 防止 `boot.efi` 运行时执行内存碎片整理
+**Description**: 防止 `boot.efi` 运行时执行内存碎片整理。
 
 这个选项通过提供对可变存储的支持，修复了包括日期、时间、NVRAM、电源控制等 UEFI Runtime 服务。
 
@@ -97,7 +97,7 @@ sudo pmset standby 0
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
-**Description**: 禁用 Apple 单用户模式
+**Description**: 禁用 Apple 单用户模式。
 
 这个选项可以禁用 `CMD+S` 热键和 `-s` 启动参数来限制单用户模式。启用这一 Quirk 后预期行为应和 T2 的机型行为类似。请参考 Apple 的 [这篇文章](https://web.archive.org/web/20200517125051/https://support.apple.com/zh-cn/HT201573)（译者注：原文章已被关闭，此为网站时光机的存档副本）以了解如何在启用这一 Quirk 后继续使用单用户模式。
 
@@ -229,7 +229,7 @@ Apple 内核在解析 UEFI 内存映射时有几个限制：
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
-**Description**: 将 `SetVirtualAddresses` 调用修复为虚拟地址.
+**Description**: 将 `SetVirtualAddresses` 调用修复为虚拟地址。
 
 选择让固件在调用 `SetVirtualAddresses` 后通过虚拟地址访问内存，可能会导致 Early Boot 故障。这个 Quirk 可通过对分配的虚拟地址和物理内存进行 Early Boot 身份映射来解决这个问题。
 

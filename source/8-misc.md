@@ -3,7 +3,7 @@ title: 8. Misc
 description: 关于 OpenCore 行为的其他配置
 type: docs
 author_info: 由 xMuu、Sukka、derbalkon 整理、由 Sukka、derbalkon 翻译。
-last_updated: 2020-08-31
+last_updated: 2020-09-18
 ---
 
 ## 8.1 简介
@@ -193,7 +193,7 @@ OpenCore 尽可能地遵循 `bless` 模式，即 `Apple Boot Policy`。`bless` �
 
 - `0x0002` — `OC_ATTR_USE_DISK_LABEL_FILE`，提供引导项自定义渲染的标题：
   - `.disk_label` (`.disk_label_2x`) 文件与 bootloader 相关，适用于所有文件系统。
-  - `<TOOL_NAME.lbl` (`<TOOL_NAME.l2x`) 文件与工具相关，适用于 `Tools`。
+  - `<TOOL_NAME>.lbl` (`<TOOL_NAME>.l2x`) 文件与工具相关，适用于 `Tools`。
 
   可用 `disklabel` 实用工具或 `bless` 命令来生成预置标签。当禁用或者缺少文本标签 (`.contentDetails` 或 `.disk_label.contentDetails`) 时将以它来代替渲染。
 
@@ -712,7 +712,7 @@ rm vault.pub
 
 - 和配备 Apple T2 安全芯片的 Mac 电脑一样，你将无法安装任何未签名的内核驱动程序。还有一些内核驱动程序尽管已签名，但也无法安装，包括但不限于 NVIDIA Web Drivers。
 - 驱动程序缓存的列表可能不同，因此需要改变 `Add` 或 `Force` 内核驱动程序列表。比如，在这种情况下 `IO80211Family` 不能被注入。
-- 某些系统（比如 macOS 11）是密封保护的，更改受保护的系统卷可能会导致操作系统无法启动。除非禁用了 Apple 安全启动，否则不要禁用系统卷加密。
+- 某些系统（比如 macOS 11）是封装保护的，更改受保护的系统卷可能会导致操作系统无法启动。除非禁用了 Apple 安全启动，否则不要禁用系统卷加密。
 - 如果你的平台需要某些特定设置，但由于之前调试时没有触发明显问题而没有被启用，那么可能会导致启动失败。要格外小心 `IgnoreInvalidFlexRatio` 或 `HashServices`。
 - 在 Apple 推出安全启动功能之前发布的操作系统（如 macOS 10.12 或更早的版本）仍然会正常启动，除非启用了 UEFI 安全启动。之所以如此，是因为从 Apple 安全启动的角度来看，它们都是不兼容的系统，会被认为应该由 BIOS 来处理，就像微软的 Windows 一样。
 - 在较旧的 CPU 上（如 Sandy Bridge 之前），启用 Apple 安全启动可能会使加载速度略微变慢，最长可达 1 秒。
