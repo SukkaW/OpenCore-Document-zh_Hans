@@ -112,31 +112,37 @@ last_updated: 2020-09-18
 - `FW_FEATURE_SUPPORTS_CSM_LEGACY_MODE` (`0x1`) - 如果没有此 bit，且 EFI 分区不是硬盘中的第一个分区，那么则无法重新启动到硬盘里的 Windows 系统。
 - `FW_FEATURE_SUPPORTS_UEFI_WINDOWS_BOOT` (`0x20000000`) - 如果没有此 bit，且 EFI 分区是硬盘中的第一个分区，那么则无法重新启动到硬盘里的 Windows 系统。
 
-### 3. `SystemProductName`
+### 3. `ProcessorType`
+
+**Type**: `plist integer`
+**Failsafe**: `0` (Automatic)
+**Description**: Refer to SMBIOS `ProcessorType`.
+
+### 4. `SystemProductName`
 
 **Type**: `plist string`
 **Failsafe**: `MacPro6,1`
 **Description**: 请参考下文 SMBIOS 章节中的 `SystemProductName`。
 
-### 4. `SystemSerialNumber`
+### 5. `SystemSerialNumber`
 
 **Type**: `plist string`
 **Failsafe**: `OPENCORE_SN1`
 **Description**: 请参考下文 SMBIOS 章节中的 `SystemSerialNumber`。
 
-### 5. `SystemUUID`
+### 6. `SystemUUID`
 
 **Type**: `plist string`, GUID
 **Failsafe**: OEM specified
 **Description**: 请参考下文 SMBIOS 章节中的 `SystemUUID`。
 
-### 6. `MLB`
+### 7. `MLB`
 
 **Type**: `plist string`
 **Failsafe**: `OPENCORE_MLB_SN11`
 **Description**: 请参考下文 SMBIOS 章节中的 `BoardSerialNumber`。
 
-### 7. `ROM`
+### 8. `ROM`
 
 **Type**: `plist data`, 6 bytes
 **Failsafe**: all zero
@@ -210,7 +216,7 @@ last_updated: 2020-09-18
 ### 9. `FSBFrequency`
 
 **Type**: `plist integer`, 64-bit
-**Failsafe**: Automatic
+**Failsafe**: `0` (Automatic)
 **Description**: 在 `gEfiProcessorSubClassGuid` 中设置 `FSBFrequency`。
 
 设置 CPU FSB 频率。此值等于 CPU 主频除以最高总线比率，以 Hz 为单位。请参考 `MSR_NEHALEM_PLATFORM_INFO`(`CEh`) MSR 值来确定 Intel CPU 的最高总线比率。
@@ -220,7 +226,7 @@ last_updated: 2020-09-18
 ### 10. `ARTFrequency`
 
 **Type**: `plist integer`, 64-bit
-**Failsafe**: Automatic
+**Failsafe**: `0` (Automatic)
 **Description**: 在 `gEfiProcessorSubClassGuid` 中设置 `ARTFrequency`。
 
 此值包含 CPU ART 频率，即晶体时钟频率。为 Skylake 或更新的平台独有，以 Hz 为单位。Client Intel segment 通常为 24 MHz，Server Intel segment 通常为 25 MHz，Intel Atom CPUs 通常为 19.2 MHz。macOS 10.15 及以下均默认为 24 MHz。
@@ -497,9 +503,11 @@ last_updated: 2020-09-18
 ### 27. `ProcessorType`
 
 **Type**: `plist integer`, 16-bit
-**Failsafe**: Automatic
+**Failsafe**: `0` (Automatic)
 **SMBIOS**: `APPLE_SMBIOS_TABLE_TYPE131` - `ProcessorType`
 **Description**: 由处理器的主要和次要类型组成。
+
+Automatic value generation tries to provide most accurate value for the currently installed CPU. When this fails please make sure to create an [issue](https://github.com/acidanthera/bugtracker/issues) and provide `sysctl machdep.cpu` and [`dmidecode`](https://github.com/acidanthera/dmidecode) output. For a full list of available values and their limitations (the value will only apply if the CPU core count matches) refer to Apple SMBIOS definitions header [here](https://github.com/acidanthera/OpenCorePkg/blob/master/Include/Apple/IndustryStandard/AppleSmBios.h).
 
 ### 28. `MemoryFormFactor`
 

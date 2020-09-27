@@ -746,6 +746,8 @@ Apple 音频协议允许 macOS bootloader 和 OpenCore 播放声音和信号，�
 
 这里写的地址必须是内存映射的一部分，具有 `EfiConventionalMemory` 类型，并且按页对齐（4KB）。
 
+*Note*: Some firmwares may not allocate memory areas used by S3 (sleep) and S4 (hibernation) code unless CSM is enabled causing wake failures. After comparing the memory maps with CSM disabled and enabled you could find these areas in the lower memory and fix them up by doing the reservation. See `Sample.plist` for more details.
+
 ### 2. `Comment`
 
 **Type**: `plist string`
@@ -758,7 +760,29 @@ Apple 音频协议允许 macOS bootloader 和 OpenCore 播放声音和信号，�
 **Failsafe**: `0`
 **Description**: 保留的内存区域的大小，必须按页对齐（4KB）。
 
-### 4. `Enabled`
+### 4. `Type`
+
+**Type**: `plist string`
+**Failsafe**: `Reserved`
+**Description**: Memory region type matching the UEFI specification memory descriptor types. Mapping:
+
+- `Reserved` — `EfiReservedMemoryType`
+- `LoaderCode` — `EfiLoaderCode`
+- `LoaderData` — `EfiLoaderData`
+- `BootServiceCode` — `EfiBootServicesCode` 
+- `BootServiceData` — `EfiBootServicesData` 
+- `RuntimeCode` — `EfiRuntimeServicesCode` 
+- `RuntimeData` — `EfiRuntimeServicesData` 
+- `Available` — `EfiConventionalMemory`
+- `Persistent` — `EfiPersistentMemory`
+- `UnusableMemory` — `EfiUnusableMemory`
+- `ACPIReclaimMemory` — `EfiACPIReclaimMemory`
+- `ACPIMemoryNVS` — `EfiACPIMemoryNVS`
+- `MemoryMappedIO` — `EfiMemoryMappedIO`
+- `MemoryMappedIOPortSpace` — `EfiMemoryMappedIOPortSpace` 
+- `PalCode` — `EfiPalCode`
+
+### 5. `Enabled`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`

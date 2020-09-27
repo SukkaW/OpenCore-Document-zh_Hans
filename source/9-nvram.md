@@ -138,6 +138,7 @@ last_updated: 2020-09-18
 
   - `acpi_layer=0xFFFFFFFF`
   - `acpi_level=0xFFFF5F` --- 表示 [`ACPI_ALL_COMPONENTS`](https://github.com/acpica/acpica/blob/master/source/include/acoutput.h)
+  - `arch=i386` (force kernel architecture to `i386`, see `KernelArch`)
   - `batman=VALUE` --- `AppleSmartBatteryManager` 调试掩码
   - `batman-nosmc=1` --- 禁用 `AppleSmartBatteryManager` SMC 接口
   - `cpus=VALUE` --- 最大可用 CPU 数量
@@ -153,7 +154,7 @@ last_updated: 2020-09-18
   - `smcdebug=VALUE` --- `AppleSMC` 调试掩码
   - `-amd_no_dgpu_accel` --- 替代 [WhateverGreen](https://github.com/acidanthera/WhateverGreen) 的 `-radvesa`，用于较新的 GPUs
   - `-nehalem_error_disable`
-  - `-no_compat_check` --- 禁用机型检查
+  - `-no_compat_check` --- 禁用机型检查（适用于 10.7 以上的版本）
   - `-s` --- 单用户模式
   - `-v` --- 啰嗦模式
   - `-x` --- 安全模式
@@ -208,7 +209,7 @@ last_updated: 2020-09-18
   - `serial=VALUE` --- 串行控制台日志记录相关
     - `0` --- 禁用串行日志记录（默认）
     - `1` --- 从 `EXITBS:END` 开始启用串行日志记录
-    - `1` --- 从 `EXITBS:START` 开始启用串行日志记录
+    - `2` --- 从 `EXITBS:START` 开始启用串行日志记录
     - `3` --- 当缺少调试协议时，启用串行日志记录
     - `4` --- 无条件启用串行日志记录
   - `timestamps=VALUE` --- 时间戳日志记录相关

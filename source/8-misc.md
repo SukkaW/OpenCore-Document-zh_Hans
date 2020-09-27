@@ -418,9 +418,9 @@ nvram 4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102:boot-log | awk '{gsub(/%0d%0a%00/,"")
 - `OCCL` — OcAppleChunkListLib
 - `OCCPU` — OcCpuLib
 - `OCC` — OcConsoleLib
+- `OCDC` — OcDriverConnectionLib
 - `OCDH` — OcDataHubLib
 - `OCDI` — OcAppleDiskImageLib
-- `OCFSQ` — OcFileLib, UnblockFs quirk
 - `OCFS` — OcFileLib
 - `OCFV` — OcFirmwareVolumeLib
 - `OCHS` — OcHashServicesLib
@@ -718,7 +718,7 @@ rm vault.pub
 - 在较旧的 CPU 上（如 Sandy Bridge 之前），启用 Apple 安全启动可能会使加载速度略微变慢，最长可达 1 秒。
 - 由于 `Default` 的值会随着时间的推移而变化，以支持最新的 macOS 主版本，因此不建议同时使用 `ApECID` 和 `Default` 值。
 
-有时，已安装的系统 `Preboot` 分区上的 Apple 安全启动清单是过时的，从而导致启动失败。如果你看到 `OCB: Apple Secure Boot prohibits this boot entry, enforcing!` 这样的信息，很可能就是出现了上述这种情况。想要解决这个问题，要么重新安装操作系统，要么把 `/usr/standalone/i386` 中的清单（扩展名为 `.im4m` 的文件，如 `boot.efi.j137.im4m`）复制到 `/Volumes/Preboot/<UUID>/System/Library/CoreServices`（`<UUID>` 为系统卷的标识符）。
+有时，已安装的系统 `Preboot` 分区上的 Apple 安全启动清单是过时的，从而导致启动失败。如果你看到 `OCB: Apple Secure Boot prohibits this boot entry, enforcing!` 这样的信息，很可能就是出现了上述这种情况。想要解决这个问题，要么重新安装操作系统，要么把 `/usr/standalone/i386` 中的清单（扩展名为 `.im4m` 的文件，如 `boot.efi.j137.im4m`）复制到 `/Volumes/Preboot/<UUID>/System/Library/CoreServices`（`<UUID>` 为系统卷的标识符）。On HFS+ installations the manifests should be copied to `/System/Library/CoreServices` on the system volume.
 
 关于如何结合 UEFI 安全启动来配置 Apple 安全启动的细节，请参考本文档 [UEFI 安全启动](12-troubleshooting.html#12-2-UEFI-安全启动) 部分。
 
