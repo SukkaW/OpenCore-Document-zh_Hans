@@ -3,7 +3,7 @@ title: 7. Kernel
 description: OpenCore 安全配置，Kext 加载顺序以及屏蔽
 type: docs
 author_info: 由 Sukka、derbalkon 整理，由 Sukka、derbalkon 翻译。
-last_updated: 2020-09-18
+last_updated: 2020-10-03
 ---
 
 ## 7.1 简介
@@ -183,28 +183,32 @@ last_updated: 2020-09-18
 **Failsafe**: All zero
 **Description**: `EAX`、`EBX`、`ECX`、`EDX` 值的序列，用来取代 XNU 内核中的 `CPUID (1)` 调用。
 
-该属性应用于以下两种需求：
+该属性主要应用于以下三种需求：
 
-- 对不支持的 CPU 型号启用支持。
+- 对不支持的 CPU 型号启用支持。(e.g. Intel Pentium).
+- Enabling support of a CPU model that is not yet supported by a specific version of macOS which usually is old.
 - 对不支持的 CPU Variant 启用 XCPM 支持。
 
-通常来讲只需要处理 `EAX` 的值，因为它代表完整的 CPUID。剩余的字节要留为 0。字节顺序是小端字节序（Little Endian），比如 `C3 06 03 00` 代表 CPUID `0x0306C3` (Haswell)。
+*Note 1*: It may also be the case that the CPU model is supported but there is no power management supported (e.g. virtual machines). In this case, `MinKernel` and `MaxKernel` can be set to restrict CPU virtualisation and dummy power management patches to the particular macOS kernel version.
 
-推荐使用下面的组合启用 XCPM 支持：
 
-- Haswell-E (`0x0306F2`) to Haswell (`0x0306C3`):
+*注 2*：通常来讲只需要处理 `EAX` 的值，因为它代表完整的 CPUID。剩余的字节要留为 0。字节顺序是小端字节序（Little Endian），比如 `C3 06 03 00` 代表 CPUID `0x0306C3` (Haswell)。
 
-  `Cpuid1Data`: `C3 06 03 00 00 00 00 00 00 00 00 00 00 00 00 00`  
-  `Cpuid1Mask`: `FF FF FF FF 00 00 00 00 00 00 00 00 00 00 00 00`
+*注 3*：推荐使用下面的组合启用 XCPM 支持：
 
-- Broadwell-E (`0x0406F1`) to Broadwell (`0x0306D4`):  
-  `Cpuid1Data`: `D4 06 03 00 00 00 00 00 00 00 00 00 00 00 00 00`  
-  `Cpuid1Mask`: `FF FF FF FF 00 00 00 00 00 00 00 00 00 00 00 00`
+  - Haswell-E (`0x0306F2`) to Haswell (`0x0306C3`):
 
-请记住，目前以下配置并不兼容（至少还没有人成功过）：
+    `Cpuid1Data`: `C3 06 03 00 00 00 00 00 00 00 00 00 00 00 00 00`  
+    `Cpuid1Mask`: `FF FF FF FF 00 00 00 00 00 00 00 00 00 00 00 00`
 
-- 消费级的 Ivy Bridge（`0x0306A9`），因为苹果针对它禁用了 XCPM 并推荐用户使用传统的电源管理。如果要使用这一选项，你还需要手动添加 `_xcpm_patch` 二进制修补以强制启用 XCPM。
-- 低端处理器（如基于 Haswell 或更新架构奔腾处理器），因为它们不被 macOS 支持。如果要启用这些 CPU 请参阅 [acidanthera/bugtracker#365](https://github.com/acidanthera/bugtracker/issues/365) 中的 `Special NOTES` 相关内容。
+  - Broadwell-E (`0x0406F1`) to Broadwell (`0x0306D4`):  
+    `Cpuid1Data`: `D4 06 03 00 00 00 00 00 00 00 00 00 00 00 00 00`  
+    `Cpuid1Mask`: `FF FF FF FF 00 00 00 00 00 00 00 00 00 00 00 00`
+
+*注 4*：请记住，目前以下配置不被 XCPM 兼容（至少还没有人成功过）：
+
+  - 消费级的 Ivy Bridge（`0x0306A9`），因为苹果针对它禁用了 XCPM 并推荐用户使用传统的电源管理。如果要使用这一选项，你还需要手动添加 `_xcpm_patch` 二进制修补以强制启用 XCPM。
+  - 低端处理器（如基于 Haswell 或更新架构奔腾处理器），因为它们不被 macOS 支持。如果要启用这些 CPU 请参阅 [acidanthera/bugtracker#365](https://github.com/acidanthera/bugtracker/issues/365) 中的 `Special NOTES` 相关内容。
 
 ### 2. `Cpuid1Mask`
 
@@ -213,6 +217,33 @@ last_updated: 2020-09-18
 **Description**: `Cpuid1Data` 中激活的 bit 的位掩码。
 
 当每个 `Cpuid1Mask` bit 都设置为 `0` 时将使用原始的 CPU bit，否则取 `Cpuid1Data` 的值。
+
+### 3. `DummyPowerManagement`
+
+**Type**: `plist boolean`
+**Failsafe**: `false`
+**Requirement**: 10.4
+**Description**: 禁用 `AppleIntelCpuPowerManagement`。
+
+*注 1*：这一选项旨在替代 `NullCpuPowerManagement.kext`，用于 macOS 中没有电源管理驱动程序的 CPU。
+
+*Note 2*: While this option is usually needed to disable `AppleIntelCpuPowerManagement` merely on unsupported platforms, it can still be enabled if one wishes to disable this kext per se regardless of other situations (e.g. with `Cpuid1Data` left blank).
+
+### 4. `MaxKernel`
+
+**Type**: `plist string`
+**Failsafe**: Empty string
+**Description**: Emulates CPUID and applies `DummyPowerManagement` on specified macOS version or older.
+
+*注*：匹配逻辑请参阅 `Add` `MaxKernel` 的描述。
+
+### 5. `MinKernel`
+
+**Type**: `plist string`
+**Failsafe**: Empty string
+**Description**: Emulates CPUID and applies `DummyPowerManagement` on specified macOS version or newer.
+
+*注*：匹配逻辑请参阅 `Add` `MaxKernel` 的描述。
 
 ## 7.6 Force 属性
 
@@ -456,14 +487,13 @@ last_updated: 2020-09-18
 
 *注 2*：这个选项不能确保区域在固件阶段不被覆盖（例如 macOS bootloader）。如有需要，请参阅 `AppleRtcRam` 协议描述。
 
-### 9. `DummyPowerManagement`
-
+### 9. `ExtendBTFeatureFlags`
 **Type**: `plist boolean`
 **Failsafe**: `false`
-**Requirement**: 10.4
-**Description**: 禁用 `AppleIntelCpuPowerManagement`。
+**Requirement**: 10.8
+**Description**: Set `FeatureFlags` to `0x0F` for full functionality of Bluetooth, including Continuity.
 
-*注*：这一选项旨在替代 `NullCpuPowerManagement.kext`，用于 macOS 中没有电源管理驱动程序的 CPU。
+*Note*: This option is a substitution for BT4LEContinuityFixup.kext, which does not function properly due to late patching progress.
 
 ### 10. `ExternalDiskIcons`
 
@@ -597,8 +627,10 @@ macOS 的版本不同，支持的内核缓存变量也不同，其目的是提�
 | ----------- | ----------- | ----------- | ----------- | ------------- | ------------- | ------------- | ------------- |
 | 10.4        | YES         | YES (V1)    | NO (V1)     | —             | —             | —             | —             |
 | 10.5        | YES         | YES (V1)    | NO (V1)     | —             | —             | —             | —             |
-| 10.6        | YES         | YES (V2)    | NO (V2)     | YES           | YES (V2)      | YES (V2)      | —             |
-| 10.7        | YES         | —           | NO (V3)     | YES           | —             | YES (V3)      | —             |
+| 10.6        | YES         | YES (V2)    | YES (V2)    | YES           | YES (V2)      | YES (V2)      | —             |
+| 10.7        | YES         | —           | YES (V3)    | YES           | —             | YES (V3)      | —             |
 | 10.8-10.9   | —           | —           | —           | YES           | —             | YES (V3)      | —             |
 | 10.10-10.15 | —           | —           | —           | —             | —             | YES (V3)      | —             |
 | 11.0+       | —           | —           | —           | —             | —             | YES (V3)      | YES           |
+
+*Note*: First version (V1) of 32-bit `prelinkedkernel` is unsupported due to kext symbol tables being corrupted by the tools. This also makes `keepsyms=1` for kext frames broken on these systems.
