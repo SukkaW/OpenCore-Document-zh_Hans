@@ -3,7 +3,7 @@ title: 5. Booter
 description: 配置 OpenRuntime.efi（Slide 值计算、KASLR）
 type: docs
 author_info: 由 Sukka、derbalkon 整理，由 Sukka、derbalkon 翻译。
-last_updated: 2020-09-18
+last_updated: 2020-10-04
 ---
 
 ## 5.1 简介
@@ -23,7 +23,7 @@ last_updated: 2020-09-18
 - 在 BIOS 中启用 `VT-x`、`Hyper Threading`、`Execute Disable Bit`。
 - 有时你还可能需要在 BIOS 中禁用 `Thunderbolt Support`、`Intel SGX` 和 `Intel Platform Trust`。但是这一操作不是必须的。
 
-在调试睡眠问题时，您可能希望（临时）禁用 Power Nap 和自动关闭电源，这似乎有时会导致在旧平台上唤醒黑屏或循环启动的问题。具体问题可能因人而异，但通常你应首先检查 ACPI 表，比如这是在 [Z68 主板](http://www.insanelymac.com/forum/topic/329624-need-cmos-reset-after-sleep-only-after-login/#entry2534645) 上找到的一些 Bug。要关闭 Power Nap 和其他功能，请在终端中运行以下命令：
+在调试睡眠问题时，可能需要（临时）禁用 Power Nap 和自动关闭电源，因为这二者似乎有时会导致旧的平台唤醒黑屏或循环启动。具体问题可能因人而异，但通常你应首先检查 ACPI 表，比如这是在 [Z68 主板](http://www.insanelymac.com/forum/topic/329624-need-cmos-reset-after-sleep-only-after-login/#entry2534645) 上找到的一些 Bug。要关闭 Power Nap 和其他功能，请在终端中运行以下命令：
 
 ```bash
 sudo pmset autopoweroff 0

@@ -3,7 +3,7 @@ title: 4. ACPI
 description: 加载、屏蔽、修补 ACPI（DSDT/SSDT）表
 type: docs
 author_info: 由 Sukka 整理、由 Sukka、derbalkon 翻译。感谢黑果小兵提供的参考资料
-last_updated: 2020-08-28
+last_updated: 2020-10-04
 ---
 
 ## 4.1 简介
@@ -200,14 +200,14 @@ OpenCore、WhateverGreen、VirtualSmc、VoodooPS2 的 GitHub 仓库中都包含�
 大多数情况下，ACPI 补丁是有害而无益的：
 
 - 避免用 ACPI 补丁重命名设备。这样做可能会使设备重命名失败，或者会对不相关的设备进行错误地重命名（如 `EC` 和 `EC0`）。为了保证 ACPI 的一致性，在 I/O 注册表级别重命名设备会更加安全，比如 [WhateverGreen](https://github.com/acidanthera/WhateverGreen) 的做法。
-- 尽量避免为了支持更高级的功能集而给 `_OSI` 打补丁，除非你非常需要。这样做通常会侵入 APTIO 固件，从而导致需要用打更多的补丁去填坑。现代的固件基本不需要，而真正需要的那些固件只要打一些更小的补丁就可以了。However, laptop vendors usually rely on this method to determine the availability of functions like modern I2C input support, thermal adjustment and custom feature additions.
-- Avoid patching embedded controller event `_Qxx` just for enabling brightness keys. The conventional process to find these keys usually involves massive modification on DSDT and SSDTs and the debug kext is not stable on newer systems. Please switch to built-in brightness key discovery of [VoodooPS2](https://github.com/acidanthera/VoodooPS2) instead.
+- 尽量避免为了支持更高级的功能集而给 `_OSI` 打补丁，除非你非常需要。这样做通常会侵入 APTIO 固件，从而导致需要用打更多的补丁去填坑。现代的固件基本不需要，而真正需要的那些固件只要打一些更小的补丁就可以了。然而，笔记本厂商通常依靠这种方法来确定是否有现代 I2C 输入支持、散热调节功能，或用来添加其他自定义功能。
+- 避免为了启用亮度调节键而给 EC 事件 `_Qxx` 打补丁。传统的方法通常需要在 DSDT 和 SSDT 上进行大量的修改，而且新系统上的 debug kext 并不稳定。请改用 [VoodooPS2](https://github.com/acidanthera/VoodooPS2) 内置亮度调节键检测机制。
 - 尽量避免重命名 `_PRW` 或 `_DSM` 之类的魔改举动。
 
 在某些情况下，打补丁确实是有意义的：
 
 - 刷新 `HPET`（或其他设备）的 method header 来避免老硬件上的 `_OSI` 兼容性检查。可通过将 `A0 10 93 4F 53 46 4C 00` 替换为 `A4 0A 0F A3 A3 A3 A3 A3` 的办法，使带有 `if ((OSFL () == Zero)) { If (HPTE)  ...  Return (Zero)` 的 `_STA` method 达到强制返回 0xF 的目的。
-- 在 SSDT 中实现自定义 method，比如 to inject shutdown fix on certain computers, the original method can be replaced with a dummy name by patching `_PTS` with `ZPTS` and adding a callback to original method.
+- 在 SSDT 中实现自定义 method，比如在某些计算机上注入关机修复，可以通过将 `_PTS` 替换为 `ZPTS`，把原来的 method 替换为一个假的名字，并添加一个 callback 回调到原 method 中。
 
 TianoCore 源文件 [AcpiAml.h](https://github.com/acidanthera/audk/blob/master/MdePkg/Include/IndustryStandard/AcpiAml.h) 可能会对于理解 ACPI 操作码有所帮助。
 

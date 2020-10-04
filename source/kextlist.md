@@ -3,7 +3,7 @@ title: 附录 1. OpenCore 兼容 Kext 列表
 description: OpenCore 支持的内核驱动 (Kext) 及其用途
 type: docs
 author_info: 由 Sukka、derbalkon 整理，感谢黑果小兵的博客提供的资料。
-last_updated: 2020-09-24
+last_updated: 2020-10-04
 ---
 
 ## 有线网卡
@@ -29,13 +29,14 @@ last_updated: 2020-09-24
 | [AirportBrcmFixup.kext](https://github.com/acidanthera/AirportBrcmFixup) | 非苹果官方博通网卡修复 | 10.8 | — |
 | [ATH9KFixup.kext](https://github.com/chunnann/ATH9KFixup) | 高通 Atheros AR9xxx 无线网卡修复 | — | — |
 | [BrcmPatchRAM.kext](https://github.com/acidanthera/BrcmPatchRAM) | 博通网卡蓝牙固件 | 10.10 | — |
-| [BT4LEContinuityFixup.kext](https://github.com/acidanthera/BT4LEContinuityFixup) | IOBluetoothFamily 修补 | 10.10 | — |
+| [BT4LEContinuityFixup.kext](https://github.com/acidanthera/BT4LEContinuityFixup) | IOBluetoothFamily 修补，已被合并入 OpenCore 作为 Quirk 呈现 | 10.10 | — |
 | [IntelBluetoothFirmware](https://github.com/zxystd/IntelBluetoothFirmware) | Intel 蓝牙固件驱动 | — | — |
 | [MT7610](https://d86o2zu8ugzlg.cloudfront.net/mediatek-craft/drivers/MT7612_7610U_D5.0.1.25_SDK1.0.2.18_UI5.0.0.27_20151209.zip) | 联发科 MT7610 官方驱动 | — | — |
 | [RT5370](https://d86o2zu8ugzlg.cloudfront.net/mediatek-craft/drivers/RTUSB_D2870-4.2.9.2_UI-4.0.9.6_2013_11_29.zip) | 联发科 RT5370 官方驱动 | — | — |
 | [RTL8192CU](https://drive.google.com/file/d/1ZtdMqlvKBbHULJhl1u9omuLOy6j0vx48/view?usp=sharing) | Realtek RTL8192CU 驱动 | — | — |
 
 > 译者注：上述 `RTL8192CU` 驱动链接为 Google Drive 分享，直链下载地址：
+>
 > - [macOS 10.6](/download/RTL8192CU/10.6/RTL8192CUs.kext.zip)
 > - [macOS 10.9](/download/RTL8192CU/10.9/RTL8192CU9.kext.zip)
 
@@ -48,10 +49,10 @@ last_updated: 2020-09-24
 | [NoTouchID.kext](https://github.com/al3xtjames/NoTouchID) | 禁用 Touch ID 检测 | — | — |
 | [SerialMouse.kext](https://github.com/Goldfish64/SerialMouse) | 使用 Microsoft 串行鼠标协议的串行鼠标驱动 | — | — |
 | [VoodooI2C.kext](https://github.com/alexandred/VoodooI2C) | 驱动 I2C 触摸板 / 屏 | — | — |
-| [VoodooPS2Controller.kext](https://github.com/acidanthera/VoodooPS2) | 驱动 PS2 键盘 / 触摸板 | 10.11 | — |
-| [VoodooPS2Keyboard.kext](https://github.com/acidanthera/VoodooPS2) | 驱动 PS2 键盘 | 10.11 | — |
-| [VoodooPS2Mouse.kext](https://github.com/acidanthera/VoodooPS2) | 驱动 PS2 鼠标 | 10.11 | — |
-| [VoodooPS2Trackpad.kext](https://github.com/acidanthera/VoodooPS2) | 驱动 PS2 触摸板 | 10.11 | — |
+| [VoodooPS2Controller.kext](https://github.com/acidanthera/VoodooPS2) | 驱动 PS2 键盘 / 鼠标 / 触摸板 | 10.11 | — |
+| [VoodooPS2Keyboard.kext](https://github.com/acidanthera/VoodooPS2) | — | 10.11 | — |
+| [VoodooPS2Mouse.kext](https://github.com/acidanthera/VoodooPS2) | — | 10.11 | — |
+| [VoodooPS2Trackpad.kext](https://github.com/acidanthera/VoodooPS2) | — | 10.11 | — |
 | [VoodooInput.kext](https://github.com/acidanthera/VoodooInput) | 为 PS2 输入源提供 Magic TrackPad 2 触控模拟 | 10.11 | — |
 | [VoodooSMBus.kext](https://github.com/leo-labs/VoodooSMBus) | 提供 i801 SMBus 支持和 Thinkpad T480s, L380, P52 的 ELAN 触摸板驱动 | — | — |
 | [VoodooRMI.kext](https://github.com/VoodooSMBus/VoodooRMI) | 驱动 Synaptic SMBus 触摸板 / 小红点 | — | — |
@@ -101,7 +102,7 @@ last_updated: 2020-09-24
 | [Legacy_InternalHub-EHCx.kext](https://applelife.ru/posts/537459) | — | 10.11 | — |
 | [Legacy_USB3.kext](https://applelife.ru/posts/537459) | — | 10.11 | — |
 | [NVMeFix.kext](https://github.com/acidanthera/NVMeFix) | 由 Acidanthera 提供的改善第三方 SSD 兼容性的驱动程序 | 10.14 | — |
-| [USBWakeFixup.kext](https://github.com/osy86/USBWakeFixup) | 修复 Skylake 平台 USB 唤醒黑屏 | — | — |
+| [USBWakeFixup.kext](https://github.com/osy86/USBWakeFixup) | 解决从 USB 唤醒设备时无法唤醒显示器，需要再按一次按键或再按一次鼠标来唤醒显示器的问题 | — | — |
 | [SASMegaRAID.kext](https://github.com/dukzcry/osx-goodies) | LSI MegaRAID SAS 系列 RAID 控制器驱动 | — | — |
 | [Sinetek-rtsx.kext](https://www.insanelymac.com/forum/topic/321080-sineteks-driver-for-realtek-rtsx-sdhc-card-readers/?do=findComment&comment=2376387) | Realtek RTSX SDHC 读卡器驱动 | — | — |
 | [VoodooSDHC.kext](https://github.com/lvs1974/VoodooSDHCMod) | SDHC 读卡器驱动 | — | — |
@@ -116,7 +117,7 @@ last_updated: 2020-09-24
 | [Lilu.kext](https://github.com/acidanthera/Lilu) | SDK & Library | 10.6 | — |
 | [LiluFriend.kext](https://github.com/PMheart/LiluFriend) | 用于确保 Lilu 在 L/E 下正常加载 | — | — |
 | [RTCMemoryFixup.kext](https://github.com/lvs1974/RTCMemoryFixup) | 修复 BIOS CMOS (RTC) 内存和 AppleRTC 之间的冲突问题 | — | — |
-| [NightShiftEnabler.kext](https://github.com/cdf/NightShiftEnabler) | 解锁 NightShift | — | — |
+| [NightShiftEnabler.kext](https://github.com/cdf/NightShiftEnabler) | 解锁 Night Shift | — | — |
 | [WebCamera.kext](https://www.applelife.ru/threads/asus-x550vc-i-asus-x550cc.41752/page-130#post-593586) | 某些旧设备的摄像头驱动 | — | — |
 | [TOSMotionSensor.kext](https://github.com/jslegendre/TOSMotionSensor) | 东芝设备的加速度传感器驱动 | — | — |
 

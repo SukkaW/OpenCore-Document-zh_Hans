@@ -3,7 +3,7 @@ title: 10. PlatformInfo
 description: SMBIOS 机型信息配置
 type: docs
 author_info: 由 xMuu、Sukka、derbalkon 整理，由 Sukka、derbalkon 翻译
-last_updated: 2020-09-18
+last_updated: 2020-10-04
 ---
 
 机型信息由手动生成或填充的字段组成，以便与 macOS 服务兼容。配置的基础部分可以从 [`AppleModels`](https://github.com/acidanthera/OpenCorePkg/blob/master/AppleModels) 获得，这是一个可以从 [YAML](https://yaml.org/spec/1.2/spec.html) 格式的数据库中生成一组接口的工具包。这些字段将会被写入三个位置：
@@ -112,37 +112,51 @@ last_updated: 2020-09-18
 - `FW_FEATURE_SUPPORTS_CSM_LEGACY_MODE` (`0x1`) - 如果没有此 bit，且 EFI 分区不是硬盘中的第一个分区，那么则无法重新启动到硬盘里的 Windows 系统。
 - `FW_FEATURE_SUPPORTS_UEFI_WINDOWS_BOOT` (`0x20000000`) - 如果没有此 bit，且 EFI 分区是硬盘中的第一个分区，那么则无法重新启动到硬盘里的 Windows 系统。
 
-### 3. `ProcessorType`
+### 3. `SystemMemoryStatus`
+
+**Type**: `plist string`
+**Failsafe**: `Auto`
+**Description**: 用来表示内存是否可以更换和升级，此值也控制着「关于本机」中「内存」选项卡的可见性。
+
+有效值如下：
+
+- `Auto` --- 使用原始的 `PlatformFeature` 值。
+- `Upgradable` --- 显式取消设置 `PlatformFeature` 中 `PT_FEATURE_HAS_SOLDERED_SYSTEM_MEMORY (0x2)`。
+- `Soldered` --- 显式设置 `PlatformFeature` 中的 `PT_FEATURE_HAS_SOLDERED_SYSTEM_MEMORY (0x2)`。
+
+*注*：在某些型号的 Mac 上，SPMemoryReporter.spreporter 会自动忽略 `PT_FEATURE_HAS_SOLDERED_SYSTEM_MEMORY`，并认为其内存是不可升级的，如 `MacBookPro10,x` 和所有的 `MacBookAir`。
+
+### 4. `ProcessorType`
 
 **Type**: `plist integer`
 **Failsafe**: `0` (Automatic)
-**Description**: Refer to SMBIOS `ProcessorType`.
+**Description**: 请参考下文 SMBIOS 章节中的 `ProcessorType`。
 
-### 4. `SystemProductName`
+### 5. `SystemProductName`
 
 **Type**: `plist string`
 **Failsafe**: `MacPro6,1`
 **Description**: 请参考下文 SMBIOS 章节中的 `SystemProductName`。
 
-### 5. `SystemSerialNumber`
+### 6. `SystemSerialNumber`
 
 **Type**: `plist string`
 **Failsafe**: `OPENCORE_SN1`
 **Description**: 请参考下文 SMBIOS 章节中的 `SystemSerialNumber`。
 
-### 6. `SystemUUID`
+### 7. `SystemUUID`
 
 **Type**: `plist string`, GUID
 **Failsafe**: OEM specified
 **Description**: 请参考下文 SMBIOS 章节中的 `SystemUUID`。
 
-### 7. `MLB`
+### 8. `MLB`
 
 **Type**: `plist string`
 **Failsafe**: `OPENCORE_MLB_SN11`
 **Description**: 请参考下文 SMBIOS 章节中的 `BoardSerialNumber`。
 
-### 8. `ROM`
+### 9. `ROM`
 
 **Type**: `plist data`, 6 bytes
 **Failsafe**: all zero
@@ -477,7 +491,7 @@ last_updated: 2020-09-18
 **Type**: `plist integer`, 32-bit
 **Failsafe**: `0xFFFFFFFF`
 **SMBIOS**: `APPLE_SMBIOS_TABLE_TYPE133` - `PlatformFeature`
-**Description**: 平台特征位掩码，详见 [AppleFeatures.h](https://github.com/acidanthera/OpenCorePkg/blob/master/Include/Apple/IndustryStandard/AppleFeatures.h)。填写 `0xFFFFFFFF` 值时不提供此表。
+**Description**: 平台功能位掩码，详见 [AppleFeatures.h](https://github.com/acidanthera/OpenCorePkg/blob/master/Include/Apple/IndustryStandard/AppleFeatures.h)。填写 `0xFFFFFFFF` 值时不提供此表。
 
 ### 24. `SmcVersion`
 
@@ -491,14 +505,14 @@ last_updated: 2020-09-18
 **Type**: `plist data`, 8 bytes
 **Failsafe**: `0`
 **SMBIOS**: `APPLE_SMBIOS_TABLE_TYPE128` - `FirmwareFeatures` and `ExtendedFirmwareFeatures`
-**Description**: 64 位固件特征位掩码。详见 [AppleFeatures.h](https://github.com/acidanthera/OpenCorePkg/blob/master/Apple/Include/IndustryStandard/AppleFeatures.h)。低 32 位与 `FirmwareFeatures` 匹配，高 64 位与 `ExtendedFirmwareFeatures` 匹配。
+**Description**: 64 位固件功能位掩码。详见 [AppleFeatures.h](https://github.com/acidanthera/OpenCorePkg/blob/master/Include/Apple/IndustryStandard/AppleFeatures.h)。低 32 位与 `FirmwareFeatures` 匹配，高 64 位与 `ExtendedFirmwareFeatures` 匹配。
 
 ### 26.`FirmwareFeaturesMask`
 
 **Type**: `plist data`, 8 bytes
 **Failsafe**: `0`
 **SMBIOS**: `APPLE_SMBIOS_TABLE_TYPE128` - `FirmwareFeaturesMask` and `ExtendedFirmwareFeaturesMask`
-**Description**: 扩展固件特征位掩码。详见 [AppleFeatures.h](https://github.com/acidanthera/OpenCorePkg/blob/master/Apple/Include/IndustryStandard/AppleFeatures.h)。低 32 位与 `FirmwareFeatures` 匹配，高 64 位与 `ExtendedFirmwareFeatures` 匹配。
+**Description**: 扩展固件功能位掩码。详见 [AppleFeatures.h](https://github.com/acidanthera/OpenCorePkg/blob/master/Include/Apple/IndustryStandard/AppleFeatures.h)。低 32 位与 `FirmwareFeatures` 匹配，高 64 位与 `ExtendedFirmwareFeatures` 匹配。
 
 ### 27. `ProcessorType`
 
@@ -507,7 +521,7 @@ last_updated: 2020-09-18
 **SMBIOS**: `APPLE_SMBIOS_TABLE_TYPE131` - `ProcessorType`
 **Description**: 由处理器的主要和次要类型组成。
 
-Automatic value generation tries to provide most accurate value for the currently installed CPU. When this fails please make sure to create an [issue](https://github.com/acidanthera/bugtracker/issues) and provide `sysctl machdep.cpu` and [`dmidecode`](https://github.com/acidanthera/dmidecode) output. For a full list of available values and their limitations (the value will only apply if the CPU core count matches) refer to Apple SMBIOS definitions header [here](https://github.com/acidanthera/OpenCorePkg/blob/master/Include/Apple/IndustryStandard/AppleSmBios.h).
+自动生成的值（Automatic）是根据当前的 CPU 规格提供的最准确的值，一般不会有问题，如果有问题请务必到 [bugtracker](https://github.com/acidanthera/bugtracker/issues) 创建一个 Issue，并附上 `sysctl machdep.cpu` 和 [`dmidecode`](https://github.com/acidanthera/dmidecode) 的输出结果。所有可用值及其限制条件（指该值只有在核心数匹配的情况下才适用）都可以在 Apple SMBIOS 定义 [头文件](https://github.com/acidanthera/OpenCorePkg/blob/master/Include/Apple/IndustryStandard/AppleSmBios.h) 里找到。
 
 ### 28. `MemoryFormFactor`
 

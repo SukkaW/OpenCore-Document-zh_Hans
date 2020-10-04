@@ -138,7 +138,7 @@ last_updated: 2020-09-18
 
   - `acpi_layer=0xFFFFFFFF`
   - `acpi_level=0xFFFF5F` --- 表示 [`ACPI_ALL_COMPONENTS`](https://github.com/acpica/acpica/blob/master/source/include/acoutput.h)
-  - `arch=i386` (force kernel architecture to `i386`, see `KernelArch`)
+  - `arch=i386` --- 强制内核架构为 `i386`，详见 `KernelArch` 选项
   - `batman=VALUE` --- `AppleSmartBatteryManager` 调试掩码
   - `batman-nosmc=1` --- 禁用 `AppleSmartBatteryManager` SMC 接口
   - `cpus=VALUE` --- 最大可用 CPU 数量

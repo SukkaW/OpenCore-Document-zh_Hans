@@ -3,7 +3,7 @@ title: 8. Misc
 description: 关于 OpenCore 行为的其他配置
 type: docs
 author_info: 由 xMuu、Sukka、derbalkon 整理、由 Sukka、derbalkon 翻译。
-last_updated: 2020-09-18
+last_updated: 2020-10-04
 ---
 
 ## 8.1 简介
@@ -664,7 +664,7 @@ rm vault.pub
 - `0x00020000` (bit `17`) --- `OC_SCAN_ALLOW_DEVICE_SASEX`，允许扫描 SAS 和 Mac NVMe 设备。
 - `0x00040000` (bit `18`) --- `OC_SCAN_ALLOW_DEVICE_SCSI`，允许扫描 SCSI 设备。
 - `0x00080000` (bit `19`) --- `OC_SCAN_ALLOW_DEVICE_NVME`，允许扫描 NVMe 设备。
-- `0x00100000` (bit `20`) --- `OC_SCAN_ALLOW_DEVICE_ATAPI`，允许扫描 CD/DVD 设备。
+- `0x00100000` (bit `20`) --- `OC_SCAN_ALLOW_DEVICE_ATAPI`，允许扫描 CD/DVD 和旧的 SATA 设备。
 - `0x00200000` (bit `21`) --- `OC_SCAN_ALLOW_DEVICE_USB`，允许扫描 USB 设备。
 - `0x00400000` (bit `22`) --- `OC_SCAN_ALLOW_DEVICE_FIREWIRE`，允许扫描 FireWire 设备。
 - `0x00800000` (bit `23`) --- `OC_SCAN_ALLOW_DEVICE_SDCARD`，允许扫描读卡器设备。
@@ -718,7 +718,7 @@ rm vault.pub
 - 在较旧的 CPU 上（如 Sandy Bridge 之前），启用 Apple 安全启动可能会使加载速度略微变慢，最长可达 1 秒。
 - 由于 `Default` 的值会随着时间的推移而变化，以支持最新的 macOS 主版本，因此不建议同时使用 `ApECID` 和 `Default` 值。
 
-有时，已安装的系统 `Preboot` 分区上的 Apple 安全启动清单是过时的，从而导致启动失败。如果你看到 `OCB: Apple Secure Boot prohibits this boot entry, enforcing!` 这样的信息，很可能就是出现了上述这种情况。想要解决这个问题，要么重新安装操作系统，要么把 `/usr/standalone/i386` 中的清单（扩展名为 `.im4m` 的文件，如 `boot.efi.j137.im4m`）复制到 `/Volumes/Preboot/<UUID>/System/Library/CoreServices`（`<UUID>` 为系统卷的标识符）。On HFS+ installations the manifests should be copied to `/System/Library/CoreServices` on the system volume.
+有时，已安装的系统 `Preboot` 分区上的 Apple 安全启动清单是过时的，从而导致启动失败。如果你看到 `OCB: Apple Secure Boot prohibits this boot entry, enforcing!` 这样的信息，很可能就是出现了上述这种情况。想要解决这个问题，要么重新安装操作系统，要么把 `/usr/standalone/i386` 中的清单（扩展名为 `.im4m` 的文件，如 `boot.efi.j137.im4m`）复制到 `/Volumes/Preboot/<UUID>/System/Library/CoreServices`（`<UUID>` 为系统卷的标识符）。HFS+ 文件系统则须复制到系统卷上的 `/System/Library/CoreServices` 目录。
 
 关于如何结合 UEFI 安全启动来配置 Apple 安全启动的细节，请参考本文档 [UEFI 安全启动](12-troubleshooting.html#12-2-UEFI-安全启动) 部分。
 

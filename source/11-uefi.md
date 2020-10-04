@@ -3,7 +3,7 @@ title: 11. UEFI
 description: UEFI 驱动以及加载顺序
 type: docs
 author_info: 由 xMuu、Sukka、derbalkon 整理，由 Sukka、derbalkon 翻译
-last_updated: 2020-09-18
+last_updated: 2020-10-04
 ---
 
 ## 11.1 简介
@@ -746,7 +746,7 @@ Apple 音频协议允许 macOS bootloader 和 OpenCore 播放声音和信号，�
 
 这里写的地址必须是内存映射的一部分，具有 `EfiConventionalMemory` 类型，并且按页对齐（4KB）。
 
-*Note*: Some firmwares may not allocate memory areas used by S3 (sleep) and S4 (hibernation) code unless CSM is enabled causing wake failures. After comparing the memory maps with CSM disabled and enabled you could find these areas in the lower memory and fix them up by doing the reservation. See `Sample.plist` for more details.
+*注*：禁用 CSM 后，某些固件可能不会为 S3（睡眠）和 S4（休眠）分配内存区域，因此导致唤醒失败。你可以分别比较禁用和启用 CSM 的内存映射，从低层内存中找到这些区域，并保留该区域来修复这个问题。详见 `Sample.plist`。
 
 ### 2. `Comment`
 
@@ -764,22 +764,22 @@ Apple 音频协议允许 macOS bootloader 和 OpenCore 播放声音和信号，�
 
 **Type**: `plist string`
 **Failsafe**: `Reserved`
-**Description**: Memory region type matching the UEFI specification memory descriptor types. Mapping:
+**Description**: 内存区域类型，与 UEFI 规范的内存描述符类型的匹配映射如下：
 
 - `Reserved` — `EfiReservedMemoryType`
 - `LoaderCode` — `EfiLoaderCode`
 - `LoaderData` — `EfiLoaderData`
-- `BootServiceCode` — `EfiBootServicesCode` 
-- `BootServiceData` — `EfiBootServicesData` 
-- `RuntimeCode` — `EfiRuntimeServicesCode` 
-- `RuntimeData` — `EfiRuntimeServicesData` 
+- `BootServiceCode` — `EfiBootServicesCode`
+- `BootServiceData` — `EfiBootServicesData`
+- `RuntimeCode` — `EfiRuntimeServicesCode`
+- `RuntimeData` — `EfiRuntimeServicesData`
 - `Available` — `EfiConventionalMemory`
 - `Persistent` — `EfiPersistentMemory`
 - `UnusableMemory` — `EfiUnusableMemory`
 - `ACPIReclaimMemory` — `EfiACPIReclaimMemory`
 - `ACPIMemoryNVS` — `EfiACPIMemoryNVS`
 - `MemoryMappedIO` — `EfiMemoryMappedIO`
-- `MemoryMappedIOPortSpace` — `EfiMemoryMappedIOPortSpace` 
+- `MemoryMappedIOPortSpace` — `EfiMemoryMappedIOPortSpace`
 - `PalCode` — `EfiPalCode`
 
 ### 5. `Enabled`
