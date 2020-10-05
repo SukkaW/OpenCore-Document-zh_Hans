@@ -30,7 +30,7 @@ last_updated: 2020-10-05
 - `SSSE3` 支持是启用了 64 位用户空间的 macOS 10.6 内核的要求。这个限制大多可以通过启用 `LegacyCommpage` Quirk 来解除。
 - 最近发布的 macOS 10.6 安装镜像为 macOS 10.6.7 版本号 `10J3250`（`MacBookPro8,x` 专用）和 `10J4139`（`iMac12,x` 专用，不含 Xcode）。这些镜像仅限于特定的几款机型，并且不支持使用 `-no_compat_check` 来忽略兼容性检查。如果你拥有 macOS 10.6 的合法副本，又不想被上述限制所约束，可以在 [这里](https://mega.nz/folder/z5YUhYTb%23gA_IRY5KMuYpnNCg7kR3ug) 找到无机型限制的修改版镜像（`ACDT` 后缀），更多细节在 `DIGEST.txt` 中。记住，这些都是经过 OpenCore 测试的最早的 macOS 10.6 版本。
 
-机型检查可以手动抹掉，大体思路是用 `Flat Package Editor` 之类的工具编辑 `OSInstall.mpkg`，让 `Distribution` 脚本在 `hwbeModelCheck` 函数中总是返回 `true`。仅更新映像中某一的文件而不影响到其他文件是相当困难的，而且还有可能因为内核缓存日期的改变而导致启动速度变慢，因此建议按照如下命令重建映像：
+机型检查可以被手动去除，大体思路是用 `Flat Package Editor` 之类的工具编辑 `OSInstall.mpkg`，让 `Distribution` 脚本在 `hwbeModelCheck` 函数中总是返回 `true`。仅更新映像中某一的文件而不影响到其他文件是相当困难的，而且还有可能因为内核缓存日期的改变而导致启动速度变慢，因此建议按照如下命令重建映像：
 
 ```bash
 #!/bin/bash
