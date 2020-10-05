@@ -26,8 +26,8 @@ type: docs
 OpenCore 仍处于积极的维护之中，OpenCore 参考手册 仍然在高频率更新，本网站提供的内容 **仅可供参考**。本网站的内容和 OpenCore 官方的参考手册的任何出入，**请以 OpenCore 官方的参考手册为准**。
 
 > 本网站提供的翻译基于如下描述的 OpenCore 官方文档：
-> - **OpenCore 文档释出日期**：2020.10.04
-> - **OpenCore 文档版本**：[`1f37e9944e65c6ed22eebb2fe6135e23a151aed7`](https://github.com/acidanthera/OpenCorePkg/commit/1f37e9944e65c6ed22eebb2fe6135e23a151aed7)
+> - **OpenCore 文档释出日期**：2020.10.05
+> - **OpenCore 文档版本**：[`cad9e24d8698b323fba1498ac9efacfcb27c378f`](https://github.com/acidanthera/OpenCorePkg/commit/cad9e24d8698b323fba1498ac9efacfcb27c378f)
 >
 > 本网站提供的翻译适用于如下描述的 OpenCore 版本：
 > - **OpenCore 版本**：0.6.2
