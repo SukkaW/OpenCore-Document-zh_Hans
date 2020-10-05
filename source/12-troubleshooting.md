@@ -54,7 +54,7 @@ rm -rf DS_STORE RW
 
 - 上述问题均存在。
 - 这个版本的 macOS 不支持 `x86_64` 内核，需要 `i386` 内核扩展和补丁。
-- 这个版本的 macOS 第一个版本（V1）的 `prelinkedkernel`，但它的 Kext 符号表被 Kext 工具破坏了。这个细微的差别使得 `prelinkedkernel` Kext 无法被 OpenCore 注入。`Mkext` Kext 的注入仍然正常，也不会有明显的性能消耗，而且当 `KernelCache` 设置为 `Auto` 时，`Mkext` 会被自动选择。
+- 这个版本的 macOS 使用了第一个版本（V1）的 `prelinkedkernel`，但它的 Kext 符号表被 Kext 工具破坏了。这个细微的差别使得 `prelinkedkernel` Kext 无法被 OpenCore 注入。`Mkext` Kext 的注入仍然正常，也不会有明显的性能消耗，而且当 `KernelCache` 设置为 `Auto` 时，`Mkext` 会被自动选择。
 - 最后发布的 macOS 10.5 的安装镜像是 macOS 10.5.7 版本号 `9J3050`（`MacBookPro5,3` 专用）。与其他版本系统不同的是，这个镜像不受机型限制，可以原样使用。如果你拥有 macOS 10.5 的合法副本，可以在 [这里](https://mega.nz/folder/inRBTarD%23zanf7fUbviwz3WHBU5xpCg) 找到原始的 `9J3050` 镜像，更多细节在 `DIGEST.txt` 中。注意，这是经过 OpenCore 测试的最早的 macOS 10.5 版本。
 
 ### 5. macOS 10.4

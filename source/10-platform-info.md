@@ -396,7 +396,7 @@ last_updated: 2020-10-04
 **Type**: `plist string`
 **Failsafe**: OEM specified
 **SMBIOS**: System Information (Type 1) --- Family
-**Description**: 家族名称，看起来类似于 `iMac Pro`。
+**Description**: 机型名称，看起来类似于 `iMac Pro`。
 
 ### 11. `BoardManufacturer`
 
