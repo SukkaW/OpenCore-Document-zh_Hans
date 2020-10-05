@@ -3,7 +3,7 @@ title: 8. Misc
 description: 关于 OpenCore 行为的其他配置
 type: docs
 author_info: 由 xMuu、Sukka、derbalkon 整理、由 Sukka、derbalkon 翻译。
-last_updated: 2020-10-04
+last_updated: 2020-10-05
 ---
 
 ## 8.1 简介
@@ -19,24 +19,22 @@ OpenCore 尽可能地遵循 `bless` 模式，即 `Apple Boot Policy`。`bless` �
 1. 通过 `Scan policy`（和驱动可用性）过滤，获取所有可用的分区句柄。
 2. 从 `BootOrder` UEFI 变量中，获取所有可用的启动选项。
 3. 对于每个找到的启动选项：
-  - 检索该启动选项的设备路径。
-  - 执行对设备路径的修复（如 NVMe 子类型修复）和扩展（如 Boot Camp）。
-  - 通过定位到所产生的设备路径，来获取句柄（失败时忽略）。
-  - 在分区句柄列表中找到设备句柄（缺失时忽略）。
-  - 对磁盘设备路径（不指定引导程序）执行 `bless`（可能返回不止一个条目）。
-  - 对文件设备路径直接检查其文件系统。
-  - 在 OpenCore 启动分区中，通过 Header Check 排除所有 OpenCore Bootstrap 文件。
-  - 如果有分区句柄列表，则在列表中将设备句柄标记为 *used*。
-  - 将生成的条目注册为主选项，并确定他们的类型。某些类型的选项作为辅助选项（如 Apple HFS Recovery）。
-
+   - 检索该启动选项的设备路径。
+   - 执行对设备路径的修复（如 NVMe 子类型修复）和扩展（如 Boot Camp）。
+   - 通过定位到所产生的设备路径，来获取句柄（失败时忽略）。
+   - 在分区句柄列表中找到设备句柄（缺失时忽略）。
+   - 对磁盘设备路径（不指定引导程序）执行 `bless`（可能返回不止一个条目）。
+   - 对文件设备路径直接检查其文件系统。
+   - 在 OpenCore 启动分区中，通过 Header Check 排除所有 OpenCore Bootstrap 文件。
+   - 如果有分区句柄列表，则在列表中将设备句柄标记为 *used*。
+   - 将生成的条目注册为主选项，并确定他们的类型。某些类型的选项作为辅助选项（如 Apple HFS Recovery）。
 4. 对于每个分区句柄：
-  - 如果分区句柄被标记为 *unused*，则执行 `bless` 主选项列表检索。如果设置了 `BlessOverride` 列表，那么不仅能找到标准的 `bless` 路径，还能找到自定义的路径。
-  - 在 OpenCore 启动分区中，通过 Header Check 排除所有 OpenCore Bootstrap 文件。
-  - 将生成的条目注册为主选项，并确定他们的类型。某些类型的选项作为辅助选项（如 Apple HFS Recovery）。
-  - 如果分区已经具有来 `Apple Recovery` 类型的主选项，则继续处理下一个句柄。
-  - 通过 `bless` 恢复选项列表检索和预定义路径，来查找备用条目。
-  - 将生成的条目注册为备用辅助选项，并确定它们的类型。
-
+   - 如果分区句柄被标记为 *unused*，则执行 `bless` 主选项列表检索。如果设置了 `BlessOverride` 列表，那么不仅能找到标准的 `bless` 路径，还能找到自定义的路径。
+   - 在 OpenCore 启动分区中，通过 Header Check 排除所有 OpenCore Bootstrap 文件。
+   - 将生成的条目注册为主选项，并确定他们的类型。某些类型的选项作为辅助选项（如 Apple HFS Recovery）。
+   - 如果分区已经具有来 `Apple Recovery` 类型的主选项，则继续处理下一个句柄。
+   - 通过 `bless` 恢复选项列表检索和预定义路径，来查找备用条目。
+   - 将生成的条目注册为备用辅助选项，并确定它们的类型。
 5. 把自定义条目和工具添加为主选项，不做有关 `Auxiliary` 的任何检查。
 6. 把系统条目（如 `Reset NVRAM`）添加为主要的辅助选项。
 
@@ -144,7 +142,7 @@ OpenCore 尽可能地遵循 `bless` 模式，即 `Apple Boot Policy`。`bless` �
 **Failsafe**: `None`
 **Description**: 休眠检测模式。 支持以下模式：
 
-- `None` --- 禁用休眠
+- `None` --- 禁用休眠（推荐）
 - `Auto` --- 从 RTC 或 NVRAM 中检测
 - `RTC` --- 从 RTC 检测
 - `NVRAM` --- 从 NVRAM 检测
@@ -542,7 +540,6 @@ VirtualSMC 通过将磁盘加密密钥拆分保存在 NVRAM 和 RTC 中来执行
 启动非默认操作系统（如 macOS Recovery 或工具）、启动到非默认模式（如详细模式或安全模式）或重置 NVRAM 等，以上这些行为属于敏感操作，密码保护可以很好地保证这些操作都是由本人或授权人操作。目前，密码和盐（Salt）用 5000000 次 SHA-512 迭代来进行哈希运算。
 
 *注*：此功能尚在开发阶段，不推荐日常使用。
-
 
 ### 8. `ExposeSensitiveData`
 
