@@ -3,7 +3,7 @@ title: 7. Kernel
 description: OpenCore 安全配置，Kext 加载顺序以及屏蔽
 type: docs
 author_info: 由 Sukka、derbalkon 整理，由 Sukka、derbalkon 翻译。
-last_updated: 2020-09-07
+last_updated: 2020-10-05
 ---
 
 ## 7.1 简介
@@ -183,25 +183,26 @@ last_updated: 2020-09-07
 **Failsafe**: All zero
 **Description**: `EAX`、`EBX`、`ECX`、`EDX` 值的序列，用来取代 XNU 内核中的 `CPUID (1)` 调用。
 
-该属性应用于以下两种需求：
+该属性主要应用于以下三种需求：
 
-- 对不支持的 CPU 型号启用支持。
+- 对不支持的 CPU 型号启用支持（比如英特尔的奔腾处理器）。
+- 对特定 macOS 版本（通常是旧版）不支持的 CPU 型号启用支持。
 - 对不支持的 CPU Variant 启用 XCPM 支持。
 
-通常来讲只需要处理 `EAX` 的值，因为它代表完整的 CPUID。剩余的字节要留为 0。字节顺序是小端字节序（Little Endian），比如 `C3 06 03 00` 代表 CPUID `0x0306C3` (Haswell)。
+*注 1*：还有一种可能的情况，即 CPU 型号是支持的，但其电源管理不支持（比如虚拟机）。在这种情况下，可以通过设置 `MinKernel` 和 `MaxKernel` 来限制特定 macOS 内核版本的 CPU 虚拟化和虚拟电源管理补丁。
 
-推荐使用下面的组合启用 XCPM 支持：
+*注 2*：通常来讲只需要处理 `EAX` 的值，因为它代表完整的 CPUID。剩余的字节要留为 0。字节顺序是小端字节序（Little Endian），比如 `C3 06 03 00` 代表 CPUID `0x0306C3` (Haswell)。
+
+*注 3*：推荐使用下面的组合启用 XCPM 支持：
 
 - Haswell-E (`0x0306F2`) to Haswell (`0x0306C3`):
-
   `Cpuid1Data`: `C3 06 03 00 00 00 00 00 00 00 00 00 00 00 00 00`  
   `Cpuid1Mask`: `FF FF FF FF 00 00 00 00 00 00 00 00 00 00 00 00`
-
 - Broadwell-E (`0x0406F1`) to Broadwell (`0x0306D4`):  
   `Cpuid1Data`: `D4 06 03 00 00 00 00 00 00 00 00 00 00 00 00 00`  
   `Cpuid1Mask`: `FF FF FF FF 00 00 00 00 00 00 00 00 00 00 00 00`
 
-请记住，目前以下配置并不兼容（至少还没有人成功过）：
+*注 4*：请记住，目前以下配置不被 XCPM 兼容（至少还没有人成功过）：
 
 - 消费级的 Ivy Bridge（`0x0306A9`），因为苹果针对它禁用了 XCPM 并推荐用户使用传统的电源管理。如果要使用这一选项，你还需要手动添加 `_xcpm_patch` 二进制修补以强制启用 XCPM。
 - 低端处理器（如基于 Haswell 或更新架构奔腾处理器），因为它们不被 macOS 支持。如果要启用这些 CPU 请参阅 [acidanthera/bugtracker#365](https://github.com/acidanthera/bugtracker/issues/365) 中的 `Special NOTES` 相关内容。
@@ -213,6 +214,33 @@ last_updated: 2020-09-07
 **Description**: `Cpuid1Data` 中激活的 bit 的位掩码。
 
 当每个 `Cpuid1Mask` bit 都设置为 `0` 时将使用原始的 CPU bit，否则取 `Cpuid1Data` 的值。
+
+### 3. `DummyPowerManagement`
+
+**Type**: `plist boolean`
+**Failsafe**: `false`
+**Requirement**: 10.4
+**Description**: 禁用 `AppleIntelCpuPowerManagement`。
+
+*注 1*：这一选项旨在替代 `NullCpuPowerManagement.kext`，用于 macOS 中没有相应电源管理驱动程序的 CPU。
+
+*注 2*：虽然通常只有不支持的平台才需要启用这个选项来禁用 `AppleIntelCpuPowerManagement`，但是如果想要禁用这个 Kext 本身而不考虑其他情况（比如 `Cpuid1Data` 留空），也依然可以启用这个选项。
+
+### 4. `MaxKernel`
+
+**Type**: `plist string`
+**Failsafe**: Empty string
+**Description**: 模拟 CPUID，并在指定的或更低的 macOS 版本上使用 `DummyPowerManagement`。
+
+*注*：匹配逻辑请参阅 `Add` `MaxKernel` 的描述。
+
+### 5. `MinKernel`
+
+**Type**: `plist string`
+**Failsafe**: Empty string
+**Description**: 模拟 CPUID，并在指定的或更高的 macOS 版本上使用 `DummyPowerManagement`。
+
+*注*：匹配逻辑请参阅 `Add` `MaxKernel` 的描述。
 
 ## 7.6 Force 属性
 
@@ -370,7 +398,7 @@ last_updated: 2020-09-07
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
-**Requirement**: 10.6 (64-bit)
+**Requirement**: 10.4
 **Description**: 禁用 `AppleIntelCPUPowerManagement.kext` 中的 `PKG_CST_CONFIG_CONTROL` (`0xE2`) 修改，从而避免早期 Kernel Panic。
 
 某些固件会锁定 `PKG_CST_CONFIG_CONTROL` MSR 寄存器。可以使用附带的 `VerifyMsrE2` 工具检查其状态。
@@ -381,8 +409,8 @@ last_updated: 2020-09-07
 2. 使用 UEFITool 中打开固件镜像文件，找到 CFG Lock 的 Unicode 字符串。如果你没有找到，意味着你的固件可能不支持 CFG Lock 解锁，那么你现在可以停下来了。
 3. 从 UEFITool 菜单中的 `Extract Body` 选项提取 `Setup.bin` 中的 PE32 镜像部分。
 4. 对提取出来的文件执行 IFR-Extractor（`./ifrextract Setup.bin Setup.txt`）。
-5. 从 Setup.txt 中找到 `CFG Lock`，`VarStoreInfo`（或者 `VarOffset`、`VarName`），记住紧随其后的偏移量值（例如 `0x123`）。
-6. 下载并执行由 [brainsucker](https://geektimes.com/post/258090) 编译的 [修改版 GRUB Shell](http://brains.by/posts/bootx64.7z)。你也可以是使用 [datasone](https://github.com/datasone) 制作的 [新版本 GRUB Shell](https://github.com/datasone/grub-mod-setup_var)。
+5. 从 Setup.txt 中找到 `CFG Lock, VarStoreInfo (VarOffset/VarName):`，记住紧随其后的偏移量值（例如 `0x123`）。
+6. 下载并执行由 [brainsucker](https://geektimes.com/post/258090) 编译的 [修改版 GRUB Shell](http://brains.by/posts/bootx64.7z)。你也可以使用 [datasone](https://github.com/datasone) 制作的 [新版 GRUB Shell](https://github.com/datasone/grub-mod-setup_var)。
 7. 在 GRUB Shell 中，使用 `setup_var 0x123 0x00`（其中 `0x123` 应该被替换为你在前几步找到的偏移值），然后重启电脑。
 
 {% note danger 警告 %}
@@ -424,7 +452,7 @@ last_updated: 2020-09-07
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
-**Requirement**: 10.6 (64-bit)
+**Requirement**: 10.4
 **Description**: 对 `UpdateSMBIOSMode` 自定义模式执行 GUID 修补，通常用于戴尔笔记本电脑。
 
 ### 6. `DisableIoMapper`
@@ -449,27 +477,27 @@ last_updated: 2020-09-07
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
-**Requirement**: 10.6 (64-bit)
+**Requirement**: 10.4
 **Description**: 禁用 AppleRTC 初始校验和（`0x58` - `0x59`）写入。
 
 *注 1*：这个选项不能确保其他区域不被覆盖，如有需要，请使用 [RTCMemoryFixup](https://github.com/acidanthera/RTCMemoryFixup)。
 
-*注 2*：这个选项不能确保区域在固件阶段不被覆盖（例如 macOS bootloader）。如有需要，请参阅 `AppleRtc` 协议描述。
+*注 2*：这个选项不能确保区域在固件阶段不被覆盖（例如 macOS bootloader）。如有需要，请参阅 `AppleRtcRam` 协议描述。
 
-### 9. `DummyPowerManagement`
+### 9. `ExtendBTFeatureFlags`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
-**Requirement**: 10.6 (64-bit)
-**Description**: 禁用 `AppleIntelCpuPowerManagement`。
+**Requirement**: 10.8
+**Description**: 将 `FeatureFlags` 设置为 `0x0F`，以实现蓝牙的全部功能（包括连续互通功能）。
 
-*注*：这一选项旨在替代 `NullCpuPowerManagement.kext`，用于 macOS 中没有电源管理驱动程序的 CPU。
+*注*：由于原先的 `BT4LEContinuityFixup.kext` 的补丁过程较迟而不起作用，因此合并至 OpenCore 来替代 `BT4LEContinuityFixup.kext`。
 
 ### 10. `ExternalDiskIcons`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
-**Requirement**: 10.6 (64-bit)
+**Requirement**: 10.4
 **Description**: 修补 `AppleAHCIPort.kext` 图标，使 macOS 将所有 AHCI 存储设备显示为内部硬盘。
 
 *注*：这一选项应尽量避免使用。现代固件通常情况下都是兼容的。
@@ -494,14 +522,21 @@ last_updated: 2020-09-07
 
 > 译者注：惠普电脑可能需要启用这一选项。
 
-### 13. `PanicNoKextDump`
+### 13. `LegacyCommpage`
+
+**Type**: `plist boolean`
+**Failsafe**: `false`
+**Requirement**: 10.4 - 10.6
+**Description**: 默认的 64 位 commpage bcopy 的实现需要 `SSSE3`，这个选项把它替换为「不需要 `SSSE3`」的实现，这对于不支持 `SSSE3` 的旧平台很有必要，防止因不存在「不需要 `SSSE3` 的 64 位 bcopy 函数」而导致的 `commpage no match for last` Panic。
+
+### 14. `PanicNoKextDump`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
 **Requirement**: 10.13 (not required for older)
 **Description**: 在发生内核崩溃时阻止输出 Kext 列表，提供可供排错参考的崩溃日志。
 
-### 14. `PowerTimeoutKernelPanic`
+### 15. `PowerTimeoutKernelPanic`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
@@ -510,23 +545,23 @@ last_updated: 2020-09-07
 
 macOS Catalina 新增了一项额外的安全措施，导致在电源切换超时的时候会出现 Kernel Panic。配置错误的硬件可能会因此出现问题（如数字音频设备）、有的时候会导致睡眠唤醒的问题。这一 Quirk 和引导参数 `setpowerstate_panic=0` 功能大部分一致，但是后者只应该用于调试用途。
 
-### 15. `ThirdPartyDrives`
+### 16. `ThirdPartyDrives`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
-**Requirement**: 10.6 (64-bit, not required for older)
+**Requirement**: 10.6 (not required for older)
 **Description**: 修补 `IOAHCIDeleteStorage.kext`，以在第三方驱动器启用 TRIM、硬盘休眠等功能。
 
 *注*：NVMe SSD 通常无需这一修改。对于 AHCI SSD（如 SATA SSD），macOS 从 10.15 开始提供 `trimforce`，可以将 `01 00 00 00` 值写入 `APPLE_BOOT_VARIABLE_GUID` 命名空间中的 `EnableTRIM` 变量。
 
-### 16. `XhciPortLimit`
+### 17. `XhciPortLimit`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
 **Requirement**: 10.11 (not required for older)
 **Description**: 修补 `AppleUSBXHCI.kext`、`AppleUSBXHCIPCI.kext`、`IOUSBHostFamily.kext` 以移除 15 端口限制。
 
-*注*：请尽可能避免使用这一选项。USB 端口数量限制是由 locationID 格式使用的比特数决定的，想要移除限制就需要对操作系统进行大量修改。真正长期有效的解决方案是限制可用的 USB 端口个数在 15 以下（通过 USB 定制的方法）。
+*注*：请尽可能避免使用这一选项。USB 端口数量限制是由 locationID 的 bit 决定的，想要移除限制就需要对操作系统进行大量修改。真正长期有效的解决方案是限制可用的 USB 端口个数在 15 以下（通过 USB 定制的方法）。
 
 ## 7.9 Scheme 属性
 
@@ -552,7 +587,7 @@ macOS 10.7 和更早的 XNU 内核可能不会使用 `x86_64` 架构来启动，
 
 - `Auto` --- 自动选择首选的架构。
 - `i386` --- 如果可用，则使用 `i386`（32 位）内核。
-- `i386-user32` — 在可用的情况下使用 `i386`（32 位）内核，并在 64 位处理器上强制使用 32 位用户空间。在 macOS 上，64 位处理器会被认为支持 `SSSE3` 指令集，但对于较老的 64 位奔腾处理器来说，实际情况并非如此，因此会导致一些应用程序在 macOS 10.6 上崩溃。该行为对应 `-legacy` 内核启动参数。
+- `i386-user32` --- 在可用的情况下使用 `i386`（32 位）内核，并在 64 位处理器上强制使用 32 位用户空间（前提是系统支持）。在 macOS 上，64 位处理器会被认为支持 `SSSE3` 指令集，但对于较老的 64 位奔腾处理器来说，实际情况并非如此，因此会导致一些应用程序在 macOS 10.6 上崩溃。该行为对应 `-legacy` 内核启动参数。由于 XNU 内核中存在一段未被初始化的 64 位片段，导致 AppleEFIRuntime 错误地将 64 位代码作为 16 位来执行，因此该选项对于 64 位固件上运行的 10.4 和 10.5 系统是不可用的。
 - `x86_64` --- 如果可用，则使用 `x86_64`（64 位）内核。
 
 下面是确定内核架构的计算过程：
@@ -560,10 +595,11 @@ macOS 10.7 和更早的 XNU 内核可能不会使用 `x86_64` 架构来启动，
 1. `arch` 参数位于映像参数（比如从 UEFI Shell 启动时）或 `boot-args` 变量中，覆盖兼容性检查，强制指定架构，并完成此计算过程。
 2. 对于 32 位 CPU Variant，OpenCore 会将架构兼容性限制在 `i386` 和 `i386-user32` 模式。
 3. 确定 EfiBoot 版本所限制的架构:
-   - 10.4-10.5 --- `i386` 或 `i386-user32`
-   - 10.6-10.7 --- `i386`、`i386-user32` 或 `x86_64`
+   - 10.4-10.5 --- `i386` 或 `i386-user32`（仅限用于 32 位固件）
+   - 10.6 --- `i386`、`i386-user32` 或 `x86_64`
+   - 10.7 --- `i386` 或 `x86_64`
    - 10.8 及更新的版本 --- `x86_64`
-4. 如果 `KernelArch` 被设置为 `Auto`，并且 CPU 不支持 `SSSE3` 指令集， 则兼容性会被限制为 `i386-user32`（如果 EfiBoot 支持的话）。 
+4. 如果 `KernelArch` 被设置为 `Auto`，并且 CPU 不支持 `SSSE3` 指令集， 则兼容性会被限制为 `i386-user32`（如果 EfiBoot 支持的话）。
 5. 主板标识符（来自 SMBIOS）基于 EfiBoot 版本，如果有任何 `i386` 的 CPU Variant 与之兼容，就会在不支持的机型上禁用 `x86_64` 架构。`Auto` 不参与这个过程，因为在 EfiBoot 中，该列表是不可覆盖的。
 6. 当没有设置为 `Auto` 时，`KernelArch` 会把系统支持限制在明确指定的架构（如果该架构兼容）。
 7. 按以下顺序选择参数可以获得最佳的架构支持：`x86_64`、`i386`、`i386-user32`。
@@ -580,7 +616,7 @@ macOS 10.7 只会将特定的主板标识符视为仅 `i386` 架构的设备，m
    | MacPro     | 3,x (Early 2008)   | 5,x (Mid 2010)    | 3,x (Early 2008)  | 3,x (Early 2008) |
    | Xserve     | 2,x (Early 2008)   | 2,x (Early 2008)  | 2,x (Early 2008)  | 2,x (Early 2008) |
 
-*Note*: `3+2` and `6+4` hotkeys to choose the preferred architecture are unsupported due to being handled by EfiBoot and thus being hard to properly detect.
+*注*：不支持用热键 `3+2` 和 `6+4` 来选择偏好架构，这是因为这个热键是由 EfiBoot 处理的，很难正确地检测到。
 
 ### 3. `KernelCache`
 
@@ -590,14 +626,16 @@ macOS 10.7 只会将特定的主板标识符视为仅 `i386` 架构的设备，m
 
 macOS 的版本不同，支持的内核缓存变量也不同，其目的是提高启动性能。如果出于调试和稳定性的考虑，可利用这个设置防止使用较快的内核缓存变量。举个例子，如果指定 `Mkext`，那么会为 10.6 禁用 `Prelinked`，10.7 则不受影响。
 
-可用的内核缓存类型及其当前在 OpenCore 中的支持列表如下：
+可用的内核缓存类型及其当前在 OpenCore 中的支持情况列表如下：
 
 | **macOS**   | **i386 NC** | **i386 MK** | **i386 PK** | **x86_64 NC** | **x86_64 MK** | **x86_64 PK** | **x86_64 KC** |
 | ----------- | ----------- | ----------- | ----------- | ------------- | ------------- | ------------- | ------------- |
-| 10.4        | NO          | NO (V1)     | NO          | —             | —             | —             | —             |
-| 10.5        | NO          | NO (V1)     | NO          | —             | —             | —             | —             |
-| 10.6        | NO          | NO (V2)     | NO          | YES           | YES (V2)      | YES           | —             |
-| 10.7        | NO          | —           | NO          | YES           | —             | YES           | —             |
-| 10.8-10.9   | —           | —           | —           | YES           | —             | YES           | —             |
-| 10.10-10.15 | —           | —           | —           | —             | —             | YES           | —             |
-| 11.0+       | —           | —           | —           | —             | —             | YES           | YES           |
+| 10.4        | YES         | YES (V1)    | NO (V1)     | —             | —             | —             | —             |
+| 10.5        | YES         | YES (V1)    | NO (V1)     | —             | —             | —             | —             |
+| 10.6        | YES         | YES (V2)    | YES (V2)    | YES           | YES (V2)      | YES (V2)      | —             |
+| 10.7        | YES         | —           | YES (V3)    | YES           | —             | YES (V3)      | —             |
+| 10.8-10.9   | —           | —           | —           | YES           | —             | YES (V3)      | —             |
+| 10.10-10.15 | —           | —           | —           | —             | —             | YES (V3)      | —             |
+| 11.0+       | —           | —           | —           | —             | —             | YES (V3)      | YES           |
+
+*注*：不支持第一个版本（V1）的 32 位 `prelinkedkernel` ，因为 Kext 符号表被工具破坏了，这些版本中 `Auto` 会阻止 `prelinkedkernel` 启动。同时，这也会使 `keepsyms=1` 在这些系统上不可用。

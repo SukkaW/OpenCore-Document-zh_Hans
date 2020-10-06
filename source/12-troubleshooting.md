@@ -3,12 +3,14 @@ title: 12. 排错
 description: 当你遇到问题的时候应该看看这个
 type: docs
 author_info: 由 xMuu、Sukka、derbalkon 整理，由 Sukka、derbalkon 翻译
-last_updated: 2020-09-07
+last_updated: 2020-10-05
 ---
 
 ## 12.1 旧版 Apple 操作系统
 
 旧版操作系统的安装可能比较复杂，但有时出于各种原因还是需要用到。主板标识符和 CPUID 的兼容性是旧版操作系统正常运行的基础，除此之外还有一些细枝末节的事情需要注意。本章节将尽量阐述与旧版 macOS 操作系统相关的一系列常见问题。
+
+尽管较新的操作系统可以通过互联网下载，但旧版操作系统并不是每个次要版本都有安装介质的，因此要想获得兼容的发行版，可能需要下载特定设备的镜像，并在必要时进行修改。Mac 电脑随附的 macOS 旧版本和旧版号列表，可以从这篇 Apple 支持的 [存档文章](https://web.archive.org/web/20170713214411/https://support.apple.com/zh-cn/HT204319) 中找到，但由于它并不一定准确，下面列出了一些旧版 Apple 操作系统最后发布的版本。
 
 ### 1. macOS 10.8 和 10.9
 
@@ -18,16 +20,17 @@ last_updated: 2020-09-07
 ### 2. macOS 10.7
 
 - 同上。
-- 包括 Lilu 及其插件在内的许多 Kext 在 macOS 10.7 或更低版本上都不支持，它们所需的内核 API 比较新，不在 macOS 10.7 SDK 之中。
+- `SSSE3` 支持（不要和 `SSE3` 混淆）是 macOS 10.7 内核的硬性要求。
+- 包括 Lilu（使用 32 位内核时）及其插件在内的许多 Kext 在 macOS 10.7 或更低版本上都不支持，它们所需的内核 API 比较新，不在 macOS 10.7 SDK 之中。
 - macOS 10.8 之前的系统不支持 KASLR slide，因此会导致内存较低的固件分配内存失败，详见 [acidanthera/bugtracker#1125](https://github.com/acidanthera/bugtracker/issues/1125)。
-- 不支持 32 位内核交互，因此内核的修补或注入是无效的。
 
 ### 3. macOS 10.6
 
 - 上述问题均存在。
-- 最近发布的 macOS 10.6 安装镜像为 macOS 10.6.7 版本 `10J3250`（`MacBookPro8,x` 专用）和 `10J4139`（`iMac12,x` 专用，不含 Xcode）。这些镜像仅限于特定的几款机型，并且不支持使用 `-no_compat_check` 来忽略兼容性检查。如果你拥有 macOS 10.6 的合法副本，又不想被上述限制所约束，可以在 [这里](https://mega.nz/folder/z5YUhYTb%23gA_IRY5KMuYpnNCg7kR3ug) 找到无机型限制的修改版镜像（`ACDT` 后缀），更多细节在 `DIGEST.txt` 中。记住，这些都是经过 OpenCore 测试的最早的 macOS 10.6 版本。
+- `SSSE3` 支持是启用了 64 位用户空间的 macOS 10.6 内核的要求。这个限制大多可以通过启用 `LegacyCommpage` Quirk 来解除。
+- 最近发布的 macOS 10.6 安装镜像为 macOS 10.6.7 版本号 `10J3250`（`MacBookPro8,x` 专用）和 `10J4139`（`iMac12,x` 专用，不含 Xcode）。这些镜像仅限于特定的几款机型，并且不支持使用 `-no_compat_check` 来忽略兼容性检查。如果你拥有 macOS 10.6 的合法副本，又不想被上述限制所约束，可以在 [这里](https://mega.nz/folder/z5YUhYTb%23gA_IRY5KMuYpnNCg7kR3ug) 找到无机型限制的修改版镜像（`ACDT` 后缀），更多细节在 `DIGEST.txt` 中。记住，这些都是经过 OpenCore 测试的最早的 macOS 10.6 版本。
 
-你也可以自行给机型检查打补丁，大体思路是用 `Flat Package Editor` 之类的工具编辑 `OSInstall.mpkg`，让 `Distribution` 脚本在 `hwbeModelCheck` 函数中总是返回 `true`。仅更新映像中某一的文件而不影响到其他文件是相当困难的，而且还有可能因为内核缓存日期的改变而导致启动速度变慢，因此建议按照如下命令重建映像：
+机型检查可以被手动去除，大体思路是用 `Flat Package Editor` 之类的工具编辑 `OSInstall.mpkg`，让 `Distribution` 脚本在 `hwbeModelCheck` 函数中总是返回 `true`。仅更新映像中某一的文件而不影响到其他文件是相当困难的，而且还有可能因为内核缓存日期的改变而导致启动速度变慢，因此建议按照如下命令重建映像：
 
 ```bash
 #!/bin/bash
@@ -47,9 +50,22 @@ hdiutil detach RW -force
 rm -rf DS_STORE RW
 ```
 
+### 4. macOS 10.5
+
+- 上述问题均存在。
+- 这个版本的 macOS 不支持 `x86_64` 内核，需要 `i386` 内核扩展和补丁。
+- 这个版本的 macOS 使用了第一个版本（V1）的 `prelinkedkernel`，但它的 Kext 符号表被 Kext 工具破坏了。这个细微的差别使得 `prelinkedkernel` Kext 无法被 OpenCore 注入。`Mkext` Kext 的注入仍然正常，也不会有明显的性能消耗，而且当 `KernelCache` 设置为 `Auto` 时，`Mkext` 会被自动选择。
+- 最后发布的 macOS 10.5 的安装镜像是 macOS 10.5.7 版本号 `9J3050`（`MacBookPro5,3` 专用）。与其他版本系统不同的是，这个镜像不受机型限制，可以原样使用。如果你拥有 macOS 10.5 的合法副本，可以在 [这里](https://mega.nz/folder/inRBTarD%23zanf7fUbviwz3WHBU5xpCg) 找到原始的 `9J3050` 镜像，更多细节在 `DIGEST.txt` 中。注意，这是经过 OpenCore 测试的最早的 macOS 10.5 版本。
+
+### 5. macOS 10.4
+
+- 上述问题均存在。
+- 这个版本的 macOS 有一个硬性要求，即需要两张光盘或两个 USB 安装介质来访问第二张 DVD 盘安装介质上的所有可选包。
+- 最后发布的 macOS 10.4 的安装镜像是 macOS 10.4.10 版本号 `8R4061a`（`MacBookPro3,1` 专用）和 `8R4088`（`iMac7,1` 专用）。这些镜像与新版 macOS 一样，仅限于特定的几款机型。如果你拥有 macOS 10.4 的合法副本，可以在 [这里](https://mega.nz/folder/D3ASzLzA%237sjYXE2X09f6aGjol_C7dg) 找到无机型限制的修改版 `8R4088` 镜像（后缀为 `ACDT`），更多细节在 `DIGEST.txt` 中。注意，这些是经过 OpenCore 测试的最早的 macOS 10.4 版本。
+
 ## 12.2 UEFI 安全启动
 
-OpenCore 的设计初衷是为 固件 和 操作系统 之间提供一个安全的启动链。在大多数 x86 平台上，可信加载（Trusted Loading）是通过 [UEFI 安全启动](https://en.wikipedia.org/wiki/UEFI_Secure_Boot) 模式实现的。OpenCore 不仅完全支持这种模式，还扩展了它的功能，以确保通过 [Vault](8-misc.html#12-Vault) 进行配置的加密存储，并使用自定义的验证过程向操作系统提供可信加载，例如 [Apple 安全启动](8-misc.html#14-SecureBootModel)。正确的安全启动链需要通过以下步骤来仔细配置：
+OpenCore 的设计初衷是在 固件 和 操作系统 之间提供一个安全的启动链。在大多数 x86 平台上，可信加载（Trusted Loading）是通过 [UEFI 安全启动](https://en.wikipedia.org/wiki/UEFI_Secure_Boot) 模式实现的。OpenCore 不仅完全支持这种模式，还扩展了它的功能，以确保通过 [Vault](8-misc.html#12-Vault) 进行配置的加密存储，并使用自定义的验证过程向操作系统提供可信加载，例如 [Apple 安全启动](8-misc.html#14-SecureBootModel)。正确的安全启动链需要通过以下步骤来仔细配置：
 
 1. 如果要启动的系统是 macOS，则需要通过设置 `SecureBootModel` 来启用 Apple 安全启动。请注意，并不是每个 macOS 版本都能使用 Apple 安全启动，具体限制详见 [Apple 安全启动](8-misc.html#14-SecureBootModel) 章节。
 2. 旧的 DMG 恢复镜像往往很脆弱、易受攻击，如果担心因为加载它而突破防线，可以通过设置 `DmgLoading` 为 `Disabled` 来禁用 DMG 加载。**非必需**，但建议使用。参阅 [DMG 加载](8-misc.html#6-DmgLoading) 部分来权衡利弊。
@@ -200,7 +216,7 @@ The operation has completed successfully.
 - 在 `boot-args` 中添加 `debug=0x100`、`keepsyms=1`、`-v` 或其他类似的值。
 - 不要忘记开启 `AppleDebug` 和 `ApplePanic` 属性。
 - 调整 `Booter`、`Kernel` 和 `UEFI` 里的 Quirk。
-- 可以考虑通过串行端口来检查早期的内核启动失败。为此你可能需要用到 `debug=0x108`、`serial=5` 和 `msgbuf=1048576` 参数。如果在串行初始化前就失败了，Sample.plist 中有相关补丁供你参考。
+- 可以考虑通过串行端口来检查早期的内核启动失败。为此你可能需要用到 `debug=0x108`、`serial=5` 和 `msgbuf=1048576` 启动参数。如果在串行初始化前就失败了，Sample.plist 中有相关补丁供你参考。
 - 一定要仔细阅读日志。
 
 ### 3. 如何自定义启动项？

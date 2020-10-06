@@ -3,7 +3,7 @@ title: 9. NVRAM
 description: NVRAM 注入（如引导标识符和 SIP）
 type: docs
 author_info: 由 xMuu、Sukka 整理，由 Sukka、derbalkon 翻译
-last_updated: 2020-08-21
+last_updated: 2020-09-18
 ---
 
 ## 9.1 简介
@@ -109,7 +109,7 @@ last_updated: 2020-08-21
 建议使用以下变量来加快启动速度或改善其他表现：
 
 - `7C436110-AB2A-4BBB-A880-FE41995C9F82:csr-active-config`
-  32 位系统完整性保护的位掩码，声明于 XNU 源码 [csr.h](https://opensource.apple.com/source/xnu/xnu-4570.71.2/bsd/sys/csr.h.auto.html)。
+  系统完整性保护的位掩码（32-bit），声明于 XNU 源码 [csr.h](https://opensource.apple.com/source/xnu/xnu-4570.71.2/bsd/sys/csr.h.auto.html)。
 - `4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14:ExtendedFirmwareFeatures`
   结合 `FirmwareFeatures` 和 `ExtendedFirmwareFeatures`。存在于较新的 Mac 上，用来避免额外解析 SMBIOS 表。
 - `4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14:ExtendedFirmwareFeaturesMask`
@@ -138,6 +138,7 @@ last_updated: 2020-08-21
 
   - `acpi_layer=0xFFFFFFFF`
   - `acpi_level=0xFFFF5F` --- 表示 [`ACPI_ALL_COMPONENTS`](https://github.com/acpica/acpica/blob/master/source/include/acoutput.h)
+  - `arch=i386` --- 强制内核架构为 `i386`，详见 `KernelArch` 选项
   - `batman=VALUE` --- `AppleSmartBatteryManager` 调试掩码
   - `batman-nosmc=1` --- 禁用 `AppleSmartBatteryManager` SMC 接口
   - `cpus=VALUE` --- 最大可用 CPU 数量
@@ -153,7 +154,7 @@ last_updated: 2020-08-21
   - `smcdebug=VALUE` --- `AppleSMC` 调试掩码
   - `-amd_no_dgpu_accel` --- 替代 [WhateverGreen](https://github.com/acidanthera/WhateverGreen) 的 `-radvesa`，用于较新的 GPUs
   - `-nehalem_error_disable`
-  - `-no_compat_check` --- 禁用机型检查
+  - `-no_compat_check` --- 禁用机型检查（适用于 10.7 以上的版本）
   - `-s` --- 单用户模式
   - `-v` --- 啰嗦模式
   - `-x` --- 安全模式
@@ -208,7 +209,7 @@ last_updated: 2020-08-21
   - `serial=VALUE` --- 串行控制台日志记录相关
     - `0` --- 禁用串行日志记录（默认）
     - `1` --- 从 `EXITBS:END` 开始启用串行日志记录
-    - `1` --- 从 `EXITBS:START` 开始启用串行日志记录
+    - `2` --- 从 `EXITBS:START` 开始启用串行日志记录
     - `3` --- 当缺少调试协议时，启用串行日志记录
     - `4` --- 无条件启用串行日志记录
   - `timestamps=VALUE` --- 时间戳日志记录相关

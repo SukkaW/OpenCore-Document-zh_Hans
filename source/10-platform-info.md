@@ -3,7 +3,7 @@ title: 10. PlatformInfo
 description: SMBIOS 机型信息配置
 type: docs
 author_info: 由 xMuu、Sukka、derbalkon 整理，由 Sukka、derbalkon 翻译
-last_updated: 2020-09-07
+last_updated: 2020-10-04
 ---
 
 机型信息由手动生成或填充的字段组成，以便与 macOS 服务兼容。配置的基础部分可以从 [`AppleModels`](https://github.com/acidanthera/OpenCorePkg/blob/master/AppleModels) 获得，这是一个可以从 [YAML](https://yaml.org/spec/1.2/spec.html) 格式的数据库中生成一组接口的工具包。这些字段将会被写入三个位置：
@@ -112,31 +112,51 @@ last_updated: 2020-09-07
 - `FW_FEATURE_SUPPORTS_CSM_LEGACY_MODE` (`0x1`) - 如果没有此 bit，且 EFI 分区不是硬盘中的第一个分区，那么则无法重新启动到硬盘里的 Windows 系统。
 - `FW_FEATURE_SUPPORTS_UEFI_WINDOWS_BOOT` (`0x20000000`) - 如果没有此 bit，且 EFI 分区是硬盘中的第一个分区，那么则无法重新启动到硬盘里的 Windows 系统。
 
-### 3. `SystemProductName`
+### 3. `SystemMemoryStatus`
+
+**Type**: `plist string`
+**Failsafe**: `Auto`
+**Description**: 用来表示内存是否可以更换和升级，此值也控制着「关于本机」中「内存」选项卡的可见性。
+
+有效值如下：
+
+- `Auto` --- 使用原始的 `PlatformFeature` 值。
+- `Upgradable` --- 显式取消设置 `PlatformFeature` 中 `PT_FEATURE_HAS_SOLDERED_SYSTEM_MEMORY (0x2)`。
+- `Soldered` --- 显式设置 `PlatformFeature` 中的 `PT_FEATURE_HAS_SOLDERED_SYSTEM_MEMORY (0x2)`。
+
+*注*：在某些型号的 Mac 上，SPMemoryReporter.spreporter 会自动忽略 `PT_FEATURE_HAS_SOLDERED_SYSTEM_MEMORY`，并认为其内存是不可升级的，如 `MacBookPro10,x` 和所有的 `MacBookAir`。
+
+### 4. `ProcessorType`
+
+**Type**: `plist integer`
+**Failsafe**: `0` (Automatic)
+**Description**: 请参考下文 SMBIOS 章节中的 `ProcessorType`。
+
+### 5. `SystemProductName`
 
 **Type**: `plist string`
 **Failsafe**: `MacPro6,1`
 **Description**: 请参考下文 SMBIOS 章节中的 `SystemProductName`。
 
-### 4. `SystemSerialNumber`
+### 6. `SystemSerialNumber`
 
 **Type**: `plist string`
 **Failsafe**: `OPENCORE_SN1`
 **Description**: 请参考下文 SMBIOS 章节中的 `SystemSerialNumber`。
 
-### 5. `SystemUUID`
+### 7. `SystemUUID`
 
 **Type**: `plist string`, GUID
 **Failsafe**: OEM specified
 **Description**: 请参考下文 SMBIOS 章节中的 `SystemUUID`。
 
-### 6. `MLB`
+### 8. `MLB`
 
 **Type**: `plist string`
 **Failsafe**: `OPENCORE_MLB_SN11`
 **Description**: 请参考下文 SMBIOS 章节中的 `BoardSerialNumber`。
 
-### 7. `ROM`
+### 9. `ROM`
 
 **Type**: `plist data`, 6 bytes
 **Failsafe**: all zero
@@ -210,7 +230,7 @@ last_updated: 2020-09-07
 ### 9. `FSBFrequency`
 
 **Type**: `plist integer`, 64-bit
-**Failsafe**: Automatic
+**Failsafe**: `0` (Automatic)
 **Description**: 在 `gEfiProcessorSubClassGuid` 中设置 `FSBFrequency`。
 
 设置 CPU FSB 频率。此值等于 CPU 主频除以最高总线比率，以 Hz 为单位。请参考 `MSR_NEHALEM_PLATFORM_INFO`(`CEh`) MSR 值来确定 Intel CPU 的最高总线比率。
@@ -220,7 +240,7 @@ last_updated: 2020-09-07
 ### 10. `ARTFrequency`
 
 **Type**: `plist integer`, 64-bit
-**Failsafe**: Automatic
+**Failsafe**: `0` (Automatic)
 **Description**: 在 `gEfiProcessorSubClassGuid` 中设置 `ARTFrequency`。
 
 此值包含 CPU ART 频率，即晶体时钟频率。为 Skylake 或更新的平台独有，以 Hz 为单位。Client Intel segment 通常为 24 MHz，Server Intel segment 通常为 25 MHz，Intel Atom CPUs 通常为 19.2 MHz。macOS 10.15 及以下均默认为 24 MHz。
@@ -341,7 +361,7 @@ last_updated: 2020-09-07
 **SMBIOS**: System Information (Type 1) --- Product Name
 **Description**: 选择偏好的 Mac 机型来把设备标记为系统支持的机型。在任何配置中都应指定该值，以便之后自动生成 SMBIOS 表的相关值和相关配置参数。如果 `SystemProductName` 与目标操作系统不兼容，可用引导参数 `-no_compat_check` 来覆盖。
 
-*注*：如果 `SystemProductName` 位置，并且相关字段也未指定，默认值会被设定为 `MacPro6,1`。目前已知产品的列表详见 `MacInfoPkg`。
+*注*：如果 `SystemProductName` 未知，并且相关字段也未指定，则默认值会被设定为 `MacPro6,1`。目前已知产品的列表详见 `MacInfoPkg`。
 
 ### 6. `SystemVersion`
 
@@ -376,7 +396,7 @@ last_updated: 2020-09-07
 **Type**: `plist string`
 **Failsafe**: OEM specified
 **SMBIOS**: System Information (Type 1) --- Family
-**Description**: 系列名称，看起来类似于 `iMac Pro`。
+**Description**: 机型名称，看起来类似于 `iMac Pro`。
 
 ### 11. `BoardManufacturer`
 
@@ -478,32 +498,34 @@ last_updated: 2020-09-07
 **Type**: `plist data`, 16 bytes
 **Failsafe**: All zero
 **SMBIOS**: `APPLE_SMBIOS_TABLE_TYPE134` - `Version`
-**Description**: ASCII 字符串，包含 SMC 版本号（大写）。在基于 T2 芯片的 Mac 设备上缺少这一字段。当此值设置为零时，这一选项会被忽略。
+**Description**: ASCII 字符串，包含 SMC 版本号（大写）。配备 Apple T2 安全芯片的 Mac 没有这一字段。当此值设置为零时，这一选项会被忽略。
 
 ### 25. `FirmwareFeatures`
 
 **Type**: `plist data`, 8 bytes
 **Failsafe**: `0`
 **SMBIOS**: `APPLE_SMBIOS_TABLE_TYPE128` - `FirmwareFeatures` and `ExtendedFirmwareFeatures`
-**Description**: 64 位固件功能位掩码。详见 [AppleFeatures.h](https://github.com/acidanthera/OpenCorePkg/blob/master/Apple/Include/IndustryStandard/AppleFeatures.h)。低 32 位与 `FirmwareFeatures` 匹配，高 64 位与 `ExtendedFirmwareFeatures` 匹配。
+**Description**: 64 位固件功能位掩码。详见 [AppleFeatures.h](https://github.com/acidanthera/OpenCorePkg/blob/master/Include/Apple/IndustryStandard/AppleFeatures.h)。低 32 位与 `FirmwareFeatures` 匹配，高 64 位与 `ExtendedFirmwareFeatures` 匹配。
 
 ### 26.`FirmwareFeaturesMask`
 
 **Type**: `plist data`, 8 bytes
 **Failsafe**: `0`
 **SMBIOS**: `APPLE_SMBIOS_TABLE_TYPE128` - `FirmwareFeaturesMask` and `ExtendedFirmwareFeaturesMask`
-**Description**: 扩展固件功能位掩码。详见 [AppleFeatures.h](https://github.com/acidanthera/OpenCorePkg/blob/master/Apple/Include/IndustryStandard/AppleFeatures.h)。低 32 位与 `FirmwareFeatures` 匹配，高 64 位与 `ExtendedFirmwareFeatures` 匹配。
+**Description**: 扩展固件功能位掩码。详见 [AppleFeatures.h](https://github.com/acidanthera/OpenCorePkg/blob/master/Include/Apple/IndustryStandard/AppleFeatures.h)。低 32 位与 `FirmwareFeatures` 匹配，高 64 位与 `ExtendedFirmwareFeatures` 匹配。
 
 ### 27. `ProcessorType`
 
 **Type**: `plist integer`, 16-bit
-**Failsafe**: Automatic
+**Failsafe**: `0` (Automatic)
 **SMBIOS**: `APPLE_SMBIOS_TABLE_TYPE131` - `ProcessorType`
 **Description**: 由处理器的主要和次要类型组成。
+
+自动生成的值（Automatic）是根据当前的 CPU 规格提供的最准确的值，一般不会有问题，如果有问题请务必到 [bugtracker](https://github.com/acidanthera/bugtracker/issues) 创建一个 Issue，并附上 `sysctl machdep.cpu` 和 [`dmidecode`](https://github.com/acidanthera/dmidecode) 的输出结果。所有可用值及其限制条件（指该值只有在核心数匹配的情况下才适用）都可以在 Apple SMBIOS 定义 [头文件](https://github.com/acidanthera/OpenCorePkg/blob/master/Include/Apple/IndustryStandard/AppleSmBios.h) 里找到。
 
 ### 28. `MemoryFormFactor`
 
 **Type**: `plist integer`, 8-bit
 **Failsafe**: OEM specified
 **SMBIOS**: Memory Device (Type 17) --- Form Factor
-**Description**: Memory Form Factor。在 Mac 上应为 DIMM 或 SODIMM。
+**Description**: 内存规格。在 Mac 上应为 DIMM 或 SODIMM。

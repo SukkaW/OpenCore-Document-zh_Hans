@@ -3,7 +3,7 @@ title: 8. Misc
 description: 关于 OpenCore 行为的其他配置
 type: docs
 author_info: 由 xMuu、Sukka、derbalkon 整理、由 Sukka、derbalkon 翻译。
-last_updated: 2020-08-31
+last_updated: 2020-10-05
 ---
 
 ## 8.1 简介
@@ -19,24 +19,22 @@ OpenCore 尽可能地遵循 `bless` 模式，即 `Apple Boot Policy`。`bless` �
 1. 通过 `Scan policy`（和驱动可用性）过滤，获取所有可用的分区句柄。
 2. 从 `BootOrder` UEFI 变量中，获取所有可用的启动选项。
 3. 对于每个找到的启动选项：
-  - 检索该启动选项的设备路径。
-  - 执行对设备路径的修复（如 NVMe 子类型修复）和扩展（如 Boot Camp）。
-  - 通过定位到所产生的设备路径，来获取句柄（失败时忽略）。
-  - 在分区句柄列表中找到设备句柄（缺失时忽略）。
-  - 对磁盘设备路径（不指定引导程序）执行 `bless`（可能返回不止一个条目）。
-  - 对文件设备路径直接检查其文件系统。
-  - 在 OpenCore 启动分区中，通过 Header Check 排除所有 OpenCore Bootstrap 文件。
-  - 如果有分区句柄列表，则在列表中将设备句柄标记为 *used*。
-  - 将生成的条目注册为主选项，并确定他们的类型。某些类型的选项作为辅助选项（如 Apple HFS Recovery）。
-
+   - 检索该启动选项的设备路径。
+   - 执行对设备路径的修复（如 NVMe 子类型修复）和扩展（如 Boot Camp）。
+   - 通过定位到所产生的设备路径，来获取句柄（失败时忽略）。
+   - 在分区句柄列表中找到设备句柄（缺失时忽略）。
+   - 对磁盘设备路径（不指定引导程序）执行 `bless`（可能返回不止一个条目）。
+   - 对文件设备路径直接检查其文件系统。
+   - 在 OpenCore 启动分区中，通过 Header Check 排除所有 OpenCore Bootstrap 文件。
+   - 如果有分区句柄列表，则在列表中将设备句柄标记为 *used*。
+   - 将生成的条目注册为主选项，并确定他们的类型。某些类型的选项作为辅助选项（如 Apple HFS Recovery）。
 4. 对于每个分区句柄：
-  - 如果分区句柄被标记为 *unused*，则执行 `bless` 主选项列表检索。如果设置了 `BlessOverride` 列表，那么不仅能找到标准的 `bless` 路径，还能找到自定义的路径。
-  - 在 OpenCore 启动分区中，通过 Header Check 排除所有 OpenCore Bootstrap 文件。
-  - 将生成的条目注册为主选项，并确定他们的类型。某些类型的选项作为辅助选项（如 Apple HFS Recovery）。
-  - 如果分区已经具有来 `Apple Recovery` 类型的主选项，则继续处理下一个句柄。
-  - 通过 `bless` 恢复选项列表检索和预定义路径，来查找备用条目。
-  - 将生成的条目注册为备用辅助选项，并确定它们的类型。
-
+   - 如果分区句柄被标记为 *unused*，则执行 `bless` 主选项列表检索。如果设置了 `BlessOverride` 列表，那么不仅能找到标准的 `bless` 路径，还能找到自定义的路径。
+   - 在 OpenCore 启动分区中，通过 Header Check 排除所有 OpenCore Bootstrap 文件。
+   - 将生成的条目注册为主选项，并确定他们的类型。某些类型的选项作为辅助选项（如 Apple HFS Recovery）。
+   - 如果分区已经具有来 `Apple Recovery` 类型的主选项，则继续处理下一个句柄。
+   - 通过 `bless` 恢复选项列表检索和预定义路径，来查找备用条目。
+   - 将生成的条目注册为备用辅助选项，并确定它们的类型。
 5. 把自定义条目和工具添加为主选项，不做有关 `Auxiliary` 的任何检查。
 6. 把系统条目（如 `Reset NVRAM`）添加为主要的辅助选项。
 
@@ -144,7 +142,7 @@ OpenCore 尽可能地遵循 `bless` 模式，即 `Apple Boot Policy`。`bless` �
 **Failsafe**: `None`
 **Description**: 休眠检测模式。 支持以下模式：
 
-- `None` --- 禁用休眠
+- `None` --- 禁用休眠（推荐）
 - `Auto` --- 从 RTC 或 NVRAM 中检测
 - `RTC` --- 从 RTC 检测
 - `NVRAM` --- 从 NVRAM 检测
@@ -193,7 +191,7 @@ OpenCore 尽可能地遵循 `bless` 模式，即 `Apple Boot Policy`。`bless` �
 
 - `0x0002` — `OC_ATTR_USE_DISK_LABEL_FILE`，提供引导项自定义渲染的标题：
   - `.disk_label` (`.disk_label_2x`) 文件与 bootloader 相关，适用于所有文件系统。
-  - `<TOOL_NAME.lbl` (`<TOOL_NAME.l2x`) 文件与工具相关，适用于 `Tools`。
+  - `<TOOL_NAME>.lbl` (`<TOOL_NAME>.l2x`) 文件与工具相关，适用于 `Tools`。
 
   可用 `disklabel` 实用工具或 `bless` 命令来生成预置标签。当禁用或者缺少文本标签 (`.contentDetails` 或 `.disk_label.contentDetails`) 时将以它来代替渲染。
 
@@ -418,9 +416,9 @@ nvram 4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102:boot-log | awk '{gsub(/%0d%0a%00/,"")
 - `OCCL` — OcAppleChunkListLib
 - `OCCPU` — OcCpuLib
 - `OCC` — OcConsoleLib
+- `OCDC` — OcDriverConnectionLib
 - `OCDH` — OcDataHubLib
 - `OCDI` — OcAppleDiskImageLib
-- `OCFSQ` — OcFileLib, UnblockFs quirk
 - `OCFS` — OcFileLib
 - `OCFV` — OcFirmwareVolumeLib
 - `OCHS` — OcHashServicesLib
@@ -543,7 +541,6 @@ VirtualSMC 通过将磁盘加密密钥拆分保存在 NVRAM 和 RTC 中来执行
 
 *注*：此功能尚在开发阶段，不推荐日常使用。
 
-
 ### 8. `ExposeSensitiveData`
 
 **Type**: `plist integer`
@@ -664,7 +661,7 @@ rm vault.pub
 - `0x00020000` (bit `17`) --- `OC_SCAN_ALLOW_DEVICE_SASEX`，允许扫描 SAS 和 Mac NVMe 设备。
 - `0x00040000` (bit `18`) --- `OC_SCAN_ALLOW_DEVICE_SCSI`，允许扫描 SCSI 设备。
 - `0x00080000` (bit `19`) --- `OC_SCAN_ALLOW_DEVICE_NVME`，允许扫描 NVMe 设备。
-- `0x00100000` (bit `20`) --- `OC_SCAN_ALLOW_DEVICE_ATAPI`，允许扫描 CD/DVD 设备。
+- `0x00100000` (bit `20`) --- `OC_SCAN_ALLOW_DEVICE_ATAPI`，允许扫描 CD/DVD 和旧的 SATA 设备。
 - `0x00200000` (bit `21`) --- `OC_SCAN_ALLOW_DEVICE_USB`，允许扫描 USB 设备。
 - `0x00400000` (bit `22`) --- `OC_SCAN_ALLOW_DEVICE_FIREWIRE`，允许扫描 FireWire 设备。
 - `0x00800000` (bit `23`) --- `OC_SCAN_ALLOW_DEVICE_SDCARD`，允许扫描读卡器设备。
@@ -712,13 +709,13 @@ rm vault.pub
 
 - 和配备 Apple T2 安全芯片的 Mac 电脑一样，你将无法安装任何未签名的内核驱动程序。还有一些内核驱动程序尽管已签名，但也无法安装，包括但不限于 NVIDIA Web Drivers。
 - 驱动程序缓存的列表可能不同，因此需要改变 `Add` 或 `Force` 内核驱动程序列表。比如，在这种情况下 `IO80211Family` 不能被注入。
-- 某些系统（比如 macOS 11）是密封保护的，更改受保护的系统卷可能会导致操作系统无法启动。除非禁用了 Apple 安全启动，否则不要禁用系统卷加密。
+- 某些系统（比如 macOS 11）是封装保护的，更改受保护的系统卷可能会导致操作系统无法启动。除非禁用了 Apple 安全启动，否则不要禁用系统卷加密。
 - 如果你的平台需要某些特定设置，但由于之前调试时没有触发明显问题而没有被启用，那么可能会导致启动失败。要格外小心 `IgnoreInvalidFlexRatio` 或 `HashServices`。
 - 在 Apple 推出安全启动功能之前发布的操作系统（如 macOS 10.12 或更早的版本）仍然会正常启动，除非启用了 UEFI 安全启动。之所以如此，是因为从 Apple 安全启动的角度来看，它们都是不兼容的系统，会被认为应该由 BIOS 来处理，就像微软的 Windows 一样。
 - 在较旧的 CPU 上（如 Sandy Bridge 之前），启用 Apple 安全启动可能会使加载速度略微变慢，最长可达 1 秒。
 - 由于 `Default` 的值会随着时间的推移而变化，以支持最新的 macOS 主版本，因此不建议同时使用 `ApECID` 和 `Default` 值。
 
-有时，已安装的系统 `Preboot` 分区上的 Apple 安全启动清单是过时的，从而导致启动失败。如果你看到 `OCB: Apple Secure Boot prohibits this boot entry, enforcing!` 这样的信息，很可能就是出现了上述这种情况。想要解决这个问题，要么重新安装操作系统，要么把 `/usr/standalone/i386` 中的清单（扩展名为 `.im4m` 的文件，如 `boot.efi.j137.im4m`）复制到 `/Volumes/Preboot/<UUID>/System/Library/CoreServices`（`<UUID>` 为系统卷的标识符）。
+有时，已安装的系统 `Preboot` 分区上的 Apple 安全启动清单是过时的，从而导致启动失败。如果你看到 `OCB: Apple Secure Boot prohibits this boot entry, enforcing!` 这样的信息，很可能就是出现了上述这种情况。想要解决这个问题，要么重新安装操作系统，要么把 `/usr/standalone/i386` 中的清单（扩展名为 `.im4m` 的文件，如 `boot.efi.j137.im4m`）复制到 `/Volumes/Preboot/<UUID>/System/Library/CoreServices`（`<UUID>` 为系统卷的标识符）。HFS+ 文件系统则须复制到系统卷上的 `/System/Library/CoreServices` 目录。
 
 关于如何结合 UEFI 安全启动来配置 Apple 安全启动的细节，请参考本文档 [UEFI 安全启动](12-troubleshooting.html#12-2-UEFI-安全启动) 部分。
 
