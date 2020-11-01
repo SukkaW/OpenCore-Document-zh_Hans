@@ -474,6 +474,12 @@ When `CustomMemory` is `false`, this value is automatically set based on Mac pro
 - `4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14:FirmwareFeaturesMask`
 - `4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14:ExtendedFirmwareFeaturesMask`
 
+### 6. `SystemUUID`
+
+**Type**: `plist string`
+**Failsafe**: Not installed
+**Description**: 指定 NVRAM 变量 `4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14:system-id` 的值，仅用于启动服务。在 Mac 上找到的值等于 SMBIOS `SystemUUID`。
+
 ## 10.6 SMBIOS 属性
 
 ### 1. `BIOSVendor`
