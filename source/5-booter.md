@@ -3,7 +3,7 @@ title: 5. Booter
 description: 配置 OpenRuntime.efi（Slide 值计算、KASLR）
 type: docs
 author_info: 由 Sukka、derbalkon 整理，由 Sukka、derbalkon 翻译。
-last_updated: 2020-10-04
+last_updated: 2020-11-01
 ---
 
 ## 5.1 简介
@@ -258,4 +258,4 @@ Mac 设备在不同的操作系统中具有不同的行为，因此如果你在�
 
 这个 Quirk 会通过更新内存映射和内存属性表来纠正这一问题。
 
-*注*：是否开启这一 Quirk 取决于 macOS、Linux 或 Windows 是否遇到 Early Boot 故障。一般来说，只有 2018 年以后发布的固件才会受到影响。
+*注*：是否开启这一 Quirk 取决于是否遇到 Early Boot 故障。一般来说，只有 2017 年以后发布的固件才会受到影响。
