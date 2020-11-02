@@ -37,7 +37,7 @@ last_updated: 2020-11-01
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
-**Description**: Use custom memory configuration defined in the `Memory` section. This completely replaces any existing memory configuration in SMBIOS, and is only active when `UpdateSMBIOS` is set to `true`.
+**Description**: 使用在 `Memory` 部分所填写的自定义内存配置。该选项将完全取代 SMBIOS 中任何现有的内存配置，只有当 `UpdateSMBIOS` 设置为 `true` 时才生效。
 
 ### 3. `UpdateDataHub`
 
@@ -89,7 +89,7 @@ last_updated: 2020-11-01
 
 **Type**: `plist dictionary`
 **Optional**: When `CustomMemory` is `false`
-**Description**: Define custom memory configuration.
+**Description**: 用于设置自定义的内存配置。
 
 ### 10. `PlatformNVRAM`
 
@@ -198,7 +198,7 @@ last_updated: 2020-11-01
 
 **Type**: `plist string`, GUID
 **Failsafe**: Not installed
-**Description**: 在 `gEfiMiscSubClassGuid` 中设置 `system-id`。在 Mac 上找到的值等于 SMBIOS `SystemUUID`。
+**Description**: 在 `gEfiMiscSubClassGuid` 中设置 `system-id`。在 Mac 上找到的值等于 SMBIOS `SystemUUID`（字节顺序调换）。
 
 ### 5. `BoardProduct`
 
@@ -283,29 +283,29 @@ last_updated: 2020-11-01
 **Failsafe**: Not installed
 **Description**: 在 `gEfiMiscSubClassGuid` 中设置 `RPlt`。自定义属性由 `VirtualSMC` 或 `FakeSMC` 读取，用于生成 SMC `RPlt` key。
 
-## 10.4 Memory Properties
+## 10.4 Memory 属性
 
 ### 1. `DataWidth`
 
 **Type**: `plist integer`, 16-bit
 **Failsafe**: `0xFFFF` (unknown)
 **SMBIOS**: Memory Device (Type 17) — Data Width
-**Description**: Specifies the data width, in bits, of the memory. A `DataWidth` of `0` and a `TotalWidth` of `8` indicates that the device is being used solely to provide 8 error-correction bits.
+**Description**: 指定内存的数据宽度，以位为单位。`DataWidth` 为 `0` 且 `TotalWidth` 为 `8` 时，表示改设备仅用于提供 8 个纠错位。
 
 ### 2. `Devices`
 
 **Type**: `plist array`
 **Failsafe**: Empty
-**Description**: Specifies the custom memory devices to be added.
+**Description**: 指定要添加的自定义内存设备。
 
-Designed to be filled with `plist dictionary` values, describing each memory device. See Memory Devices Properties section below. This should include all memory slots, even if unpopulated.
+用 `plist dictionary` 来描述每个内存设备，具体参见下面的 Memory Devices 属性部分。这里应该填写所有的内存插槽，包括没有插内存的插槽。
 
 ### 3. `ErrorCorrection`
 
 **Type**: `plist integer`, 8-bit
 **Failsafe**: `0x03`
 **SMBIOS**: Physical Memory Array (Type 16) — Memory Error Correction
-**Description**: Specifies the primary hardware error correction or detection method supported by the memory.
+**Description**: 指定内存支持的主要硬件纠错或检测方法。
 
 - `0x01` — Other
 - `0x02` — Unknown
@@ -320,9 +320,9 @@ Designed to be filled with `plist dictionary` values, describing each memory dev
 **Type**: `plist integer`, 8-bit
 **Failsafe**: `0x02`
 **SMBIOS**: Memory Device (Type 17) — Form Factor
-**Description**: Specifies the form factor of the memory. On Macs this should usually be DIMM or SODIMM. Commonly used form factors are listed below.
+**Description**: 指定内存的规格。在 Mac 上通常是 DIMM 或 SODIMM。下面列举的是一些常见的规格。
 
-When `CustomMemory` is `false`, this value is automatically set based on Mac product name.
+当 `CustomMemory` 设置为 `false` 时，该值会根据所设置的 Mac 机型自动设置。
 
 - `0x01` — Other
 - `0x02` — Unknown
@@ -335,21 +335,21 @@ When `CustomMemory` is `false`, this value is automatically set based on Mac pro
 **Type**: `plist integer`, 64-bit
 **Failsafe**: `0`
 **SMBIOS**: Physical Memory Array (Type 16) — Maximum Capacity
-**Description**: Specifies the maximum amount of memory, in bytes, supported by the system.
+**Description**: 指定系统支持的最大内存量，以字节为单位。
 
 ### 6. `TotalWidth`
 
 **Type**: `plist integer`, 16-bit
 **Failsafe**: `0xFFFF` (unknown)
 **SMBIOS**: Memory Device (Type 17) — Total Width
-**Description**: Specifies the total width, in bits, of the memory, including any check or error-correction bits. If there are no error-correction bits, this value should be equal to `DataWidth`.
+**Description**: 指定内存的总宽度，以位为单位，包括任何检查或纠错位。如果没有纠错位，则这个值应该等于 `DataWidth`。
 
 ### 7. `Type`
 
 **Type**: `plist integer`, 8-bit
 **Failsafe**: `0x02`
 **SMBIOS**: Memory Device (Type 17) — Memory Type
-**Description**: Specifies the memory type. Commonly used types are listed below.
+**Description**: 指定内存类型。常用的类型如下：
 
 - `0x01` — Other
 - `0x02` — Unknown
@@ -369,7 +369,7 @@ When `CustomMemory` is `false`, this value is automatically set based on Mac pro
 **Type**: `plist integer`, 16-bit
 **Failsafe**: `0x4`
 **SMBIOS**: Memory Device (Type 17) — Type Detail
-**Description**: Specifies additional memory type information.
+**Description**: 指定附加的内存类型信息。
 
 - `Bit 0` — Reserved, set to 0
 - `Bit 1` — Other
@@ -378,63 +378,63 @@ When `CustomMemory` is `false`, this value is automatically set based on Mac pro
 - `Bit 13` — Registered (buffered)
 - `Bit 14` — Unbuffered (unregistered)
 
-## 10.4.1 Memory Device Properties
+## 10.4.1 Memory Device 属性
 
 ### 1. `AssetTag`
 
 **Type**: `plist string`
 **Failsafe**: `Unknown`
 **SMBIOS**: Memory Device (Type 17) — Asset Tag
-**Description**: Specifies the asset tag of this memory device.
+**Description**: 指定该内存的资产标签。
 
 ### 2. `BankLocator`
 
 **Type**: `plist string`
 **Failsafe**: `Unknown`
 **SMBIOS**: Memory Device (Type 17) — Bank Locator
-**Description**: Specifies the physically labeled bank where the memory device is located.
+**Description**: 指定内存设备所在的物理标签库。
 
 ### 3. `DeviceLocator`
 
 **Type**: `plist string`
 **Failsafe**: `Unknown`
 **SMBIOS**: Memory Device (Type 17) — Device Locator
-**Description**: Specifies the physically-labeled socket or board position where the memory device is located.
+**Description**: 指定内存设备所在的物理标签插槽或主板上的位置。
 
 ### 4. `Manufacturer`
 
 **Type**: `plist string`
 **Failsafe**: `Unknown`
 **SMBIOS**: Memory Device (Type 17) — Manufacturer
-**Description**: Specifies the manufacturer of this memory device.
+**Description**: 指定该内存设备的制造商。
 
 ### 5. `PartNumber`
 
 **Type**: `plist string`
 **Failsafe**: `Unknown`
 **SMBIOS**: Memory Device (Type 17) — Part Number
-**Description**: Specifies the part number of this memory device.
+**Description**: 指定该内存设备的部件号。
 
 ### 6. `SerialNumber`
 
 **Type**: `plist string`
 **Failsafe**: `Unknown`
 **SMBIOS**: Memory Device (Type 17) — Serial Number
-**Description**: Specifies the serial number of this memory device.
+**Description**: 指定该内存设备的序列号。
 
 ### 7. `Size`
 
 **Type**: `plist integer`, 32-bit
 **Failsafe**: `0`
 **SMBIOS**: Memory Device (Type 17) — Size
-**Description**: Specifies the size of the memory device, in megabytes. `0` indicates this slot is not populated.
+**Description**: 指定内存设备的大小，以兆字节为单位。`0` 表示该插槽未插入内存。
 
 ### 8. `Speed`
 
 **Type**: `plist integer`, 16-bit
 **Failsafe**: `0`
 **SMBIOS**: Memory Device (Type 17) — Speed
-**Description**: Specifies the maximum capable speed of the device, in megatransfers per second (MT/s). `0` indicates an unknown speed.
+**Description**: 指定设备的最大速度，单位为每秒百万传输量（MT/s）。`0` 表示未知速度。
 
 ## 10.5 PlatformNVRAM 属性
 

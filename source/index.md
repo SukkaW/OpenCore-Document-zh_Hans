@@ -21,16 +21,18 @@ type: docs
 
 你现在访问的是由 **非官方** 维护的 OpenCore 参考手册的简体中文翻译（以下简称本网站）。
 
-**本网站以及网站的维护人员和 OpenCore 的开发团队 `acidanthera` 以及 OpenCore 的文档版权所有者 `vit9696` 没有任何关系**。本网站对 OpenCore 的 Logo（商标）的使用已经过 `acidanthera` 的授权。
+**本网站以及网站的维护人员和 OpenCore 的开发团队 `acidanthera` 以及 OpenCore 的文档版权所有者 `vit9696` 没有任何关系**。本网站对 OpenCore 的 Logo（商标）的使用已经通过 `acidanthera` 的授权。
 
 OpenCore 仍处于积极的维护之中，OpenCore 参考手册 仍然在高频率更新，本网站提供的内容 **仅可供参考**。本网站的内容和 OpenCore 官方的参考手册的任何出入，**请以 OpenCore 官方的参考手册为准**。
 
 > 本网站提供的翻译基于如下描述的 OpenCore 官方文档：
-> - **OpenCore 文档释出日期**：2020.10.05
-> - **OpenCore 文档版本**：[`cad9e24d8698b323fba1498ac9efacfcb27c378f`](https://github.com/acidanthera/OpenCorePkg/commit/cad9e24d8698b323fba1498ac9efacfcb27c378f)
+>
+> - **OpenCore 文档释出日期**：2020.11.01
+> - **OpenCore 文档版本**：[`1b7525c7de2680f49ba0d841f6258c761651844b`](https://github.com/acidanthera/OpenCorePkg/commit/1b7525c7de2680f49ba0d841f6258c761651844b)
 >
 > 本网站提供的翻译适用于如下描述的 OpenCore 版本：
-> - **OpenCore 版本**：0.6.2
+>
+> - **OpenCore 版本**：0.6.3
 
 本网站以及 `acidanthera` **不会对因本网站引起的任何损失负责**，包括但不限于 Kernel Panic、设备无法开机或正常使用、硬盘损坏或数据丢失、原子弹爆炸、第三次世界大战、[SCP 基金会](https://scp-wiki-cn.wikidot.com/) 无法阻止的全球 CK 级现实重构等。
 

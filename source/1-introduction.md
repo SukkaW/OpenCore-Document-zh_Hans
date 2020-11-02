@@ -21,7 +21,7 @@ last_updated: 2020-11-01
 
 在通过 Acidanthera Bugtracker 反馈任何问题之前，请确保你彻底理解了 OpenCore 的每个配置选项及其对应的概念。
 
-*Note*: Creating this document would not have been possible without the invaluable contributions from other people: Andrey1970, Goldfish64, dakanji, PMheart, and several others, with the full list available in [OpenCorePkg](https://github.com/acidanthera/OpenCorePkg/commits/master/Docs) history.
+*注*：感谢 Andrey1970, Goldfish64, dakanji, PMheart 和 [众多贡献者](https://github.com/acidanthera/OpenCorePkg/commits/master/Docs) 的宝贵贡献，多亏了这些人的付出和努力，本文档才得以诞生。
 
 ## 1.1 通用术语
 

@@ -471,7 +471,7 @@ nvram 4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102:boot-log | awk '{gsub(/%0d%0a%00/,"")
 **Failsafe**: `0`
 **Description**: Apple Enclave 标识符。
 
-将此值设置为任何非零的 64 位整数，将允许使用个性化的 Apple 安全启动标识符。如果你想使用此设置，请确保使用加密的随机数生成器生成一个 64 位的随机数。As an alternative, first 8 bytes of `SystemUUID` can be used for `ApECID`, this is found in macOS 11.0 for Macs without the T2 chip.
+将此值设置为任何非零的 64 位整数，将允许使用个性化的 Apple 安全启动标识符。如果你想使用此设置，请确保使用加密的随机数生成器生成一个 64 位的随机数。还有一种方法是将 `SystemUUID` 的前 8 个字节用于 `ApECID`，没有 T2 芯片的 Mac 的 macOS 11.0 就是这样做的。
 
 如果这个值设置妥当，并且 `SecureBootModel` 值有效且不是 `Disabled`，那么就可以实现 Apple 安全启动的 [完整安全性](https://support.apple.com/HT208330)。
 
@@ -484,7 +484,7 @@ bless bless --folder "/Volumes/Macintosh HD/System/Library/CoreServices" \
   --bootefi --personalize
 ```
 
-Before macOS 11.0, which introduced a dedicated x86legacy model for models without the T2 chip, personalised Apple Secure Boot may not work as expected. 如果要使用个性化的 Apple 安全启动重新安装操作系统，请记住，当前版本的 macOS 安装器（测试版本 10.15.6）通常会把 `/var/tmp` 分区的可用内存耗尽，因此在 macOS 安装器镜像下载后不久，就会出现 `Unable to verify macOS` 的错误信息。为了解决这个问题，需要在开始安装前，在 macOS Recovery 终端输入如下命令，为 macOS 个性化分配一个 2MB 的专用 RAM 磁盘：
+macOS 11.0 为没有 T2 芯片的 Mac 引入了专用的 `x86legacy` 机型，对于 macOS 11.0 之前的版本，这个机型的 Apple 安全启动可能无法达到预期效果。如果要使用个性化的 Apple 安全启动重新安装操作系统，请记住，当前版本的 macOS 安装器（测试版本 10.15.6）通常会把 `/var/tmp` 分区的可用内存耗尽，因此在 macOS 安装器镜像下载后不久，就会出现 `Unable to verify macOS` 的错误信息。为了解决这个问题，需要在开始安装前，在 macOS Recovery 终端输入如下命令，为 macOS 个性化分配一个 2MB 的专用 RAM 磁盘：
 
 ```bash
 disk=$(hdiutil attach -nomount ram://4096)
@@ -517,7 +517,7 @@ VirtualSMC 通过将磁盘加密密钥拆分保存在 NVRAM 和 RTC 中来执行
 
 在安装和升级第三方操作系统时 `\EFI\BOOT\BOOTx64.efi` 文件可能会被覆盖掉，该选项则保证了出现覆盖情况时 Bootloader 的一致性。在 `Bootstrap` 模式下创建一个自定义启动项后，`\EFI\BOOT\BOOTx64.efi` 这个文件路径将不再用于引导 OpenCore。
 
-*注 1*：某些固件的 NVRAM 本身存在问题，可能会出现无启动项支持，或者其他各种不兼容的情况。虽然可能性不大，但使用此选项可能会导致启动失败。请在已知兼容的主板上使用，风险自行考虑。Check [acidanthera/bugtracker#1222](https://github.com/acidanthera/bugtracker/issues/1222) for some known issues with Haswell and other boards.
+*注 1*：某些固件的 NVRAM 本身存在问题，可能会出现无启动项支持，或者其他各种不兼容的情况。虽然可能性不大，但使用此选项可能会导致启动失败。请在已知兼容的主板上使用，风险自行考虑。请查看 [acidanthera/bugtracker#1222](https://github.com/acidanthera/bugtracker/issues/1222) 来了解与 Haswell 及其他一些主板相关的已知问题。
 
 *注 2*：请注意，虽然从 OpenCore 执行的 NVRAM 重置不会清除在 `Bootstrap` 模式中创建的启动选项，但是如果在加载 OpenCore 之前重置 NVRAM，则会同时清除 `Bootstrap` 创建的启动选项。
 
@@ -706,7 +706,7 @@ rm vault.pub
 - `j185f` --- iMac20,2 (August 2020) minimum macOS 10.15.6 (19G2005)
 - `x86legacy` --- Macs and VMs without T2 chip minimum macOS 11.0
 
-Apple Secure Boot appeared in macOS 10.13 on models with T2 chips. `PlatformInfo` 和 `SecureBootModel` 是相互独立的，因此可以在任何 SMBIOS 上启用 Apple 安全启动。将 `SecureBootModel` 设置为除 `Disabled` 以外的任意有效值，相当于实现了 Apple 安全启动的 [中等安全性](https://support.apple.com/HT208330)。如要实现「完整安全性」，还需要指定 `ApECID` 值。
+Apple 安全启动最初出现于搭载 T2 芯片的机型上的 macOS 10.13。`PlatformInfo` 和 `SecureBootModel` 是相互独立的，因此可以在任何 SMBIOS 上启用 Apple 安全启动。将 `SecureBootModel` 设置为除 `Disabled` 以外的任意有效值，相当于实现了 Apple 安全启动的 [中等安全性](https://support.apple.com/HT208330)。如要实现「完整安全性」，还需要指定 `ApECID` 值。
 
 启用 Apple 安全启动的要求很多，任何不正确的配置、错误的 macOS 安装或者不支持的安装设置都可能会增加启用难度，记住以下几点：
 

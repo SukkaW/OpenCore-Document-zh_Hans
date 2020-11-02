@@ -476,9 +476,9 @@ UEFI 固件一般用两种渲染模式来支持 `ConsoleControl`：`Graphics` �
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
-**Description**: Forces `Resolution` to be set in cases where the desired resolution is not available by default, such as on legacy Intel GMA and first generation Intel HD Graphics (Ironlake/Arrandale). Setting `Resolution` to `Max` will try to pull the largest available resolution from the connected display’s EDID.
+**Description**: 当默认情况下无法获得所需分辨率时，强制设置 `Resolution` 中所填写的分辨率，多用于老的 Intel GMA 和第一代 Intel HD Graphics (Ironlake/Arrandale)。将  `Resolution` 设置为  `Max` 时，将尝试从所连接的显示器的 EDID 中提取最大的可用分辨率。
 
-*Note*: This option depends on the [`OC_FORCE_RESOLUTION_PROTOCOL`](https://github.com/acidanthera/OpenCorePkg/blob/master/Include/Acidanthera/Protocol/OcForceResolution.h) protocol being present. This protocol is currently only supported by `OpenDuetPkg`. The `OpenDuetPkg` implementation currently only supports Intel iGPUs.
+*注*：该选项依赖 [`OC_FORCE_RESOLUTION_PROTOCOL`](https://github.com/acidanthera/OpenCorePkg/blob/master/Include/Acidanthera/Protocol/OcForceResolution.h) 协议。目前只有 `OpenDuetPkg` 支持该协议，而 `OpenDuetPkg` 的实现目前仅支持 Intel iGPU。
 
 ### 4. `ClearScreenOnModeSwitch`
 
