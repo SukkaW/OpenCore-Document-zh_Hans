@@ -502,7 +502,16 @@ last_updated: 2020-10-05
 
 *注*：这一选项应尽量避免使用。现代固件通常情况下都是兼容的。
 
-### 11. `IncreasePciBarSize`
+### 11. `ForceSecureBootScheme`
+
+**Type**: `plist boolean`
+**Failsafe**: `false`
+**Requirement**: 11.0
+**Description**: 强制采用 `x86` 方案进行 IMG4 核查。
+
+*注*：在虚拟机上使用 `x86legacy` 以外的 `SecureBootModel` 时需要开启此选项。
+
+### 12. `IncreasePciBarSize`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
@@ -513,7 +522,7 @@ last_updated: 2020-10-05
 
 > 译者注：如果你的 BIOS 中存在 Above4GDecoding 选项，请直接在 BIOS 中启用。
 
-### 12. `LapicKernelPanic`
+### 13. `LapicKernelPanic`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
@@ -522,21 +531,21 @@ last_updated: 2020-10-05
 
 > 译者注：惠普电脑可能需要启用这一选项。
 
-### 13. `LegacyCommpage`
+### 14. `LegacyCommpage`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
 **Requirement**: 10.4 - 10.6
 **Description**: 默认的 64 位 commpage bcopy 的实现需要 `SSSE3`，这个选项把它替换为「不需要 `SSSE3`」的实现，这对于不支持 `SSSE3` 的旧平台很有必要，防止因不存在「不需要 `SSSE3` 的 64 位 bcopy 函数」而导致的 `commpage no match for last` Panic。
 
-### 14. `PanicNoKextDump`
+### 15. `PanicNoKextDump`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
 **Requirement**: 10.13 (not required for older)
 **Description**: 在发生内核崩溃时阻止输出 Kext 列表，提供可供排错参考的崩溃日志。
 
-### 15. `PowerTimeoutKernelPanic`
+### 16. `PowerTimeoutKernelPanic`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
@@ -545,7 +554,7 @@ last_updated: 2020-10-05
 
 macOS Catalina 新增了一项额外的安全措施，导致在电源切换超时的时候会出现 Kernel Panic。配置错误的硬件可能会因此出现问题（如数字音频设备）、有的时候会导致睡眠唤醒的问题。这一 Quirk 和引导参数 `setpowerstate_panic=0` 功能大部分一致，但是后者只应该用于调试用途。
 
-### 16. `ThirdPartyDrives`
+### 17. `ThirdPartyDrives`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
@@ -554,7 +563,7 @@ macOS Catalina 新增了一项额外的安全措施，导致在电源切换超�
 
 *注*：NVMe SSD 通常无需这一修改。对于 AHCI SSD（如 SATA SSD），macOS 从 10.15 开始提供 `trimforce`，可以将 `01 00 00 00` 值写入 `APPLE_BOOT_VARIABLE_GUID` 命名空间中的 `EnableTRIM` 变量。
 
-### 17. `XhciPortLimit`
+### 18. `XhciPortLimit`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`

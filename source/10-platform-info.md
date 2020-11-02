@@ -3,7 +3,7 @@ title: 10. PlatformInfo
 description: SMBIOS 机型信息配置
 type: docs
 author_info: 由 xMuu、Sukka、derbalkon 整理，由 Sukka、derbalkon 翻译
-last_updated: 2020-10-04
+last_updated: 2020-11-01
 ---
 
 机型信息由手动生成或填充的字段组成，以便与 macOS 服务兼容。配置的基础部分可以从 [`AppleModels`](https://github.com/acidanthera/OpenCorePkg/blob/master/AppleModels) 获得，这是一个可以从 [YAML](https://yaml.org/spec/1.2/spec.html) 格式的数据库中生成一组接口的工具包。这些字段将会被写入三个位置：
@@ -33,13 +33,19 @@ last_updated: 2020-10-04
 强烈不建议把此项设置为 `false`。只有在需要对 SMBIOS 进行小规模修正的情况下，才有理由不使用 `Automatic`，否则可能会导致 debug 困难。
 {% endnote %}
 
-### 2. `UpdateDataHub`
+### 2. `CustomMemory`
+
+**Type**: `plist boolean`
+**Failsafe**: `false`
+**Description**: 使用在 `Memory` 部分所填写的自定义内存配置。该选项将完全取代 SMBIOS 中任何现有的内存配置，只有当 `UpdateSMBIOS` 设置为 `true` 时才生效。
+
+### 3. `UpdateDataHub`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
 **Description**: 更新 Data Hub 字段。根据 `Automatic` 的值，这些字段会从 `Generic` 或 `DataHub` 中读取。
 
-### 3. `UpdateNVRAM`
+### 4. `UpdateNVRAM`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
@@ -49,13 +55,13 @@ last_updated: 2020-10-04
 
 如果将此值设置为 `false`，则可以使用 `nvram` 部分更新上述变量；反之若将此值设置为 `true`，而同时 `nvram` 部分存在任何字段，会产生未定义行为。
 
-### 4. `UpdateSMBIOS`
+### 5. `UpdateSMBIOS`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
 **Description**: 更新 SMBIOS 字段。根据 `Automatic` 的值，这些字段会从 `Generic` 或 `SMBIOS` 中读取。
 
-### 5. `UpdateSMBIOSMode`
+### 6. `UpdateSMBIOSMode`
 
 **Type**: `plist string`
 **Failsafe**: `Create`
@@ -68,24 +74,30 @@ last_updated: 2020-10-04
 
 *注*： 使用 `Custom` 有一个副作用（译者注：我怎么感觉是好事）使得 SMBIOS 设置只对 macOS 生效，避免了与现有的 Windows 激活和依赖机型的 OEM 设置的相关问题。不过，苹果在 Windows 下的特定工具（译者注：如 BootCamp for Windows）可能会受到影响。
 
-### 6. `Generic`
+### 7. `Generic`
 
 **Type**: `plist dictonary`
 **Description**: 更新所有字段。当 `Automatic` 激活时此处为只读。
 
-### 7. `DataHub`
+### 8. `DataHub`
 
 **Type**: `plist dictonary`
 **Optional**: `Automatic` 为 `true` 时可不填
 **Description**: 更新 Data Hub 字段。当 `Automatic` 未激活时此处为只读。
 
-### 8. `PlatformNVRAM`
+### 9. `Memory`
+
+**Type**: `plist dictionary`
+**Optional**: When `CustomMemory` is `false`
+**Description**: 用于设置自定义的内存配置。
+
+### 10. `PlatformNVRAM`
 
 **Type**: `plist dictonary`
 **Optional**: `Automatic` 为 `true` 时可不填
 **Description**: 更新 platform NVRAM 字段。当 `Automatic` 未激活时此处为只读。
 
-### 9. `SMBIOS`
+### 11. `SMBIOS`
 
 **Type**: `plist dictonary`
 **Optional**: `Automatic` 为 `true` 时可不填
@@ -186,7 +198,7 @@ last_updated: 2020-10-04
 
 **Type**: `plist string`, GUID
 **Failsafe**: Not installed
-**Description**: 在 `gEfiMiscSubClassGuid` 中设置 `system-id`。在 Mac 上找到的值等于 SMBIOS `SystemUUID`。
+**Description**: 在 `gEfiMiscSubClassGuid` 中设置 `system-id`。在 Mac 上找到的值等于 SMBIOS `SystemUUID`（字节顺序调换）。
 
 ### 5. `BoardProduct`
 
@@ -271,7 +283,160 @@ last_updated: 2020-10-04
 **Failsafe**: Not installed
 **Description**: 在 `gEfiMiscSubClassGuid` 中设置 `RPlt`。自定义属性由 `VirtualSMC` 或 `FakeSMC` 读取，用于生成 SMC `RPlt` key。
 
-## 10.4 PlatformNVRAM 属性
+## 10.4 Memory 属性
+
+### 1. `DataWidth`
+
+**Type**: `plist integer`, 16-bit
+**Failsafe**: `0xFFFF` (unknown)
+**SMBIOS**: Memory Device (Type 17) — Data Width
+**Description**: 指定内存的数据宽度，以位为单位。`DataWidth` 为 `0` 且 `TotalWidth` 为 `8` 时，表示改设备仅用于提供 8 个纠错位。
+
+### 2. `Devices`
+
+**Type**: `plist array`
+**Failsafe**: Empty
+**Description**: 指定要添加的自定义内存设备。
+
+用 `plist dictionary` 来描述每个内存设备，具体参见下面的 Memory Devices 属性部分。这里应该填写所有的内存插槽，包括没有插内存的插槽。
+
+### 3. `ErrorCorrection`
+
+**Type**: `plist integer`, 8-bit
+**Failsafe**: `0x03`
+**SMBIOS**: Physical Memory Array (Type 16) — Memory Error Correction
+**Description**: 指定内存支持的主要硬件纠错或检测方法。
+
+- `0x01` — Other
+- `0x02` — Unknown
+- `0x03` — None
+- `0x04` — Parity
+- `0x05` — Single-bit ECC
+- `0x06` — Multi-bit ECC
+- `0x07` — CRC
+
+### 4. FormFactor
+
+**Type**: `plist integer`, 8-bit
+**Failsafe**: `0x02`
+**SMBIOS**: Memory Device (Type 17) — Form Factor
+**Description**: 指定内存的规格。在 Mac 上通常是 DIMM 或 SODIMM。下面列举的是一些常见的规格。
+
+当 `CustomMemory` 设置为 `false` 时，该值会根据所设置的 Mac 机型自动设置。
+
+- `0x01` — Other
+- `0x02` — Unknown
+- `0x09` — DIMM
+- `0x0D` — SODIMM
+- `0x0F` — FB-DIMM
+
+### 5. `MaxCapacity`
+
+**Type**: `plist integer`, 64-bit
+**Failsafe**: `0`
+**SMBIOS**: Physical Memory Array (Type 16) — Maximum Capacity
+**Description**: 指定系统支持的最大内存量，以字节为单位。
+
+### 6. `TotalWidth`
+
+**Type**: `plist integer`, 16-bit
+**Failsafe**: `0xFFFF` (unknown)
+**SMBIOS**: Memory Device (Type 17) — Total Width
+**Description**: 指定内存的总宽度，以位为单位，包括任何检查或纠错位。如果没有纠错位，则这个值应该等于 `DataWidth`。
+
+### 7. `Type`
+
+**Type**: `plist integer`, 8-bit
+**Failsafe**: `0x02`
+**SMBIOS**: Memory Device (Type 17) — Memory Type
+**Description**: 指定内存类型。常用的类型如下：
+
+- `0x01` — Other
+- `0x02` — Unknown
+- `0x0F` — SDRAM
+- `0x12` — DDR
+- `0x13` — DDR2
+- `0x14` — DDR2 FB-DIMM
+- `0x18` — DDR3
+- `0x1A` — DDR4
+- `0x1B` — LPDDR
+- `0x1C` — LPDDR2
+- `0x1D` — LPDDR3
+- `0x1E` — LPDDR4
+
+### 8. `TypeDetail`
+
+**Type**: `plist integer`, 16-bit
+**Failsafe**: `0x4`
+**SMBIOS**: Memory Device (Type 17) — Type Detail
+**Description**: 指定附加的内存类型信息。
+
+- `Bit 0` — Reserved, set to 0
+- `Bit 1` — Other
+- `Bit 2` — Unknown
+- `Bit 7` — Synchronous
+- `Bit 13` — Registered (buffered)
+- `Bit 14` — Unbuffered (unregistered)
+
+## 10.4.1 Memory Device 属性
+
+### 1. `AssetTag`
+
+**Type**: `plist string`
+**Failsafe**: `Unknown`
+**SMBIOS**: Memory Device (Type 17) — Asset Tag
+**Description**: 指定该内存的资产标签。
+
+### 2. `BankLocator`
+
+**Type**: `plist string`
+**Failsafe**: `Unknown`
+**SMBIOS**: Memory Device (Type 17) — Bank Locator
+**Description**: 指定内存设备所在的物理标签库。
+
+### 3. `DeviceLocator`
+
+**Type**: `plist string`
+**Failsafe**: `Unknown`
+**SMBIOS**: Memory Device (Type 17) — Device Locator
+**Description**: 指定内存设备所在的物理标签插槽或主板上的位置。
+
+### 4. `Manufacturer`
+
+**Type**: `plist string`
+**Failsafe**: `Unknown`
+**SMBIOS**: Memory Device (Type 17) — Manufacturer
+**Description**: 指定该内存设备的制造商。
+
+### 5. `PartNumber`
+
+**Type**: `plist string`
+**Failsafe**: `Unknown`
+**SMBIOS**: Memory Device (Type 17) — Part Number
+**Description**: 指定该内存设备的部件号。
+
+### 6. `SerialNumber`
+
+**Type**: `plist string`
+**Failsafe**: `Unknown`
+**SMBIOS**: Memory Device (Type 17) — Serial Number
+**Description**: 指定该内存设备的序列号。
+
+### 7. `Size`
+
+**Type**: `plist integer`, 32-bit
+**Failsafe**: `0`
+**SMBIOS**: Memory Device (Type 17) — Size
+**Description**: 指定内存设备的大小，以兆字节为单位。`0` 表示该插槽未插入内存。
+
+### 8. `Speed`
+
+**Type**: `plist integer`, 16-bit
+**Failsafe**: `0`
+**SMBIOS**: Memory Device (Type 17) — Speed
+**Description**: 指定设备的最大速度，单位为每秒百万传输量（MT/s）。`0` 表示未知速度。
+
+## 10.5 PlatformNVRAM 属性
 
 ### 1. `BID`
 
@@ -309,7 +474,13 @@ last_updated: 2020-10-04
 - `4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14:FirmwareFeaturesMask`
 - `4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14:ExtendedFirmwareFeaturesMask`
 
-## 10.5 SMBIOS 属性
+### 6. `SystemUUID`
+
+**Type**: `plist string`
+**Failsafe**: Not installed
+**Description**: 指定 NVRAM 变量 `4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14:system-id` 的值，仅用于启动服务。在 Mac 上找到的值等于 SMBIOS `SystemUUID`。
+
+## 10.6 SMBIOS 属性
 
 ### 1. `BIOSVendor`
 
@@ -522,10 +693,3 @@ last_updated: 2020-10-04
 **Description**: 由处理器的主要和次要类型组成。
 
 自动生成的值（Automatic）是根据当前的 CPU 规格提供的最准确的值，一般不会有问题，如果有问题请务必到 [bugtracker](https://github.com/acidanthera/bugtracker/issues) 创建一个 Issue，并附上 `sysctl machdep.cpu` 和 [`dmidecode`](https://github.com/acidanthera/dmidecode) 的输出结果。所有可用值及其限制条件（指该值只有在核心数匹配的情况下才适用）都可以在 Apple SMBIOS 定义 [头文件](https://github.com/acidanthera/OpenCorePkg/blob/master/Include/Apple/IndustryStandard/AppleSmBios.h) 里找到。
-
-### 28. `MemoryFormFactor`
-
-**Type**: `plist integer`, 8-bit
-**Failsafe**: OEM specified
-**SMBIOS**: Memory Device (Type 17) --- Form Factor
-**Description**: 内存规格。在 Mac 上应为 DIMM 或 SODIMM。

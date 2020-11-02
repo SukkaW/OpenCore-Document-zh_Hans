@@ -3,7 +3,7 @@ title: 11. UEFI
 description: UEFI 驱动以及加载顺序
 type: docs
 author_info: 由 xMuu、Sukka、derbalkon 整理，由 Sukka、derbalkon 翻译
-last_updated: 2020-10-04
+last_updated: 2020-11-01
 ---
 
 ## 11.1 简介
@@ -471,6 +471,14 @@ UEFI 固件一般用两种渲染模式来支持 `ConsoleControl`：`Graphics` �
 在 HiDPI 屏幕上，`APPLE_VENDOR_VARIABLE_GUID` `UIScale` NVRAM 变量可能需要设置为 `02`，以便在 `Builtin` 文本渲染器、FileVault 2 UEFI 密码界面和启动界面 logo 启用 HiDPI 缩放。更多细节请参考 [建议变量](9-nvram.html#9-4-建议变量) 部分。
 
 *注*：当控制台句柄没有 GOP 协议时，这些设置会失败。当固件不再提供时，可以将 `ProvideConsoleGop` 设置为 `true` 并添加。
+
+### 4. `ForceResolution`
+
+**Type**: `plist boolean`
+**Failsafe**: `false`
+**Description**: 当默认情况下无法获得所需分辨率时，强制设置 `Resolution` 中所填写的分辨率，多用于老的 Intel GMA 和第一代 Intel HD Graphics (Ironlake/Arrandale)。将  `Resolution` 设置为  `Max` 时，将尝试从所连接的显示器的 EDID 中提取最大的可用分辨率。
+
+*注*：该选项依赖 [`OC_FORCE_RESOLUTION_PROTOCOL`](https://github.com/acidanthera/OpenCorePkg/blob/master/Include/Acidanthera/Protocol/OcForceResolution.h) 协议。目前只有 `OpenDuetPkg` 支持该协议，而 `OpenDuetPkg` 的实现目前仅支持 Intel iGPU。
 
 ### 4. `ClearScreenOnModeSwitch`
 
