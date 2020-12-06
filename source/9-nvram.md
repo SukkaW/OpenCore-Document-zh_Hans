@@ -3,7 +3,7 @@ title: 9. NVRAM
 description: NVRAM 注入（如引导标识符和 SIP）
 type: docs
 author_info: 由 xMuu、Sukka 整理，由 Sukka、derbalkon 翻译
-last_updated: 2020-09-18
+last_updated: 2020-12-06
 ---
 
 ## 9.1 简介
@@ -146,6 +146,7 @@ last_updated: 2020-09-18
   - `io=VALUE` --- `IOKit` 调试掩码
   - `keepsyms=1` --- 显示 Panic 日志调试符号
   - `kextlog=VALUE` --- Kext 调试掩码
+  - `nvram-log=1` (enables AppleEFINVRAM logs)
   - `nv_disable=1` --- 禁用 NVIDIA GPU 加速
   - `nvda_drv=1` --- 启用 NVIDIA web driver 的传统方法，这一参数在 macOS 10.12 中被去除
   - `npci=0x2000` --- [旧方法](https://www.insanelymac.com/forum/topic/260539-1068-officially-released/?do=findComment&comment=1707972) 禁用 `kIOPCIConfiguratorPFM64`

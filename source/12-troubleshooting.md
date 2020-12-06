@@ -3,7 +3,7 @@ title: 12. 排错
 description: 当你遇到问题的时候应该看看这个
 type: docs
 author_info: 由 xMuu、Sukka、derbalkon 整理，由 Sukka、derbalkon 翻译
-last_updated: 2020-10-05
+last_updated: 2020-12-06
 ---
 
 ## 12.1 旧版 Apple 操作系统
@@ -65,10 +65,10 @@ rm -rf DS_STORE RW
 
 ## 12.2 UEFI 安全启动
 
-OpenCore 的设计初衷是在 固件 和 操作系统 之间提供一个安全的启动链。在大多数 x86 平台上，可信加载（Trusted Loading）是通过 [UEFI 安全启动](https://en.wikipedia.org/wiki/UEFI_Secure_Boot) 模式实现的。OpenCore 不仅完全支持这种模式，还扩展了它的功能，以确保通过 [Vault](8-misc.html#12-Vault) 进行配置的加密存储，并使用自定义的验证过程向操作系统提供可信加载，例如 [Apple 安全启动](8-misc.html#14-SecureBootModel)。正确的安全启动链需要通过以下步骤来仔细配置：
+OpenCore 的设计初衷是在 固件 和 操作系统 之间提供一个安全的启动链。在大多数 x86 平台上，可信加载（Trusted Loading）是通过 [UEFI 安全启动](https://en.wikipedia.org/wiki/UEFI_Secure_Boot) 模式实现的。OpenCore 不仅完全支持这种模式，还扩展了它的功能，以确保通过 [Vault](8-misc.html#12-Vault) 进行配置的加密存储，并使用自定义的验证过程向操作系统提供可信加载，例如 [Apple 安全启动](8-misc.html#15-SecureBootModel)。正确的安全启动链需要通过以下步骤来仔细配置：
 
-1. 如果要启动的系统是 macOS，则需要通过设置 `SecureBootModel` 来启用 Apple 安全启动。请注意，并不是每个 macOS 版本都能使用 Apple 安全启动，具体限制详见 [Apple 安全启动](8-misc.html#14-SecureBootModel) 章节。
-2. 旧的 DMG 恢复镜像往往很脆弱、易受攻击，如果担心因为加载它而突破防线，可以通过设置 `DmgLoading` 为 `Disabled` 来禁用 DMG 加载。**非必需**，但建议使用。参阅 [DMG 加载](8-misc.html#6-DmgLoading) 部分来权衡利弊。
+1. 如果要启动的系统是 macOS，则需要通过设置 `SecureBootModel` 来启用 Apple 安全启动。请注意，并不是每个 macOS 版本都能使用 Apple 安全启动，具体限制详见 [Apple 安全启动](8-misc.html#15-SecureBootModel) 章节。
+2. 旧的 DMG 恢复镜像往往很脆弱、易受攻击，如果担心因为加载它而突破防线，可以通过设置 `DmgLoading` 为 `Disabled` 来禁用 DMG 加载。**非必需**，但建议使用。参阅 [DMG 加载](8-misc.html#7-DmgLoading) 部分来权衡利弊。
 3. 将 `MinDate` 和 `MinVersion` 设置为 `0`，以确保 APFS JumpStart 功能限制旧的驱动程序加载。更多细节参见 [APFS JumpStart](11-uefi.html#11-7-APFS-属性) 部分。除此之外，手动安装 `apfs.efi` 驱动也可以达到相同效果。
 4. 确保你想要运行的操作系统不加载 `Force` 驱动也能正常启动。
 5. 确保使用 `ScanPolicy` 限制加载不受信任的设备。要想做到足够安全，最好的办法是禁止加载 所有可移动设备 和 未知的文件系统。
