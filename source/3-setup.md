@@ -3,7 +3,7 @@ title: 3. Setup
 description: Setup
 type: docs
 author_info: 由 Sukka、derbalkon 整理、由 Sukka、derbalkon 翻译。
-last_updated: 2020-09-18
+last_updated: 2020-12-13
 ---
 
 ## 3.1 目录结构
@@ -55,7 +55,7 @@ ESP
 - **Kexts** --- 用于存储内核驱动（kext）补充的目录。
 - **Resources** --- 媒体资源使用的目录，如 屏幕朗读 的语音文件（见「UEFI Audio 属性」章节）。这一目录同时也用于存放 GUI 界面所使用的图片，见 `OpenCanopy` 相关章节。
 - **Tools** --- 用于存储补充工具的目录。
-- **OpenCore.efi** --- 主引导驱动程序，负责操作系统加载。
+- **OpenCore.efi** --- 主引导驱动程序，负责操作系统加载。`OpenCore.efi` 所在的目录称为 `根目录`。默认 `根目录` 为 "EFI/OC"，但是当直接启动 `OpenCore.efi` 或通过 `Bootstrap.efi` 启动 `OpenCore.efi` 时，其他包含 `OpenCore.efi` 的目录也同样支持。
 - **config.plist** --- OC Config（即 OpenCore 的配置文件，见「配置术语」）。
 - **vault.plist** --- OC Config 可能加载的所有文件的哈希。
 - **vault.sig** --- `vault.plist` 的签名文件。
