@@ -3,7 +3,7 @@ title: 7. Kernel
 description: OpenCore 安全配置，Kext 加载顺序以及屏蔽
 type: docs
 author_info: 由 Sukka、derbalkon 整理，由 Sukka、derbalkon 翻译。
-last_updated: 2020-12-06
+last_updated: 2020-12-13
 ---
 
 ## 7.1 简介
@@ -326,7 +326,7 @@ last_updated: 2020-12-06
 
 **Type**: `plist integer`
 **Failsafe**: `0`
-**Description**: 修补的次数，超过这一次数后便不再修补。`0` 表示修补所有查找到的。
+**Description**: 修补的次数，超过这一次数后便不再修补。`0` 表示修补所有查找到的地方。
 
 ### 5. `Enabled`
 

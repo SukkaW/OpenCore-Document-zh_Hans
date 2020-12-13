@@ -3,7 +3,7 @@ title: 5. Booter
 description: 配置 OpenRuntime.efi（Slide 值计算、KASLR）
 type: docs
 author_info: 由 Sukka、derbalkon 整理，由 Sukka、derbalkon 翻译。
-last_updated: 2020-12-06
+last_updated: 2020-12-13
 ---
 
 ## 5.1 简介
@@ -46,9 +46,9 @@ sudo pmset standby 0
 
 **Type**: `plist array`
 **Failsafe**: Empty
-**Description**: Perform binary patches in booter.
+**Description**: 在启动器中执行二进制补丁。
 
-Designed to be filled with `plist dictionary` values, describing each patch. See Patch Properties section below.
+设计为用 `plist dictionary` 值填充，用来描述每个补丁。参加下面的 Patch 属性部分。
 
 ### 3. `Quirks`
 
@@ -77,72 +77,73 @@ Designed to be filled with `plist dictionary` values, describing each patch. See
 **Failsafe**: `false`
 **Description**: 设置为 `true` 时，所添加的地址将被虚拟化（保持不变）。
 
-## 5.4 Patch Properties
+## 5.4 Patch 属性
 
 ### 1. `Arch`
 
 **Type**: `plist string`
 **Failsafe**: `Any`
-**Description**: Booter patch architecture (`Any`, `i386`, `x86_64`).
+**Description**: 启动器补丁架构（`Any`, `i386`, `x86_64`）。
 
 ### 2. `Comment`
 
 **Type**: `plist string`
 **Failsafe**: Empty
-**Description**: Arbitrary ASCII string used to provide human readable reference for the entry. It is implementation defined whether this value is used.
+**Description**: 用于为条目提供人类可读参考的任意 ASCII 字符串（译者注：即注释）。
 
 ### 3. `Count`
+
 **Type**: `plist integer`
 **Failsafe**: `0`
-**Description**: Number of patch occurrences to apply. `0` applies the patch to all occurrences found.
+**Description**: 修补的次数，超过这一次数后便不再修补。`0` 表示修补所有查找到的地方。
 
 ### 4. `Enabled`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
-**Description**: This booter patch will not be used unless set to `true`.
+**Description**: 除非设置为 `true`，否则将不会应用该补丁。
 
 ### 5. `Find`
 
 **Type**: `plist data`
 **Failsafe**: Empty
-**Description**: Data to find. This must equal to `Replace` in size.
+**Description**: 要查找的数据。必须与 `Replace` 的大小相等。
 
 ### 6. `Identifier`
 
 **Type**: `plist string`
 **Failsafe**: Empty
-**Description**: `Apple` for macOS booter (generally `boot.efi`); or a name with suffix (e.g. `bootmgfw.efi`) for a specific booter; or `Any` / empty string (failsafe) to match any booter.
+**Description**: `Apple` 代表 macOS 启动器（通常是 `boot.efi`）；带有后缀的名称（如 `bootmgfw.efi`）代表特定的启动器；`Any` 或空字符串（默认）代表任何启动器。
 
 ### 7. `Limit`
 
 Type: `plist integer`
 Failsafe: `0`
-Description: Maximum number of bytes to search for. Can be set to `0` to look through the whole booter.
+Description: 搜索的最大字节数。可以设置为 `0` 来查找整个启动器。
 
 ### 8. `Mask`
 
 **Type**: `plist data`
 **Failsafe**: Empty
-**Description**: Data bitwise mask used during find comparison. Allows fuzzy search by ignoring not masked (set to zero) bits. Can be set to empty data to be ignored. Must equal to `Find` in size otherwise.
+**Description**: 在查找比较的过程中使用数据位掩码。允许通过忽略未被屏蔽的 bit（设置为 `0`）进行模糊搜索。若留空则代表忽略，否则其大小必须等于 `Find`。
 
 ### 9. `Replace`
 
 **Type**: `plist data`
 **Failsafe**: Empty
-**Description**: Replacement data of one or more bytes.
+**Description**: 一个或多个字节的替换数据。
 
 ### 10. `ReplaceMask`
 
 **Type**: `plist data`
 **Failsafe**: Empty
-**Description**: Data bitwise mask used during replacement. Allows fuzzy replacement by updating masked (set to non-zero) bits. Can be set to empty data to be ignored. Must equal to `Replace` in size otherwise.
+**Description**: 替换时使用的数据位掩码。允许通过更新掩码（设置为非 `0`）来进行模糊替换。若留空则代表忽略，否则其大小必须等于 `Replace`。
 
 ### 11. `Skip`
 
 **Type**: `plist integer`
 **Failsafe**: `0`
-**Description**: Number of found occurrences to be skipped before replacement is done.
+**Description**: 在替换前要跳过的发现事件数。
 
 ## 5.5 Quirks 属性
 
@@ -150,17 +151,17 @@ Description: Maximum number of bytes to search for. Can be set to `0` to look th
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
-**Description**: Allows booting macOS through a relocation block.
+**Description**: 允许通过重定位块来启动 macOS。
 
-Relocation block is a scratch buffer allocated in lower 4 GB to be used for loading the kernel and related structures by EfiBoot on firmwares where lower memory is otherwise occupied by the (assumed to be) non-runtime data. Right before kernel startup the relocation block is copied back to lower addresses. Similarly all the other addresses pointing to relocation block are also carefully adjusted. Relocation block can be used when:
+重定位块是一个分配在低 4GB 内存的缓冲区，EfiBoot 用它来加载内核和相关结构，低层内存会被非运行时数据（假定）所占用。内核启动之前，重定位块会被复制回低层内存。同样，所有指向重定位块的其他内存地址也会作出相应调整。重定位块可用于以下情况：
 
-- No better slide exists (all the memory is used)
-- `slide=0` is forced (by an argument or safe mode)
-- KASLR (slide) is unsupported (this is macOS 10.7 or older)
+- 没有更好的 slide（所有内存都被使用了）
+- 强制 `slide=0`（通过参数或安全模式设置）
+- 不支持 KASLR (slide)（macOS 10.7 及更旧的版本）
 
-This quirk requires `ProvideCustomSlide` to also be enabled and generally needs `AvoidRuntimeDefrag` to work correctly. Hibernation is not supported when booting with a relocation block (but relocation block is not always used when the quirk is enabled).
+这个 Quirk 需要同时启用 `ProvideCustomSlide`（必需）和 `AvoidRuntimeDefrag`（通常情况下）。使用重定位块启动时不支持休眠（但启用这个 Quirk 并不意味着总是使用重定位块）。
 
-*Note*: While this quirk is required to run older macOS versions on platforms with used lower memory it is not compatible with some hardware and macOS 11. In this case you may try to use `EnableSafeModeSlide` instead.
+*注*：虽然某些低层内存被占用的平台需要这个 Quirk 来运行旧版 macOS 系统，但是这个 Quirk 并不兼容某些硬件及 macOS 11。这种情况下可能需要用 `EnableSafeModeSlide` 来替代。
 
 ### 2. `AvoidRuntimeDefrag`
 

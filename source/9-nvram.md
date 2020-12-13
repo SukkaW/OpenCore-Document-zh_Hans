@@ -3,7 +3,7 @@ title: 9. NVRAM
 description: NVRAM 注入（如引导标识符和 SIP）
 type: docs
 author_info: 由 xMuu、Sukka 整理，由 Sukka、derbalkon 翻译
-last_updated: 2020-12-06
+last_updated: 2020-12-13
 ---
 
 ## 9.1 简介
@@ -146,7 +146,7 @@ last_updated: 2020-12-06
   - `io=VALUE` --- `IOKit` 调试掩码
   - `keepsyms=1` --- 显示 Panic 日志调试符号
   - `kextlog=VALUE` --- Kext 调试掩码
-  - `nvram-log=1` (enables AppleEFINVRAM logs)
+  - `nvram-log=1` --- 启用 AppleEFINVRAM 日志
   - `nv_disable=1` --- 禁用 NVIDIA GPU 加速
   - `nvda_drv=1` --- 启用 NVIDIA web driver 的传统方法，这一参数在 macOS 10.12 中被去除
   - `npci=0x2000` --- [旧方法](https://www.insanelymac.com/forum/topic/260539-1068-officially-released/?do=findComment&comment=1707972) 禁用 `kIOPCIConfiguratorPFM64`
@@ -240,6 +240,6 @@ last_updated: 2020-12-06
 - `7C436110-AB2A-4BBB-A880-FE41995C9F82:run-efi-updater`
   覆盖 macOS 中对 EFI 固件更新（MultiUpdater、ThorUtil）等的支持。将此值设置为 `No` 或其他可以转换为布尔类型的值将能够禁用 10.10 起的 macOS 固件更新。
 - `7C436110-AB2A-4BBB-A880-FE41995C9F82:StartupMute`
-  开机时禁用固件引导提示音。8 进制整数。`0x00` 指代不静音、其他任何值（或缺少该值）表示静音。这一选项只影响带 T2 的机器。
+  开机时禁用固件引导提示音。8 进制整数。`0x00` 指代不静音、其他任何值（或缺少该值）表示静音。
 - `7C436110-AB2A-4BBB-A880-FE41995C9F82:SystemAudioVolume`
   固件音频支持的系统音频音量等级。8 进制整数。`0x80` 指代静音。低位用于编码安装的音频编码解码器的音量范围。该值以 `MaximumBootBeepVolume` AppleHDA layout 值为上限，以避免固件中的音频播放声音过大。

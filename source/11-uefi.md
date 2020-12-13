@@ -3,7 +3,7 @@ title: 11. UEFI
 description: UEFI 驱动以及加载顺序
 type: docs
 author_info: 由 xMuu、Sukka、derbalkon 整理，由 Sukka、derbalkon 翻译
-last_updated: 2020-12-06
+last_updated: 2020-12-13
 ---
 
 ## 11.1 简介
@@ -323,9 +323,9 @@ APFS 驱动的版本号和 macOS 版本相关。较旧版本的 APFS 驱动可�
 
 启用此设置可通过内置的音频支持来播放开机时播放的声音。音量大小由 `MinimumVolume` 和 `VolumeAmplifier` 的设置，以及 `SystemAudioVolume` NVRAM 变量来决定。可用的值有：
 
-- `Auto` — Enables chime when `StartupMute` NVRAM variable is not present or set to `00`.
-- `Enabled` — Enables chime unconditionally.
-- `Disabled` — Disables chime unconditionally.
+- `Auto` --- 当 `StartupMute` NVRAM 变量不存在或设置为 `00` 时，启用开机声音。
+- `Enabled` --- 无条件启用开机声音。
+- `Disabled` --- 无条件禁用开机声音。
 
 *注*：`Enable` 是可以与 `StartupMute` NVRAM 变量分开使用的，以此来避免在固件能够播放启动铃声时发生冲突。
 
