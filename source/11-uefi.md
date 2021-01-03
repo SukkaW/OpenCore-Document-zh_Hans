@@ -3,7 +3,7 @@ title: 11. UEFI
 description: UEFI 驱动以及加载顺序
 type: docs
 author_info: 由 xMuu、Sukka、derbalkon 整理，由 Sukka、derbalkon 翻译
-last_updated: 2020-12-13
+last_updated: 2021-01-03
 ---
 
 ## 11.1 简介
@@ -140,13 +140,13 @@ OpenCanopy 为 `PickerAttributes` 提供了全面的支持，并提供了一套�
 **Failsafe**: None
 **Description**: 配置音频后端支持，具体配置如下文所述。
 
-音频支持为上游协议提供了一种与所选硬件和音频资源交互的方式。所有音频资源应该保存在 `\EFI\OC\Resources\Audio` 目录。目前唯一支持的音频文件格式是 WAVE PCM。虽然支持哪种音频流格式取决于驱动程序，但大多数常见的音频卡都支持 44100 或 48000Hz 的 16 位立体声。
+音频支持为上游协议提供了一种与所选硬件和音频资源交互的方式。所有音频资源应该保存在 `\EFI\OC\Resources\Audio` 目录。目前支持的音频文件格式为 MP3 和 WAVE PCM。虽然支持哪种音频流格式取决于驱动程序，但大多数常见的音频卡都支持 44100 或 48000Hz 的 16 位立体声。
 
-音频文件的路径是由音频的类型、本地化语言和路径决定的。每个文件名看起来都类似于：`[audio type]_[audio localisation]_[audio path].wav`。对于没有本地化的文件，其文件名不包含语言代码，看起来类似于：`[audio type]_[audio path].wav`。
+音频文件的路径是由音频的类型、本地化语言和路径决定的。每个文件名看起来都类似于：`[audio type]_[audio localisation]_[audio path].[audio ext]`。对于没有本地化的文件，其文件名不包含语言代码，看起来类似于：`[audio type]_[audio path].[audio ext]`。其中音频扩展名为 `mp3` 或 `wav`。
 
 - OpenCore 音频文件的音频类型可以是 `OCEFIAudio`，macOS 引导程序的音频文件的音频类型可以是 `AXEFIAudio`。
 - 音频本地化语言由两个字母的语言代码表示（如 `en`），中文、西班牙语和葡萄牙语除外。具体请看 [`APPLE_VOICE_OVER_LANGUAGE_CODE` 的定义](https://github.com/acidanthera/OpenCorePkg/blob/master/Include/Apple/Protocol/AppleVoiceOver.h) 来了解所有支持的本地化列表。
-- 音频路径是对应于文件标识符的基本文件名。macOS 引导程序的音频路径参考 [`APPLE_VOICE_OVER_AUDIO_FILE` 的定义](https://github.com/acidanthera/OpenCorePkg/blob/master/Include/Apple/Protocol/AppleVoiceOver.h)。OpenCore 的音频路径参考 [`OC_VOICE_OVER_AUDIO_FILE` 的定义](https://github.com/acidanthera/OpenCorePkg/blob/master/Include/Acidanthera/Protocol/OcAudio.h)。唯一例外的是 OpenCore 启动提示音文件：`OCEFIAudio_VoiceOver_Boot.wav`。
+- 音频路径是对应于文件标识符的基本文件名。macOS 引导程序的音频路径参考 [`APPLE_VOICE_OVER_AUDIO_FILE` 的定义](https://github.com/acidanthera/OpenCorePkg/blob/master/Include/Apple/Protocol/AppleVoiceOver.h)。OpenCore 的音频路径参考 [`OC_VOICE_OVER_AUDIO_FILE` 的定义](https://github.com/acidanthera/OpenCorePkg/blob/master/Include/Acidanthera/Protocol/OcAudio.h)。唯一例外的是 OpenCore 启动提示音文件：`OCEFIAudio_VoiceOver_Boot.mp3`。
 
 macOS 引导程序和 OpenCore 的音频本地化是分开的。macOS 引导程序是在 `systemLanguage.utf8` 文件中的 `preferences.efires` 归档中设置，并由操作系统控制。OpenCore 则是使用 `prev-lang:kbd` 变量的值来控制。当某一特定文件的音频本地化缺失时，将会使用英语（`en`）来代替。示例音频文件可以在 [OcBinaryData 仓库](https://github.com/acidanthera/OcBinaryData) 中找到。
 
@@ -328,6 +328,14 @@ APFS 驱动的版本号和 macOS 版本相关。较旧版本的 APFS 驱动可�
 - `Disabled` --- 无条件禁用开机声音。
 
 *注*：`Enable` 是可以与 `StartupMute` NVRAM 变量分开使用的，以此来避免在固件能够播放启动铃声时发生冲突。
+
+### 7. `SetupDelay`
+
+**Type**: `plist integer`
+**Failsafe**: `0`
+**Description**: Audio codec reconfiguration delay in microseconds.
+
+Some codecs require a vendor-specific delay after the reconfiguration (e.g. volume setting). This option makes it configurable. In general the necessary delay may be as long as 0.5 seconds.
 
 ### 7. `VolumeAmplifier`
 
@@ -678,27 +686,7 @@ Apple 音频协议允许 macOS bootloader 和 OpenCore 播放声音和信号，�
 
 ## 11.12 Quirks 属性
 
-### 1. `DeduplicateBootOrder`
-
-**Type**: `plist boolean`
-**Failsafe**: `false`
-**Description**: 删除 `EFI_GLOBAL_VARIABLE_GUID` 中 `BootOrder` 变量的重复条目。
-
-这个 Quirk 需要启用 `RequestBootVarRouting`，因此需要 `OpenRuntime.efi` 中实现的 `OC_FIRMWARE_RUNTIME` 协议。
-
-通过 `RequestBootVarRouting` 的帮助，将 `Boot` 前缀变量重定向到一个单独的 GUID 命名空间，我们实现了这几个目标：
-
-- 囚禁操作系统，让它只受 OpenCore 启动环境的控制，增强安全性。
-- 操作系统不会打乱 OpenCore 的启动优先级，在系统更新和休眠唤醒等需要 OpenCore 参与的需要重启的情况下，保证了流畅性。
-- 潜在的不兼容的启动项，如 macOS 项，不会被删除或被损坏。
-
-然而，一些固件会在启动时通过检查可用磁盘上的文件来进行自己的启动选项扫描。通常这种扫描包括非标准位置，如 Windows bootloader 路径。一般来说这不成问题，但某些固件，特别是 APTIO V 的华硕固件会有 bug。对于它们来说，扫描的执行并不正确，固件的首选项可能会因为 `BootOrder` 条目重复而被意外损坏（每个选项会被添加两次），导致在不重置 NVRAM 的情况下无法启动。
-
-要触发这个 bug，必须要有一些有效的启动选项（如 OpenCore），然后在启用 `RequestBootVarRouting` 的情况下安装 Windows。由于 Windows bootloader 选项不会被 Windows 安装程序创建，因此固件会尝试自己创建，于是破坏了它的启动选项列表。
-
-这个 Quirk 会删除 `BootOrder` 变量中所有重复的内容，尝试解决 OpenCore 加载时出现的 bug。建议将此键值与 `BootProtect` 选项一起使用。
-
-### 2. `ExitBootServicesDelay`
+### 1. `ExitBootServicesDelay`
 
 **Type**: `plist integer`
 **Failsafe**: `0`
@@ -706,7 +694,7 @@ Apple 音频协议允许 macOS bootloader 和 OpenCore 播放声音和信号，�
 
 这是一个非常丑陋的 Quirk，用于修复 `Still waiting for root device` 提示信息。在使用 FileVault 2 时，特别是华硕 Z87-Pro 等 APTIO IV 固件这种错误经常发生。似乎因为某种原因，FileVault 与 `EXIT_BOOT_SERVICES` 同时执行、导致 macOS 无法访问 SATA 控制器。未来应该会找到一个更好的方法。如果需要启用这一选项，设置 3-5 秒的延时就可以了。
 
-### 3. `IgnoreInvalidFlexRatio`
+### 2. `IgnoreInvalidFlexRatio`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
@@ -714,13 +702,13 @@ Apple 音频协议允许 macOS bootloader 和 OpenCore 播放声音和信号，�
 
 *注*：虽然该选项不会对不受影响的固件造成损害，但在不需要的情况下不建议启用。
 
-### 4. `ReleaseUsbOwnership`
+### 3. `ReleaseUsbOwnership`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
 **Description**: 尝试从固件驱动程序中分离 USB 控制器所有权。尽管大多数固件都设法正确执行了该操作或者提供有一个选项，但某些固件没有，从而导致操作系统可能会在启动时冻结。除非需要，否则不建议启用这一选项。
 
-### 5. `RequestBootVarRouting`
+### 4. `RequestBootVarRouting`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
@@ -728,7 +716,13 @@ Apple 音频协议允许 macOS bootloader 和 OpenCore 播放声音和信号，�
 
 启用这个 Quirk 需要用到在 `OpenRuntime.efi` 中实现的 `OC_FIRMWARE_RUNTIME` 协议。当固件删除不兼容的启动条目时，这一 Quirk 可以让默认的启动条目保存在引导菜单中。简单地说就是，如果你想使用「系统偏好设置」中的「[启动磁盘](https://support.apple.com/HT202796)」，就必须启用这一 Quirk。
 
-### 6. `TscSyncTimeout`
+By redirecting `Boot` prefixed variables to a separate GUID namespace with the help of `RequestBootVarRouting` quirk we achieve multiple goals:
+
+- Operating systems are jailed and only controlled by OpenCore boot environment to enhance security.
+- Operating systems do not mess with OpenCore boot priority, and guarantee fluent updates and hibernation wakes for cases that require reboots with OpenCore in the middle.
+- Potentially incompatible boot entries, such as macOS entries, are not deleted or anyhow corrupted.
+
+### 5. `TscSyncTimeout`
 
 **Type**: `plist integer`
 **Failsafe**: `0`
@@ -740,7 +734,7 @@ Apple 音频协议允许 macOS bootloader 和 OpenCore 播放声音和信号，�
 
 *注*：这个 Quirk 不能取代内核驱动的原因是它不能在 ACPI S3 模式（睡眠唤醒）下运行，而且 UEFI 固件提供的多核心支持非常有限，无法精确地更新 MSR 寄存器。
 
-### 7. `UnblockFsConnect`
+### 6. `UnblockFsConnect`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
