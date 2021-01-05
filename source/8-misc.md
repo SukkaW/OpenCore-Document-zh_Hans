@@ -3,7 +3,7 @@ title: 8. Misc
 description: 关于 OpenCore 行为的其他配置
 type: docs
 author_info: 由 xMuu、Sukka、derbalkon 整理、由 Sukka、derbalkon 翻译。
-last_updated: 2021-01-03
+last_updated: 2021-01-05
 ---
 
 ## 8.1 简介
@@ -282,15 +282,15 @@ OpenCore 内置的启动选择器包含了一系列在启动过程中选择的�
 
 **Type**: `plist string`
 **Failsafe**: `Auto`
-**Description**: Choose specific icon set used for boot management.
+**Description**: 选择启动管理器所使用的图标集。
 
-The following values are supported:
+支持以下值：
 
-- `Auto` — Automatically select one set of icons based on `DefaultBackground` colour.
-- `Default` — Normal icon set (without prefix).
-- `Old` — Vintage icon set (`Old` filename prefix).
-- `Modern` — Nouveau icon set (`Modern` filename prefix).
-- Other value — Custom icon set if supported by the resources.
+- `Auto` --- 基于 `DefaultBackground` 的设置，自动选择相应的图标集。
+- `Default` --- 常规图标集（无前缀）。
+- `Old` --- 复古图标集（文件名有 `Old` 前缀）。
+- `Modern` --- 新颖图标集（文件名有 `Modern` 前缀）。
+- 其他值 --- 自定义图标集，需要在 Resources 中添加相应图标集。
 
 ## 8.4 Debug 属性
 

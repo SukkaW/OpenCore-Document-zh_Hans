@@ -3,7 +3,7 @@ title: 11. UEFI
 description: UEFI 驱动以及加载顺序
 type: docs
 author_info: 由 xMuu、Sukka、derbalkon 整理，由 Sukka、derbalkon 翻译
-last_updated: 2021-01-03
+last_updated: 2021-01-05
 ---
 
 ## 11.1 简介
@@ -333,9 +333,9 @@ APFS 驱动的版本号和 macOS 版本相关。较旧版本的 APFS 驱动可�
 
 **Type**: `plist integer`
 **Failsafe**: `0`
-**Description**: Audio codec reconfiguration delay in microseconds.
+**Description**: 音频编解码器重新配置的延迟，单位为微秒。
 
-Some codecs require a vendor-specific delay after the reconfiguration (e.g. volume setting). This option makes it configurable. In general the necessary delay may be as long as 0.5 seconds.
+某些编解码器在重新配置后需要特定延迟（由供应商提供，例如音量设置），此选项可对其进行配置。一般来说，必要的延迟时间可能长达 0.5 秒。
 
 ### 7. `VolumeAmplifier`
 
@@ -716,11 +716,11 @@ Apple 音频协议允许 macOS bootloader 和 OpenCore 播放声音和信号，�
 
 启用这个 Quirk 需要用到在 `OpenRuntime.efi` 中实现的 `OC_FIRMWARE_RUNTIME` 协议。当固件删除不兼容的启动条目时，这一 Quirk 可以让默认的启动条目保存在引导菜单中。简单地说就是，如果你想使用「系统偏好设置」中的「[启动磁盘](https://support.apple.com/HT202796)」，就必须启用这一 Quirk。
 
-By redirecting `Boot` prefixed variables to a separate GUID namespace with the help of `RequestBootVarRouting` quirk we achieve multiple goals:
+借助 `RequestBootVarRouting` 将 `Boot` 前缀变量重定向至单独的 GUID 命名空间，可实现以下效果：
 
-- Operating systems are jailed and only controlled by OpenCore boot environment to enhance security.
-- Operating systems do not mess with OpenCore boot priority, and guarantee fluent updates and hibernation wakes for cases that require reboots with OpenCore in the middle.
-- Potentially incompatible boot entries, such as macOS entries, are not deleted or anyhow corrupted.
+- 囚禁操作系统，使其只受 OpenCore 引导环境的控制，从而提高了安全性。
+- 如遇到中途需要通过 OpenCore 来重启的情况，操作系统不会搞乱 OpenCore 的引导优先级，保证了系统更新和休眠唤醒的流畅性。
+- macOS 等潜在的不兼容的启动项，现在不会被意外删除或损坏了。
 
 ### 5. `TscSyncTimeout`
 

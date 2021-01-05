@@ -151,12 +151,12 @@ last_updated: 2021-01-05
   - `nv_disable=1` --- 禁用 NVIDIA GPU 加速
   - `nvda_drv=1` --- 启用 NVIDIA web driver 的传统方法，这一参数在 macOS 10.12 中被去除
   - `npci=0x2000` --- [旧方法](https://www.insanelymac.com/forum/topic/260539-1068-officially-released/?do=findComment&comment=1707972) 禁用 `kIOPCIConfiguratorPFM64`
-  - `lapic_dont_panic=1` (disable lapic spurious interrupt panic on AP cores)
-  - `panic_on_display_hang=1` (trigger panic on display hang)
-  - `panic_on_gpu_hang=1` (trigger panic on GPU hang)
+  - `lapic_dont_panic=1` --- 禁用 AP 内核的 LAPIC Panic 伪中断行为
+  - `panic_on_display_hang=1` --- 显示设备挂起时触发 Panic
+  - `panic_on_gpu_hang=1` --- GPU 挂起时触发 Panic
   - `slide=VALUE` --- 手动设置 KASLR 偏移值
   - `smcdebug=VALUE` --- `AppleSMC` 调试掩码
-  - `spin_wait_for_gpu=1` (reduces GPU timeout on high load)
+  - `spin_wait_for_gpu=1` --- 减少 GPU 高负载情况下的超时时间
   - `-amd_no_dgpu_accel` --- 替代 [WhateverGreen](https://github.com/acidanthera/WhateverGreen) 的 `-radvesa`，用于较新的 GPUs
   - `-nehalem_error_disable`
   - `-no_compat_check` --- 禁用机型检查（适用于 10.7 以上的版本）
