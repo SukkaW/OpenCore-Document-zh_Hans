@@ -3,7 +3,7 @@ title: 8. Misc
 description: 关于 OpenCore 行为的其他配置
 type: docs
 author_info: 由 xMuu、Sukka、derbalkon 整理、由 Sukka、derbalkon 翻译。
-last_updated: 2020-12-13
+last_updated: 2021-01-05
 ---
 
 ## 8.1 简介
@@ -197,7 +197,7 @@ OpenCore 尽可能地遵循 `bless` 模式，即 `Apple Boot Policy`。`bless` �
   可用 `disklabel` 实用工具或 `bless` 命令来生成预置标签。当禁用或者缺少文本标签 (`.contentDetails` 或 `.disk_label.contentDetails`) 时将以它来代替渲染。
 
 - `0x0004` — `OC_ATTR_USE_GENERIC_LABEL_IMAGE`，为没有自定义条目的启动项提供预定义的标签图像。可能会缺少实际启动项的详细信息。
-- `0x0008` — `OC_ATTR_USE_ALTERNATE_ICONS`，如果支持，则将备用图标集作为当前使用的图标集。举个例子，可以在使用自定义背景颜色的时候使用旧的式样的图标（译者注：即 `Old` 前缀的图标）。
+- `0x0008` — `OC_ATTR_HIDE_THEMED_ICONS`，优先选择特定图标类别的内置图标，以配合主题风格，比如可以强制显示 Time Machine 的内置图标。需要 `OC_ATTR_USE_VOLUME_ICON` 存在。
 - `0x0010` — `OC_ATTR_USE_POINTER_CONTROL`，在启动选择器中启用指针控制。例如，可以利用鼠标或触摸板来控制 UI 元素。
 
 ### 5. `PickerAudioAssist`
@@ -277,6 +277,20 @@ OpenCore 内置的启动选择器包含了一系列在启动过程中选择的�
 *注 2*：当禁用 `ShowPicker` 时，除了 `OPT` 键之外，OpenCore 还支持 `Escape` 键来显示启动选项。这个键不仅适用于 `Apple` 启动选择器模式，也适用于 PS/2 键盘的固件，因为这种键盘无法提交按住 `OPT` 键的请求，需要连续点按 `Escape` 键来进入启动选择菜单。
 
 *注 3*：有些 Mac 的 GOP 很棘手，可能很难进入 Apple 启动选择器。还有一些 Mac，`BootKicker` 不能从 OpenCore 运行。可以通过直接 bless `BootKicker` 实用工具来解决这个问题，不需要加载 OpenCore。
+
+### 11. `PickerVariant`
+
+**Type**: `plist string`
+**Failsafe**: `Auto`
+**Description**: 选择启动管理器所使用的图标集。
+
+支持以下值：
+
+- `Auto` --- 基于 `DefaultBackground` 的设置，自动选择相应的图标集。
+- `Default` --- 常规图标集（无前缀）。
+- `Old` --- 复古图标集（文件名有 `Old` 前缀）。
+- `Modern` --- 新颖图标集（文件名有 `Modern` 前缀）。
+- 其他值 --- 自定义图标集，需要在 Resources 中添加相应图标集。
 
 ## 8.4 Debug 属性
 
