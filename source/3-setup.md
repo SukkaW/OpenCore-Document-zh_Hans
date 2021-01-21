@@ -3,7 +3,7 @@ title: 3. Setup
 description: Setup
 type: docs
 author_info: 由 Sukka、derbalkon 整理、由 Sukka、derbalkon 翻译。
-last_updated: 2020-12-13
+last_updated: 2021-01-21
 ---
 
 ## 3.1 目录结构
@@ -48,7 +48,7 @@ ESP
 
 使用目录引导时，使用的目录结构应该遵循上述目录结构。可用的条目有：
 
-- **BOOTx64.efi** 和 **Bootstrap.efi** --- 初始引导程序，用来加载 `OpenCore.efi`，除非 `OpenCore.efi` 已作为驱动程序启动。对于大部分固件来说，`BOOTx64.efi` 是 UEFI 默认启动项，而 `Bootstrap.efi` 可以被注册为自定义启动项，避免因 `BOOTx64.efi` 被其它操作系统（如 Windows）所覆盖而导致 OpenCore 无法启动。更多细节请参见 [BootProtect](8-misc.html#5-BootProtect)。
+- **BOOTx64.efi** 和 **Bootstrap.efi** --- 初始引导程序，用来加载 `OpenCore.efi`，除非 `OpenCore.efi` 已作为驱动程序启动。对于大部分固件来说，`BOOTx64.efi` 是 UEFI 默认启动项，而 `Bootstrap.efi` 可以被注册为自定义启动项，避免因 `BOOTx64.efi` 被其它操作系统（如 Windows）所覆盖而导致 OpenCore 无法启动。更多细节请参见 [BootProtect](8-misc.html#6-BootProtect)。
 - **boot** --- Duet bootstrap loader，用于在传统 BIOS 固件上模拟 UEFI 环境、并加载 `OpenCore.efi`。
 - **ACPI** --- 用于存储 ACPI 补充信息的目录。
 - **Drivers** --- 用于存储 UEFI 补充驱动程序的目录。

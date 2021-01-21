@@ -3,7 +3,7 @@ title: 8. Misc
 description: 关于 OpenCore 行为的其他配置
 type: docs
 author_info: 由 xMuu、Sukka、derbalkon 整理、由 Sukka、derbalkon 翻译。
-last_updated: 2021-01-05
+last_updated: 2021-01-07
 ---
 
 ## 8.1 简介
@@ -170,34 +170,34 @@ OpenCore 尽可能地遵循 `bless` 模式，即 `Apple Boot Policy`。`bless` �
 **Failsafe**: `0`
 **Description**: 设置开机引导菜单的属性。
 
-不同的选项可以用属性掩码的方式来设置，其中掩码包含 OpenCore 的预留值（`BIT0` ~ `BIT15`）和 OEM 特定值（`BIT16` ~ `BIT31`）。
+可以用属性掩码来设置引导菜单的不同属性，其中掩码包含 OpenCore 的预留值（`BIT0` ~ `BIT15`）和 OEM 特定值（`BIT16` ~ `BIT31`）。
 
-目前 OpenCore 提供的值包括：
+目前 OpenCore 的预留值有：
 
-- `0x0001` — `OC_ATTR_USE_VOLUME_ICON`，提供引导项自定义图标：
+- `0x0001` — `OC_ATTR_USE_VOLUME_ICON`，为启动项提供自定义图标：
   
-  对于 `Tools`，OpenCore 会尝试优先加载以下自定义图标，自定义图标不存在时则回退到默认图标：
+  对于 `Tools`，OpenCore 会优先加载以下自定义图标，不存在时回退到默认图标：
   - `ResetNVRAM` — `Resources\Image\ResetNVRAM.icns` — 图标目录下的 `ResetNVRAM.icns`。
-  - `Tools\<TOOL_RELATIVE_PATH>.icns` — `Tools` 文件附近的对应图标，扩展名为 `.icns`。
+  - `Tools\<TOOL_RELATIVE_PATH>.icns` — 与工具文件同目录下的对应图标，扩展名为 `.icns`。
   
-  对于自定义的启动条目 `Entries`，OpenCore 会尝试优先加载以下自定义图标，自定义图标不存在时则回退到卷宗或默认图标：
-  - `<ENTRY_PATH>.icns` — 对应启动项文件附近的图标，扩展名为 `.icns`。
+  对于自定义的启动项 `Entries`，OpenCore 会优先加载以下自定义图标，不存在时回退到卷宗或默认图标：
+  - `<ENTRY_PATH>.icns` — 与启动项文件同目录下的对应图标，扩展名为 `.icns`。
   
-  对于其他条目，OpenCore 会尝试优先加载卷宗图标，并回退到默认图标：
-  - 位于 `Preboot` APFS 卷宗目录的 `.VolumeIcon.icns` 文件（如果存在）。
-  - 位于 `Preboot` APFS 根目录的 `.VolumeIcon.icns` 文件（其他情况）。
-  - 位于其他文件系统的卷宗根目录下的 `.VolumeIcon.icns` 文件。
+  对于其他条目，OpenCore 会优先加载以下卷宗图标，不存在时回退到默认图标：
+  - APFS 卷宗图标的 `.VolumeIcon.icns` 文件，置于 `Preboot` 卷宗目录下（如果存在）。
+  - APFS 卷宗图标的 `.VolumeIcon.icns` 文件，置于 `Preboot` 根目录下（其他情况）。
+  - 其他文件系统的 `.VolumeIcon.icns` 文件，置于其卷宗根目录下。
 
-  卷宗图标可以在访达中设置。注意，启用此功能可能会导致 外部可移除硬盘的图标 和 内部不可移除硬盘的图标 无法区分。
+  卷宗图标可以在访达中设置。注意，启用此功能后可能会难以区分 外部可移除硬盘 和 内部不可移除硬盘 的图标。
 
-- `0x0002` — `OC_ATTR_USE_DISK_LABEL_FILE`，提供引导项自定义渲染的标题：
-  - `.disk_label` (`.disk_label_2x`) 文件与 bootloader 相关，适用于所有文件系统。
-  - `<TOOL_NAME>.lbl` (`<TOOL_NAME>.l2x`) 文件与工具相关，适用于 `Tools`。
+- `0x0002` — `OC_ATTR_USE_DISK_LABEL_FILE`，为启动项的标题提供自定义渲染：
+  - `.disk_label` (`.disk_label_2x`) 文件与 bootloader 文件放在同一目录，适用于所有文件系统。
+  - `<TOOL_NAME>.lbl` (`<TOOL_NAME>.l2x`) 文件与工具文件放在同一目录，适用于 `Tools`。
 
-  可用 `disklabel` 实用工具或 `bless` 命令来生成预置标签。当禁用或者缺少文本标签 (`.contentDetails` 或 `.disk_label.contentDetails`) 时将以它来代替渲染。
+  预渲染标签可用 `disklabel` 实用工具或 `bless` 命令来生成。当预渲染标签被禁用或者缺失时，将以文本标签 (`.contentDetails` 或 `.disk_label.contentDetails`) 来代为渲染。
 
 - `0x0004` — `OC_ATTR_USE_GENERIC_LABEL_IMAGE`，为没有自定义条目的启动项提供预定义的标签图像。可能会缺少实际启动项的详细信息。
-- `0x0008` — `OC_ATTR_HIDE_THEMED_ICONS`，优先选择特定图标类别的内置图标，以配合主题风格，比如可以强制显示 Time Machine 的内置图标。需要 `OC_ATTR_USE_VOLUME_ICON` 存在。
+- `0x0008` — `OC_ATTR_HIDE_THEMED_ICONS`，优先选择特定图标集的图标，以配合主题风格，比如可以强制显示特定图标集内置的 Time Machine 图标。需要同时启用 `OC_ATTR_USE_VOLUME_ICON`。
 - `0x0010` — `OC_ATTR_USE_POINTER_CONTROL`，在启动选择器中启用指针控制。例如，可以利用鼠标或触摸板来控制 UI 元素。
 
 ### 5. `PickerAudioAssist`
@@ -322,7 +322,7 @@ cat Kernel.panic | grep macOSProcessedStackshotData | python -c 'import json,sys
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
-**Description**: 某些固件可能无法成功快速启动操作系统，尤其是在调试模式下，这会导致看门狗定时器中止引导过程。此选项关闭看门狗定时器，用于排错。
+**Description**: 某些固件启动操作系统的速度可能不够快（尤其是调试模式下），看门狗定时器会因此中止引导过程。此选项用来关闭看门狗定时器。
 
 ### 4. `DisplayDelay`
 

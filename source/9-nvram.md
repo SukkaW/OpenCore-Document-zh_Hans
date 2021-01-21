@@ -3,7 +3,7 @@ title: 9. NVRAM
 description: NVRAM 注入（如引导标识符和 SIP）
 type: docs
 author_info: 由 xMuu、Sukka 整理，由 Sukka、derbalkon 翻译
-last_updated: 2021-01-05
+last_updated: 2021-01-13
 ---
 
 ## 9.1 简介
@@ -144,7 +144,7 @@ last_updated: 2021-01-05
   - `cpus=VALUE` --- 最大可用 CPU 数量
   - `debug=VALUE` --- Debug 掩码
   - `io=VALUE` --- `IOKit` 调试掩码
-  - `ioaccel_debug=VALUE` (`IOAccelerator` debug mask)
+  - `ioaccel_debug=VALUE` --- `IOAccelerator` 调试掩码
   - `keepsyms=1` --- 显示 Panic 日志调试符号
   - `kextlog=VALUE` --- Kext 调试掩码
   - `nvram-log=1` --- 启用 AppleEFINVRAM 日志
