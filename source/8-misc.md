@@ -3,7 +3,7 @@ title: 8. Misc
 description: 关于 OpenCore 行为的其他配置
 type: docs
 author_info: 由 xMuu、Sukka、derbalkon 整理、由 Sukka、derbalkon 翻译。
-last_updated: 2021-01-07
+last_updated: 2021-01-31
 ---
 
 ## 8.1 简介
@@ -53,7 +53,7 @@ OpenCore 尽可能地遵循 `bless` 模式，即 `Apple Boot Policy`。`bless` �
 - 是否通过启动选择器来启动选项，取决于 `ShowPicker` 选项的设置。
 - 如果还失败，则显示启动选择器。
 
-*注 1*：这个过程只有在启用了 `RequestBootVarRouting` 选项，或者固件不控制 UEFI 启动选项（如 `OpenDuetPkg` 或其他自定义 BDS）时，才会可靠地工作。如果不启用 `BootProtect`，那么其他操作系统有可能会覆盖 OpenCore，如果你打算使用 OpenCore，请确保启用这个选项。
+*注 1*：这个过程只有在启用了 `RequestBootVarRouting` 选项，或者固件不控制 UEFI 启动选项（如 `OpenDuetPkg` 或其他自定义 BDS）时，才会可靠地工作。如果不启用 `LauncherOption`，那么其他操作系统有可能会覆盖 OpenCore，如果你打算使用 OpenCore，请确保启用这个选项。
 
 *注 2*：UEFI 变量引导选项的引导参数，如果存在的话则会被丢弃，因为它们包含的一些参数可能会对操作系统产生不利影响，一旦启用了安全引导，这种影响是我们不希望看到的。
 
@@ -163,6 +163,33 @@ OpenCore 尽可能地遵循 `bless` 模式，即 `Apple Boot Policy`。`bless` �
 即使被隐藏，你仍然可以通过 `空格` 进入「扩展模式」查看所有条目（引导项菜单会被重新加载）：
 
 一般来说，隐藏辅助条目有助于加快启动速度。
+
+### 4. `LauncherOption`
+
+**Type**: `plist string`
+**Failsafe**: `Disabled`
+**Description**: Register launcher option in firmware preferences for persistence.
+
+Valid values:
+
+- `Disabled` — do nothing.
+- `Full` — create or update top-priority boot option in UEFI variable storage at bootloader startup. For this
+option to work `RequestBootVarRouting` is required to be enabled.
+- `Short` — create a short boot option instead of a complete one. This variant is useful for some older firmwares, Insyde in particular, but possibly others, which cannot handle full device paths.
+
+This option provides integration with third-party operating system installation and upgrade at the times they overwrite `\EFI\BOOT\BOOTx64.efi` file. By creating a custom option in this file path becomes no longer used for bootstrapping OpenCore. The path used for bootstrapping is specified in `LauncherPath` option.
+
+*Note 1*: Some types of firmware may have faulty NVRAM, no boot option support, or other incompatibilities. While unlikely, the use of this option may even cause boot failures. This option should be used without any warranty exclusively on the boards known to be compatible. Check [acidanthera/bugtracker#1222](https://github.com/acidanthera/bugtracker/issues/1222) for some known issues with Haswell and other boards.
+
+*Note 2*: Be aware that while NVRAM reset executed from OpenCore should not erase the boot option created in `Bootstrap`, executing NVRAM reset prior to loading OpenCore will remove it. For significant implementation updates (e.g. in OpenCore 0.6.4) make sure to perform NVRAM reset with `Bootstrap` disabled before reenabling.
+
+### 5. `LauncherPath`
+
+**Type**: `plist string`
+**Failsafe**: `Default`
+**Description**: Launch path for `LauncherOption`.
+
+`Default` stays for launched `OpenCore.efi`, any other path, e.g. `\EFI\Launcher.efi`, can be used to provide custom loaders, which are supposed to load `OpenCore.efi` themselves.
 
 ### 4. `PickerAttributes`
 
@@ -360,7 +387,7 @@ cat Kernel.panic | grep macOSProcessedStackshotData | python -c 'import json,sys
 **Failsafe**: `false`
 **Description**: 在 EFI 分区中保存系统报告。
 
-启用这一选项后，EFI 分区中将会新建一个 `SysReport` 目录。这一目录中将会保存 ACPI 和 SMBIOS 的调试信息。
+启用这一选项后，EFI 分区中将会新建一个 `SysReport` 目录。这一目录中将会保存 ACPI、SMBIOS 和音频编解码器的调试信息。保存音频编解码器信息需要加载音频后端驱动。
 
 *注*：基于安全的考虑，`RELEASE` 构建的 OpenCore 将不会内置这一功能。如果需要使用这一功能请使用 `DEBUG` 构建版。
 
@@ -491,7 +518,7 @@ nvram 4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102:boot-log | awk '{gsub(/%0d%0a%00/,"")
 
 如果这个值设置妥当，并且 `SecureBootModel` 值有效且不是 `Disabled`，那么就可以实现 Apple 安全启动的 [完整安全性](https://support.apple.com/HT208330)。
 
-要使用个性化的 Apple 安全启动，必须重新安装操作系统，或对其进行个性化定制。在操作系统被个性化定制之前，只能加载 macOS DMG 恢复镜像。DMG 恢复镜像可以随时用 `macrecovery` 实用工具下载，然后放到 `com.apple.recovery.boot` 里，如 [技巧和窍门](12-troubleshooting.html#12-5-技巧和窍门) 部分所述。请记住，[`DmgLoading`](8-misc.html#7-DmgLoading) 需要设置为 `Signed` 才能通过 Apple 安全启动来加载 DMG。
+要使用个性化的 Apple 安全启动，必须重新安装操作系统，或对其进行个性化定制。在操作系统被个性化定制之前，只能加载 macOS DMG 恢复镜像。DMG 恢复镜像可以随时用 `macrecovery` 实用工具下载，然后放到 `com.apple.recovery.boot` 里，如 [技巧和窍门](12-troubleshooting.html#12-5-技巧和窍门) 部分所述。请记住，[`DmgLoading`](8-misc.html#6-DmgLoading) 需要设置为 `Signed` 才能通过 Apple 安全启动来加载 DMG。
 
 如果要对现有的操作系统进行个性化定制，请在加载 macOS DMG 恢复镜像之后使用 `bless` 命令。确保已挂载到系统卷分区，并执行以下命令：
 
@@ -520,7 +547,7 @@ diskutil mount -mountpoint /var/tmp/OSPersonalizationTemp $disk
 
 VirtualSMC 通过将磁盘加密密钥拆分保存在 NVRAM 和 RTC 中来执行 authenticated restart。虽然 OpenCore 在启动系统后立刻删除密钥，但是这仍然可能被视为安全隐患。
 
-### 6. `BlacklistAppleUpdate`
+### 5. `BlacklistAppleUpdate`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
@@ -528,25 +555,7 @@ VirtualSMC 通过将磁盘加密密钥拆分保存在 NVRAM 和 RTC 中来执行
 
 *注*：由于某些操作系统（如 macOS Big Sur）[无法利用](https://github.com/acidanthera/bugtracker/issues/1255) NVRAM 变量 `run-efi-updater` 禁用固件更新，因此单独设立了此项。
 
-### 6. `BootProtect`
-
-**Type**: `plist string`
-**Failsafe**: `None`
-**Description**: 该选项试图保证 Bootloader 的持久性、一致性。
-
-可以使用的值有：
-
-- `None` --- 什么都不做。
-- `Bootstrap` --- 在启动引导程序时，在 UEFI 变量存储中创建或更新最高优先级。`\EFI\OC\Bootstrap\Bootstrap.efi` 引导选项。要使用这个选项，必须同时开启 `RequestBootVarRouting`。
-- `BootstrapShort` --- 创建一个短的、非完整的启动项，其他方面等同于 `Bootstrap`。此值对于某些固件很有用，比如 Insyde，或者其他无法处理完整设备路径的固件。
-
-在安装和升级第三方操作系统时 `\EFI\BOOT\BOOTx64.efi` 文件可能会被覆盖掉，该选项则保证了出现覆盖情况时 Bootloader 的一致性。在 `Bootstrap` 模式下创建一个自定义启动项后，`\EFI\BOOT\BOOTx64.efi` 这个文件路径将不再用于引导 OpenCore。
-
-*注 1*：某些固件的 NVRAM 本身存在问题，可能会出现无启动项支持，或者其他各种不兼容的情况。虽然可能性不大，但使用此选项可能会导致启动失败。请在已知兼容的主板上使用，风险自行考虑。请查看 [acidanthera/bugtracker#1222](https://github.com/acidanthera/bugtracker/issues/1222) 来了解与 Haswell 及其他一些主板相关的已知问题。
-
-*注 2*：请注意，虽然从 OpenCore 执行的 NVRAM 重置不会清除在 `Bootstrap` 模式中创建的启动选项，但是如果在加载 OpenCore 之前重置 NVRAM，则会同时清除 `Bootstrap` 创建的启动选项。在进行某些重要的更新时（如 OpenCore 0.6.4），须确保在禁用 Bootstrap 的情况下执行一次 NVRAM 重置，然后再重新启用。
-
-### 7. `DmgLoading`
+### 6. `DmgLoading`
 
 **Type**: `plist string`
 **Failsafe**: `Signed`
@@ -558,7 +567,7 @@ VirtualSMC 通过将磁盘加密密钥拆分保存在 NVRAM 和 RTC 中来执行
 - `Signed` --- 仅加载 Apple 签名的 DMG 磁盘映像。由于 Apple 安全启动的设计，不管 Apple 安全启动是什么状态，`Signed` 策略都会允许加载任何 Apple 签名的 macOS Recovery，这可能不是我们所希望的那样。
 - `Any` --- 任何 DMG 磁盘映像都会作为普通文件系统挂载。强烈不建议使用 `Any` 策略，当激活了 Apple 安全启动时会导致启动失败。
 
-### 8. `EnablePassword`
+### 7. `EnablePassword`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
@@ -568,7 +577,7 @@ VirtualSMC 通过将磁盘加密密钥拆分保存在 NVRAM 和 RTC 中来执行
 
 *注*：此功能尚在开发阶段，不推荐日常使用。
 
-### 9. `ExposeSensitiveData`
+### 8. `ExposeSensitiveData`
 
 **Type**: `plist integer`
 **Failsafe**: `0x6`
@@ -606,25 +615,25 @@ nvram 4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102:oem-vendor # SMBIOS Type2 Manufacture
 nvram 4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102:oem-board # SMBIOS Type2 ProductName
 ```
 
-### 10. `HaltLevel`
+### 9. `HaltLevel`
 
 **Type**: `plist integer`, 64 bit
 **Failsafe**: `0x80000000` (`DEBUG_ERROR`)
 **Description**: EDK II 调试级别的位掩码（总和），使 CPU 在获得 `HaltLevel` 消息后中止（停止执行）。可能的值与 `DisplayLevel` 值相匹配。
 
-### 11. `PasswordHash`
+### 10. `PasswordHash`
 
 **Type**: `plist data` 64 bytes
 **Failsafe**: all zero
 **Description**: 密码使用的哈希值（Hash）。
 
-### 12. `PasswordSalt`
+### 11. `PasswordSalt`
 
 **Type**: `plist data`
 **Failsafe**: empty
 **Description**: 密码使用的盐值（Salt）。
 
-### 13. `Vault`
+### 12. `Vault`
 
 **Type**: `plist string`
 **Failsafe**: `Secure`
@@ -667,7 +676,7 @@ rm vault.pub
 
 *注 2*：当 `vault.plist` 存在，或者当公钥嵌入到 `OpenCore.efi` 中的时候，无论这个选项是什么，`vault.plist` 和 `vault.sig` 都会被使用。设置这个选项仅仅会确保配置的合理性，否则启动过程会中止。
 
-### 14. `ScanPolicy`
+### 13. `ScanPolicy`
 
 **Type**: `plist integer`, 32 bit
 **Failsafe**: `0xF0103`
@@ -703,7 +712,7 @@ rm vault.pub
 - `OC_SCAN_ALLOW_DEVICE_SCSI`
 - `OC_SCAN_ALLOW_DEVICE_NVME`
 
-### 15. `SecureBootModel`
+### 14. `SecureBootModel`
 
 **Type**: `plist string`
 **Failsafe**: `Default`

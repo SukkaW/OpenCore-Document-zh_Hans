@@ -3,7 +3,7 @@ title: 7. Kernel
 description: OpenCore 安全配置，Kext 加载顺序以及屏蔽
 type: docs
 author_info: 由 Sukka、derbalkon 整理，由 Sukka、derbalkon 翻译。
-last_updated: 2020-12-13
+last_updated: 2021-01-31
 ---
 
 ## 7.1 简介
@@ -554,7 +554,22 @@ last_updated: 2020-12-13
 
 macOS Catalina 新增了一项额外的安全措施，导致在电源切换超时的时候会出现 Kernel Panic。配置错误的硬件可能会因此出现问题（如数字音频设备）、有的时候会导致睡眠唤醒的问题。这一 Quirk 和引导参数 `setpowerstate_panic=0` 功能大部分一致，但是后者只应该用于调试用途。
 
-### 17. `ThirdPartyDrives`
+### 17. `SetApfsTrimTimeout`
+
+**Type**: `plist integer`
+**Failsafe**: `-1`
+**Requirement**: 10.14 (not required for older)
+**Description**: Set trim timeout in microseconds for APFS filesystems on SSDs.
+
+APFS filesystem is designed in a way that the space controlled via spaceman structure is either used or free. This may be different in other filesystems where the areas can be marked as used, free, and *unmapped*. All free space is trimmed (unmapped/deallocated) at macOS startup. The trimming procedure for NVMe drives happens in LBA ranges due to the nature of `DSM` command with up to 256 ranges per command. The more fragmented the memory on the drive is, the more commands are necessary to trim all the free space.
+
+Depending on the SSD controller and the drive fragmenation trim procedure may take considerable amount of time, causing noticeable boot slowdown APFS driver explicitly ignores previously unmapped areas and trims them on boot again and again. To workaround boot slowdown macOS driver introduced a timeout (`9.999999` seconds) that stops trim operation when it did not manage to complete in time. On many controllers, such as Samsung, where the deallocation is not very fast, the timeout is reached very quickly. Essentially it means that macOS will try to trim all the same lower blocks that have already been deallocated, but will never have enough time to deallocate higher blocks once the fragmentation increases. This means that trimming on these SSDs will be broken soon after the installation, causing extra wear to the flash.
+
+One way to workaround the problem is to increase the timeout to a very high value, which at the cost of slow boot times (extra minutes) will ensure that all the blocks are trimmed. For this one can set this option to a high value, e.g. `4294967295`.
+
+Another way is to utilise over-provisioning if it is supported or create a dedicated unmapped partition where the reserve blocks can be found by the controller. In this case the trim operation can also be disabled by setting a very low timeout. e.g. `999`. See more details in this [article](https://interface31.ru/tech_it/2015/04/mozhno-li-effektivno-ispolzovat-ssd-bez-podderzhki-trim.html).
+
+### 18. `ThirdPartyDrives`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
@@ -563,7 +578,7 @@ macOS Catalina 新增了一项额外的安全措施，导致在电源切换超�
 
 *注*：NVMe SSD 通常无需这一修改。对于 AHCI SSD（如 SATA SSD），macOS 从 10.15 开始提供 `trimforce`，可以将 `01 00 00 00` 值写入 `APPLE_BOOT_VARIABLE_GUID` 命名空间中的 `EnableTRIM` 变量。
 
-### 18. `XhciPortLimit`
+### 19. `XhciPortLimit`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`

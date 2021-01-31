@@ -3,7 +3,7 @@ title: 11. UEFI
 description: UEFI 驱动以及加载顺序
 type: docs
 author_info: 由 xMuu、Sukka、derbalkon 整理，由 Sukka、derbalkon 翻译
-last_updated: 2021-01-13
+last_updated: 2021-01-31
 ---
 
 ## 11.1 简介
@@ -69,7 +69,6 @@ sudo bless --verbose --file /Volumes/VOLNAME/DIR/OpenShell.efi --folder /Volumes
 - [`CleanNvram`](https://github.com/acidanthera/OpenCorePkg)* --- 重置 NVRAM，以一个单独的工具呈现。
 - [`FwProtect`](https://github.com/acidanthera/OpenCorePkg)* --- 解锁和回锁 NVRAM 保护，让其他工具在从 OpenCore 启动时能够获得完整的 NVRAM 访问权限。
 - [`GopStop`](https://github.com/acidanthera/OpenCorePkg)* --- 用一个 [简单的场景](https://github.com/acidanthera/OpenCorePkg/tree/master/Application/GopStop) 测试 GraphicOutput 协议。
-- [`HdaCodecDump`](https://github.com/acidanthera/OpenCorePkg)* --- 解析和转储高清晰度音频编解码器（Codec）信息（需要 `AudioDxe`）。
 - [`KeyTester`](https://github.com/acidanthera/OpenCorePkg)* --- 在 `SimpleText` 模式下测试键盘输入。
 - [`MemTest86`](https://www.memtest86.com) --- 内存测试工具。
 - [`OpenCore Shell`](https://github.com/acidanthera/OpenCorePkg)* --- 由 OpenCore 配置的 [`UEFI Shell`](http://github.com/tianocore/edk2)，与绝大部分固件兼容。
@@ -88,18 +87,23 @@ OpenCanopy 为 `PickerAttributes` 提供了全面的支持，并提供了一套�
 
 预定义的图标放在 `\EFI\OC\Resources\Image` 目录下。下面提供了所支持的图标的完整列表（`.icns` 格式）。可选图标如未提供，将使用最接近的可用的图标。外置设备的条目将使用 `Ext` 前缀的图标（如 `OldExtHardDrive.icns`）。
 
-- `Cursor` --- 鼠标光标（必需）。
-- `Selected` --- 选定的项目（必需）。
-- `Selector` --- 选择项目（必需）。
-- `HardDrive` --- 通用的 OS（必需）。
-- `Apple` --- Apple OS。
-- `AppleRecv` --- Apple Recovery OS。
-- `AppleTM` --- Apple Time Machine。
-- `Windows` --- Windows。
-- `Other` --- 自定义条目（见 `Entries`）。
-- `ResetNVRAM` --- 重置 NVRAM 工具或系统动作。
-- `Shell` --- 具有 UEFI Shell 名称的条目（如 `OpenShell`）。
-- `Tool` --- 其他工具。
+*注*：以下标注的所有尺寸均为 1x 缩放级别的标准尺寸，其他缩放级别的尺寸须作相应调整。
+
+- `Cursor` --- 鼠标光标（必需，最大尺寸 144x144）。
+- `Selected` --- 选定的项目（必需，144x144）。
+- `Selector` --- 选择项目（必需，最大尺寸 144x40）。
+- `Left` --- 向左滚动（必需，最大尺寸 40x40）。
+- `Right` --- 向右滚动（必需，最大尺寸 40x40）。
+- `HardDrive` --- 通用的 OS（必需，128x128）。
+- `Background` --- 居中的背景图片。
+- `Apple` --- Apple OS (128x128)。
+- `AppleRecv` --- Apple Recovery OS (128x128)。
+- `AppleTM` --- Apple Time Machine (128x128)。
+- `Windows` --- Windows (128x128)。
+- `Other` --- 自定义条目（见 `Entries`，128x128）。
+- `ResetNVRAM` --- 重置 NVRAM 工具或系统动作（128x128）。
+- `Shell` --- 具有 UEFI Shell 名称的条目（如 `OpenShell`，128x128）。
+- `Tool` --- 其他工具（128x128）。
 
 预定义的标签放在 `\EFI\OC\Resources\Label` 目录下。每个标签都有 `.lbl` 或 `.l2x` 的后缀，以代表缩放级别。完整的标签列表如下所示。所有标签都是必需的。
 
@@ -113,7 +117,9 @@ OpenCanopy 为 `PickerAttributes` 提供了全面的支持，并提供了一套�
 - `Shell` --- 具有 UEFI Shell 名称的条目（如 `OpenShell`）。
 - `Tool` --- 其他工具。
 
-可以通过附带的实用程序来生成标签和图标：`disklabel` 和 `icnspack`。尺寸相关的信息请参考示例数据来了解。字体为 12pt 的 Helvetica，比例缩放。
+*注*：所有标签的高度必须为 12px，宽度不限。
+
+可以通过附带的实用程序来生成标签和图标：`disklabel` 和 `icnspack`。字体为 12pt 的 Helvetica，比例缩放。
 
 字体格式对应于 [AngelCode binary BMF](https://www.angelcode.com/products/bmfont)。虽然有很多工具可以生成字体文件，但目前还是建议使用 [dpFontBaker](https://github.com/danpla/dpfontbaker) 来生成位图字体（[用 CoreText 达到最佳效果](https://github.com/danpla/dpfontbaker/pull/1)），并使用 [fonverter](https://github.com/usr-sse2/fonverter) 将其导出为二进制格式。
 
@@ -318,7 +324,7 @@ APFS 驱动的版本号和 macOS 版本相关。较旧版本的 APFS 驱动可�
 ### 6. `PlayChime`
 
 **Type**: `plist string`
-**Failsafe**: empty string
+**Failsafe**: `Auto`
 **Description**: 开机时播放 Mac 特有的风铃的声音。
 
 启用此设置可通过内置的音频支持来播放开机时播放的声音。音量大小由 `MinimumVolume` 和 `VolumeAmplifier` 的设置，以及 `SystemAudioVolume` NVRAM 变量来决定。可用的值有：
@@ -392,7 +398,7 @@ APFS 驱动的版本号和 macOS 版本相关。较旧版本的 APFS 驱动可�
 ### 5. `KeySupportMode`
 
 **Type**: `plist string`
-**Failsafe**: empty string
+**Failsafe**: `Auto`
 **Description**: 将内部键盘的输入转换设置为 `AppleKeyMapAggregator` 协议模式。
 
 - `Auto` --- 从下述选项中自动选择
@@ -424,7 +430,7 @@ APFS 驱动的版本号和 macOS 版本相关。较旧版本的 APFS 驱动可�
 **Failsafe**: empty string
 **Description**: 设置用于内部指针驱动程序的 OEM 协议。
 
-目前只支持 `ASUS` 值，使用的是 Z87 和 Z97 主板上的特殊协议。更多详情请参考 [`LongSoft/UefiTool#116`](https://github.com/LongSoft/UEFITool/pull/116)。
+目前只支持 `ASUS` 值，使用的是 Z87 和 Z97 主板上的特殊协议。更多详情请参考 [`LongSoft/UefiTool#116`](https://github.com/LongSoft/UEFITool/pull/116)。如果启用了 `PointerSupport`，此处值不能为空。
 
 ### 9. `TimerResolution`
 
@@ -685,6 +691,14 @@ Apple 音频协议允许 macOS bootloader 和 OpenCore 播放声音和信号，�
 **Description**: 强制重新安装内置版本的 Unicode Collation 服务。建议启用这一选项以确保 UEFI Shell 的兼容性。一些较旧的固件破坏了 Unicode 排序规则，启用后可以修复这些系统上 UEFI Shell 的兼容性 (通常为用于 IvyBridge 或更旧的设备)
 
 ## 11.12 Quirks 属性
+
+### 1. `DisableSecurityPolicy`
+
+**Type**: `plist boolean`
+**Failsafe**: `false`
+**Description**: Disable platform security policy.
+
+*Note*: This setting disables various security features of the firmware, defeating the purpose of any kind of Secure Boot. Do NOT enable if you use UEFI Secure Boot.
 
 ### 1. `ExitBootServicesDelay`
 

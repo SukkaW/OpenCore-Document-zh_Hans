@@ -3,7 +3,7 @@ title: 10. PlatformInfo
 description: SMBIOS 机型信息配置
 type: docs
 author_info: 由 xMuu、Sukka、derbalkon 整理，由 Sukka、derbalkon 翻译
-last_updated: 2020-11-01
+last_updated: 2021-01-31
 ---
 
 机型信息由手动生成或填充的字段组成，以便与 macOS 服务兼容。配置的基础部分可以从 [`AppleModels`](https://github.com/acidanthera/OpenCorePkg/blob/master/AppleModels) 获得，这是一个可以从 [YAML](https://yaml.org/spec/1.2/spec.html) 格式的数据库中生成一组接口的工具包。这些字段将会被写入三个位置：
@@ -77,13 +77,17 @@ last_updated: 2020-11-01
 ### 7. `Generic`
 
 **Type**: `plist dictonary`
-**Description**: 更新所有字段。当 `Automatic` 激活时此处为只读。
+**Description**: 在 `Automatic` 模式下更新所有字段。
+
+*注*：当 `Automatic` 为 `false` 时将自动忽略此部分，但不可将此部分整段删除。
 
 ### 8. `DataHub`
 
 **Type**: `plist dictonary`
 **Optional**: `Automatic` 为 `true` 时可不填
-**Description**: 更新 Data Hub 字段。当 `Automatic` 未激活时此处为只读。
+**Description**: 在非 `Automatic` 模式下更新 Data Hub 字段。
+
+*注*：当 `Automatic` 为 `true` 时将自动忽略此部分，但不可将此部分整段删除。
 
 ### 9. `Memory`
 
@@ -91,17 +95,23 @@ last_updated: 2020-11-01
 **Optional**: When `CustomMemory` is `false`
 **Description**: 用于设置自定义的内存配置。
 
+*注*：当 `CustomMemory` 为 `false` 时将自动忽略此部分，但不可将此部分整段删除。
+
 ### 10. `PlatformNVRAM`
 
 **Type**: `plist dictonary`
 **Optional**: `Automatic` 为 `true` 时可不填
-**Description**: 更新 platform NVRAM 字段。当 `Automatic` 未激活时此处为只读。
+**Description**: 在非 `Automatic` 模式下更新 platform NVRAM 字段。
+
+*注*：当 `Automatic` 为 `true` 时将自动忽略此部分，但不可将此部分整段删除。
 
 ### 11. `SMBIOS`
 
 **Type**: `plist dictonary`
 **Optional**: `Automatic` 为 `true` 时可不填
-**Description**: 更新 SMBIOS 字段。当 `Automatic` 未激活时此处为只读。
+**Description**: 在非 `Automatic` 模式下更新 SMBIOS 字段。
+
+*注*：当 `Automatic` 为 `true` 时将自动忽略此部分，但不可将此部分整段删除。
 
 ## 10.2 Generic 属性
 
@@ -111,7 +121,7 @@ last_updated: 2020-11-01
 **Failsafe**: `false`
 **Description**: 将 SMBIOS 中的 Vendor 字段设置为 `Acidanthera`。
 
-由于在 `SystemManufacturer` 相关介绍中介绍的原因，在 SMBIOS 的 Vendor 字段中使用 `Apple` 是危险的。但是，某些固件可能无法提供有效值，可能会导致某些软件的破坏。
+由于在 `SystemManufacturer` 中阐述的原因，在 SMBIOS 的 Vendor 字段中使用 `Apple` 是危险的。但是，某些固件可能无法提供有效值，可能会导致某些软件的破坏。
 
 ### 2. `AdviseWindows`
 
@@ -124,7 +134,13 @@ last_updated: 2020-11-01
 - `FW_FEATURE_SUPPORTS_CSM_LEGACY_MODE` (`0x1`) - 如果没有此 bit，且 EFI 分区不是硬盘中的第一个分区，那么则无法重新启动到硬盘里的 Windows 系统。
 - `FW_FEATURE_SUPPORTS_UEFI_WINDOWS_BOOT` (`0x20000000`) - 如果没有此 bit，且 EFI 分区是硬盘中的第一个分区，那么则无法重新启动到硬盘里的 Windows 系统。
 
-### 3. `SystemMemoryStatus`
+### 3. `MaxBIOSVersion`
+
+**Type**: `plist boolean`
+**Failsafe**: `false`
+**Description**: Sets `BIOSVersion` to `9999.999.999.999.999`, recommended for legacy Macs when using `Automatic` PlatformInfo to avoid BIOS updates in unofficially supported macOS versions.
+
+### 4. `SystemMemoryStatus`
 
 **Type**: `plist string`
 **Failsafe**: `Auto`
@@ -138,40 +154,40 @@ last_updated: 2020-11-01
 
 *注*：在某些型号的 Mac 上，SPMemoryReporter.spreporter 会自动忽略 `PT_FEATURE_HAS_SOLDERED_SYSTEM_MEMORY`，并认为其内存是不可升级的，如 `MacBookPro10,x` 和所有的 `MacBookAir`。
 
-### 4. `ProcessorType`
+### 5. `ProcessorType`
 
 **Type**: `plist integer`
 **Failsafe**: `0` (Automatic)
 **Description**: 请参考下文 SMBIOS 章节中的 `ProcessorType`。
 
-### 5. `SystemProductName`
+### 6. `SystemProductName`
 
 **Type**: `plist string`
-**Failsafe**: `MacPro6,1`
+**Failsafe**: OEM specified or not installed
 **Description**: 请参考下文 SMBIOS 章节中的 `SystemProductName`。
 
-### 6. `SystemSerialNumber`
+### 7. `SystemSerialNumber`
 
 **Type**: `plist string`
-**Failsafe**: `OPENCORE_SN1`
+**Failsafe**: OEM specified or not installed
 **Description**: 请参考下文 SMBIOS 章节中的 `SystemSerialNumber`。
 
-### 7. `SystemUUID`
+### 8. `SystemUUID`
 
 **Type**: `plist string`, GUID
-**Failsafe**: OEM specified
+**Failsafe**: OEM specified or not installed
 **Description**: 请参考下文 SMBIOS 章节中的 `SystemUUID`。
 
-### 8. `MLB`
+### 9. `MLB`
 
 **Type**: `plist string`
-**Failsafe**: `OPENCORE_MLB_SN11`
+**Failsafe**: OEM specified or not installed
 **Description**: 请参考下文 SMBIOS 章节中的 `BoardSerialNumber`。
 
-### 9. `ROM`
+### 10. `ROM`
 
 **Type**: `plist data`, 6 bytes
-**Failsafe**: all zero
+**Failsafe**: OEM specified or not installed
 **Description**: 参考 `4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14:ROM`。
 
 ## 10.3 DataHub 属性

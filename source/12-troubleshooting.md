@@ -3,7 +3,7 @@ title: 12. 排错
 description: 当你遇到问题的时候应该看看这个
 type: docs
 author_info: 由 xMuu、Sukka、derbalkon 整理，由 Sukka、derbalkon 翻译
-last_updated: 2021-01-21
+last_updated: 2021-01-31
 ---
 
 ## 12.1 旧版 Apple 操作系统
@@ -14,7 +14,7 @@ last_updated: 2021-01-21
 
 ### 1. macOS 10.8 和 10.9
 
-- 这两个系统的磁盘映像使用的是 Apple 分区方案（Apple Partitioning Scheme），需要用到专门的 `PartitionDxe` 驱动程序来进行 DMG 恢复和安装。可以将 `DmgLoading` 设置为 `Disabled`，这样就可以在不加载 DMG 的情况下运行恢复功能，同时也避免了 `PartitionDxe` 的需求。
+- 这两个系统的磁盘映像使用的是 Apple 分区方案（Apple Partitioning Scheme），需要 `OpenPartitionDxe` 驱动程序来进行 DMG 恢复和安装（OpenDuet 中也同样需要）。可以将 `DmgLoading` 设置为 `Disabled`，这样就可以在不加载 DMG 的情况下运行恢复功能，同时也避免了 `OpenPartitionDxe` 的需求。
 - 缓存的内核映像通常不包括网络（`IONetworkingFamily`）或音频（`IOAudioFamily`）的家族驱动，这些家族驱动往往需要使用 `Force` 加载来注入。
 
 ### 2. macOS 10.7
@@ -28,7 +28,7 @@ last_updated: 2021-01-21
 
 - 上述问题均存在。
 - `SSSE3` 支持是启用了 64 位用户空间的 macOS 10.6 内核的要求。这个限制大多可以通过启用 `LegacyCommpage` Quirk 来解除。
-- 最近发布的 macOS 10.6 安装镜像为 macOS 10.6.7 版本号 `10J3250`（`MacBookPro8,x` 专用）和 `10J4139`（`iMac12,x` 专用，不含 Xcode）。这些镜像仅限于特定的几款机型，并且不支持使用 `-no_compat_check` 来忽略兼容性检查。如果你拥有 macOS 10.6 的合法副本，又不想被上述限制所约束，可以在 [这里](https://mega.nz/folder/z5YUhYTb%23gA_IRY5KMuYpnNCg7kR3ug) 找到无机型限制的修改版镜像（`ACDT` 后缀），更多细节在 `DIGEST.txt` 中。记住，这些都是经过 OpenCore 测试的最早的 macOS 10.6 版本。
+- 最近发布的 macOS 10.6 安装镜像为 macOS 10.6.7 版本号 `10J3250`（`MacBookPro8,x` 专用）和 `10J4139`（`iMac12,x` 专用，不含 Xcode）。这些镜像仅限于特定的几款机型，并且不支持使用 `-no_compat_check` 来忽略兼容性检查。如果你拥有 macOS 10.6 的合法副本，又不想被上述限制所约束，可以在 [这里](https://archive.org/details/10.6.7-10j3250-disk-images)（或 [MEGA 镜像](https://mega.nz/folder/z5YUhYTb#gA_IRY5KMuYpnNCg7kR3ug)）找到无机型限制的修改版镜像（`ACDT` 后缀），更多细节在 `DIGEST.txt` 中。记住，这些都是经过 OpenCore 测试的最早的 macOS 10.6 版本。
 
 机型检查可以被手动去除，大体思路是用 `Flat Package Editor` 之类的工具编辑 `OSInstall.mpkg`，让 `Distribution` 脚本在 `hwbeModelCheck` 函数中总是返回 `true`。仅更新映像中某一的文件而不影响到其他文件是相当困难的，而且还有可能因为内核缓存日期的改变而导致启动速度变慢，因此建议按照如下命令重建映像：
 
@@ -55,26 +55,26 @@ rm -rf DS_STORE RW
 - 上述问题均存在。
 - 这个版本的 macOS 不支持 `x86_64` 内核，需要 `i386` 内核扩展和补丁。
 - 这个版本的 macOS 使用了第一个版本（V1）的 `prelinkedkernel`，但它的 Kext 符号表被 Kext 工具破坏了。这个细微的差别使得 `prelinkedkernel` Kext 无法被 OpenCore 注入。`Mkext` Kext 的注入仍然正常，也不会有明显的性能消耗，而且当 `KernelCache` 设置为 `Auto` 时，`Mkext` 会被自动选择。
-- 最后发布的 macOS 10.5 的安装镜像是 macOS 10.5.7 版本号 `9J3050`（`MacBookPro5,3` 专用）。与其他版本系统不同的是，这个镜像不受机型限制，可以原样使用。如果你拥有 macOS 10.5 的合法副本，可以在 [这里](https://mega.nz/folder/inRBTarD%23zanf7fUbviwz3WHBU5xpCg) 找到原始的 `9J3050` 镜像，更多细节在 `DIGEST.txt` 中。注意，这是经过 OpenCore 测试的最早的 macOS 10.5 版本。
+- 最后发布的 macOS 10.5 的安装镜像是 macOS 10.5.7 版本号 `9J3050`（`MacBookPro5,3` 专用）。与其他版本系统不同的是，这个镜像不受机型限制，可以原样使用。如果你拥有 macOS 10.5 的合法副本，可以在 [这里](https://archive.org/details/10.5.7-9-j-3050)（或 [MEGA 镜像](https://mega.nz/folder/inRBTarD#zanf7fUbviwz3WHBU5xpCg)）找到原始的 `9J3050` 镜像，更多细节在 `DIGEST.txt` 中。注意，这是经过 OpenCore 测试的最早的 macOS 10.5 版本。
 
 ### 5. macOS 10.4
 
 - 上述问题均存在。
 - 这个版本的 macOS 有一个硬性要求，即需要两张光盘或两个 USB 安装介质来访问第二张 DVD 盘安装介质上的所有可选包。
-- 最后发布的 macOS 10.4 的安装镜像是 macOS 10.4.10 版本号 `8R4061a`（`MacBookPro3,1` 专用）和 `8R4088`（`iMac7,1` 专用）。这些镜像与新版 macOS 一样，仅限于特定的几款机型。如果你拥有 macOS 10.4 的合法副本，可以在 [这里](https://mega.nz/folder/D3ASzLzA%237sjYXE2X09f6aGjol_C7dg) 找到无机型限制的修改版 `8R4088` 镜像（后缀为 `ACDT`），更多细节在 `DIGEST.txt` 中。注意，这些是经过 OpenCore 测试的最早的 macOS 10.4 版本。
+- 最后发布的 macOS 10.4 的安装镜像是 macOS 10.4.10 版本号 `8R4061a`（`MacBookPro3,1` 专用）和 `8R4088`（`iMac7,1` 专用）。这些镜像与新版 macOS 一样，仅限于特定的几款机型。如果你拥有 macOS 10.4 的合法副本，可以在 [这里](https://archive.org/details/10.4.10-8-r-4088-acdt)（或 [MEGA 镜像](https://mega.nz/folder/D3ASzLzA#7sjYXE2X09f6aGjol_C7dg)）找到无机型限制的修改版 `8R4088` 镜像（后缀为 `ACDT`），更多细节在 `DIGEST.txt` 中。注意，这些是经过 OpenCore 测试的最早的 macOS 10.4 版本。
 
 ## 12.2 UEFI 安全启动
 
-OpenCore 的设计初衷是在 固件 和 操作系统 之间提供一个安全的启动链。在大多数 x86 平台上，可信加载（Trusted Loading）是通过 [UEFI 安全启动](https://en.wikipedia.org/wiki/UEFI_Secure_Boot) 模式实现的。OpenCore 不仅完全支持这种模式，还扩展了它的功能，以确保通过 [Vault](8-misc.html#13-Vault) 进行配置的加密存储，并使用自定义的验证过程向操作系统提供可信加载，例如 [Apple 安全启动](8-misc.html#15-SecureBootModel)。正确的安全启动链需要通过以下步骤来仔细配置：
+OpenCore 的设计初衷是在 固件 和 操作系统 之间提供一个安全的启动链。在大多数 x86 平台上，可信加载（Trusted Loading）是通过 [UEFI 安全启动](https://en.wikipedia.org/wiki/UEFI_Secure_Boot) 模式实现的。OpenCore 不仅完全支持这种模式，还扩展了它的功能，以确保通过 [Vault](8-misc.html#12-Vault) 进行配置的加密存储，并使用自定义的验证过程向操作系统提供可信加载，例如 [Apple 安全启动](8-misc.html#14-SecureBootModel)。正确的安全启动链需要通过以下步骤来仔细配置：
 
-1. 如果要启动的系统是 macOS，则需要通过设置 `SecureBootModel` 来启用 Apple 安全启动。请注意，并不是每个 macOS 版本都能使用 Apple 安全启动，具体限制详见 [Apple 安全启动](8-misc.html#15-SecureBootModel) 章节。
-2. 旧的 DMG 恢复镜像往往很脆弱、易受攻击，如果担心因为加载它而突破防线，可以通过设置 `DmgLoading` 为 `Disabled` 来禁用 DMG 加载。**非必需**，但建议使用。参阅 [DMG 加载](8-misc.html#7-DmgLoading) 部分来权衡利弊。
+1. 如果要启动的系统是 macOS，则需要通过设置 `SecureBootModel` 来启用 Apple 安全启动。请注意，并不是每个 macOS 版本都能使用 Apple 安全启动，具体限制详见 [Apple 安全启动](8-misc.html#14-SecureBootModel) 章节。
+2. 旧的 DMG 恢复镜像往往很脆弱、易受攻击，如果担心因为加载它而突破防线，可以通过设置 `DmgLoading` 为 `Disabled` 来禁用 DMG 加载。**非必需**，但建议使用。参阅 [DMG 加载](8-misc.html#6-DmgLoading) 部分来权衡利弊。
 3. 将 `MinDate` 和 `MinVersion` 设置为 `0`，以确保 APFS JumpStart 功能限制旧的驱动程序加载。更多细节参见 [APFS JumpStart](11-uefi.html#11-7-APFS-属性) 部分。除此之外，手动安装 `apfs.efi` 驱动也可以达到相同效果。
 4. 确保你想要运行的操作系统不加载 `Force` 驱动也能正常启动。
 5. 确保使用 `ScanPolicy` 限制加载不受信任的设备。要想做到足够安全，最好的办法是禁止加载 所有可移动设备 和 未知的文件系统。
 6. 使用私钥给所有已安装的驱动程序和工具签名。不要对提供管理员权限的工具（如 UEFI Shell）签名。
-7. 加密存储你的配置，详见 [Vault](8-misc.html#13-Vault) 部分。
-8. 使用同一私钥签名该系统使用的所有 OpenCore 二进制文件（`BOOTX64.efi`, `BOOTIa32.efi`, `Bootstrap.efi`, `OpenCore.efi`）。
+7. 加密存储你的配置，详见 [Vault](8-misc.html#12-Vault) 部分。
+8. 使用同一私钥签名该系统使用的所有 OpenCore 二进制文件（`BOOTX64.efi`, `BOOTIa32.efi`, `OpenCore.efi`, 自定义启动器）。
 9. 如果需要用到第三方操作系统（非微软或 Apple 制造）的 bootloader，也同样为它们签名。对于 Linux，可以选择安装微软签名的 Shim bootloader，具体解释见 [Debian Wiki](https://wiki.debian.org/SecureBoot)。
 10. 在 BIOS 中开启 UEFI 安全启动，并用自己的私钥安装证书。很多文章都介绍了生成证书的具体方法，比如 [这篇文章](https://habr.com/en/post/273497)，本文档不再赘述。如果需要启动 Windows，还需要添加 [Microsoft Windows Production CA 2011](http://go.microsoft.com/fwlink/?LinkID=321192) 证书。如果需要启动 Option ROM，或决定使用已签名的 Linux 驱动程序，还需要添加 [Microsoft UEFI Driver Signing CA](http://go.microsoft.com/fwlink/?LinkId=321194)。
 11. 设置密码保护防止固件设置被篡改，避免 UEFI 安全启动在你不知情的情况下被禁用。
