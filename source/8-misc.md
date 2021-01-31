@@ -3,7 +3,7 @@ title: 8. Misc
 description: 关于 OpenCore 行为的其他配置
 type: docs
 author_info: 由 xMuu、Sukka、derbalkon 整理、由 Sukka、derbalkon 翻译。
-last_updated: 2021-01-31
+last_updated: 2021-02-01
 ---
 
 ## 8.1 简介
@@ -168,28 +168,27 @@ OpenCore 尽可能地遵循 `bless` 模式，即 `Apple Boot Policy`。`bless` �
 
 **Type**: `plist string`
 **Failsafe**: `Disabled`
-**Description**: Register launcher option in firmware preferences for persistence.
+**Description**: 在固件偏好设置中注册启动器选项，以保证 bootloader 的持久与一致性。
 
-Valid values:
+有效值有：
 
-- `Disabled` — do nothing.
-- `Full` — create or update top-priority boot option in UEFI variable storage at bootloader startup. For this
-option to work `RequestBootVarRouting` is required to be enabled.
-- `Short` — create a short boot option instead of a complete one. This variant is useful for some older firmwares, Insyde in particular, but possibly others, which cannot handle full device paths.
+- `Disabled` --- 什么都不做。
+- `Full` --- 在 bootloader 启动时，在 UEFI 变量存储中创建或更新最高优先级的启动项。要使用这个选项，必须同时开启 `RequestBootVarRouting`。
+- `Short` --- 创建一个短的、非完整的启动项，create a short boot option instead of a complete one. 此值对于某些固件很有用，比如 Insyde，或者其他无法处理完整设备路径的固件。
 
-This option provides integration with third-party operating system installation and upgrade at the times they overwrite `\EFI\BOOT\BOOTx64.efi` file. By creating a custom option in this file path becomes no longer used for bootstrapping OpenCore. The path used for bootstrapping is specified in `LauncherPath` option.
+在安装和升级第三方操作系统时 `\EFI\BOOT\BOOTx64.efi` 文件可能会被覆盖掉，该选项则保证了出现覆盖情况时 bootloader 的一致性。创建一个自定义启动项后，`\EFI\BOOT\BOOTx64.efi` 这个文件路径将不再用于引导 OpenCore。自定义的引导路径在 `LauncherPath` 选项中指定。
 
-*Note 1*: Some types of firmware may have faulty NVRAM, no boot option support, or other incompatibilities. While unlikely, the use of this option may even cause boot failures. This option should be used without any warranty exclusively on the boards known to be compatible. Check [acidanthera/bugtracker#1222](https://github.com/acidanthera/bugtracker/issues/1222) for some known issues with Haswell and other boards.
+*注 1*：某些固件的 NVRAM 本身存在问题，可能会出现无启动项支持，或者其他各种不兼容的情况。虽然可能性不大，但使用此选项可能会导致启动失败。请在已知兼容的主板上使用，风险自行考虑。请查看 [acidanthera/bugtracker#1222](https://github.com/acidanthera/bugtracker/issues/1222) 来了解与 Haswell 及其他一些主板相关的已知问题。
 
-*Note 2*: Be aware that while NVRAM reset executed from OpenCore should not erase the boot option created in `Bootstrap`, executing NVRAM reset prior to loading OpenCore will remove it. For significant implementation updates (e.g. in OpenCore 0.6.4) make sure to perform NVRAM reset with `Bootstrap` disabled before reenabling.
+*注 2*：虽然从 OpenCore 执行的 NVRAM 重置不会清除在 `Bootstrap` 模式中创建的启动选项，但在加载 OpenCore 之前重置 NVRAM 则会同时清除。在进行某些涉及重要实现的更新时（如 OpenCore 0.6.4），须确保在禁用 `Bootstrap` 的情况下执行一次 NVRAM 重置，然后再重新启用。
 
 ### 5. `LauncherPath`
 
 **Type**: `plist string`
 **Failsafe**: `Default`
-**Description**: Launch path for `LauncherOption`.
+**Description**: `LauncherOption` 的启动引导路径。
 
-`Default` stays for launched `OpenCore.efi`, any other path, e.g. `\EFI\Launcher.efi`, can be used to provide custom loaders, which are supposed to load `OpenCore.efi` themselves.
+`Default` 用于引导 `OpenCore.efi`。其他的路径（如 `\EFI\Launcher.efi`）可用来提供自定义加载器，用于自行加载 `OpenCore.efi`。
 
 ### 4. `PickerAttributes`
 

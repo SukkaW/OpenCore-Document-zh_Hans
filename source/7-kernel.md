@@ -3,7 +3,7 @@ title: 7. Kernel
 description: OpenCore 安全配置，Kext 加载顺序以及屏蔽
 type: docs
 author_info: 由 Sukka、derbalkon 整理，由 Sukka、derbalkon 翻译。
-last_updated: 2021-01-31
+last_updated: 2021-02-01
 ---
 
 ## 7.1 简介
@@ -559,15 +559,15 @@ macOS Catalina 新增了一项额外的安全措施，导致在电源切换超�
 **Type**: `plist integer`
 **Failsafe**: `-1`
 **Requirement**: 10.14 (not required for older)
-**Description**: Set trim timeout in microseconds for APFS filesystems on SSDs.
+**Description**: 为 SSD 上的 APFS 文件系统设置微秒级的 trim 超时时间。
 
-APFS filesystem is designed in a way that the space controlled via spaceman structure is either used or free. This may be different in other filesystems where the areas can be marked as used, free, and *unmapped*. All free space is trimmed (unmapped/deallocated) at macOS startup. The trimming procedure for NVMe drives happens in LBA ranges due to the nature of `DSM` command with up to 256 ranges per command. The more fragmented the memory on the drive is, the more commands are necessary to trim all the free space.
+APFS 文件系统的设计方式是，空间由 Spaceman (The Space Manager) 结构控制，要么为已使用，要么为空闲。而其他文件系统，则可以被标记为 已使用、空闲 或 *未映射*。macOS 启动时，所有空闲的空间都会被 trim 处理。由于 `DSM` 命令的特性，每个命令最多拥有 256 个范围，因此 NVMe 驱动器的 trim 过程发生在 LBA 范围内。硬盘上存储的内容越分散，就需要越多的命令对所有空闲空间进行 trim。
 
-Depending on the SSD controller and the drive fragmenation trim procedure may take considerable amount of time, causing noticeable boot slowdown APFS driver explicitly ignores previously unmapped areas and trims them on boot again and again. To workaround boot slowdown macOS driver introduced a timeout (`9.999999` seconds) that stops trim operation when it did not manage to complete in time. On many controllers, such as Samsung, where the deallocation is not very fast, the timeout is reached very quickly. Essentially it means that macOS will try to trim all the same lower blocks that have already been deallocated, but will never have enough time to deallocate higher blocks once the fragmentation increases. This means that trimming on these SSDs will be broken soon after the installation, causing extra wear to the flash.
+Trim 过程耗时取决于 SSD 控制器和硬盘碎片，可能需要相当长的时间，导致启动时间肉眼可见地变长，APFS 驱动程序忽略之前未映射的区域，并在启动时一次又一次地对这些区域进行 trim。为了解决开机速度慢的问题，macOS 驱动引入了一个超时时间（`9.999999` 秒）来中止未能及时完成的 trim 操作。在许多控制器上（如三星）解除分配的过程较慢，很容易达到超时时间，也就是说，macOS 会尝试 trim 所有已经解除分配的低位区块，但一旦碎片增加，就永远没有足够的时间去解除分配高位区块。这意味着这些 SSD 安装后不久，trim 指令就会被破坏，从而造成闪存的额外损耗。
 
-One way to workaround the problem is to increase the timeout to a very high value, which at the cost of slow boot times (extra minutes) will ensure that all the blocks are trimmed. For this one can set this option to a high value, e.g. `4294967295`.
+解决这个问题的方法之一是将超时时间设置为一个非常高的值（如 `4294967295`），这样将会以较长的启动时间（数分钟）为代价来确保所有的区块都被 trim 处理。
 
-Another way is to utilise over-provisioning if it is supported or create a dedicated unmapped partition where the reserve blocks can be found by the controller. In this case the trim operation can also be disabled by setting a very low timeout. e.g. `999`. See more details in this [article](https://interface31.ru/tech_it/2015/04/mozhno-li-effektivno-ispolzovat-ssd-bez-podderzhki-trim.html).
+另一种方法是利用超额配置（如果支持），或者创建一个专用的未映射分区，控制器可以在该分区中找到保留块。在这种情况下，可以设置一个非常低的超时时间来禁止 trim 操作，例如 `999`。更多细节详见 [这篇文章](https://interface31.ru/tech_it/2015/04/mozhno-li-effektivno-ispolzovat-ssd-bez-podderzhki-trim.html)。
 
 ### 18. `ThirdPartyDrives`
 

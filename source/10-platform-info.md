@@ -3,7 +3,7 @@ title: 10. PlatformInfo
 description: SMBIOS 机型信息配置
 type: docs
 author_info: 由 xMuu、Sukka、derbalkon 整理，由 Sukka、derbalkon 翻译
-last_updated: 2021-01-31
+last_updated: 2021-02-01
 ---
 
 机型信息由手动生成或填充的字段组成，以便与 macOS 服务兼容。配置的基础部分可以从 [`AppleModels`](https://github.com/acidanthera/OpenCorePkg/blob/master/AppleModels) 获得，这是一个可以从 [YAML](https://yaml.org/spec/1.2/spec.html) 格式的数据库中生成一组接口的工具包。这些字段将会被写入三个位置：
@@ -138,7 +138,7 @@ last_updated: 2021-01-31
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
-**Description**: Sets `BIOSVersion` to `9999.999.999.999.999`, recommended for legacy Macs when using `Automatic` PlatformInfo to avoid BIOS updates in unofficially supported macOS versions.
+**Description**: 将 `BIOSVersion` 设置为 `9999.999.999.999.999`，建议使用 `Automatic` 选项的旧款 Mac 这样设置, 在运行非官方支持的 macOS 版本时可避免 BIOS 升级。
 
 ### 4. `SystemMemoryStatus`
 

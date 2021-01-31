@@ -3,7 +3,7 @@ title: 11. UEFI
 description: UEFI 驱动以及加载顺序
 type: docs
 author_info: 由 xMuu、Sukka、derbalkon 整理，由 Sukka、derbalkon 翻译
-last_updated: 2021-01-31
+last_updated: 2021-02-01
 ---
 
 ## 11.1 简介
@@ -696,9 +696,9 @@ Apple 音频协议允许 macOS bootloader 和 OpenCore 播放声音和信号，�
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
-**Description**: Disable platform security policy.
+**Description**: 禁用平台安全策略。
 
-*Note*: This setting disables various security features of the firmware, defeating the purpose of any kind of Secure Boot. Do NOT enable if you use UEFI Secure Boot.
+*注*：此设置可禁用固件的各种安全功能，因此也会同时破坏安全启动策略。如果打算使用 UEFI 安全启动，请勿启用此项。
 
 ### 1. `ExitBootServicesDelay`
 
