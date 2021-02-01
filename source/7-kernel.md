@@ -3,7 +3,7 @@ title: 7. Kernel
 description: OpenCore 安全配置，Kext 加载顺序以及屏蔽
 type: docs
 author_info: 由 Sukka、derbalkon 整理，由 Sukka、derbalkon 翻译。
-last_updated: 2020-12-13
+last_updated: 2021-02-01
 ---
 
 ## 7.1 简介
@@ -554,7 +554,22 @@ last_updated: 2020-12-13
 
 macOS Catalina 新增了一项额外的安全措施，导致在电源切换超时的时候会出现 Kernel Panic。配置错误的硬件可能会因此出现问题（如数字音频设备）、有的时候会导致睡眠唤醒的问题。这一 Quirk 和引导参数 `setpowerstate_panic=0` 功能大部分一致，但是后者只应该用于调试用途。
 
-### 17. `ThirdPartyDrives`
+### 17. `SetApfsTrimTimeout`
+
+**Type**: `plist integer`
+**Failsafe**: `-1`
+**Requirement**: 10.14 (not required for older)
+**Description**: 为 SSD 上的 APFS 文件系统设置微秒级的 trim 超时时间。
+
+APFS 文件系统的设计方式是，空间由 Spaceman (The Space Manager) 结构控制，要么为已使用，要么为空闲。而其他文件系统，则可以被标记为 已使用、空闲 或 *未映射*。macOS 启动时，所有空闲的空间都会被 trim 处理。由于 `DSM` 命令的特性，每个命令最多拥有 256 个范围，因此 NVMe 驱动器的 trim 过程发生在 LBA 范围内。硬盘上存储的内容越分散，就需要越多的命令对所有空闲空间进行 trim。
+
+Trim 过程耗时取决于 SSD 控制器和硬盘碎片，可能需要相当长的时间，导致启动时间肉眼可见地变长，APFS 驱动程序忽略之前未映射的区域，并在启动时一次又一次地对这些区域进行 trim。为了解决开机速度慢的问题，macOS 驱动引入了一个超时时间（`9.999999` 秒）来中止未能及时完成的 trim 操作。许多控制器（如三星）解除分配的过程较慢，很容易达到超时时间，也就是说，macOS 会尝试 trim 所有已经解除分配的低位区块，但一旦碎片增加，就再也没有足够的时间去解除分配高位区块了。这意味着这些 SSD 安装后不久，trim 指令就会被破坏，从而造成闪存的额外损耗。
+
+解决这个问题的方法之一是将超时时间设置为一个非常高的值（如 `4294967295`），这样将会以较长的启动时间（数分钟）为代价来确保所有的区块都被 trim 处理。
+
+另一种方法是利用超额配置（如果支持），或者创建一个专用的未映射分区，控制器可以在该分区中找到保留块。在这种情况下，可以设置一个非常低的超时时间来禁止 trim 操作，例如 `999`。更多细节详见 [这篇文章](https://interface31.ru/tech_it/2015/04/mozhno-li-effektivno-ispolzovat-ssd-bez-podderzhki-trim.html)。
+
+### 18. `ThirdPartyDrives`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
@@ -563,7 +578,7 @@ macOS Catalina 新增了一项额外的安全措施，导致在电源切换超�
 
 *注*：NVMe SSD 通常无需这一修改。对于 AHCI SSD（如 SATA SSD），macOS 从 10.15 开始提供 `trimforce`，可以将 `01 00 00 00` 值写入 `APPLE_BOOT_VARIABLE_GUID` 命名空间中的 `EnableTRIM` 变量。
 
-### 18. `XhciPortLimit`
+### 19. `XhciPortLimit`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
