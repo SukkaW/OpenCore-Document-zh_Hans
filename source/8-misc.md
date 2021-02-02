@@ -3,7 +3,7 @@ title: 8. Misc
 description: 关于 OpenCore 行为的其他配置
 type: docs
 author_info: 由 xMuu、Sukka、derbalkon 整理、由 Sukka、derbalkon 翻译。
-last_updated: 2021-02-01
+last_updated: 2021-02-02
 ---
 
 ## 8.1 简介
@@ -441,7 +441,7 @@ nvram 4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102:boot-log | awk '{gsub(/%0d%0a%00/,"")
 - `OCPAVP` — PavpProvision
 - `OCRST` — ResetSystem
 - `OCUI` — OpenCanopy
-- `OC` — OpenCore main
+- `OC` — OpenCore main, also OcMainLib
 - `VMOPT` — VerifyMemOpt
 
 **Libraries**:
@@ -473,6 +473,7 @@ nvram 4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102:boot-log | awk '{gsub(/%0d%0a%00/,"")
 - `OCMCO` — OcMachoLib
 - `OCME` — OcHeciLib
 - `OCMM` — OcMemoryLib
+- `OCPE` — OcPeCoffLib, OcPeCoffExtLib
 - `OCPI` — OcFileLib, partition info
 - `OCPNG` — OcPngLib
 - `OCRAM` — OcAppleRamDiskLib

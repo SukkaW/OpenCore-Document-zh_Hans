@@ -3,7 +3,7 @@ title: 10. PlatformInfo
 description: SMBIOS 机型信息配置
 type: docs
 author_info: 由 xMuu、Sukka、derbalkon 整理，由 Sukka、derbalkon 翻译
-last_updated: 2021-02-01
+last_updated: 2021-02-02
 ---
 
 机型信息由手动生成或填充的字段组成，以便与 macOS 服务兼容。配置的基础部分可以从 [`AppleModels`](https://github.com/acidanthera/OpenCorePkg/blob/master/AppleModels) 获得，这是一个可以从 [YAML](https://yaml.org/spec/1.2/spec.html) 格式的数据库中生成一组接口的工具包。这些字段将会被写入三个位置：
@@ -73,6 +73,28 @@ last_updated: 2021-02-01
 - `Custom` --- 把第一个 SMBIOS 表（`gEfiSmbios(3)TableGuid`）写入 `gOcCustomSmbios(3)TableGuid`，以此来解决固件在 ExitBootServices 覆盖 SMBIOS 内容的问题；否则等同于 `Create`。需要 AppleSmbios.kext 和 AppleACPIPlatform.kext 打补丁来读取另一个 GUID: `"EB9D2D31"` - `"EB9D2D35"` (in ASCII)， 这一步由 `CustomSMBIOSGuid` Quirk 自动完成。
 
 *注*： 使用 `Custom` 有一个副作用（译者注：我怎么感觉是好事）使得 SMBIOS 设置只对 macOS 生效，避免了与现有的 Windows 激活和依赖机型的 OEM 设置的相关问题。不过，苹果在 Windows 下的特定工具（译者注：如 BootCamp for Windows）可能会受到影响。
+
+### 7. `UseRawUuidEncoding`
+
+**Type**: `plist boolean`
+**Failsafe**: `false`
+**Description**: Use raw encoding for SMBIOS UUIDs.
+
+Each UUID `AABBCCDD-EEFF-GGHH-IIJJ-KKLLMMNNOOPP` is essentially a hexadecimal 16-byte number. It can be encoded in two ways:
+
+- `Big Endian` — by writing all the bytes as they are without making any order changes (`{AA BB CC DD EE FF GG HH II JJ KK LL MM NN OO PP}`). This method is also known as [RFC 4122](https://tools.ietf.org/html/rfc4122) encoding or `Raw` encoding.
+- `Little Endian` — by interpreting the bytes as numbers and using Little Endian byte representation (`{DD CC BB AA FF EE HH GG II JJ KK LL MM NN OO PP}`).
+
+SMBIOS specification did not explicitly specify the encoding format for the UUID up to SMBIOS 2.6, where it stated that `Little Endian` encoding shall be used. This led to the confusion in both firmware implementations and system software as different vendors used different encodings prior to that.
+
+- Apple uses `Big Endian` format everywhere but it ignores SMBIOS UUID within macOS.
+- `dmidecode` uses `Big Endian` format for SMBIOS 2.5.x or lower and `Little Endian` for 2.6 and newer.
+Acidanthera dmidecode prints all the three.
+- Windows uses `Little Endian` format everywhere, but it only affects the visual representation of the values.
+
+OpenCore always sets a recent SMBIOS version (currently 3.2) when generating the modified DMI tables. If `UseRawUuidEncoding` is enabled, then `Big Endian` format is used to store the `SystemUUID` data. Otherwise `Little Endian` is used.
+
+*Note*: Since UUIDs used in DataHub and NVRAM are not standardised and are added by Apple, this preference does not affect them. Unlike SMBIOS they are always stored in the `Big Endian` format.
 
 ### 7. `Generic`
 
