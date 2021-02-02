@@ -78,23 +78,22 @@ last_updated: 2021-02-02
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
-**Description**: Use raw encoding for SMBIOS UUIDs.
+**Description**: 对 SMBIOS 的 UUID 使用原始编码。
 
-Each UUID `AABBCCDD-EEFF-GGHH-IIJJ-KKLLMMNNOOPP` is essentially a hexadecimal 16-byte number. It can be encoded in two ways:
+基本上每个 UUID `AABBCCDD-EEFF-GGHH-IIJJ-KKLLMMNNOOPP` 都是 16 字节的十六进制数字，编码方式有两种：
 
-- `Big Endian` — by writing all the bytes as they are without making any order changes (`{AA BB CC DD EE FF GG HH II JJ KK LL MM NN OO PP}`). This method is also known as [RFC 4122](https://tools.ietf.org/html/rfc4122) encoding or `Raw` encoding.
-- `Little Endian` — by interpreting the bytes as numbers and using Little Endian byte representation (`{DD CC BB AA FF EE HH GG II JJ KK LL MM NN OO PP}`).
+- `Big Endian` --- 按原样书写所有字节，顺序不作任何变化（`{AA BB CC DD EE FF GG HH II JJ KK LL MM NN OO PP}`）。这种方法也被称为 [RFC 4122](https://tools.ietf.org/html/rfc4122) 编码，或 `Raw` 编码。
+- `Little Endian` --- 将字节解释为数字，并使用小字节序（Little Endian）编码格式（`{DD CC BB AA FF EE HH GG II JJ KK LL MM NN OO PP}`）。
 
-SMBIOS specification did not explicitly specify the encoding format for the UUID up to SMBIOS 2.6, where it stated that `Little Endian` encoding shall be used. This led to the confusion in both firmware implementations and system software as different vendors used different encodings prior to that.
+SMBIOS 规范没有明确规定 UUID 的编码格式，直到 SMBIOS 2.6 才说明应使用 `Little Endian` 编码，这就导致了固件实现和系统软件的双重混乱，因为在此之前不同的厂商使用不同的编码格式。
 
-- Apple uses `Big Endian` format everywhere but it ignores SMBIOS UUID within macOS.
-- `dmidecode` uses `Big Endian` format for SMBIOS 2.5.x or lower and `Little Endian` for 2.6 and newer.
-Acidanthera dmidecode prints all the three.
-- Windows uses `Little Endian` format everywhere, but it only affects the visual representation of the values.
+- Apple 普遍使用 `Big Endian` 编码格式，唯一例外的是 macOS 的 SMBIOS UUID。
+- `dmidecode` 对 SMBIOS 2.5.x 或更低的版本使用 `Big Endian` 编码格式。对 2.6 或更高的版本使用 `Little Endian` 编码格式。这三种格式 Acidanthera [dmidecode](https://github.com/acidanthera/dmidecode) 均可打印。
+- Windows 普遍使用 `Little Endian` 编码格式，但它只影响数值的观感。
 
-OpenCore always sets a recent SMBIOS version (currently 3.2) when generating the modified DMI tables. If `UseRawUuidEncoding` is enabled, then `Big Endian` format is used to store the `SystemUUID` data. Otherwise `Little Endian` is used.
+OpenCore 在生成修改过的 DMI 表时，总是设置最新的 SMBIOS 版本（目前是 3.2）。如果启用了 `UseRawUuidEncoding`，则使用 `Big Endian` 编码格式来存储 `SystemUUID` 数据，否则使用 `Little Endian` 编码格式。
 
-*Note*: Since UUIDs used in DataHub and NVRAM are not standardised and are added by Apple, this preference does not affect them. Unlike SMBIOS they are always stored in the `Big Endian` format.
+*注*：由于 DataHub 和 NVRAM 中使用的 UUID 是由 Apple 添加的，未经过标准化，所以这个选项并不会影响它们。与 SMBIOS 不同，它们总是以 `Big Endian` 编码格式存储。
 
 ### 7. `Generic`
 
