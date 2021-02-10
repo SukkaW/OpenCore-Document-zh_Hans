@@ -27,8 +27,8 @@ OpenCore 仍处于积极的维护之中，OpenCore 参考手册 仍然在高频�
 
 > 本网站提供的翻译基于如下描述的 OpenCore 官方文档：
 >
-> - **OpenCore 文档释出日期**：2021.01.31
-> - **OpenCore 文档版本**：[`990ad449fe4af264748fb0c88b0c86ea129d8aa5`](https://github.com/acidanthera/OpenCorePkg/commit/990ad449fe4af264748fb0c88b0c86ea129d8aa5)
+> - **OpenCore 文档释出日期**：2021.02.02
+> - **OpenCore 文档版本**：[`43f53398b1d178a12d2f2d97afbdd4c85ee99d7e`](https://github.com/acidanthera/OpenCorePkg/commit/43f53398b1d178a12d2f2d97afbdd4c85ee99d7e)
 >
 > 本网站提供的翻译适用于如下描述的 OpenCore 版本：
 >
