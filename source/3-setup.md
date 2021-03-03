@@ -3,12 +3,12 @@ title: 3. Setup
 description: Setup
 type: docs
 author_info: 由 Sukka、derbalkon 整理、由 Sukka、derbalkon 翻译。
-last_updated: 2021-01-31
+last_updated: 2021-02-02
 ---
 
 ## 3.1 目录结构
 
-```
+```text
 ESP
 ├── EFI
 │    ├── BOOT
@@ -174,7 +174,7 @@ build -a X64 -b RELEASE -t XCODE5 -p OpenCorePkg/OpenCorePkg.dsc
 - 在转换后使用空格，如 `(VOID *)(UINTN) Variable`。
 - 换行时使用两个空格来缩进。
 - 在公共函数前加上 `Oc` 或其他含义清晰的前缀。
-- 私有的 `static` 函数不要加上前缀，对于 `non-static` 函数使用 `Internal`。
+- 私有的 `static` 函数不要加上前缀，私有的 `non-static` 函数要使用 `Internal` 前缀。
 - 使用 SPDX 许可证标头，如 [acidanthera/bugtracker#483](https://github.com/acidanthera/bugtracker/issues/483) 所示。
 
 **排错**。代码库中加入了 EDK II 调试和一些自定义功能，以改善体验。
