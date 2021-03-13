@@ -86,7 +86,7 @@ last_updated: 2020-10-31
 | [VoodooTSCSync.kext](https://github.com/RehabMan/VoodooTSCSync) | 由 Rehabman 提供的 TSC 频率同步驱动 | — | — |
 | [CpuTscSync.kext](https://github.com/acidanthera/CpuTscSync) | Lilu 插件，合并了 VoodooTSCSync 功能 | 12.0.0 (10.8) | — |
 | [FakeSMC.kext](https://github.com/CloverHackyColor/FakeSMC3_with_plugins) | Clover 官方的 FakeSMC | — | — |
-| [VirtualSMC.kext](https://github.com/acidanthera/VirtualSMC) | Acidanthera 提供的 VirtualSMC | — | 10.0.0 (10.6) | — |
+| [VirtualSMC.kext](https://github.com/acidanthera/VirtualSMC) | Acidanthera 提供的 VirtualSMC | 10.0.0 (10.6) | - |
 | [SMCLightSensor.kext](https://github.com/acidanthera/VirtualSMC) | VirtualSMC 插件，提供光线传感器支持 | 10.0.0 (10.6) Not tested | — |
 | [SMCSuperIO.kext](https://github.com/acidanthera/VirtualSMC) | VirtualSMC 插件，提供风扇信息读取支持 | 10.0.0 (10.6) Not tested | — |
 | [SMCBatteryManager.kext](https://github.com/acidanthera/VirtualSMC) | VirtualSMC 插件，提供电池相关的传感器支持 | 10.0.0 (10.6) Not tested | — |
