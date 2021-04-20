@@ -2,8 +2,8 @@
 title: 4. ACPI
 description: 加载、屏蔽、修补 ACPI（DSDT/SSDT）表
 type: docs
-author_info: 由 Sukka 整理、由 Sukka、derbalkon 翻译。感谢黑果小兵提供的参考资料
-last_updated: 2020-10-05
+author_info: 由 Sukka 整理、由 Sukka、derbalkon、EricKwok 翻译。感谢黑果小兵提供的参考资料
+last_updated: 2021-04-17
 ---
 
 ## 4.1 简介
@@ -125,73 +125,89 @@ OpenCore、WhateverGreen、VirtualSmc、VoodooPS2 的 GitHub 仓库中都包含�
 
 ## 4.5 Patch 属性
 
-### 1. `Comment`
+### 1. `Base`
+
+**Type**: `plist string`
+**Failsafe**: Empty string
+**Description**: 为重命名补丁指定一个 ACPI 路径，让 OC 通过取得该路径的偏移量来查找（或替换）重命名补丁。留空时忽略。
+
+只有正确的**绝对路径**被支持（例如：`\_SB.PCI0.LPCB.HPET`）。目前支持的 Object 类型有：`Device`、`Field`、`Method`。
+
+*注*：应谨慎使用，并非所有 OEM 的 ACPI 表都能被正确处理。如果遇到问题，可使用 Utilities 中的 ACPIe 工具来进行调错。使用 `DEBUG=1` 参数来编译 ACPIe 将会使该工具输出有助于调试的 ACPI 路径查找过程。
+
+### 2. `BaseSkip`
+
+**Type**: `plist integer`
+**Failsafe**: `0`
+**Description**: 在重命名补丁被应用之前跳过多少次 `Base` 指定的路径。如果将此值设置为 `0`，补丁将会被应用于指定 `Base` 中的所有匹配。
+
+### 3. `Comment`
 
 **Type**: `plist string`
 **Failsafe**: Empty string
 **Description**: 用于为条目提供人类可读参考的任意 ASCII 字符串（译者注：即注释）。
 
-### 2. `Count`
+### 4. `Count`
 
 **Type**: `plist integer`
 **Failsafe**: `0`
 **Description**: 补丁应用的次数。如果将此值设置为 `0`，补丁将会被应用于所有匹配。
 
-### 3. `Enabled`
+### 5. `Enabled`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
 **Description**: 除非设置为 `true`，否则此处的 ACPI 补丁不会生效。
 
-### 4. `Find`
+### 6. `Find`
 
 **Type**: `plist data`
 **Failsafe**: Empty data
 **Description**: 需要寻找的 Data，长度必须和 `Replace` 相等。
 
-### 5. `Limit`
+### 7. `Limit`
 
 **Type**: `plist integer`
 **Failsafe**: `0`
 **Description**: 要搜索的最大字节数。当此值为 `0` 时会遍历整个 ACPI 表。
 
-### 6. `Mask`
+### 8. `Mask`
 
 **Type**: `plist data`
 **Failsafe**: Empty data
 **Description**: 查找比较期间使用的数据按位掩码。 通过忽略未屏蔽（设置为零）位来进行模糊搜索。可以设置为空数据以忽略，否则此值的长度必须和 `Replace` 的长度相等。
 
-### 7. `OemTableId`
+### 9. `OemTableId`
 
 **Type**: `plist data, 8 bytes`
 **Failsafe**: All zero
 **Description**: 将表的 OEM ID 匹配为此处所填的值，全部为 `0` 时忽略。
 
-### 8. `Replace`
+### 10. `Replace`
 
 **Type**: `plist data`
 **Failsafe**: Empty data
 **Description**: 一个或多个字节的替换数据。
 
-### 9. `ReplaceMark`
+### 11. `ReplaceMark`
 
 **Type**: `plist data`
 **Failsafe**: Empty data
 **Description**: 替换数据期间使用的数据按位掩码。 通过忽略未屏蔽（设置为零）位来进行模糊搜索。可以设置为空数据以忽略，否则此值的长度必须和 `Replace` 的长度相等。
 
-### 10. `Skip`
+### 12. `Skip`
 
 **Type**: `plist integer`
 **Failsafe**: `0`
 **Description**: 完成替换之前要跳过的匹配数。
 
-### 11. `TableLength`
+### 13. `TableLength`
 
 **Type**: `plist integer`
 **Failsafe**: `0`
 **Description**: 将表的大小匹配为此处所填的值，填 `0` 时忽略。
 
-### 12. `TableSignature`
+### 14. `TableSignature`
 
 **Type**: `plist data, 4 bytes`
 **Failsafe**: All zero
