@@ -542,12 +542,12 @@ nvram 4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102:boot-log | awk '{gsub(/%0d%0a%00/,"")
    
 *注1*：强烈不推荐将 macOS 运行在禁用 SIP 的状态下。使用这一个启动选项有助于在需要的情况下快速的禁用 SIP，当操作完成后应当将 SIP 再次启用。
    
-*Note2*: OC uses 0x26F even though csrutil disable on Big Sur sets 0x7F. To explain the choice:
-- `csrutil disable --no-internal` actually sets 0x6F, and this is preferable because `CSR_ALLOW_APPLE_INTERNAL` (0x10) prevents updates (unless you are running an internal build of macOS).
-- `CSR_ALLOW_UNAPPROVED_KEXTS` (0x200) is generally useful, in the case where you do need to have SIP disabled, as it allows installing unsigned kexts without manual approval in System Preferences.
-- `CSR_ALLOW_UNAUTHENTICATED_ROOT` (0x800) is not practical as it prevents incremental (non-full) OTA updates.
+*注2*：尽管在 Big Sur 中，`csrutil disable` 命令会将值设置为 0x7F，OC 依然使用 0x26F 这个值，因为：
+   - `csrutil disable --no-internal` 将值设置为 0x6F，这是比较推荐的，因为 `CSR_ALLOW_APPLE_INTERNAL` (0x10) 将会阻止系统更新。
+   - 一般来说 `CSR_ALLOW_UNAPPROVED_KEXTS` (0x200) 是可以使用的，在这个状态下你不需要关闭 SIP 也可以安装未签名的 kext 而不需要手动在系统设置中选择允许。
+   - 不推荐使用 `CSR_ALLOW_UNAUTHENTICATED_ROOT` (0x800) 因为这会屏蔽操作系统的增量 OTA 更新（非完整更新）。
    
-*Note3*: For any other value which you may need to use, it is possible to configure CsrUtil.efi as a TextMode Tools entry to configure a different value, e.g. use toggle 0x6F in Arguments to toggle the SIP disabled value set by default by csrutil disable --no-internal in Big Sur.
+*注3*：对于其他你可能用到的值，你可以将 `CsrUtil.efi` 配置为一个 TextMode Tools 启动项来指定不同的参数，例如，将参数设置为 `0x6F` 来将禁用 SIP 的值设置为 Big Sur 中 `csrutil disable --no-internal` 的默认值。
 
 ### 4. `ApECID`
 
@@ -828,7 +828,7 @@ Apple 安全启动最初出现于搭载 T2 芯片的机型上的 macOS 10.13。`
 
 **Type**: `plist string`
 **Failsafe**: Auto
-**Description**: Specify the content flavour for this entry. See OC_ATTR_USE_FLAVOUR_ICON flag for documentation.
+**Description**: 为该启动项指定 flavour，详见文档中的 `OC_ATTR_USE_FLAVOUR_ICON` 标识。
    
 ### 6. `Name`
 
