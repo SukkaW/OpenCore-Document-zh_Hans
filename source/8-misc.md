@@ -2,7 +2,7 @@
 title: 8. Misc
 description: 关于 OpenCore 行为的其他配置
 type: docs
-author_info: 由 xMuu、Sukka、derbalkon 整理、由 Sukka、derbalkon、EricKwok 翻译。
+author_info: 由 xMuu、Sukka、derbalkon、EricKwok 整理、由 Sukka、derbalkon、EricKwok 翻译。
 last_updated: 2021-06-15
 ---
 
@@ -219,7 +219,7 @@ OpenCore 尽可能地遵循 `bless` 模式，即 `Apple Boot Policy`。`bless` �
 
   卷宗图标可以在访达中设置。注意，启用此功能后可能会难以区分 外部可移除硬盘 和 内部不可移除硬盘 的图标。
 
-- `0x0002` — `OC_ATTR_USE_DISK_LABEL_FILE`，为启动项的标题提供自定义渲染：
+  - `0x0002` — `OC_ATTR_USE_DISK_LABEL_FILE`，为启动项的标题提供自定义渲染：
   - `.disk_label` (`.disk_label_2x`) 文件与 bootloader 文件放在同一目录，适用于所有文件系统。
   - `<TOOL_NAME>.lbl` (`<TOOL_NAME>.l2x`) 文件与工具文件放在同一目录，适用于 `Tools`。
 
@@ -233,22 +233,22 @@ OpenCore 尽可能地遵循 `bless` 模式，即 `Apple Boot Policy`。`bless` �
 - `0x0080` - `OC_ATTR_USE_FLAVOUR_ICON`，提供弹性的启动项内容描述，可以在不同的图标集中选择最好的图标：
    
    当启用的时候，OpenCanopy 中的启动项和 audio assist 项目音频以及 Builtin boot picker 可以被 content flavor 指定。要指定 content flavor，请参考以下规则：
+   
    - 对于一个 Tool 项目，将会从其 `Flavour` 中读取
    - 对于一个自动发现项目，将会从 bootloader 同目录下的 `.contentFlavour` 文件中读取（如果有的话）
    - 对于一个自定义项目，如果其 `Flavour` 为 `Auto`，则从 bootloader 同目录下的 `.contentFlavour` 文件中读取，否则由 `Flavour` 指定
    - 如果读取到的 `Flavour` 项目为 `Auto` 或 `.contentFlavour` 文件不存在，则根据启动项类型来选择图标（如：Windows 将会被自动设置为 Windows 图标）
 
-   `Flavour` 的值是一个由 `:` 分隔的名字，必须是可打印的 7-bit ASCII，最长限制在64字符内。此项目大约能填写五个名字，最前面的名字有最高的优先级，最后面的名字由最低的优先级。这样的结构允许用一个更具体的方式来描述一个启动项，with icons selected flexibly depending on support by the audio-visual pack. A missing audio or icon file means the next flavour should be tried, and if all are missing the choice happens based on the type of the entry. Example flavour values: BigSur:Apple, Windows10:Windows. OpenShell:UEFIShell:Shell.
+   `Flavour` 的值是一个由 `:` 分隔的名字，必须是可打印的 7-bit ASCII，最长限制在64字符内。此项目大约能填写五个名字，最前面的名字有最高的优先级，最后面的名字由最低的优先级。这样的结构允许用一个更具体的方式来描述一个启动项，使用被音频-图标集支持的自选图标。如果找不到音频或图标文件，则启动器会自动尝试下一个 flavour，而如果所有的 flavour 都找不到文件，则启动器会根据启动项类型来自动选择图标。以下是一个 flavour 的例子：`BigSur:Apple, Windows10:Windows. OpenShell:UEFIShell:Shell.`
    
-   Using flavours means that you can switch between icon sets easily, with the flavour selecting the best available icons from each set. E.g. specifying icon flavour Debian:Linux will use the icon Debian.icns if provided, then will try Linux.icns, then will fall back to the default for an OS, which is HardDrive.icns.
+   使用 flavour 意味着你可以容易地在图标集之中选择自己想要的图标，在图标集所有的图标中选择一个最合适的图标。比如，指定一个 flavour 图标 `Debian:Linux` 则将会尝试使用 `Debian.icns` 这个图标，如果没找到的话则尝试 `Linux.icns`，如果还没找到的话则会回退到 OS 的默认图标，也就是 `HardDrive.icns`。
    
-   Things to keep in mind:
+   一些需要注意的事情：
    
-   - For security reasons Ext<Flavour>.icns and <Flavour>.icns are both supported, and only Ext<Flavour>.icns will be used if the entry is on an external drive (followed by default fallback ExtHardDrive.icns). 
-   - Where both apply .VolumeIcon.icns takes precence over .contentFlavour.
-   - In order to allow icons and audio assist to work correctly for tools (e.g. for UEFI Shell), system default boot entry icons (see Docs/Flavours.md) specified in the Flavour setting for Tools or Entries will continue to apply even when flavour is disabled. Non-system icons will be ignored in this case. In addition, the flavours UEFIShell and NVRAMReset are given special processing, identifying their respective tools to apply correct audio-assist, default builtin labels, etc.
-   - A list of recommended flavours is provided in Docs/Flavours.md.
-
+   - 为了安全考虑，Ext<Flavour>.icns 和 <Flavour>.icns 都会被支持，并且当启动项是外接硬盘时仅有 Ext<Flavour>.icns 会被使用（就像默认的 ExtHardDrive.icns 那样）。
+   - 当 `.VolumeIcon.icns` 和 `.contentFlavour` 都存在时，以 `.VolumeIcon.icns` 为准。
+   - 为了使 tools 的图标和屏幕朗读工作正常（例如 UEFI Shell），在 `Flavour` 设置中指定的系统的默认启动项图标（见 Docs/Flavours.md）将仍然被应用，即使 `Flavour` 是禁用状态。在这个情况下非系统的图标将会被忽略。此外，UEFIShell 和 NVRAMReset 的 flavours 将会被特殊处理，以辨识它们的正确的屏幕朗读器、默认 builtin 标签等。
+   - 一个推荐的 falvours 列表在 Docs/Flavours.md 中
 
 ### 7. `PickerAudioAssist`
 
@@ -536,10 +536,11 @@ nvram 4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102:boot-log | awk '{gsub(/%0d%0a%00/,"")
    
 **Type**: `plist boolean`
 **Failsafe**: `false`
-**Description**: 在 OC 的启动项中加入一个切换 SIP (System Integrity Protection) 的选项
-This will toggle Apple NVRAM variable csr-active-config between 0 for SIP Enabled and a practical default value for SIP Disabled (currently 0x26F).
+**Description**: 在 OC 的启动项中加入一个切换 SIP (System Integrity Protection) 的选项。
    
-*Note1*: It is strongly recommended not to make a habit of running macOS with SIP disabled. Use of this boot option may make it easier to quickly disable SIP protection when genuinely needed - it should be re-enabled again afterwards.
+这会在 Apple 的 NVRAM 变量 `csr-active-config` 中，从 0 ，即启用 SIP，和一个禁用 SIP 的值，目前是 0x26F 之间切换。
+   
+*注1*：强烈不推荐将 macOS 运行在禁用 SIP 的状态下。使用这一个启动选项有助于在需要的情况下快速的禁用 SIP，当操作完成后应当将 SIP 再次启用。
    
 *Note2*: OC uses 0x26F even though csrutil disable on Big Sur sets 0x7F. To explain the choice:
 - `csrutil disable --no-internal` actually sets 0x6F, and this is preferable because `CSR_ALLOW_APPLE_INTERNAL` (0x10) prevents updates (unless you are running an internal build of macOS).
