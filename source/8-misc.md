@@ -147,6 +147,8 @@ OpenCore 尽可能地遵循 `bless` 模式，即 `Apple Boot Policy`。`bless` �
 - `RTC` --- 从 RTC 检测
 - `NVRAM` --- 从 NVRAM 检测
 
+*注*：如果固件自身能处理休眠（大多数 Mac 的 EFI 固件都可以），你应该在此处设置为 `None` 来让固件处理休眠状态并传递给 OpenCore。
+
 ### 3. `HideAuxiliary`
 
 **Type**: `plist boolean`
@@ -158,7 +160,7 @@ OpenCore 尽可能地遵循 `bless` 模式，即 `Apple Boot Policy`。`bless` �
 - 该引导项是 macOS Recovery 分区
 - 该引导项是 macOS Time Machine 分区
 - 该引导项被标记为 `Auxiliary`
-- 该引导项是一个系统（如 `Reset NVRAM`）
+- 该引导项是系统提供的（如 `Reset NVRAM`）
 
 即使被隐藏，你仍然可以通过 `空格` 进入「扩展模式」查看所有条目（引导项菜单会被重新加载）：
 
@@ -174,7 +176,8 @@ OpenCore 尽可能地遵循 `bless` 模式，即 `Apple Boot Policy`。`bless` �
 
 - `Disabled` --- 什么都不做。
 - `Full` --- 在 bootloader 启动时，在 UEFI 变量存储中创建或更新最高优先级的启动项。要使用这个选项，必须同时开启 `RequestBootVarRouting`。
-- `Short` --- 创建一个短的、非完整的启动项，create a short boot option instead of a complete one. 此值对于某些固件很有用，比如 Insyde，或者其他无法处理完整设备路径的固件。
+- `Short` --- 创建一个短的、非完整的启动项。此值对于某些固件很有用，比如 Insyde，或者其他无法处理完整设备路径的固件。
+- `System` --- 不创建启动项，而是认为该项是 blessed 的。This variant is useful when relying on ForceBooterSignature quirk and OpenCore launcher path management happens through bless utilities without involving OpenCore.
 
 在安装和升级第三方操作系统时 `\EFI\BOOT\BOOTx64.efi` 文件可能会被覆盖掉，该选项则保证了出现覆盖情况时 bootloader 的一致性。创建一个自定义启动项后，`\EFI\BOOT\BOOTx64.efi` 这个文件路径将不再用于引导 OpenCore。自定义的引导路径在 `LauncherPath` 选项中指定。
 
@@ -190,7 +193,7 @@ OpenCore 尽可能地遵循 `bless` 模式，即 `Apple Boot Policy`。`bless` �
 
 `Default` 用于引导 `OpenCore.efi`。其他的路径（如 `\EFI\Launcher.efi`）可用来提供自定义加载器，用于自行加载 `OpenCore.efi`。
 
-### 4. `PickerAttributes`
+### 6. `PickerAttributes`
 
 **Type**: `plist integer`
 **Failsafe**: `0`
@@ -225,8 +228,29 @@ OpenCore 尽可能地遵循 `bless` 模式，即 `Apple Boot Policy`。`bless` �
 - `0x0004` — `OC_ATTR_USE_GENERIC_LABEL_IMAGE`，为没有自定义条目的启动项提供预定义的标签图像。可能会缺少实际启动项的详细信息。
 - `0x0008` — `OC_ATTR_HIDE_THEMED_ICONS`，优先选择特定图标集的图标，以配合主题风格，比如可以强制显示特定图标集内置的 Time Machine 图标。需要同时启用 `OC_ATTR_USE_VOLUME_ICON`。
 - `0x0010` — `OC_ATTR_USE_POINTER_CONTROL`，在启动选择器中启用指针控制。例如，可以利用鼠标或触摸板来控制 UI 元素。
+- `0x0020` - `OC_ATTR_SHOW_DEBUG_DISPLAY`，在启动选择器中显示额外的时间和调试信息。仅在 Dubug 和 NOOPT 版本的 Builtin picker 中生效。
+- `0x0040` - `OC_ATTR_USE_MINIMAL_UI`，显示最小化 UI，不显示关机或重启的按钮。在 OpenCanopy 和 Builtin picker 中生效。
+- `0x0080` - `OC_ATTR_USE_FLAVOUR_ICON`，提供弹性的启动项内容描述，可以在不同的图标集中选择最好的图标：
+   
+   当启用的时候，OpenCanopy 中的启动项和 audio assist 项目音频以及 Builtin boot picker 可以被 content flavor 指定。要指定 content flavor，请参考以下规则：
+   - 对于一个 Tool 项目，将会从其 `Flavour` 中读取
+   - 对于一个自动发现项目，将会从 bootloader 同目录下的 `.contentFlavour` 文件中读取（如果有的话）
+   - 对于一个自定义项目，如果其 `Flavour` 为 `Auto`，则从 bootloader 同目录下的 `.contentFlavour` 文件中读取，否则由 `Flavour` 指定
+   - 如果读取到的 `Flavour` 项目为 `Auto` 或 `.contentFlavour` 文件不存在，则根据启动项类型来选择图标（如：Windows 将会被自动设置为 Windows 图标）
 
-### 5. `PickerAudioAssist`
+   `Flavour` 的值是一个由 `:` 分隔的名字，必须是可打印的 7-bit ASCII，最长限制在64字符内。此项目大约能填写五个名字，最前面的名字有最高的优先级，最后面的名字由最低的优先级。这样的结构允许用一个更具体的方式来描述一个启动项，with icons selected flexibly depending on support by the audio-visual pack. A missing audio or icon file means the next flavour should be tried, and if all are missing the choice happens based on the type of the entry. Example flavour values: BigSur:Apple, Windows10:Windows. OpenShell:UEFIShell:Shell.
+   
+   Using flavours means that you can switch between icon sets easily, with the flavour selecting the best available icons from each set. E.g. specifying icon flavour Debian:Linux will use the icon Debian.icns if provided, then will try Linux.icns, then will fall back to the default for an OS, which is HardDrive.icns.
+   
+   Things to keep in mind:
+   
+   - For security reasons Ext<Flavour>.icns and <Flavour>.icns are both supported, and only Ext<Flavour>.icns will be used if the entry is on an external drive (followed by default fallback ExtHardDrive.icns). 
+   - Where both apply .VolumeIcon.icns takes precence over .contentFlavour.
+   - In order to allow icons and audio assist to work correctly for tools (e.g. for UEFI Shell), system default boot entry icons (see Docs/Flavours.md) specified in the Flavour setting for Tools or Entries will continue to apply even when flavour is disabled. Non-system icons will be ignored in this case. In addition, the flavours UEFIShell and NVRAMReset are given special processing, identifying their respective tools to apply correct audio-assist, default builtin labels, etc.
+   - A list of recommended flavours is provided in Docs/Flavours.md.
+
+
+### 7. `PickerAudioAssist`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
@@ -236,7 +260,7 @@ macOS Bootloader 屏幕朗读 的偏好设置是存在 `isVOEnabled.int32` 文�
 
 *注*：屏幕朗读 依赖可以正常工作的音频设备。
 
-### 6. `PollAppleHotKeys`
+### 8. `PollAppleHotKeys`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
@@ -252,15 +276,15 @@ macOS Bootloader 屏幕朗读 的偏好设置是存在 `isVOEnabled.int32` 文�
 - `CMD+S` --- 启动至单用户模式。
 - `CMD+S+MINUS` --- 禁用 KASLR slide，需要事先禁用 SIP。
 - `CMD+V` --- 启用 `-v`。
-- `Shift` --- 启用安全模式。
+- `Shift+Enter, Shift+Index` --- 启用安全模式。
 
-### 7. `ShowPicker`
+### 9. `ShowPicker`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
 **Description**: 是否显示开机引导菜单。
 
-### 8. `TakeoffDelay`
+### 10. `TakeoffDelay`
 
 **Type**: `plist integer`, 32 bit
 **Failsafe**: `0`
@@ -268,7 +292,7 @@ macOS Bootloader 屏幕朗读 的偏好设置是存在 `isVOEnabled.int32` 文�
 
 引入这一延迟有助于为你争取时间去完成按住 `Action Hotkey` 的操作，比如启动到恢复模式。在某些平台上，可能需要把此项设置为至少 `5000-10000` 来使 `Action Hotkey` 生效，具体取决于键盘驱动程序的性质。
 
-### 9. `Timeout`
+### 11. `Timeout`
 
 **Type**: `plist integer`, 32 bit
 **Failsafe**: `0`
@@ -276,7 +300,7 @@ macOS Bootloader 屏幕朗读 的偏好设置是存在 `isVOEnabled.int32` 文�
 
 > 译者注：`0` 为关闭倒计时而非跳过倒计时，相当于 Clover 的 `-1`。
 
-### 10. `PickerMode`
+### 12. `PickerMode`
 
 **Type**: `plist string`
 **Failsafe**: `Builtin`
@@ -304,7 +328,7 @@ OpenCore 内置的启动选择器包含了一系列在启动过程中选择的�
 
 *注 3*：有些 Mac 的 GOP 很棘手，可能很难进入 Apple 启动选择器。还有一些 Mac，`BootKicker` 不能从 OpenCore 运行。可以通过直接 bless `BootKicker` 实用工具来解决这个问题，不需要加载 OpenCore。
 
-### 11. `PickerVariant`
+### 13. `PickerVariant`
 
 **Type**: `plist string`
 **Failsafe**: `Auto`
@@ -507,8 +531,24 @@ nvram 4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102:boot-log | awk '{gsub(/%0d%0a%00/,"")
 **Type**: `plist boolean`
 **Failsafe**: `false`
 **Description**: 允许使用 `CTRL+Enter` 和 `CTRL+[数字]` 设置默认启动项。
+   
+### 3. `AllowToggleSip`
+   
+**Type**: `plist boolean`
+**Failsafe**: `false`
+**Description**: 在 OC 的启动项中加入一个切换 SIP (System Integrity Protection) 的选项
+This will toggle Apple NVRAM variable csr-active-config between 0 for SIP Enabled and a practical default value for SIP Disabled (currently 0x26F).
+   
+*Note1*: It is strongly recommended not to make a habit of running macOS with SIP disabled. Use of this boot option may make it easier to quickly disable SIP protection when genuinely needed - it should be re-enabled again afterwards.
+   
+*Note2*: OC uses 0x26F even though csrutil disable on Big Sur sets 0x7F. To explain the choice:
+- `csrutil disable --no-internal` actually sets 0x6F, and this is preferable because `CSR_ALLOW_APPLE_INTERNAL` (0x10) prevents updates (unless you are running an internal build of macOS).
+- `CSR_ALLOW_UNAPPROVED_KEXTS` (0x200) is generally useful, in the case where you do need to have SIP disabled, as it allows installing unsigned kexts without manual approval in System Preferences.
+- `CSR_ALLOW_UNAUTHENTICATED_ROOT` (0x800) is not practical as it prevents incremental (non-full) OTA updates.
+   
+*Note3*: For any other value which you may need to use, it is possible to configure CsrUtil.efi as a TextMode Tools entry to configure a different value, e.g. use toggle 0x6F in Arguments to toggle the SIP disabled value set by default by csrutil disable --no-internal in Big Sur.
 
-### 3. `ApECID`
+### 4. `ApECID`
 
 **Type**: `plist integer`, 64 bit
 **Failsafe**: `0`
@@ -537,7 +577,7 @@ mkdir /var/tmp/OSPersonalizationTemp
 diskutil mount -mountpoint /var/tmp/OSPersonalizationTemp $disk
 ```
 
-### 4. `AuthRestart`
+### 5. `AuthRestart`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
@@ -547,7 +587,7 @@ diskutil mount -mountpoint /var/tmp/OSPersonalizationTemp $disk
 
 VirtualSMC 通过将磁盘加密密钥拆分保存在 NVRAM 和 RTC 中来执行 authenticated restart。虽然 OpenCore 在启动系统后立刻删除密钥，但是这仍然可能被视为安全隐患。
 
-### 5. `BlacklistAppleUpdate`
+### 6. `BlacklistAppleUpdate`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
@@ -555,7 +595,7 @@ VirtualSMC 通过将磁盘加密密钥拆分保存在 NVRAM 和 RTC 中来执行
 
 *注*：由于某些操作系统（如 macOS Big Sur）[无法利用](https://github.com/acidanthera/bugtracker/issues/1255) NVRAM 变量 `run-efi-updater` 禁用固件更新，因此单独设立了此项。
 
-### 6. `DmgLoading`
+### 7. `DmgLoading`
 
 **Type**: `plist string`
 **Failsafe**: `Signed`
@@ -567,7 +607,7 @@ VirtualSMC 通过将磁盘加密密钥拆分保存在 NVRAM 和 RTC 中来执行
 - `Signed` --- 仅加载 Apple 签名的 DMG 磁盘映像。由于 Apple 安全启动的设计，不管 Apple 安全启动是什么状态，`Signed` 策略都会允许加载任何 Apple 签名的 macOS Recovery，这可能不是我们所希望的那样。
 - `Any` --- 任何 DMG 磁盘映像都会作为普通文件系统挂载。强烈不建议使用 `Any` 策略，当激活了 Apple 安全启动时会导致启动失败。
 
-### 7. `EnablePassword`
+### 8. `EnablePassword`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
@@ -577,7 +617,7 @@ VirtualSMC 通过将磁盘加密密钥拆分保存在 NVRAM 和 RTC 中来执行
 
 *注*：此功能尚在开发阶段，不推荐日常使用。
 
-### 8. `ExposeSensitiveData`
+### 9. `ExposeSensitiveData`
 
 **Type**: `plist integer`
 **Failsafe**: `0x6`
@@ -615,25 +655,25 @@ nvram 4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102:oem-vendor # SMBIOS Type2 Manufacture
 nvram 4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102:oem-board # SMBIOS Type2 ProductName
 ```
 
-### 9. `HaltLevel`
+### 10. `HaltLevel`
 
 **Type**: `plist integer`, 64 bit
 **Failsafe**: `0x80000000` (`DEBUG_ERROR`)
 **Description**: EDK II 调试级别的位掩码（总和），使 CPU 在获得 `HaltLevel` 消息后中止（停止执行）。可能的值与 `DisplayLevel` 值相匹配。
 
-### 10. `PasswordHash`
+### 11. `PasswordHash`
 
 **Type**: `plist data` 64 bytes
 **Failsafe**: all zero
 **Description**: 密码使用的哈希值（Hash）。
 
-### 11. `PasswordSalt`
+### 12. `PasswordSalt`
 
 **Type**: `plist data`
 **Failsafe**: empty
 **Description**: 密码使用的盐值（Salt）。
 
-### 12. `Vault`
+### 13. `Vault`
 
 **Type**: `plist string`
 **Failsafe**: `Secure`
@@ -676,7 +716,7 @@ rm vault.pub
 
 *注 2*：当 `vault.plist` 存在，或者当公钥嵌入到 `OpenCore.efi` 中的时候，无论这个选项是什么，`vault.plist` 和 `vault.sig` 都会被使用。设置这个选项仅仅会确保配置的合理性，否则启动过程会中止。
 
-### 13. `ScanPolicy`
+### 14. `ScanPolicy`
 
 **Type**: `plist integer`, 32 bit
 **Failsafe**: `0xF0103`
@@ -712,7 +752,7 @@ rm vault.pub
 - `OC_SCAN_ALLOW_DEVICE_SCSI`
 - `OC_SCAN_ALLOW_DEVICE_NVME`
 
-### 14. `SecureBootModel`
+### 15. `SecureBootModel`
 
 **Type**: `plist string`
 **Failsafe**: `Default`
@@ -783,13 +823,19 @@ Apple 安全启动最初出现于搭载 T2 芯片的机型上的 macOS 10.13。`
 **Failsafe**: `false`
 **Description**: 除非设置为 `true`，否则该引导条目不会显示在开机引导菜单中。
 
-### 5. `Name`
+### 5. `Flavour`
+
+**Type**: `plist string`
+**Failsafe**: Auto
+**Description**: Specify the content flavour for this entry. See OC_ATTR_USE_FLAVOUR_ICON flag for documentation.
+   
+### 6. `Name`
 
 **Type**: `plist string`
 **Failsafe**: Empty string
 **Description**: 引导条目在开机引导菜单中显示的名字。
 
-### 6. `Path`
+### 7. `Path`
 
 **Type**: `plist string`
 **Failsafe**: Empty string
@@ -798,7 +844,7 @@ Apple 安全启动最初出现于搭载 T2 芯片的机型上的 macOS 10.13。`
 - `Entries` 用于指定外部启动选项，因此会在 `Path` 中取设备路径。这些值不会被检查，所以要非常小心。例如：`PciRoot(0x0)/Pci(0x1,0x1)/.../\EFI\COOL.EFI`。
 - `Tools` 用于指定内部引导选项，这些选项隶属于 bootloader vault，因此会取相对于 `OC/Tools` 目录的文件路径。例如：`OpenShell.efi`。
 
-### 7. `RealPath`
+### 8. `RealPath`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
@@ -808,7 +854,7 @@ Apple 安全启动最初出现于搭载 T2 芯片的机型上的 macOS 10.13。`
 
 *注*：此属性的开关仅对工具有效。对于 `Entries` 该属性始终为 `true`。
 
-### 8. TextMode
+### 9. TextMode
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
