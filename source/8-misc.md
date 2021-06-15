@@ -2,8 +2,8 @@
 title: 8. Misc
 description: 关于 OpenCore 行为的其他配置
 type: docs
-author_info: 由 xMuu、Sukka、derbalkon 整理、由 Sukka、derbalkon 翻译。
-last_updated: 2021-02-02
+author_info: 由 xMuu、Sukka、derbalkon 整理、由 Sukka、derbalkon、EricKwok 翻译。
+last_updated: 2021-06-15
 ---
 
 ## 8.1 简介
