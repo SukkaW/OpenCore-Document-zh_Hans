@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
 <title>贡献指南 | OpenCore 简体中文参考手册(非官方)</title>
-<meta name="generator" content="Hexo 4.2.1">
+<meta name="generator" content="Hexo 5.1.1">
 <meta http-equiv="x-dns-prefetch-control" content="on">
 <meta name="description" content="由 Sukka 和黑苹果爱好者们维护的 OpenCore 文档简体中文翻译，实时更新 OpenCore 上游文档改动。努力提供权威的 OpenCore 简体中文参考资料。">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -15,6 +15,7 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.16.2/styles/github.min.css">
 <link rel="stylesheet" href="/theme-doku/css/doku.css">
 <link rel="sitemap" type="application/xml" title="Sitemap" href="/sitemap.xml">
+<link rel="canonical" href="https://oc.skk.moe/about/contributing.html">
 
 </head>
 
@@ -59,7 +60,7 @@
                         
                     </a>
                 
-                    <a class="navbar-item" href="https://github.com/SukkaW/OpenCore-Document-zh_Hans" target="_blank" rel="noopener">
+                    <a class="navbar-item" target="_blank" rel="noopener" href="https://github.com/SukkaW/OpenCore-Document-zh_Hans">
                         
                             <span class="icon">
                                 <i class="fab fa-github"></i>
@@ -134,7 +135,7 @@
                         
                     
                         
-                            <li><a href="https://github.com/SukkaW/OpenCore-Document-zh_Hans" target="_blank" rel="noopener">GitHub</span></a></li>
+                            <li><a target="_blank" rel="noopener" href="https://github.com/SukkaW/OpenCore-Document-zh_Hans">GitHub</span></a></li>
                         
                     
                 </ul>
@@ -182,7 +183,7 @@
 <li><code>index.md</code> 文件：网站首页的 md 源文件</li>
 <li>其余 <code>.md</code> 文件：经过整理的 OpenCore 参考手册的 md 源文件（需要翻译的就是这些文件）</li>
 </ul>
-<h2 id="Markdown-文件的-Front-Matter-的字段说明"><a href="#Markdown-文件的-Front-Matter-的字段说明" class="headerlink" title="Markdown 文件的 Front-Matter 的字段说明"></a>Markdown 文件的 Front-Matter 的字段说明</h2><figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs markdown">---<br>title: # 标题<br>description: # 副标题、当前页面的一句话简介（可选）<br>type: docs # 文件类型。不同类型的文件、构建后的页面左边侧边栏的内容不同<br>author_info: # 整理者、翻译者、校对者信息（可选）<br>last_updated: # 最后修改日期，使用 ISO 8681 格式（YYYY-MM-DD，可选）<br>---<br></code></pre></td></tr></table></figure>
+<h2 id="Markdown-文件的-Front-Matter-的字段说明"><a href="#Markdown-文件的-Front-Matter-的字段说明" class="headerlink" title="Markdown 文件的 Front-Matter 的字段说明"></a>Markdown 文件的 Front-Matter 的字段说明</h2><figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs markdown">---<br>title: # 标题<br>description: # 副标题、当前页面的一句话简介（可选）<br>type: docs # 文件类型。不同类型的文件、构建后的页面左边侧边栏的内容不同<br>author<span class="hljs-emphasis">_info: # 整理者、翻译者、校对者信息（可选）</span><br><span class="hljs-emphasis">last_</span>updated: # 最后修改日期，使用 ISO 8681 格式（YYYY-MM-DD，可选）<br>---<br></code></pre></td></tr></table></figure>
 
 <p>当你完成了对一个文件的整理、翻译后，别忘了修改 <code>author_info</code> 和 <code>last_updated</code> 两个字段！</p>
 <h2 id="Commit-Message-规范"><a href="#Commit-Message-规范" class="headerlink" title="Commit Message 规范"></a>Commit Message 规范</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs plain">&lt;type&gt;(&lt;scope&gt;): &lt;subject&gt;<br>&lt;BLANK LINE(Not necessary)&gt;<br>&lt;body&gt;<br></code></pre></td></tr></table></figure>
@@ -230,8 +231,8 @@
 <li>如果使用 Squash 合并分支时，Body 为以无序列表排列的对应多条 commit 记录。</li>
 </ul>
 <h2 id="其他参考资料"><a href="#其他参考资料" class="headerlink" title="其他参考资料"></a>其他参考资料</h2><ul>
-<li><a href="https://hexo.io" target="_blank" rel="noopener">Hexo 文档</a></li>
-<li><a href="https://doku.skk.moe" target="_blank" rel="noopener">hexo-theme-doku 文档</a></li>
+<li><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 文档</a></li>
+<li><a target="_blank" rel="noopener" href="https://doku.skk.moe">hexo-theme-doku 文档</a></li>
 </ul>
 
             </div>
@@ -243,7 +244,7 @@
             <aside class="doku-document-toc" id="doku-document-toc">
                 <div class="doku-document-toc-content">
                     <p class="doku-document-toc-title">目录</p>
-                    <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#目录结构"><span class="post-toc-text">目录结构</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#Markdown-文件的-Front-Matter-的字段说明"><span class="post-toc-text">Markdown 文件的 Front-Matter 的字段说明</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#Commit-Message-规范"><span class="post-toc-text">Commit Message 规范</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#其他参考资料"><span class="post-toc-text">其他参考资料</span></a></li></ol>
+                    <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#%E7%9B%AE%E5%BD%95%E7%BB%93%E6%9E%84"><span class="post-toc-text">目录结构</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#Markdown-%E6%96%87%E4%BB%B6%E7%9A%84-Front-Matter-%E7%9A%84%E5%AD%97%E6%AE%B5%E8%AF%B4%E6%98%8E"><span class="post-toc-text">Markdown 文件的 Front-Matter 的字段说明</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#Commit-Message-%E8%A7%84%E8%8C%83"><span class="post-toc-text">Commit Message 规范</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#%E5%85%B6%E4%BB%96%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="post-toc-text">其他参考资料</span></a></li></ol>
                 </div>
             </aside>
         </div>

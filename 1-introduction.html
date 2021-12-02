@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
 <title>1. 简介 | OpenCore 简体中文参考手册(非官方)</title>
-<meta name="generator" content="Hexo 4.2.1">
+<meta name="generator" content="Hexo 5.1.1">
 <meta http-equiv="x-dns-prefetch-control" content="on">
 <meta name="description" content="由 Sukka 和黑苹果爱好者们维护的 OpenCore 文档简体中文翻译，实时更新 OpenCore 上游文档改动。努力提供权威的 OpenCore 简体中文参考资料。">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -15,6 +15,7 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.16.2/styles/github.min.css">
 <link rel="stylesheet" href="/theme-doku/css/doku.css">
 <link rel="sitemap" type="application/xml" title="Sitemap" href="/sitemap.xml">
+<link rel="canonical" href="https://oc.skk.moe/1-introduction.html">
 
 </head>
 
@@ -59,7 +60,7 @@
                         
                     </a>
                 
-                    <a class="navbar-item" href="https://github.com/SukkaW/OpenCore-Document-zh_Hans" target="_blank" rel="noopener">
+                    <a class="navbar-item" target="_blank" rel="noopener" href="https://github.com/SukkaW/OpenCore-Document-zh_Hans">
                         
                             <span class="icon">
                                 <i class="fab fa-github"></i>
@@ -134,7 +135,7 @@
                         
                     
                         
-                            <li><a href="https://github.com/SukkaW/OpenCore-Document-zh_Hans" target="_blank" rel="noopener">GitHub</span></a></li>
+                            <li><a target="_blank" rel="noopener" href="https://github.com/SukkaW/OpenCore-Document-zh_Hans">GitHub</span></a></li>
                         
                     
                 </ul>
@@ -194,7 +195,7 @@
                     <p><small>由 Sukka 整理，由 Sukka、derbalkon 翻译</small></p>
                 
                 
-                    <p><small>本页面最后更新于 2020 年 05 月 19 日</small></p>
+                    <p><small>本页面最后更新于 2020 年 11 月 01 日</small></p>
                 
                 <br>
             
@@ -206,8 +207,11 @@
     <div class="columns">
         <div class="column is-9-tablet doku-document-wrapper">
             <div class="content">
-                <p>本文档提供关于 OpenCore 用户配置文件的信息，以使 macOS 操作系统正常工作。你应当视本文档为 OpenCore 预期行为的解释。如果在已经发布的 OpenCore 版本中找到与文档中的描述存在偏差的行为，应当视为 OpenCore 存在 Bug 或文档出现错误，应通过 <a href="https://github.com/acidanthera/bugtracker" target="_blank" rel="noopener">Acidanthera Bugtracker</a> 进行反馈。</p>
-<p>本文档仅作为规范结构、并非用于提供手把手的配置教程。本文档的目标受众是程序员、工程师、有对 macOS 内部和 UEFI 有足够了解的人。因此本文档只提供英文版本，<strong>任何通过其他来源分发的文档和文档翻译都是非官方的，并且可能存在错误。</strong></p>
+                <p>本文档提供关于 OpenCore 用户配置文件的信息，以使 macOS 操作系统正常工作。你应当视本文档为 OpenCore 预期行为的解释。如果在已经发布的 OpenCore 版本中找到与文档中的描述存在偏差的行为，应当视为 OpenCore 存在 Bug 或文档出现错误，应通过 <a target="_blank" rel="noopener" href="https://github.com/acidanthera/bugtracker">Acidanthera Bugtracker</a> 进行反馈。</p>
+<blockquote>
+<p>OpenCore 记录重大勘误的文档可在 <a target="_blank" rel="noopener" href="https://github.com/acidanthera/OpenCorePkg/blob/master/Docs/Errata/Errata.pdf">这里</a> 查看。</p>
+</blockquote>
+<p>本文档仅作为规范结构、并非用于提供手把手的配置教程。本文档的目标受众是程序员、工程师、对 macOS 内部和 UEFI 有足够了解的人。因此本文档只提供英文版本，<strong>任何通过其他来源分发的文档和文档翻译都是非官方的，并且可能存在错误。</strong></p>
 <blockquote>
 <p>译者注：</p>
 <ol>
@@ -215,10 +219,11 @@
 <li>你应当使用英语在 Acidanthera Bugtracker 进行反馈。</li>
 </ol>
 </blockquote>
-<p>对于大部分用户来说，第三方提供的教程、工具可能更易于使用、受众更广。但是这类材料（译者注：即由第三方提供的，如「手把手的配置教程」）都容易收到其作者的喜好和品位、对本文档的误解、过时的理解等。如果您正在使用这些资料来源，例如 <a href="https://dortania.github.io/OpenCore-Desktop-Guide" target="_blank" rel="noopener">OpenCore Desktop Guide</a>（及其 <a href="https://dortania.github.io/getting-started" target="_blank" rel="noopener">父页面</a>）或者「OpenCore 非官方简体中文翻译」，请务必在参考本文档后再作出每个决定、并判断其后果。</p>
+<p>对于大部分用户来说，第三方提供的教程、工具可能更易于使用、受众更广。但是这类材料（译者注：即由第三方提供的，如「手把手的配置教程」）都容易受到其作者的喜好和品位、对本文档的误解、过时的理解等因素的影响。如果您正在使用这些资料来源，例如 <a target="_blank" rel="noopener" href="https://dortania.github.io/OpenCore-Install-Guide">OpenCore Install Guide</a>（及其 <a target="_blank" rel="noopener" href="https://dortania.github.io/getting-started">父页面</a>）或者「OpenCore 非官方简体中文翻译」，请务必在参考本文档后再作出每个决定、并判断其后果。</p>
 <p>在通过 Acidanthera Bugtracker 反馈任何问题之前，请确保你彻底理解了 OpenCore 的每个配置选项及其对应的概念。</p>
+<p><em>注</em>：感谢 Andrey1970, Goldfish64, dakanji, PMheart 和 <a target="_blank" rel="noopener" href="https://github.com/acidanthera/OpenCorePkg/commits/master/Docs">众多贡献者</a> 的宝贵贡献，多亏了这些人的付出和努力，本文档才得以诞生。</p>
 <h2 id="1-1-通用术语"><a href="#1-1-通用术语" class="headerlink" title="1.1 通用术语"></a>1.1 通用术语</h2><ul>
-<li><code>plist</code> — 是一种用 XML 编写的、储存 ASCII 属性列表格式的集合文件，又称 XML 1.0 版。 统一类型标识符（UTI）： <code>com.apple.property-list</code>。 plist 由多个 <code>plist object</code> 组成，这些对象组合在一起形成一种具有层次的结构。 由于 plist 格式的定义不明确，因此本文中的所有定义只有在运行 <code>plutil -lint</code> 有效后才能被应用。外部参考： <a href="https://www.apple.com/DTDs/PropertyList-1.0.dtd" target="_blank" rel="noopener">https://www.apple.com/DTDs/PropertyList-1.0.dtd</a>, <code>man plutil</code>。</li>
+<li><code>plist</code> — 是一种用 XML 编写的、储存 ASCII 属性列表格式的集合文件，又称 XML 1.0 版。 统一类型标识符（UTI）： <code>com.apple.property-list</code>。 plist 由多个 <code>plist object</code> 组成，这些对象组合在一起形成一种具有层次的结构。 由于 plist 格式的定义不明确，因此本文中的所有定义只有在运行 <code>plutil -lint</code> 有效后才能被应用。外部参考： <a target="_blank" rel="noopener" href="https://www.apple.com/DTDs/PropertyList-1.0.dtd">https://www.apple.com/DTDs/PropertyList-1.0.dtd</a>, <code>man plutil</code>。</li>
 <li><code>plist type</code> — 指 plist 集合（<code>plist array</code>, <code>plist dictionary</code>, <code>plist key</code>）和基本类型（<code>plist string</code>, <code>plist data</code>, <code>plist date</code>, <code>plist boolean</code>, <code>plist integer</code>,  <code>plist real</code>）。</li>
 <li><code>plist object</code> — 是用来定义 <code>plist type</code> 的实现形式，可以理解为值。</li>
 <li><code>plist array</code> — 类数组集合，参数为 <code>array</code>。包含零个或多个  <code>plist object</code>。</li>
@@ -254,7 +259,7 @@
             <aside class="doku-document-toc" id="doku-document-toc">
                 <div class="doku-document-toc-content">
                     <p class="doku-document-toc-title">目录</p>
-                    <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#1-1-通用术语"><span class="post-toc-text">1.1 通用术语</span></a></li></ol>
+                    <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#1-1-%E9%80%9A%E7%94%A8%E6%9C%AF%E8%AF%AD"><span class="post-toc-text">1.1 通用术语</span></a></li></ol>
                 </div>
             </aside>
         </div>

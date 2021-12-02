@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
 <title>6. DeviceProperties | OpenCore 简体中文参考手册(非官方)</title>
-<meta name="generator" content="Hexo 4.2.1">
+<meta name="generator" content="Hexo 5.1.1">
 <meta http-equiv="x-dns-prefetch-control" content="on">
 <meta name="description" content="由 Sukka 和黑苹果爱好者们维护的 OpenCore 文档简体中文翻译，实时更新 OpenCore 上游文档改动。努力提供权威的 OpenCore 简体中文参考资料。">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -15,6 +15,7 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.16.2/styles/github.min.css">
 <link rel="stylesheet" href="/theme-doku/css/doku.css">
 <link rel="sitemap" type="application/xml" title="Sitemap" href="/sitemap.xml">
+<link rel="canonical" href="https://oc.skk.moe/6-device-properties.html">
 
 </head>
 
@@ -59,7 +60,7 @@
                         
                     </a>
                 
-                    <a class="navbar-item" href="https://github.com/SukkaW/OpenCore-Document-zh_Hans" target="_blank" rel="noopener">
+                    <a class="navbar-item" target="_blank" rel="noopener" href="https://github.com/SukkaW/OpenCore-Document-zh_Hans">
                         
                             <span class="icon">
                                 <i class="fab fa-github"></i>
@@ -134,7 +135,7 @@
                         
                     
                         
-                            <li><a href="https://github.com/SukkaW/OpenCore-Document-zh_Hans" target="_blank" rel="noopener">GitHub</span></a></li>
+                            <li><a target="_blank" rel="noopener" href="https://github.com/SukkaW/OpenCore-Document-zh_Hans">GitHub</span></a></li>
                         
                     
                 </ul>
@@ -191,10 +192,10 @@
             
             
                 
-                    <p><small>由 Sukka 整理、由 Sukka、derbalkon 翻译。</small></p>
+                    <p><small>由 Sukka、derbalkon 整理、由 Sukka、derbalkon 翻译。</small></p>
                 
                 
-                    <p><small>本页面最后更新于 2020 年 04 月 29 日</small></p>
+                    <p><small>本页面最后更新于 2020 年 08 月 21 日</small></p>
                 
                 <br>
             
@@ -207,18 +208,27 @@
         <div class="column is-9-tablet doku-document-wrapper">
             <div class="content">
                 <h2 id="6-1-简介"><a href="#6-1-简介" class="headerlink" title="6.1 简介"></a>6.1 简介</h2><p>设备相关配置通过专用的缓存区（<code>EfiDevicePathPropertyDatabase</code>）提供给 macOS，这个缓冲区是设备路径到属性名称与值的键值对的序列化映射。</p>
-<p>属性相关数据可以使用 <a href="https://github.com/acidanthera/gfxutil" target="_blank" rel="noopener">gfxutil</a> 进行调试。在 macOS 下获取当前属性数据请使用 <code>ioreg</code>：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs bash">ioreg -lw0 -p IODeviceTree -n efi -r -x | grep device-properties |<br>  sed <span class="hljs-string">'s/.*&lt;//;s/&gt;.*//'</span> &gt; /tmp/device-properties.hex &amp;&amp;<br>  gfxutil /tmp/device-properties.hex /tmp/device-properties.plist &amp;&amp;<br>  cat /tmp/device-properties.plist<br></code></pre></td></tr></table></figure>
+<p>属性相关数据可以使用 <a target="_blank" rel="noopener" href="https://github.com/acidanthera/gfxutil">gfxutil</a> 进行调试。在 macOS 下获取当前属性数据请使用 <code>ioreg</code>：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs bash">ioreg -lw0 -p IODeviceTree -n efi -r -x | grep device-properties |<br>  sed <span class="hljs-string">&#x27;s/.*&lt;//;s/&gt;.*//&#x27;</span> &gt; /tmp/device-properties.hex &amp;&amp;<br>  gfxutil /tmp/device-properties.hex /tmp/device-properties.plist &amp;&amp;<br>  cat /tmp/device-properties.plist<br></code></pre></td></tr></table></figure>
 
-<h2 id="6-2-属性列表"><a href="#6-2-属性列表" class="headerlink" title="6.2 属性列表"></a>6.2 属性列表</h2><h3 id="6-2-1-Add"><a href="#6-2-1-Add" class="headerlink" title="6.2.1 Add"></a>6.2.1 Add</h3><p><strong>Type</strong>: <code>plist dict</code><br><strong>Description</strong>: 将设备属性从设备路径的映射（plist dict）设置为变量名称和值的映射（plist dict），其中变量名称和值的格式为 plist metadata。设备路径必须以 canonic string 格式提供（例如： <code>PciRoot(0x0)/Pci(0x1,0x0)/Pci(0x0,0x0)</code>）。添加的属性只有在不存在且未被屏蔽的情况下才会被设置。<br><strong>注</strong>：目前，属性只能通过原始驱动程序添加。因此除非安装了单独的驱动程序，否则没有理由 Delete 变量。</p>
-<h3 id="6-2-2-Delete"><a href="#6-2-2-Delete" class="headerlink" title="6.2.2 Delete"></a>6.2.2 Delete</h3><p><strong>Type</strong>: <code>plist dict</code><br><strong>Description</strong>: 从设备路径的映射（<code>plist dict</code>）到 plist 字符串格式的变量名数组（数据类型 <code>plist array</code>）中删除设备属性。</p>
+<p>设备属性属于 macOS IO Registry 中的 <code>IODeviceTree</code>(<code>gIODT</code>) 层面，这个层面有很多与平台初始化相关的构建阶段（Construction Stage）。尽管早期的构建阶段是由 XNU 内核用 <code>IODeviceTreeAlloc</code> Method 来执行的，绝大部分仍然是由 Platform Expert 来构建、用 <code>AppleACPIPlatformExpert.kext</code> 来实现的。</p>
+<p>AppleACPIPlatformExpert 包含了两个阶段的 <code>IODeviceTree</code> 构建，通过调用<code>AppleACPIPlatformExpert::mergeDeviceProperties</code> 来实现：</p>
+<ol>
+<li>在 ACPI 表初始化过程中，通过调用 <code>AppleACPIPlatformExpert::createDTNubs</code> 递归扫描 ACPI 命名空间。</li>
+<li>在 IOService 注册（<code>IOServices::registerService</code>）回调过程中，作为 <code>AppleACPIPlatformExpert::platformAdjustService</code> 函数和它私有的、针对 PCI 设备的 Worker Method <code>AppleACPIPlatformExpert::platformAdjustPCIDevice</code> 的一部分。</li>
+</ol>
+<p>各阶段的应用取决于 ACPI 表中存在的设备。第一阶段适用于很早、但只适用于存在于 ACPI 表中的设备。第二阶段适用于所有晚于 PCI 配置的设备，如果设备没有出现在 ACPI 中，则会重复第一阶段。</p>
+<p>所有的内核驱动可以在不探测设备的情况下检查 <code>IODeviceTree</code> 层面（例如 Lilu 和它的插件 <code>WhateverGreen</code> 等），因此确保 ACPI 表中的设备存在是尤其重要的。如果不这样做，则可能会因为注入的设备属性被忽略而导致<strong>各种不稳定的行为</strong>，原因是它们没有在第一阶段被构建出来。参见 <code>SSDT-IMEI.dsl</code> 和 <code>SSDT-BRG0.dsl</code> 的例子。</p>
+<h2 id="6-2-属性列表"><a href="#6-2-属性列表" class="headerlink" title="6.2 属性列表"></a>6.2 属性列表</h2><h3 id="1-Add"><a href="#1-Add" class="headerlink" title="1. Add"></a>1. <code>Add</code></h3><p><strong>Type</strong>: <code>plist dict</code><br><strong>Description</strong>: 将设备属性从设备路径的映射（<code>plist dict</code>）设置为变量名称和值的映射（<code>plist dict</code>），其中变量名称和值的格式为 <code>plist metadata</code>。设备路径必须以规范化字符串格式（Canonical String Format）提供，例如： <code>PciRoot(0x0)/Pci(0x1,0x0)/Pci(0x0,0x0)</code>。添加的属性只有在不存在且未被屏蔽的情况下才会被设置。</p>
+<p><em>注</em>：目前，属性只能通过原始驱动程序添加。因此除非安装了单独的驱动程序，否则没有理由 Delete 变量。</p>
+<h3 id="2-Delete"><a href="#2-Delete" class="headerlink" title="2. Delete"></a>2. <code>Delete</code></h3><p><strong>Type</strong>: <code>plist dict</code><br><strong>Description</strong>: 从设备路径的映射（<code>plist dict</code>）到 <code>plist string</code> 格式的变量名数组（数据类型 <code>plist array</code>）中删除设备属性。</p>
 <blockquote>
 <p>译者注：这里的设置等同于 Clover 里的 ACPI 重命名 <code>_DSM → XDSM =&gt; TgtBridge</code></p>
 </blockquote>
 <h2 id="6-3-常见属性"><a href="#6-3-常见属性" class="headerlink" title="6.3 常见属性"></a>6.3 常见属性</h2><p>一些常见的属性包括：</p>
 <ul>
-<li><code>device-id</code><br>用户指定的设备标识符，用于 I/O 套件匹配。数据类型为 4 byte data.</li>
-<li><code>vendor-id</code><br>用户指定的供应商标识符，用于 I/O 套件匹配。数据类型为 4 byte data.</li>
+<li><code>device-id</code><br>用户指定的设备标识符，用于 I/O 套件匹配。数据类型为 4 byte data。</li>
+<li><code>vendor-id</code><br>用户指定的供应商标识符，用于 I/O 套件匹配。数据类型为 4 byte data。</li>
 <li><code>AAPL,ig-platform-id</code><br>Intel GPU 缓冲帧标识符，用于在 Ivy Bridge 上选择缓冲帧区域。数据类型为 4 byte data。</li>
 <li><code>AAPL,snb-platform-id</code><br>Intel GPU 缓冲帧标识符，用于在 Sandy Bridge 上选择缓冲帧区域。数据类型为 4 byte data。</li>
 <li><code>layout-id</code><br>AppleHDA 的音频布局，4 byte data。</li>
@@ -245,7 +255,7 @@
             <aside class="doku-document-toc" id="doku-document-toc">
                 <div class="doku-document-toc-content">
                     <p class="doku-document-toc-title">目录</p>
-                    <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#6-1-简介"><span class="post-toc-text">6.1 简介</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#6-2-属性列表"><span class="post-toc-text">6.2 属性列表</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#6-2-1-Add"><span class="post-toc-text">6.2.1 Add</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#6-2-2-Delete"><span class="post-toc-text">6.2.2 Delete</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#6-3-常见属性"><span class="post-toc-text">6.3 常见属性</span></a></li></ol>
+                    <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#6-1-%E7%AE%80%E4%BB%8B"><span class="post-toc-text">6.1 简介</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#6-2-%E5%B1%9E%E6%80%A7%E5%88%97%E8%A1%A8"><span class="post-toc-text">6.2 属性列表</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#1-Add"><span class="post-toc-text">1. Add</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#2-Delete"><span class="post-toc-text">2. Delete</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#6-3-%E5%B8%B8%E8%A7%81%E5%B1%9E%E6%80%A7"><span class="post-toc-text">6.3 常见属性</span></a></li></ol>
                 </div>
             </aside>
         </div>

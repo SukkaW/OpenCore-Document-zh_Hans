@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
 <title>附录 1. OpenCore 兼容 Kext 列表 | OpenCore 简体中文参考手册(非官方)</title>
-<meta name="generator" content="Hexo 4.2.1">
+<meta name="generator" content="Hexo 5.1.1">
 <meta http-equiv="x-dns-prefetch-control" content="on">
 <meta name="description" content="由 Sukka 和黑苹果爱好者们维护的 OpenCore 文档简体中文翻译，实时更新 OpenCore 上游文档改动。努力提供权威的 OpenCore 简体中文参考资料。">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -15,6 +15,7 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.16.2/styles/github.min.css">
 <link rel="stylesheet" href="/theme-doku/css/doku.css">
 <link rel="sitemap" type="application/xml" title="Sitemap" href="/sitemap.xml">
+<link rel="canonical" href="https://oc.skk.moe/kextlist.html">
 
 </head>
 
@@ -59,7 +60,7 @@
                         
                     </a>
                 
-                    <a class="navbar-item" href="https://github.com/SukkaW/OpenCore-Document-zh_Hans" target="_blank" rel="noopener">
+                    <a class="navbar-item" target="_blank" rel="noopener" href="https://github.com/SukkaW/OpenCore-Document-zh_Hans">
                         
                             <span class="icon">
                                 <i class="fab fa-github"></i>
@@ -134,7 +135,7 @@
                         
                     
                         
-                            <li><a href="https://github.com/SukkaW/OpenCore-Document-zh_Hans" target="_blank" rel="noopener">GitHub</span></a></li>
+                            <li><a target="_blank" rel="noopener" href="https://github.com/SukkaW/OpenCore-Document-zh_Hans">GitHub</span></a></li>
                         
                     
                 </ul>
@@ -191,10 +192,10 @@
             
             
                 
-                    <p><small>由 Sukka 整理，感谢黑果小兵的博客提供的资料。</small></p>
+                    <p><small>由 Sukka、derbalkon 整理，感谢黑果小兵的博客提供的资料。</small></p>
                 
                 
-                    <p><small>本页面最后更新于 2020 年 04 月 17 日</small></p>
+                    <p><small>本页面最后更新于 2020 年 10 月 31 日</small></p>
                 
                 <br>
             
@@ -206,89 +207,525 @@
     <div class="columns">
         <div class="column is-9-tablet doku-document-wrapper">
             <div class="content">
-                <h2 id="有线网卡"><a href="#有线网卡" class="headerlink" title="有线网卡"></a>有线网卡</h2><ul>
-<li><a href="https://www.realtek.com/en/directly-download" target="_blank" rel="noopener">AppleRTL8169Ethernet</a> — Realtek RTL8169 官方驱动，通过电子邮件发送下载链接</li>
-<li><a href="https://github.com/Mieze/AtherosE2200Ethernet" target="_blank" rel="noopener">AtherosE2200Ethernet.kext</a> — 高通 Atheros Killer E2200 系列驱动</li>
-<li><a href="https://github.com/al3xtjames/AtherosL1cEthernet" target="_blank" rel="noopener">AtherosL1cEthernet.kext</a> — 高通 Atheros AR813x/815x 驱动</li>
-<li><a href="https://github.com/acidanthera/IntelMausi" target="_blank" rel="noopener">IntelMausi.kext</a> — 由 Acidanthera 维护的英特尔有线网卡驱动</li>
-<li><a href="https://github.com/Mieze/IntelMausiEthernet" target="_blank" rel="noopener">IntelMausiEthernet.kext</a> — 由原作者（Mieze）英特尔有线网卡</li>
-<li><a href="https://github.com/RehabMan/OS-X-Null-Ethernet" target="_blank" rel="noopener">NullEthernetInjector.kext</a> — RehabMan 提供的仿冒内建网卡</li>
-<li><a href="https://github.com/SergeySlice/RealtekLANv3" target="_blank" rel="noopener">RealtekR1000SL.kext</a> — Realtek 8111B/C/D/E/EP/F/G/GU/8411B 系列驱动</li>
-<li><a href="https://github.com/Mieze/RealtekRTL8100" target="_blank" rel="noopener">RealtekRTL8100.kext</a> — Realtek RTL810X 系列驱动</li>
-<li><a href="https://github.com/Mieze/RTL8111_driver_for_OS_X" target="_blank" rel="noopener">RealtekRTL8111.kext</a> — Realtek RTL8111/8168 系列驱动</li>
-</ul>
-<h2 id="Wi-Fi-和蓝牙"><a href="#Wi-Fi-和蓝牙" class="headerlink" title="Wi-Fi 和蓝牙"></a>Wi-Fi 和蓝牙</h2><ul>
-<li><a href="https://i.applelife.ru/2018/12/442854_AirPortAtheros40.kext.zip" target="_blank" rel="noopener">AirPortAtheros40.kext</a> — 高通 Atheros AR92xx/AR93xx 驱动，仅适用于 macOS 10.13.6 和 macOS 10.14+</li>
-<li><a href="https://github.com/acidanthera/AirportBrcmFixup" target="_blank" rel="noopener">AirportBrcmFixup.kext</a> — 非苹果官方博通网卡修复</li>
-<li><a href="https://github.com/chunnann/ATH9KFixup" target="_blank" rel="noopener">ATH9KFixup.kext</a> — 高通 Atheros AR9xxx 无线网卡修复</li>
-<li><a href="https://github.com/acidanthera/BrcmPatchRAM" target="_blank" rel="noopener">BrcmPatchRAM.kext</a> — 博通网卡蓝牙固件</li>
-<li><a href="https://github.com/acidanthera/BT4LEContinuityFixup" target="_blank" rel="noopener">BT4LEContinuityFixup.kext</a> — IOBluetoothFamily 修补</li>
-<li><a href="https://github.com/zxystd/IntelBluetoothFirmware" target="_blank" rel="noopener">IntelBluetoothFirmware</a> — Intel 蓝牙固件驱动</li>
-<li><a href="https://d86o2zu8ugzlg.cloudfront.net/mediatek-craft/drivers/MT7612_7610U_D5.0.1.25_SDK1.0.2.18_UI5.0.0.27_20151209.zip" target="_blank" rel="noopener">MT7610</a> — 联发科 MT7610 官方驱动</li>
-<li><a href="https://d86o2zu8ugzlg.cloudfront.net/mediatek-craft/drivers/RTUSB_D2870-4.2.9.2_UI-4.0.9.6_2013_11_29.zip" target="_blank" rel="noopener">RT5370</a> — 联发科 RT5370 官方驱动</li>
-<li><a href="https://drive.google.com/file/d/1ZtdMqlvKBbHULJhl1u9omuLOy6j0vx48/view?usp=sharing" target="_blank" rel="noopener">RTL8192CU</a> — Realtek RTL8192CU 驱动</li>
-</ul>
+                <h2 id="有线网卡"><a href="#有线网卡" class="headerlink" title="有线网卡"></a>有线网卡</h2><table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Description</th>
+<th>MinKernel (Min macOS)</th>
+<th>MaxKernel (Max macOS)</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><a target="_blank" rel="noopener" href="https://www.realtek.com/en/directly-download">AppleRTL8169Ethernet</a></td>
+<td>Realtek RTL8169 官方驱动，通过电子邮件发送下载链接</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://github.com/Mieze/AtherosE2200Ethernet">AtherosE2200Ethernet.kext</a></td>
+<td>高通 Atheros Killer E2200 系列驱动</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://github.com/al3xtjames/AtherosL1cEthernet">AtherosL1cEthernet.kext</a></td>
+<td>高通 Atheros AR813x/815x 驱动</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://github.com/acidanthera/IntelMausi">IntelMausi.kext</a></td>
+<td>由 Acidanthera 维护的英特尔有线网卡驱动</td>
+<td>13.0.0 (10.9)</td>
+<td>—</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://github.com/acidanthera/IntelMausi">IntelSnowMausi.kext</a></td>
+<td>由 Acidanthera 维护的 macOS 10.6-10.8 可用的英特尔有线网卡驱动</td>
+<td>10.0.0 (10.6) Not tested</td>
+<td>—</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://github.com/Mieze/IntelMausiEthernet">IntelMausiEthernet.kext</a></td>
+<td>由原作者（Mieze）提供的英特尔有线网卡驱动</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://github.com/RehabMan/OS-X-Null-Ethernet">NullEthernetInjector.kext</a></td>
+<td>RehabMan 提供的仿冒内建网卡</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://github.com/SergeySlice/RealtekLANv3">RealtekR1000SL.kext</a></td>
+<td>Realtek 8111B/C/D/E/EP/F/G/GU/8411B 系列驱动</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://github.com/Mieze/RealtekRTL8100">RealtekRTL8100.kext</a></td>
+<td>Realtek RTL810X 系列驱动</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://github.com/Mieze/RTL8111_driver_for_OS_X">RealtekRTL8111.kext</a></td>
+<td>Realtek RTL8111/8168 系列驱动</td>
+<td>—</td>
+<td>—</td>
+</tr>
+</tbody></table>
+<h2 id="Wi-Fi-和蓝牙"><a href="#Wi-Fi-和蓝牙" class="headerlink" title="Wi-Fi 和蓝牙"></a>Wi-Fi 和蓝牙</h2><table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Description</th>
+<th>MinKernel (Min macOS)</th>
+<th>MaxKernel (Max macOS)</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><a target="_blank" rel="noopener" href="https://i.applelife.ru/2018/12/442854_AirPortAtheros40.kext.zip">AirPortAtheros40.kext</a></td>
+<td>高通 Atheros AR92xx/AR93xx 驱动，仅适用于 macOS 10.13.6 和 macOS 10.14+</td>
+<td>18.0.0 (10.14) From 10.13</td>
+<td>—</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://github.com/acidanthera/AirportBrcmFixup">AirportBrcmFixup.kext</a></td>
+<td>非苹果官方博通网卡修复</td>
+<td>12.0.0 (10.8)</td>
+<td>—</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://github.com/chunnann/ATH9KFixup">ATH9KFixup.kext</a></td>
+<td>高通 Atheros AR9xxx 无线网卡修复</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://github.com/acidanthera/BrcmPatchRAM">BrcmPatchRAM.kext</a></td>
+<td>博通网卡蓝牙固件</td>
+<td>14.0.0 (10.10)</td>
+<td>—</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://github.com/zxystd/IntelBluetoothFirmware">IntelBluetoothFirmware</a></td>
+<td>Intel 蓝牙固件驱动</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://d86o2zu8ugzlg.cloudfront.net/mediatek-craft/drivers/MT7612_7610U_D5.0.1.25_SDK1.0.2.18_UI5.0.0.27_20151209.zip">MT7610</a></td>
+<td>联发科 MT7610 官方驱动</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://d86o2zu8ugzlg.cloudfront.net/mediatek-craft/drivers/RTUSB_D2870-4.2.9.2_UI-4.0.9.6_2013_11_29.zip">RT5370</a></td>
+<td>联发科 RT5370 官方驱动</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://drive.google.com/file/d/1ZtdMqlvKBbHULJhl1u9omuLOy6j0vx48/view?usp=sharing">RTL8192CU</a></td>
+<td>Realtek RTL8192CU 驱动</td>
+<td>—</td>
+<td>—</td>
+</tr>
+</tbody></table>
 <blockquote>
-<p>译者注：上述链接为 Google Drive 分享，直链下载地址：</p>
+<p>译者注：上述 <code>RTL8192CU</code> 驱动链接为 Google Drive 分享，直链下载地址：</p>
 <ul>
 <li><a href="/download/RTL8192CU/10.6/RTL8192CUs.kext.zip">macOS 10.6</a></li>
 <li><a href="/download/RTL8192CU/10.9/RTL8192CU9.kext.zip">macOS 10.9</a></li>
 </ul>
 </blockquote>
-<h2 id="键盘、鼠标和触摸设备"><a href="#键盘、鼠标和触摸设备" class="headerlink" title="键盘、鼠标和触摸设备"></a>键盘、鼠标和触摸设备</h2><ul>
-<li><a href="https://osxlatitude.com/forums/topic/1948-elan-focaltech-and-synaptics-smart-touchpad-driver-mac-os-x/" target="_blank" rel="noopener">ApplePS2SmartTouchPad.kext</a> — 触摸板和键盘</li>
-<li><a href="https://github.com/osy86/GK701HIDDevice" target="_blank" rel="noopener">GK701HIDDevice.kext</a> — 华硕 Fn 键、键盘背光灯和环境光传感器 驱动</li>
-<li><a href="https://github.com/al3xtjames/NoTouchID" target="_blank" rel="noopener">NoTouchID.kext</a> — 禁用 Touch ID 检测</li>
-<li><a href="https://github.com/Goldfish64/SerialMouse" target="_blank" rel="noopener">SerialMouse.kext</a> — 使用 Microsoft 串行鼠标协议的串行鼠标驱动</li>
-<li><a href="https://github.com/alexandred/VoodooI2C" target="_blank" rel="noopener">VoodooI2C.kext</a> — I2C 触摸板/屏 驱动</li>
-<li><a href="https://github.com/acidanthera/VoodooPS2" target="_blank" rel="noopener">VoodooPS2Controller.kext</a> — PS2 键盘/触摸板 驱动</li>
-<li><a href="https://github.com/acidanthera/VoodooInput" target="_blank" rel="noopener">VoodooInput.kext</a> — 为 PS2 键盘/触摸板 提供模拟 Magic TrackPad 2 触控模拟</li>
-<li><a href="https://github.com/leo-labs/VoodooSMBus" target="_blank" rel="noopener">VoodooSMBus.kext</a></li>
-<li><a href="https://github.com/blankmac/AlpsT4USB" target="_blank" rel="noopener">AlpsT4USB.kext</a> — VoodooI2C 的卫星插件 kext，为 Alps T4 USB 触控板提供原生苹果手势支持。</li>
-</ul>
-<h2 id="音频和视频"><a href="#音频和视频" class="headerlink" title="音频和视频"></a>音频和视频</h2><ul>
-<li><a href="https://github.com/acidanthera/AppleALC" target="_blank" rel="noopener">AppleALC.kext</a> — 定制声卡驱动</li>
-<li><a href="https://github.com/Wouter1/EMU-driver" target="_blank" rel="noopener">EMUUSBAudio.kext</a> — 适用于 Creative Labs EMU USB 的驱动程序</li>
-<li><a href="https://github.com/kxproject/kx-audio-driver" target="_blank" rel="noopener">kXAudioDriver.kext</a> — 适用于 kX 音频设备的驱动</li>
-<li><a href="https://www.nvidia.com/object/mac-driver-archive.html" target="_blank" rel="noopener">Nvidia CUDA drivers</a> — NVIDIA CUDA 官方驱动</li>
-<li><a href="https://gfe.nvidia.com/mac-update" target="_blank" rel="noopener">Nvidia Web-drivers</a> — NVIDIA 显卡官方驱动</li>
-<li><a href="https://github.com/Andrej-Antipov/SNBGraphicsMojaveInstaller" target="_blank" rel="noopener">SNBGraphicsMojaveInstaller</a> — 二代酷睿核显驱动，仅适用于 macOS 10.13.6 和 macOS 10.14+</li>
-<li><a href="https://sourceforge.net/projects/voodoohda/" target="_blank" rel="noopener">VoodooHDA.kext</a> — 万能声卡驱动</li>
-<li><a href="https://github.com/acidanthera/WhateverGreen" target="_blank" rel="noopener">WhateverGreen.kext</a> — 显卡补丁驱动</li>
-<li><a href="https://github.com/osy86/Polaris22Fixup" target="_blank" rel="noopener">Polaris22Fixup.kext</a> — Polaris22/VegaM 显卡修复</li>
-</ul>
-<h2 id="CPU-和-SMC"><a href="#CPU-和-SMC" class="headerlink" title="CPU 和 SMC"></a>CPU 和 SMC</h2><ul>
-<li><a href="https://github.com/acidanthera/bugtracker/issues/424#issuecomment-535624313" target="_blank" rel="noopener">AppleMCEReporterDisabler.kext</a></li>
-<li><a href="https://github.com/hieplpvip/AsusSMC" target="_blank" rel="noopener">AsusSMC.kext</a> — 为 ASUS 笔记本电脑上的 ALS、键盘背光、Fn 键提供支持 VirtualSMC 插件</li>
-<li><a href="https://github.com/acidanthera/CPUFriend" target="_blank" rel="noopener">CPUFriend.kext</a> - CPU 变频管理</li>
-<li><a href="https://github.com/CloverHackyColor/FakeSMC3_with_plugins" target="_blank" rel="noopener">FakeSMC.kext 以及配套传感器驱动</a> — Clover 官方的 FakeSMC</li>
-<li><a href="https://github.com/headkaze/HWPEnable" target="_blank" rel="noopener">HWPEnabler.kext</a> — 启用 HWP 驱动</li>
-<li><a href="https://www.insanelymac.com/forum/topic/329704-opcode-emulator-opemu-plug-in-project/" target="_blank" rel="noopener">OpcodeEmulator.kext</a> — Opcode 模拟驱动</li>
-<li><a href="https://github.com/interferenc/TSCAdjustReset" target="_blank" rel="noopener">TSCAdjustReset.kext</a> — TSC 频率同步驱动</li>
-<li><a href="https://github.com/acidanthera/VirtualSMC" target="_blank" rel="noopener">VirtualSMC.kext 以及配套传感器驱动</a></li>
-<li><a href="https://github.com/RehabMan/VoodooTSCSync" target="_blank" rel="noopener">VoodooTSCSync.kext</a> — 由 Rehabman 提供的 TSC 频率同步驱动</li>
-</ul>
-<h2 id="USB-and-other-ports"><a href="#USB-and-other-ports" class="headerlink" title="USB and other ports"></a>USB and other ports</h2><ul>
-<li><a href="https://github.com/the-darkvoid/macOS-IOElectrify" target="_blank" rel="noopener">IOElectrify.kext</a> — 在雷电 3 设备上启用常开电源</li>
-<li><a href="https://applelife.ru/posts/537459" target="_blank" rel="noopener">Legacy_InternalHub-EHCx.kext</a></li>
-<li><a href="https://applelife.ru/posts/537459" target="_blank" rel="noopener">Legacy_USB3.kext</a></li>
-<li><a href="https://github.com/acidanthera/NVMeFix" target="_blank" rel="noopener">NVMeFix.kext</a> — 由 acidanthera 提供的改善第三方 SSD 兼容性的驱动程序</li>
-<li><a href="https://github.com/osy86/USBWakeFixup" target="_blank" rel="noopener">USBWakeFixup.kext</a> — 修复 Skylake 平台 USB 唤醒黑屏</li>
-<li><a href="https://github.com/dukzcry/osx-goodies" target="_blank" rel="noopener">SASMegaRAID.kext</a> — LSI MegaRAID SAS 系列 RAID 控制器驱动</li>
-<li><a href="https://www.insanelymac.com/forum/topic/321080-sineteks-driver-for-realtek-rtsx-sdhc-card-readers/?do=findComment&comment=2376387" target="_blank" rel="noopener">Sinetek-rtsx.kext</a> — Realtek RTSX SDHC 读卡器驱动</li>
-<li><a href="https://github.com/lvs1974/VoodooSDHCMod" target="_blank" rel="noopener">VoodooSDHC.kext</a> — SDHC 读卡器驱动</li>
-</ul>
-<h2 id="Other-kexts"><a href="#Other-kexts" class="headerlink" title="Other kexts"></a>Other kexts</h2><ul>
-<li><a href="https://github.com/headkaze/AppleIntelInfo" target="_blank" rel="noopener">AppleIntelInfo.kext</a> — CPU / 核显 变频测试</li>
-<li><a href="https://github.com/acidanthera/DebugEnhancer" target="_blank" rel="noopener">DebugEnhancer.kext</a> — macOS 内核调试输出驱动</li>
-<li><a href="https://github.com/acidanthera/HibernationFixup" target="_blank" rel="noopener">HibernationFixup.kext</a> — 修复因 RTC 变量和 NVRAM 造成的睡眠问题</li>
-<li><a href="https://github.com/acidanthera/Lilu" target="_blank" rel="noopener">Lilu.kext</a> — SDK &amp; Library</li>
-<li><a href="https://github.com/PMheart/LiluFriend" target="_blank" rel="noopener">LiluFriend.kext</a> — 用于确保 Lilu 在 L/E 下正常加载</li>
-<li><a href="https://github.com/lvs1974/RTCMemoryFixup" target="_blank" rel="noopener">RTCMemoryFixup.kext</a> — 修复 BIOS CMOS (RTC) 内存和 AppleRTC 之间的冲突问题</li>
-<li><a href="https://github.com/cdf/NightShiftEnabler" target="_blank" rel="noopener">NightShiftEnabler.kext</a> — 解锁 NightShift</li>
-<li><a href="https://www.applelife.ru/threads/asus-x550vc-i-asus-x550cc.41752/page-130#post-593586" target="_blank" rel="noopener">WebCamera.kext</a> — 某些旧设备的摄像头驱动</li>
-<li><a href="https://github.com/jslegendre/TOSMotionSensor" target="_blank" rel="noopener">TOSMotionSensor.kext</a> — 东芝设备的加速度传感器驱动</li>
-</ul>
+<h2 id="键盘、鼠标和触摸设备"><a href="#键盘、鼠标和触摸设备" class="headerlink" title="键盘、鼠标和触摸设备"></a>键盘、鼠标和触摸设备</h2><table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Description</th>
+<th>MinKernel (Min macOS)</th>
+<th>MaxKernel (Max macOS)</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><a target="_blank" rel="noopener" href="https://osxlatitude.com/forums/topic/1948-elan-focaltech-and-synaptics-smart-touchpad-driver-mac-os-x/">ApplePS2SmartTouchPad.kext</a></td>
+<td>触摸板和键盘</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://github.com/osy86/GK701HIDDevice">GK701HIDDevice.kext</a></td>
+<td>华硕 Fn 键、键盘背光灯和环境光传感器驱动</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://github.com/al3xtjames/NoTouchID">NoTouchID.kext</a></td>
+<td>禁用 Touch ID 检测</td>
+<td>17.0.0 (10.13)</td>
+<td>—</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://github.com/Goldfish64/SerialMouse">SerialMouse.kext</a></td>
+<td>使用 Microsoft 串行鼠标协议的串行鼠标驱动</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://github.com/alexandred/VoodooI2C">VoodooI2C.kext</a></td>
+<td>驱动 I2C 触摸板 / 屏</td>
+<td>16.0.0 (10.12)</td>
+<td>—</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://github.com/acidanthera/VoodooPS2">VoodooPS2Controller.kext</a></td>
+<td>驱动 PS2 键盘 / 鼠标 / 触摸板</td>
+<td>15.0.0 (10.11)</td>
+<td>—</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://github.com/acidanthera/VoodooPS2">VoodooPS2Keyboard.kext</a></td>
+<td>—</td>
+<td>15.0.0 (10.11)</td>
+<td>—</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://github.com/acidanthera/VoodooPS2">VoodooPS2Mouse.kext</a></td>
+<td>—</td>
+<td>15.0.0 (10.11)</td>
+<td>—</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://github.com/acidanthera/VoodooPS2">VoodooPS2Trackpad.kext</a></td>
+<td>—</td>
+<td>15.0.0 (10.11)</td>
+<td>—</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://github.com/acidanthera/VoodooInput">VoodooInput.kext</a></td>
+<td>为 PS2 输入源提供 Magic TrackPad 2 触控模拟</td>
+<td>15.0.0 (10.11)</td>
+<td>—</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://github.com/leo-labs/VoodooSMBus">VoodooSMBus.kext</a></td>
+<td>提供 i801 SMBus 支持和 Thinkpad T480s, L380, P52 的 ELAN 触摸板驱动</td>
+<td>18.0.0 (10.14)</td>
+<td>—</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://github.com/VoodooSMBus/VoodooRMI">VoodooRMI.kext</a></td>
+<td>驱动 Synaptic SMBus 触摸板 / 小红点</td>
+<td>15.0.0 (10.11)</td>
+<td>—</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://github.com/blankmac/AlpsT4USB">AlpsT4USB.kext</a></td>
+<td>VoodooI2C 的卫星插件 Kext，为 Alps T4 USB 触控板提供原生苹果手势支持</td>
+<td>—</td>
+<td>—</td>
+</tr>
+</tbody></table>
+<h2 id="音频和视频"><a href="#音频和视频" class="headerlink" title="音频和视频"></a>音频和视频</h2><table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Description</th>
+<th>MinKernel (Min macOS)</th>
+<th>MaxKernel (Max macOS)</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><a target="_blank" rel="noopener" href="https://github.com/acidanthera/AppleALC">AppleALC.kext</a></td>
+<td>定制声卡驱动</td>
+<td>12.0.0 (10.8)</td>
+<td>—</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://github.com/Wouter1/EMU-driver">EMUUSBAudio.kext</a></td>
+<td>适用于 Creative Labs EMU USB 的驱动程序</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://github.com/kxproject/kx-audio-driver">kXAudioDriver.kext</a></td>
+<td>适用于 kX 音频设备的驱动</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://www.nvidia.com/object/mac-driver-archive.html">Nvidia CUDA drivers</a></td>
+<td>NVIDIA CUDA 官方驱动</td>
+<td>10.0.0 (10.6)</td>
+<td>17.9.9 (10.13)</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://gfe.nvidia.com/mac-update">Nvidia Web-drivers</a></td>
+<td>NVIDIA 显卡官方驱动</td>
+<td>12.0.0 (10.8)</td>
+<td>17.9.9 (10.13)</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://github.com/Andrej-Antipov/SNBGraphicsMojaveInstaller">SNBGraphicsMojaveInstaller</a></td>
+<td>二代酷睿核显驱动，仅适用于 macOS 10.13.6 和 macOS 10.14+</td>
+<td>18.0.0 (10.14) From 10.13</td>
+<td>—</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://sourceforge.net/projects/voodoohda/">VoodooHDA.kext</a></td>
+<td>万能声卡驱动</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://github.com/acidanthera/WhateverGreen">WhateverGreen.kext</a></td>
+<td>显卡补丁驱动</td>
+<td>12.0.0 (10.8)</td>
+<td>—</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://github.com/osy86/Polaris22Fixup">Polaris22Fixup.kext</a></td>
+<td>Polaris22/VegaM 显卡修复</td>
+<td>18.0.0 (10.14)</td>
+<td>—</td>
+</tr>
+</tbody></table>
+<h2 id="CPU-和-SMC"><a href="#CPU-和-SMC" class="headerlink" title="CPU 和 SMC"></a>CPU 和 SMC</h2><table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Description</th>
+<th>MinKernel (Min macOS)</th>
+<th>MaxKernel (Max macOS)</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><a target="_blank" rel="noopener" href="https://forums.macrumors.com/threads/mp3-1-others-sse-4-2-emulation-to-enable-amd-metal-driver.2206682/">AAAMouSSE.kext</a></td>
+<td>—</td>
+<td>16.0.0 (10.12)</td>
+<td>—</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://github.com/acidanthera/bugtracker/issues/424#issuecomment-535624313">AppleMCEReporterDisabler.kext</a></td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://github.com/hieplpvip/AsusSMC">AsusSMC.kext</a></td>
+<td>VirtualSMC 插件，为华硕笔记本电脑上的 ALS、键盘背光、Fn 键提供支持</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://github.com/acidanthera/CPUFriend">CPUFriend.kext</a></td>
+<td>CPU 变频管理</td>
+<td>15.0.0 (10.11)</td>
+<td>—</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://github.com/headkaze/HWPEnable">HWPEnabler.kext</a></td>
+<td>启用 HWP 驱动</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://www.insanelymac.com/forum/topic/329704-opcode-emulator-opemu-plug-in-project/">OpcodeEmulator.kext</a></td>
+<td>Opcode 模拟驱动</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://forums.macrumors.com/posts/28447707">telemetrap.kext</a></td>
+<td>—</td>
+<td>18.0.0 (10.14)</td>
+<td>—</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://github.com/interferenc/TSCAdjustReset">TSCAdjustReset.kext</a></td>
+<td>TSC 频率同步驱动</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://github.com/RehabMan/VoodooTSCSync">VoodooTSCSync.kext</a></td>
+<td>由 Rehabman 提供的 TSC 频率同步驱动</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://github.com/acidanthera/CpuTscSync">CpuTscSync.kext</a></td>
+<td>Lilu 插件，合并了 VoodooTSCSync 功能</td>
+<td>12.0.0 (10.8)</td>
+<td>—</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://github.com/CloverHackyColor/FakeSMC3_with_plugins">FakeSMC.kext</a></td>
+<td>Clover 官方的 FakeSMC</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://github.com/acidanthera/VirtualSMC">VirtualSMC.kext</a></td>
+<td>Acidanthera 提供的 VirtualSMC</td>
+<td>10.0.0 (10.6)</td>
+<td>-</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://github.com/acidanthera/VirtualSMC">SMCLightSensor.kext</a></td>
+<td>VirtualSMC 插件，提供光线传感器支持</td>
+<td>10.0.0 (10.6) Not tested</td>
+<td>—</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://github.com/acidanthera/VirtualSMC">SMCSuperIO.kext</a></td>
+<td>VirtualSMC 插件，提供风扇信息读取支持</td>
+<td>10.0.0 (10.6) Not tested</td>
+<td>—</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://github.com/acidanthera/VirtualSMC">SMCBatteryManager.kext</a></td>
+<td>VirtualSMC 插件，提供电池相关的传感器支持</td>
+<td>10.0.0 (10.6) Not tested</td>
+<td>—</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://github.com/acidanthera/VirtualSMC">SMCProcessor.kext</a></td>
+<td>VirtualSMC 插件，提供 CPU 温度传感器支持</td>
+<td>11.0.0 (10.7) Not tested</td>
+<td>—</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://github.com/acidanthera/VirtualSMC">SMCDellSensor.kext</a></td>
+<td>VirtualSMC 插件，为戴尔电脑提供温度和风扇传感器支持</td>
+<td>11.0.0 (10.7) Not tested</td>
+<td>—</td>
+</tr>
+</tbody></table>
+<h2 id="USB-和其他端口"><a href="#USB-和其他端口" class="headerlink" title="USB 和其他端口"></a>USB 和其他端口</h2><table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Description</th>
+<th>MinKernel (Min macOS)</th>
+<th>MaxKernel (Max macOS)</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><a target="_blank" rel="noopener" href="https://github.com/the-darkvoid/macOS-IOElectrify">IOElectrify.kext</a></td>
+<td>在雷电 3 设备上启用常开电源</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://applelife.ru/posts/537459">Legacy_InternalHub-EHCx.kext</a></td>
+<td>—</td>
+<td>15.0.0 (10.11)</td>
+<td>—</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://applelife.ru/posts/537459">Legacy_USB3.kext</a></td>
+<td>—</td>
+<td>15.0.0 (10.11)</td>
+<td>—</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://github.com/acidanthera/NVMeFix">NVMeFix.kext</a></td>
+<td>由 Acidanthera 提供的改善第三方 SSD 兼容性的驱动程序</td>
+<td>18.0.0 (10.14)</td>
+<td>—</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://github.com/osy86/USBWakeFixup">USBWakeFixup.kext</a></td>
+<td>解决从 USB 唤醒设备时无法唤醒显示器，需要再按一次按键或再按一次鼠标来唤醒显示器的问题</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://github.com/dukzcry/osx-goodies">SASMegaRAID.kext</a></td>
+<td>LSI MegaRAID SAS 系列 RAID 控制器驱动</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://www.insanelymac.com/forum/topic/321080-sineteks-driver-for-realtek-rtsx-sdhc-card-readers/?do=findComment&comment=2376387">Sinetek-rtsx.kext</a></td>
+<td>Realtek RTSX SDHC 读卡器驱动</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://github.com/lvs1974/VoodooSDHCMod">VoodooSDHC.kext</a></td>
+<td>SDHC 读卡器驱动</td>
+<td>—</td>
+<td>—</td>
+</tr>
+</tbody></table>
+<h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Description</th>
+<th>MinKernel (Min macOS)</th>
+<th>MaxKernel (Max macOS)</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><a target="_blank" rel="noopener" href="https://github.com/headkaze/AppleIntelInfo">AppleIntelInfo.kext</a></td>
+<td>CPU / 核显变频测试</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://github.com/acidanthera/DebugEnhancer">DebugEnhancer.kext</a></td>
+<td>macOS 内核调试输出驱动</td>
+<td>12.0.0 (10.8)</td>
+<td>—</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://github.com/acidanthera/HibernationFixup">HibernationFixup.kext</a></td>
+<td>修复因 RTC 变量和 NVRAM 造成的睡眠问题</td>
+<td>14.0.0 (10.10)</td>
+<td>—</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://github.com/acidanthera/Lilu">Lilu.kext</a></td>
+<td>SDK &amp; Library</td>
+<td>10.0.0 (10.6)</td>
+<td>—</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://github.com/lvs1974/RTCMemoryFixup">RTCMemoryFixup.kext</a></td>
+<td>修复 BIOS CMOS (RTC) 内存和 AppleRTC 之间的冲突问题</td>
+<td>12.0.0 (10.8)</td>
+<td>—</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://github.com/cdf/NightShiftEnabler">NightShiftEnabler.kext</a></td>
+<td>解锁 Night Shift</td>
+<td>16.0.0 (10.12)</td>
+<td>—</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://www.applelife.ru/threads/asus-x550vc-i-asus-x550cc.41752/page-130#post-593586">WebCamera.kext</a></td>
+<td>某些旧设备的摄像头驱动</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://github.com/jslegendre/TOSMotionSensor">TOSMotionSensor.kext</a></td>
+<td>东芝设备的加速度传感器驱动</td>
+<td>—</td>
+<td>—</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>更完整的列表（包含旧版）托管在 <a target="_blank" rel="noopener" href="https://docs.google.com/spreadsheets/d/15S-ocrkm_VTUJpKxNII-YUyQFd5VYdjbe0DHlZVCQyM">这里</a>。完整的 Lilu 插件列表（包含旧版）托管在 <a target="_blank" rel="noopener" href="https://github.com/acidanthera/Lilu/blob/master/KnownPlugins.md">这里</a>。仅供开发者使用。</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/acidanthera">Acidanthera GitHub 仓库</a> 之外的内核扩展均与 Acidanthera 无关。此列表仅供参考，不作任何形式的保证。</p>
+</blockquote>
 
             </div>
 
@@ -305,7 +742,7 @@
             <aside class="doku-document-toc" id="doku-document-toc">
                 <div class="doku-document-toc-content">
                     <p class="doku-document-toc-title">目录</p>
-                    <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#有线网卡"><span class="post-toc-text">有线网卡</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#Wi-Fi-和蓝牙"><span class="post-toc-text">Wi-Fi 和蓝牙</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#键盘、鼠标和触摸设备"><span class="post-toc-text">键盘、鼠标和触摸设备</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#音频和视频"><span class="post-toc-text">音频和视频</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#CPU-和-SMC"><span class="post-toc-text">CPU 和 SMC</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#USB-and-other-ports"><span class="post-toc-text">USB and other ports</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#Other-kexts"><span class="post-toc-text">Other kexts</span></a></li></ol>
+                    <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#%E6%9C%89%E7%BA%BF%E7%BD%91%E5%8D%A1"><span class="post-toc-text">有线网卡</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#Wi-Fi-%E5%92%8C%E8%93%9D%E7%89%99"><span class="post-toc-text">Wi-Fi 和蓝牙</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#%E9%94%AE%E7%9B%98%E3%80%81%E9%BC%A0%E6%A0%87%E5%92%8C%E8%A7%A6%E6%91%B8%E8%AE%BE%E5%A4%87"><span class="post-toc-text">键盘、鼠标和触摸设备</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#%E9%9F%B3%E9%A2%91%E5%92%8C%E8%A7%86%E9%A2%91"><span class="post-toc-text">音频和视频</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#CPU-%E5%92%8C-SMC"><span class="post-toc-text">CPU 和 SMC</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#USB-%E5%92%8C%E5%85%B6%E4%BB%96%E7%AB%AF%E5%8F%A3"><span class="post-toc-text">USB 和其他端口</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#%E5%85%B6%E4%BB%96"><span class="post-toc-text">其他</span></a></li></ol>
                 </div>
             </aside>
         </div>

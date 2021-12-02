@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
 <title>5. Booter | OpenCore 简体中文参考手册(非官方)</title>
-<meta name="generator" content="Hexo 4.2.1">
+<meta name="generator" content="Hexo 5.1.1">
 <meta http-equiv="x-dns-prefetch-control" content="on">
 <meta name="description" content="由 Sukka 和黑苹果爱好者们维护的 OpenCore 文档简体中文翻译，实时更新 OpenCore 上游文档改动。努力提供权威的 OpenCore 简体中文参考资料。">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -15,6 +15,7 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.16.2/styles/github.min.css">
 <link rel="stylesheet" href="/theme-doku/css/doku.css">
 <link rel="sitemap" type="application/xml" title="Sitemap" href="/sitemap.xml">
+<link rel="canonical" href="https://oc.skk.moe/5-booter.html">
 
 </head>
 
@@ -59,7 +60,7 @@
                         
                     </a>
                 
-                    <a class="navbar-item" href="https://github.com/SukkaW/OpenCore-Document-zh_Hans" target="_blank" rel="noopener">
+                    <a class="navbar-item" target="_blank" rel="noopener" href="https://github.com/SukkaW/OpenCore-Document-zh_Hans">
                         
                             <span class="icon">
                                 <i class="fab fa-github"></i>
@@ -134,7 +135,7 @@
                         
                     
                         
-                            <li><a href="https://github.com/SukkaW/OpenCore-Document-zh_Hans" target="_blank" rel="noopener">GitHub</span></a></li>
+                            <li><a target="_blank" rel="noopener" href="https://github.com/SukkaW/OpenCore-Document-zh_Hans">GitHub</span></a></li>
                         
                     
                 </ul>
@@ -191,10 +192,10 @@
             
             
                 
-                    <p><small>由 Sukka 整理，由 Sukka、derbalkon 翻译。</small></p>
+                    <p><small>由 Sukka、derbalkon 整理，由 Sukka、derbalkon 翻译。</small></p>
                 
                 
-                    <p><small>本页面最后更新于 2020 年 04 月 23 日</small></p>
+                    <p><small>本页面最后更新于 2020 年 12 月 13 日</small></p>
                 
                 <br>
             
@@ -206,62 +207,85 @@
     <div class="columns">
         <div class="column is-9-tablet doku-document-wrapper">
             <div class="content">
-                <h2 id="5-1-简介"><a href="#5-1-简介" class="headerlink" title="5.1 简介"></a>5.1 简介</h2><p>本部分允许在 Apple BootLoader（<code>boot.efi</code>）上应用不同种类的 UEFI 修改。目前，这些修改为不同的固件提供了各种补丁和环境更改。其中一些功能最初是作为 <a href="https://github.com/acidanthera/AptioFixPkg" target="_blank" rel="noopener">AptioMemoryFix.efi</a> 的一部分，如今 <code>AptioMemoryFix.efi</code> 已经不再维护。如果你还在使用，请参考 <code>Tips and Tricks</code> 章节提供的迁移步骤。</p>
-<p>如果您是第一次在自定义固件上使用此功能，则首先需要执行一系列检查。开始之前，请确保您具有：</p>
+                <h2 id="5-1-简介"><a href="#5-1-简介" class="headerlink" title="5.1 简介"></a>5.1 简介</h2><p>本部分允许在 Apple BootLoader（<code>boot.efi</code>）上应用不同种类的 UEFI 修改。目前，这些修改为不同的固件提供了各种补丁和环境更改。其中一些功能最初是作为 <a target="_blank" rel="noopener" href="https://github.com/acidanthera/AptioFixPkg">AptioMemoryFix.efi</a> 的一部分，如今 <code>AptioMemoryFix.efi</code> 已经不再维护。如果你还在使用，请参考 <a href="12-troubleshooting.html#12-5-技巧和窍门">技巧和窍门</a> 章节提供的迁移步骤。</p>
+<p>如果您是第一次在自定义固件上使用此功能，则首先需要执行一系列检查。开始之前，请确保您符合以下条件：</p>
 <ul>
-<li>最新版本的 UEFI 固件（去主板厂家的官网上看看）</li>
+<li>具有最新版本的 UEFI 固件（去主板厂家的官网上看看）。</li>
 <li>禁用了 <code>Fast Boot</code> 和 <code>Hardware Fast Boot</code>。如果 BIOS 里有相关选项，禁用掉。</li>
-<li><code>Above 4G Decoding</code> 或类似功能，如果有的话，请在固件设置中启用。注意，在某些主板上（特别是 ASUS WS-X299-PRO）这个选项会造成不良影响，必须禁用掉。虽然目前还不知道是不是其他主板也有同样问题，但是如果你遇到了不稳定的启动故障，可以首先考虑检查一下这个选项。</li>
-<li>启用了 <code>DisableIoMapper</code> quirk、或者在 BIOS 中禁用 <code>VT-d</code>、或者删去了 ACPI DMAR 表。</li>
+<li>如果有 <code>Above 4G Decoding</code> 或类似功能，请在固件设置中启用。注意，在某些主板上（特别是 ASUS WS-X299-PRO）这个选项会造成不良影响，必须禁用掉。虽然目前还不知道是不是其他主板也有同样问题，但是如果你遇到了不稳定的启动故障，可以首先考虑检查一下这个选项。</li>
+<li>启用了 <code>DisableIoMapper</code> Quirk、或者在 BIOS 中禁用 <code>VT-d</code>、或者删去了 ACPI DMAR 表。</li>
 <li>启动参数中 <strong>没有</strong> <code>slide</code>。 除非你没法开机、并且在日志里看见了 <code>No slide values are usable! Use custom slide!</code>，否则不论如何也不要使用这个启动参数。</li>
-<li><code>CFG Lock</code> (MSR <code>0xE2</code> 写保护) 在 BIOS 中被禁用。如果 BIOS 中没有、而且你心灵手巧，你可以考虑 <a href="https://github.com/LongSoft/UEFITool/blob/master/UEFIPatch/patches.txt" target="_blank" rel="noopener">手动打补丁将其禁用</a> 。更多细节请参考 <a href="https://github.com/acidanthera/AppleSupportPkg#verifymsre2" target="_blank" rel="noopener">VerifyMsrE2</a>。</li>
-<li>在 BIOS 中禁用 <code>CSM</code> (Compatibility Support Module)。NVIDIA 6xx / AMD 2xx 或更老的平台可能需要刷新 GOP ROM，具体步骤参考 <a href="https://www.win-raid.com/t892f16-AMD-and-Nvidia-GOP-update-No-requests-DIY.html" target="_blank" rel="noopener">GopUpdate</a> 或者 <a href="http://www.insanelymac.com/forum/topic/299614-asus-eah6450-video-bios-uefi-gop-upgrade-and-gop-uefi-binary-in-efi-for-many-ati-cards/page-1#entry2042163" target="_blank" rel="noopener">AMD UEFI GOP MAKER</a>。</li>
-<li>除非 USB 设备断开连接，否则如果引导停止，则仅在 BIOS 中启用 <code>EHCI / XHCI Hand-off</code>。</li>
+<li><code>CFG Lock</code> (MSR <code>0xE2</code> 写保护) 在 BIOS 中被禁用。如果 BIOS 中没有、而且你心灵手巧，你可以考虑 <a target="_blank" rel="noopener" href="https://github.com/LongSoft/UEFITool/blob/master/UEFIPatch/patches.txt">手动打补丁将其禁用</a> 。更多细节请参考 <a target="_blank" rel="noopener" href="https://github.com/acidanthera/AppleSupportPkg#verifymsre2">VerifyMsrE2</a>。</li>
+<li>在 BIOS 中禁用 <code>CSM</code> (Compatibility Support Module)。NVIDIA 6xx / AMD 2xx 或更老的平台可能需要刷新 GOP ROM，具体步骤参考 <a target="_blank" rel="noopener" href="https://www.win-raid.com/t892f16-AMD-and-Nvidia-GOP-update-No-requests-DIY.html">GopUpdate</a> 或者 <a target="_blank" rel="noopener" href="http://www.insanelymac.com/forum/topic/299614-asus-eah6450-video-bios-uefi-gop-upgrade-and-gop-uefi-binary-in-efi-for-many-ati-cards/page-1#entry2042163">AMD UEFI GOP MAKER</a>。</li>
+<li>如果有 <code>EHCI / XHCI Hand-off</code> 功能，建议仅在出现 USB 设备连接时启动停滞的情况下启用。</li>
 <li>在 BIOS 中启用 <code>VT-x</code>、<code>Hyper Threading</code>、<code>Execute Disable Bit</code>。</li>
-<li>有时你还可能需要在 BIOS 中禁用 <code>Thunderbolt support</code>、<code>Intel SGX</code> 和 <code>Intel Platform Trust</code>。但是这一操作不是必须的。</li>
+<li>有时你还可能需要在 BIOS 中禁用 <code>Thunderbolt Support</code>、<code>Intel SGX</code> 和 <code>Intel Platform Trust</code>。但是这一操作不是必须的。</li>
 </ul>
-<p>在调试睡眠问题时，您可能希望（临时）禁用 Power Nap 和自动关闭电源，这似乎有时会导致在旧平台上唤醒黑屏或循环启动的问题。具体问题可能因人而异，但通常你应首先检查 ACPI 表，比如这是在 <a href="http://www.insanelymac.com/forum/topic/329624-need-cmos-reset-after-sleep-only-after-login/#entry2534645" target="_blank" rel="noopener">Z68 主板</a> 上找到的一些 Bug。要关闭 Power Nap 和其他功能，请在终端中运行以下命令：</p>
+<p>在调试睡眠问题时，可能需要（临时）禁用 Power Nap 和自动关闭电源，因为这二者似乎有时会导致旧的平台唤醒黑屏或循环启动。具体问题可能因人而异，但通常你应首先检查 ACPI 表，比如这是在 <a target="_blank" rel="noopener" href="http://www.insanelymac.com/forum/topic/329624-need-cmos-reset-after-sleep-only-after-login/#entry2534645">Z68 主板</a> 上找到的一些 Bug。要关闭 Power Nap 和其他功能，请在终端中运行以下命令：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs bash">sudo pmset autopoweroff 0<br>sudo pmset powernap 0<br>sudo pmset standby 0<br></code></pre></td></tr></table></figure>
 
-<p><strong>注</strong>：这些设置可能会在硬件更改、操作系统更新和某些其他情况下重置。要查看它们的当前状态，请在终端中使用 <code>pmset -g</code> 命令。</p>
-<h2 id="5-2-属性列表"><a href="#5-2-属性列表" class="headerlink" title="5.2 属性列表"></a>5.2 属性列表</h2><h3 id="5-2-1-MmioWhitelist"><a href="#5-2-1-MmioWhitelist" class="headerlink" title="5.2.1 MmioWhitelist"></a>5.2.1 MmioWhitelist</h3><p><strong>Type</strong>: <code>plist array</code><br><strong>Description</strong>: 设计为用 <code>plist dict</code> 值填充，用来描述在启用 <code>DevirtualiseMmio</code> 这个 Quirk 时特定固件能够运作的关键地址。详见下面的 MmioWhitelist Properties 章节。</p>
+<p><em>注</em>：这些设置可能会在硬件更改、操作系统更新和某些其他情况下重置。要查看它们的当前状态，请在终端中使用 <code>pmset -g</code> 命令。</p>
+<h2 id="5-2-属性列表"><a href="#5-2-属性列表" class="headerlink" title="5.2 属性列表"></a>5.2 属性列表</h2><h3 id="1-MmioWhitelist"><a href="#1-MmioWhitelist" class="headerlink" title="1. MmioWhitelist"></a>1. <code>MmioWhitelist</code></h3><p><strong>Type</strong>: <code>plist array</code><br><strong>Description</strong>: 设计为用 <code>plist dict</code> 值填充，用来描述在启用 <code>DevirtualiseMmio</code> 这个 Quirk 时特定固件能够运作的关键地址。详见下面的 MmioWhitelist 属性章节。</p>
 <blockquote>
-<p>译者注：如果开机卡在 <code>PCI...</code> 可以尝试开启 Item 1 下的 Patch</p>
+<p>译者注：如果开机卡在 <code>PCI...</code> 可以尝试开启 Item 1 下的 Patch。</p>
 </blockquote>
-<h3 id="5-2-2-Quirks"><a href="#5-2-2-Quirks" class="headerlink" title="5.2.2 Quirks"></a>5.2.2 Quirks</h3><p><strong>Type</strong>: <code>plist dict</code><br><strong>Description</strong>: 应用下面的 Quirks 属性部分中所述的各个引导 Quirk。</p>
-<h2 id="5-3-MmioWhitelist-属性"><a href="#5-3-MmioWhitelist-属性" class="headerlink" title="5.3 MmioWhitelist 属性"></a>5.3 MmioWhitelist 属性</h2><h3 id="5-3-1-Address"><a href="#5-3-1-Address" class="headerlink" title="5.3.1 Address"></a>5.3.1 Address</h3><p><strong>Type</strong>: <code>plist integer</code><br><strong>Failsafe</strong>: 0<br><strong>Description</strong>: 指排除在外的 MMIO 地址, 其内存描述符（Memory Descriptor）会被 <code>DevirtualiseMmio</code> 虚拟化（不变）。该值所在的区域会被分配一个虚拟地址，因此在操作系统运行期间，固件能够直接与该内存区域进行通信。</p>
-<h3 id="5-3-2-Comment"><a href="#5-3-2-Comment" class="headerlink" title="5.3.2 Comment"></a>5.3.2 Comment</h3><p><strong>Type</strong>: <code>plist string</code><br><strong>Failsafe</strong>: Empty string<br><strong>Description</strong>: 用于为条目提供人类可读参考的任意 ASCII 字符串（译者注：即注释）。</p>
-<h3 id="5-3-3-Enabled"><a href="#5-3-3-Enabled" class="headerlink" title="5.3.3 Enabled"></a>5.3.3 Enabled</h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: false<br><strong>Description</strong>: 除非设置为 <code>true</code>，否则此地址将被虚拟化。</p>
-<h2 id="5-4-Quirks-属性"><a href="#5-4-Quirks-属性" class="headerlink" title="5.4 Quirks 属性"></a>5.4 Quirks 属性</h2><h3 id="AvoidRuntimeDefrag"><a href="#AvoidRuntimeDefrag" class="headerlink" title="AvoidRuntimeDefrag"></a><code>AvoidRuntimeDefrag</code></h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: <code>false</code><br><strong>Description</strong>: 防止 <code>boot.efi</code> 运行时执行内存碎片整理</p>
+<h3 id="2-Patch"><a href="#2-Patch" class="headerlink" title="2. Patch"></a>2. <code>Patch</code></h3><p><strong>Type</strong>: <code>plist array</code><br><strong>Failsafe</strong>: Empty<br><strong>Description</strong>: 在启动器中执行二进制补丁。</p>
+<p>设计为用 <code>plist dictionary</code> 值填充，用来描述每个补丁。参加下面的 Patch 属性部分。</p>
+<h3 id="3-Quirks"><a href="#3-Quirks" class="headerlink" title="3. Quirks"></a>3. <code>Quirks</code></h3><p><strong>Type</strong>: <code>plist dict</code><br><strong>Description</strong>: 应用下面的 Quirks 属性部分中所述的各个引导 Quirk。</p>
+<h2 id="5-3-MmioWhitelist-属性"><a href="#5-3-MmioWhitelist-属性" class="headerlink" title="5.3 MmioWhitelist 属性"></a>5.3 MmioWhitelist 属性</h2><h3 id="1-Address"><a href="#1-Address" class="headerlink" title="1. Address"></a>1. <code>Address</code></h3><p><strong>Type</strong>: <code>plist integer</code><br><strong>Failsafe</strong>: <code>0</code><br><strong>Description</strong>: 指排除在外的 MMIO 地址，其内存描述符（Memory Descriptor）应被 <code>DevirtualiseMmio</code> 虚拟化（保持不变）。该值所在的区域会被分配一个虚拟地址，因此在操作系统运行期间，固件能够直接与该内存区域进行通信。</p>
+<p>这里写入的地址必须是内存映射的一部分，具有 <code>EfiMemoryMappedIO</code> 类型和 <code>EFI_MEMORY_RUNTIME</code> 属性（最高 bit）。可以使用调试日志找到可能的地址。</p>
+<h3 id="2-Comment"><a href="#2-Comment" class="headerlink" title="2. Comment"></a>2. <code>Comment</code></h3><p><strong>Type</strong>: <code>plist string</code><br><strong>Failsafe</strong>: Empty string<br><strong>Description</strong>: 用于为条目提供人类可读参考的任意 ASCII 字符串（译者注：即注释）。</p>
+<h3 id="3-Enabled"><a href="#3-Enabled" class="headerlink" title="3. Enabled"></a>3. <code>Enabled</code></h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: <code>false</code><br><strong>Description</strong>: 设置为 <code>true</code> 时，所添加的地址将被虚拟化（保持不变）。</p>
+<h2 id="5-4-Patch-属性"><a href="#5-4-Patch-属性" class="headerlink" title="5.4 Patch 属性"></a>5.4 Patch 属性</h2><h3 id="1-Arch"><a href="#1-Arch" class="headerlink" title="1. Arch"></a>1. <code>Arch</code></h3><p><strong>Type</strong>: <code>plist string</code><br><strong>Failsafe</strong>: <code>Any</code><br><strong>Description</strong>: 启动器补丁架构（<code>Any</code>, <code>i386</code>, <code>x86_64</code>）。</p>
+<h3 id="2-Comment-1"><a href="#2-Comment-1" class="headerlink" title="2. Comment"></a>2. <code>Comment</code></h3><p><strong>Type</strong>: <code>plist string</code><br><strong>Failsafe</strong>: Empty<br><strong>Description</strong>: 用于为条目提供人类可读参考的任意 ASCII 字符串（译者注：即注释）。</p>
+<h3 id="3-Count"><a href="#3-Count" class="headerlink" title="3. Count"></a>3. <code>Count</code></h3><p><strong>Type</strong>: <code>plist integer</code><br><strong>Failsafe</strong>: <code>0</code><br><strong>Description</strong>: 修补的次数，超过这一次数后便不再修补。<code>0</code> 表示修补所有查找到的地方。</p>
+<h3 id="4-Enabled"><a href="#4-Enabled" class="headerlink" title="4. Enabled"></a>4. <code>Enabled</code></h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: <code>false</code><br><strong>Description</strong>: 除非设置为 <code>true</code>，否则将不会应用该补丁。</p>
+<h3 id="5-Find"><a href="#5-Find" class="headerlink" title="5. Find"></a>5. <code>Find</code></h3><p><strong>Type</strong>: <code>plist data</code><br><strong>Failsafe</strong>: Empty<br><strong>Description</strong>: 要查找的数据。必须与 <code>Replace</code> 的大小相等。</p>
+<h3 id="6-Identifier"><a href="#6-Identifier" class="headerlink" title="6. Identifier"></a>6. <code>Identifier</code></h3><p><strong>Type</strong>: <code>plist string</code><br><strong>Failsafe</strong>: Empty<br><strong>Description</strong>: <code>Apple</code> 代表 macOS 启动器（通常是 <code>boot.efi</code>）；带有后缀的名称（如 <code>bootmgfw.efi</code>）代表特定的启动器；<code>Any</code> 或空字符串（默认）代表任何启动器。</p>
+<h3 id="7-Limit"><a href="#7-Limit" class="headerlink" title="7. Limit"></a>7. <code>Limit</code></h3><p>Type: <code>plist integer</code><br>Failsafe: <code>0</code><br>Description: 搜索的最大字节数。可以设置为 <code>0</code> 来查找整个启动器。</p>
+<h3 id="8-Mask"><a href="#8-Mask" class="headerlink" title="8. Mask"></a>8. <code>Mask</code></h3><p><strong>Type</strong>: <code>plist data</code><br><strong>Failsafe</strong>: Empty<br><strong>Description</strong>: 在查找比较的过程中使用数据位掩码。允许通过忽略未被屏蔽的 bit（设置为 <code>0</code>）进行模糊搜索。若留空则代表忽略，否则其大小必须等于 <code>Find</code>。</p>
+<h3 id="9-Replace"><a href="#9-Replace" class="headerlink" title="9. Replace"></a>9. <code>Replace</code></h3><p><strong>Type</strong>: <code>plist data</code><br><strong>Failsafe</strong>: Empty<br><strong>Description</strong>: 一个或多个字节的替换数据。</p>
+<h3 id="10-ReplaceMask"><a href="#10-ReplaceMask" class="headerlink" title="10. ReplaceMask"></a>10. <code>ReplaceMask</code></h3><p><strong>Type</strong>: <code>plist data</code><br><strong>Failsafe</strong>: Empty<br><strong>Description</strong>: 替换时使用的数据位掩码。允许通过更新掩码（设置为非 <code>0</code>）来进行模糊替换。若留空则代表忽略，否则其大小必须等于 <code>Replace</code>。</p>
+<h3 id="11-Skip"><a href="#11-Skip" class="headerlink" title="11. Skip"></a>11. <code>Skip</code></h3><p><strong>Type</strong>: <code>plist integer</code><br><strong>Failsafe</strong>: <code>0</code><br><strong>Description</strong>: 在替换前要跳过的发现事件数。</p>
+<h2 id="5-5-Quirks-属性"><a href="#5-5-Quirks-属性" class="headerlink" title="5.5 Quirks 属性"></a>5.5 Quirks 属性</h2><h3 id="2-AllowRelocationBlock"><a href="#2-AllowRelocationBlock" class="headerlink" title="2. AllowRelocationBlock"></a>2. <code>AllowRelocationBlock</code></h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: <code>false</code><br><strong>Description</strong>: 允许通过重定位块来启动 macOS。</p>
+<p>重定位块（Relocation Block）是一个分配在低位 4GB 内存的缓冲区。EfiBoot 使用该这部分内存加载内核和相关结构，否则这部分区块会被「非运行时」数据（假定）所占用。在内核启动之前，重定位块的内容会被复制回位于低位的保留内存。同理，所有指向重定位块的其他内存地址也会作出相应调整。在下述情况中重定位块会被使用：</p>
+<ul>
+<li>没有更好的 slide（所有内存都被使用了）</li>
+<li>强制 <code>slide=0</code>（通过参数或安全模式设置）</li>
+<li>不支持 KASLR (slide)（macOS 10.7 及更旧的版本）</li>
+</ul>
+<p>这个 Quirk 需要同时启用 <code>ProvideCustomSlide</code>（必需）和 <code>AvoidRuntimeDefrag</code>（通常情况下）。使用重定位块启动时不支持休眠（但启用这个 Quirk 并不意味着总是使用重定位块）。</p>
+<p><em>注</em>：虽然某些低层内存被占用的平台需要这个 Quirk 来运行旧版 macOS 系统，但是这个 Quirk 并不兼容某些硬件及 macOS 11。这种情况下可能需要用 <code>EnableSafeModeSlide</code> 来替代。</p>
+<h3 id="2-AvoidRuntimeDefrag"><a href="#2-AvoidRuntimeDefrag" class="headerlink" title="2. AvoidRuntimeDefrag"></a>2. <code>AvoidRuntimeDefrag</code></h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: <code>false</code><br><strong>Description</strong>: 防止 <code>boot.efi</code> 运行时执行内存碎片整理。</p>
 <p>这个选项通过提供对可变存储的支持，修复了包括日期、时间、NVRAM、电源控制等 UEFI Runtime 服务。</p>
-<p><em>注</em>: 除 Apple 和 VMware 固件外，都需要启用此选项。</p>
-<h3 id="DevirtualiseMmio"><a href="#DevirtualiseMmio" class="headerlink" title="DevirtualiseMmio"></a><code>DevirtualiseMmio</code></h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: <code>false</code><br><strong>Description</strong>: 从选定的 MMIO 区域中删除 Runtime 属性。</p>
-<p>通过删除已知内存区域的 runtime bit，此选项可减少内存映射中 stolen memory footprint。 这个 Quirks 可能会导致可用的 KASLR slides 增加，但如果没有其他措施，不一定与目标主板兼容。 通常，这会释放 64 到 256 MB的内存（具体数值会显示在调试日志中）。在某些平台上这是引导 macOS 的唯一方法，否则在引导加载程序阶段会出现内存分配错误。</p>
-<p>该选项通常对所有固件都有用，除了一些非常古老的固件（例如 Sandy Bridge）。 在某些固件上，它可能需要一个例外映射列表。为了使 NVRAM 和休眠功能正常工作，获取其虚拟地址仍然是必要的。 请参考 <code>MmioWhitelist</code> 章节来实现这个。</p>
+<p><em>注</em>：除 Apple 和 VMware 固件外，都需要启用此选项。</p>
+<h3 id="3-DevirtualiseMmio"><a href="#3-DevirtualiseMmio" class="headerlink" title="3. DevirtualiseMmio"></a>3. <code>DevirtualiseMmio</code></h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: <code>false</code><br><strong>Description</strong>: 从选定的 MMIO 区域中删除 Runtime 属性。</p>
+<p>通过删除已知内存区域的 Runtime bit，此选项可减少内存映射中 Stolen Memory Footprint。 这个 Quirk 可能会使可用的 KASLR slide 增加，但如果没有其他措施，则不一定与目标主板兼容。 通常，这会释放 64 到 256 MB 的内存（具体数值会显示在调试日志中）。在某些平台上这是引导 macOS 的唯一方法，否则在引导加载程序阶段会出现内存分配错误。</p>
+<p>该选项通常对所有固件都有用，除了一些非常古老的固件（例如 Sandy Bridge）。在某些固件上，可能需要一个例外映射列表。为了使 NVRAM 和休眠功能正常工作，获取其虚拟地址仍然是必要的。 请参考 <code>MmioWhitelist</code> 章节来实现。</p>
 <blockquote>
 <p>译者注：对于某些 300 系列主板是必须的</p>
 </blockquote>
-<h3 id="DisableSingleUser"><a href="#DisableSingleUser" class="headerlink" title="DisableSingleUser"></a><code>DisableSingleUser</code></h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: <code>false</code><br><strong>Description</strong>: 禁用 Apple 单用户模式</p>
-<p>这个选项可以禁用 <code>CMD+S</code> 热键和 <code>-s</code> 启动参数来限制单用户模式。启用这一 Quirks 后预期行为应和 T2 的模型行为类似。请参考 Apple 的 <a href="https://support.apple.com/HT201573" target="_blank" rel="noopener">这篇文章</a> 以了解如何在启用这一 Quirks 后继续使用单用户模式。</p>
-<h3 id="DisableVariableWrite"><a href="#DisableVariableWrite" class="headerlink" title="DisableVariableWrite"></a><code>DisableVariableWrite</code></h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: <code>false</code><br><strong>Description</strong>: 防止 macOS 获取 NVRAM 的写入权限。</p>
-<p>这个选项可以限制 macOS 对 NVRAM 的写入。这个 Quirk 需要 <code>OpenRuntime.efi</code>（原名 <code>FwRuntimeServices.efi</code>）提供了 <code>OC_FIRMWARE_RUNTIME</code> 协议的实现.</p>
-<p><em>注</em>: 这个 Quirk 也可以避免由于无法将变量写入 NVRAM 而导致的对操作系统的破坏。</p>
+<h3 id="4-DisableSingleUser"><a href="#4-DisableSingleUser" class="headerlink" title="4. DisableSingleUser"></a>4. <code>DisableSingleUser</code></h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: <code>false</code><br><strong>Description</strong>: 禁用 Apple 单用户模式。</p>
+<p>这个选项可以禁用 <code>CMD+S</code> 热键和 <code>-s</code> 启动参数来限制单用户模式。启用这一 Quirk 后预期行为应和 T2 的机型行为类似。请参考 Apple 的 <a target="_blank" rel="noopener" href="https://web.archive.org/web/20200517125051/https://support.apple.com/zh-cn/HT201573">这篇文章</a>（译者注：原文章已被关闭，此为网站时光机的存档副本）以了解如何在启用这一 Quirk 后继续使用单用户模式。</p>
+<h3 id="5-DisableVariableWrite"><a href="#5-DisableVariableWrite" class="headerlink" title="5. DisableVariableWrite"></a>5. <code>DisableVariableWrite</code></h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: <code>false</code><br><strong>Description</strong>: 防止 macOS 获取 NVRAM 的写入权限。</p>
+<p>这个选项可以限制 macOS 对 NVRAM 的写入。这个 Quirk 需要 <code>OpenRuntime.efi</code>（原名 <code>FwRuntimeServices.efi</code>）提供了 <code>OC_FIRMWARE_RUNTIME</code> 协议的实现。</p>
+<p><em>注</em>：这个 Quirk 也可以避免由于无法将变量写入 NVRAM 而导致的对操作系统的破坏。</p>
 <blockquote>
 <p>译者注：在 Z390/HM370 等没有原生 macOS 支持 NVRAM 的主板上需要开启。</p>
 </blockquote>
-<h3 id="DiscardHibernateMap"><a href="#DiscardHibernateMap" class="headerlink" title="DiscardHibernateMap"></a><code>DiscardHibernateMap</code></h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: <code>false</code><br><strong>Description</strong>: 复用原始的休眠内存映射。</p>
-<p>这一选项强制 XNU 内核忽略新提供的内存映射、认定设备从休眠状态唤醒后无需对其更改。如果你在使用 Windows，则 <a href="(https://docs.microsoft.com/en-us/windows-hardware/design/device-experiences/oem-uefi#hibernation-state-s4-transition-requirements)">务必启用</a> 这一选项，因为 Windows 要求 S4 唤醒后保留运行内存的大小和未知。</p>
-<p><em>注</em>: 这可能用于解决较旧硬件上的错误内存映射。如 Insyde 固件的 Ivy Bridge 笔记本电脑或者 Acer V3-571G。 除非您完全了解这一选项可能导致的后果，否则请勿使用此功能。</p>
-<h3 id="EnableSafeModeSlide"><a href="#EnableSafeModeSlide" class="headerlink" title="EnableSafeModeSlide"></a><code>EnableSafeModeSlide</code></h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: <code>false</code><br><strong>Description</strong>: 修补引导加载程序以在安全模式下启用 KASLR。</p>
-<p>这个选项与启动到安全模式（启动时按住 Shift 或受用了 <code>-x</code> 启动参数）有关。默认情况下，安全模式会使用 <code>slide=0</code>，这个 Quirks 试图通过修补 <code>boot.efi</code> 接触这一限制。只有当 <code>ProvideCustomSlide</code> 启用后才可以启用本 Quirks。</p>
-<p><em>注</em>: 除非启动到安全模式失败，否则不需要启用此选项。</p>
-<h3 id="EnableWriteUnprotector"><a href="#EnableWriteUnprotector" class="headerlink" title="EnableWriteUnprotector"></a><code>EnableWriteUnprotector</code></h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: <code>false</code><br><strong>Description</strong>: 关闭 <code>CR0</code> 寄存器中的写入保护。</p>
-<p>这个选项会在 UEFI Runtime Services 执行过程中，删除 <code>CR0</code> 寄存器中的写保护 <code>WP</code> bit，从而绕过其代码页的 <code>RX̂</code> 权限。这个 Quirk 需要配合 <code>OpenRuntime.efi</code>（原 <code>FwRuntimeServices.efi</code>）里的 <code>OC_FIRMWARE_RUNTIME</code> 协议来实现。</p>
-<p><em>注</em>：这个 Quirk 可能会破坏你的固件的安全性。如果你的固件支持内存属性表 (MAT)，请优先使用下文中的 <code>RebuildAppleMemoryMap</code> 那个 Quirk。</p>
-<h3 id="ForceExitBootServices"><a href="#ForceExitBootServices" class="headerlink" title="ForceExitBootServices"></a><code>ForceExitBootServices</code></h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: <code>false</code><br><strong>Description</strong>: 在失败时用新的内存映射（Memory Map）重试 <code>ExitBootServices</code>。</p>
+<h3 id="6-DiscardHibernateMap"><a href="#6-DiscardHibernateMap" class="headerlink" title="6. DiscardHibernateMap"></a>6. <code>DiscardHibernateMap</code></h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: <code>false</code><br><strong>Description</strong>: 复用原始的休眠内存映射。</p>
+<p>这一选项强制 XNU 内核忽略新提供的内存映射、认定设备从休眠状态唤醒后无需对其更改。如果你在使用 Windows，则 <a target="_blank" rel="noopener" href="https://docs.microsoft.com/windows-hardware/design/device-experiences/oem-uefi#hibernation-state-s4-transition-requirements">务必启用</a> 这一选项，因为 Windows 要求 S4 唤醒后保留运行内存的大小和位置。</p>
+<p><em>注</em>：这可能用于解决较旧硬件上的错误内存映射。如 Insyde 固件的 Ivy Bridge 笔记本电脑，比如 Acer V3-571G。除非您完全了解这一选项可能导致的后果，否则请勿使用此功能。</p>
+<h3 id="7-EnableSafeModeSlide"><a href="#7-EnableSafeModeSlide" class="headerlink" title="7. EnableSafeModeSlide"></a>7. <code>EnableSafeModeSlide</code></h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: <code>false</code><br><strong>Description</strong>: 修补引导加载程序以在安全模式下启用 KASLR。</p>
+<p>这个选项与启动到安全模式（启动时按住 Shift 或用了 <code>-x</code> 启动参数）有关。默认情况下，安全模式会使用 <code>slide=0</code>，这个 Quirk 会试图通过修补 <code>boot.efi</code> 解除这一限制。只有当 <code>ProvideCustomSlide</code> 启用后才可以启用本 Quirks。</p>
+<p><em>注</em>：除非启动到安全模式失败，否则不需要启用此选项。</p>
+<h3 id="8-EnableWriteUnprotector"><a href="#8-EnableWriteUnprotector" class="headerlink" title="8. EnableWriteUnprotector"></a>8. <code>EnableWriteUnprotector</code></h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: <code>false</code><br><strong>Description</strong>: 关闭 <code>CR0</code> 寄存器中的写入保护。</p>
+<p>这个选项会在 UEFI Runtime Services 执行过程中，删除 <code>CR0</code> 寄存器中的写保护 <code>WP</code> bit，从而绕过其代码页的 <code>RX</code> 权限。这个 Quirk 需要配合 <code>OpenRuntime.efi</code>（原 <code>FwRuntimeServices.efi</code>）里的 <code>OC_FIRMWARE_RUNTIME</code> 协议来实现。</p>
+<p><em>注</em>：这个 Quirk 可能会破坏你的固件的安全性。如果你的固件支持内存属性表 (MAT)，请优先使用下文中的 <code>RebuildAppleMemoryMap</code> Quirk。是否支持 MAT，请参考 <code>OCABC: MAT support is 1/0</code> 日志条目来确定。</p>
+<h3 id="9-ForceExitBootServices"><a href="#9-ForceExitBootServices" class="headerlink" title="9. ForceExitBootServices"></a>9. <code>ForceExitBootServices</code></h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: <code>false</code><br><strong>Description</strong>: 在失败时用新的内存映射（Memory Map）重试 <code>ExitBootServices</code>。</p>
 <p>开启后会确保 <code>ExitBootServices</code> 即使在 MemoryMap 参数过期时也能调用成功，方法主要是获取当前的内存映射，并重试调用 <code>ExitBootServices</code>。</p>
-<p><em>注</em>：是否启用这个 Quirks 取决于你是否遇到了 Early Boot 故障。除非你详细了解这一选项可能导致的后果，否则请勿启用这一选项。</p>
-<h3 id="ProtectMemoryRegions"><a href="#ProtectMemoryRegions" class="headerlink" title="ProtectMemoryRegions"></a><code>ProtectMemoryRegions</code></h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: <code>false</code><br><strong>Description</strong>: 保护内存区域免于不正确的读写。</p>
+<p><em>注</em>：是否启用这个 Quirk 取决于你是否遇到了 Early Boot 故障。除非你详细了解这一选项可能导致的后果，否则请勿启用这一选项。</p>
+<h3 id="10-ProtectMemoryRegions"><a href="#10-ProtectMemoryRegions" class="headerlink" title="10. ProtectMemoryRegions"></a>10. <code>ProtectMemoryRegions</code></h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: <code>false</code><br><strong>Description</strong>: 保护内存区域免于不正确的读写。</p>
 <p>有些固件会错误映射内存区域：</p>
 <ul>
 <li>CSM 区域会被标记为引导服务的代码或数据，从而成为 XNU 内核的空闲内存。</li>
@@ -269,29 +293,33 @@
 </ul>
 <p>这一 Quirk 会尝试修复这些区域的类型，比如用 ACPI NVS 标记 CSM，MMIO 标记 MMIO。</p>
 <p><em>注</em>：是否启用这一 Quirk 取决于你是否遇到了休眠、睡眠无法唤醒、启动失败或其他问题。一般来说，只有古董固件才需要启用。</p>
-<h3 id="ProtectSecureBoot"><a href="#ProtectSecureBoot" class="headerlink" title="ProtectSecureBoot"></a><code>ProtectSecureBoot</code></h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: <code>false</code><br><strong>Description</strong>: 保护 UEFI 安全启动变量不被写入。</p>
+<h3 id="11-ProtectSecureBoot"><a href="#11-ProtectSecureBoot" class="headerlink" title="11. ProtectSecureBoot"></a>11. <code>ProtectSecureBoot</code></h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: <code>false</code><br><strong>Description</strong>: 保护 UEFI 安全启动变量不被写入。</p>
 <p>尝试从操作系统写入 <code>db</code>、<code>dbx</code>、<code>PK</code> 和 <code>KEK</code> 时生成报告。</p>
 <p><em>注</em>：这个 Quirk 主要试图避免碎片整理导致的 NVRAM 相关问题，如 Insyde 或 <code>MacPro5,1</code>。</p>
-<h3 id="ProtectUefiServices"><a href="#ProtectUefiServices" class="headerlink" title="ProtectUefiServices"></a><code>ProtectUefiServices</code></h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: <code>false</code><br><strong>Description</strong>: 保护 UEFI 服务不被固件覆盖。</p>
+<h3 id="12-ProtectUefiServices"><a href="#12-ProtectUefiServices" class="headerlink" title="12. ProtectUefiServices"></a>12. <code>ProtectUefiServices</code></h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: <code>false</code><br><strong>Description</strong>: 保护 UEFI 服务不被固件覆盖。</p>
 <p>某些现代固件（包括硬件和 VMware 之类的虚拟机）可能会在加载驱动及相关操作的过程中，更新 UEFI 服务的指针。这一行为会直接破坏其他影响内存管理的 Quirk，如 <code>DevirtualiseMmio</code>、<code>ProtectMemoryRegions</code>，或 <code>RebuildAppleMemoryMap</code>；也可能会破坏其他 Quirk，具体取决于 Quirk 的作用。</p>
 <p><em>注</em>：在 VMware 上，是否需要开启这个 Quirk 取决于是否有 <code>Your Mac OS guest might run unreliably with more than one virtual core.</code> 这样的消息。</p>
-<h3 id="ProvideCustomSlide"><a href="#ProvideCustomSlide" class="headerlink" title="ProvideCustomSlide"></a><code>ProvideCustomSlide</code></h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: <code>false</code><br><strong>Description</strong>: 为低内存设备提供自定义 KASLR slide 值。</p>
-<p>开启这个选项后，将会对固件进行内存映射分析，检查所有 slide（从 1 到 255）中是否有可用的。由于 <code>boot.efi</code> 私用 rdrand 或伪随机 rdtsc 随机生成此值，因此有可能出现冲突的 slide 值被使用并导致引导失败。如果出现潜在的冲突，这个选项将会强制为 macOS 选择一个伪随机值。这同时确保了 <code>slide=</code> 参数不会被传递给操作系统。</p>
-<p><em>注</em>: OpenCore 会自动检查是否需要启用这一选项。如果 OpenCore 的调试日志中出现 <code>OCABC: Only N/256 slide values are usable!</code> 则请启用这一选项。</p>
-<h3 id="RebuildAppleMemoryMap"><a href="#RebuildAppleMemoryMap" class="headerlink" title="RebuildAppleMemoryMap"></a><code>RebuildAppleMemoryMap</code></h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: <code>false</code><br><strong>Description</strong>: 生成与 macOS 兼容的内存映射。</p>
+<h3 id="13-ProvideCustomSlide"><a href="#13-ProvideCustomSlide" class="headerlink" title="13. ProvideCustomSlide"></a>13. <code>ProvideCustomSlide</code></h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: <code>false</code><br><strong>Description</strong>: 为低内存设备提供自定义 KASLR slide 值。</p>
+<p>开启这个选项后，将会对固件进行内存映射分析，检查所有 slide（从 <code>1</code> 到 <code>255</code>）中是否有可用的。由于 <code>boot.efi</code> 私用 rdrand 或伪随机 rdtsc 随机生成此值，因此有可能出现冲突的 slide 值被使用并导致引导失败。如果出现潜在的冲突，这个选项将会强制为 macOS 选择一个伪随机值。这同时确保了 <code>slide=</code> 参数不会被传递给操作系统。</p>
+<p><em>注</em>：OpenCore 会自动检查是否需要启用这一选项。如果 OpenCore 的调试日志中出现 <code>OCABC: Only N/256 slide values are usable!</code> 则请启用这一选项。</p>
+<h3 id="14-ProvideMaxSlide"><a href="#14-ProvideMaxSlide" class="headerlink" title="14. ProvideMaxSlide"></a>14. <code>ProvideMaxSlide</code></h3><p><strong>Type</strong>: <code>plist integer</code><br><strong>Failsafe</strong>: <code>0</code><br><strong>Description</strong>: 当更大的 KASLR slide 值不可用时，手动提供最大 KASLR slide 值。</p>
+<p>当 <code>ProvideCustomSlide</code> 启用时，该选项通过用户指定的 <code>1</code> 到 <code>254</code>（含）之间的值来覆盖上限为 <code>255</code> 的最大 slide 值。较新的固件会从上到下分配内存池中的内存，导致扫描 slide 时的空闲内存被当作内核加载时的临时内存来使用。如果这些内存不可用，启用这个选项则不会继续评估更高的 slide 值。</p>
+<p><em>注</em>：当 <code>ProvideCustomSlide</code> 启用、并且随机化的 slide 落入不可用的范围时，如果出现随机的启动失败，则有必要开启这个 Quirk。开启 <code>AppleDebug</code> 时，调试日志通常会包含 <code>AAPL: [EB|‘LD:LKC] &#125; Err(0x9)</code> 这样的信息。如果要找到最合适的值，请手动将 <code>slide=X</code> 追加到 <code>boot-args</code> 里，并用日志记录下不会导致启动失败的最大值。</p>
+<h3 id="15-RebuildAppleMemoryMap"><a href="#15-RebuildAppleMemoryMap" class="headerlink" title="15. RebuildAppleMemoryMap"></a>15. <code>RebuildAppleMemoryMap</code></h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: <code>false</code><br><strong>Description</strong>: 生成与 macOS 兼容的内存映射。</p>
 <p>Apple 内核在解析 UEFI 内存映射时有几个限制：</p>
 <ul>
 <li>内存映射的大小不能超过 4096 字节，因为 Apple 内核将其映射为一个 4 KiB 页面。由于某些固件的内存映射大小非常大（大约超过 100 个条目），Apple 内核会在启动时崩溃。</li>
 <li>内存属性表会被忽略。<code>EfiRuntimeServicesCode</code> 内存静态获得 <code>RX</code> 权限，其他内存类型则获得 <code>RW</code> 权限。某些固件驱动会在运行时把数据写到全局变量中，因此 Apple 内核在调用 UEFI Runtime Services 时会崩溃，除非驱动的 <code>.data</code> 部分有 <code>EfiRuntimeServicesData</code> 类型。</li>
 </ul>
 <p>为了解决这些限制，这个 Quirk 将内存属性表的权限应用到传递给 Apple 内核的内存映射中，如果生成的内存映射超过 4KiB，则可选择尝试统一类似类型的连续插槽。</p>
-<p><em>注 1</em>：由于许多固件自带的内存保护不正确，所以这个 Quirk 一般要和 <code>SyncRuntimePermissions</code> 一起启用。<br><em>注 2</em>：根据是否遇到第一阶段启动失败再决定是否启用这一 Quirk。在支持内存属性表 (MAT) 的平台上，这一 Quirk 是 <code>EnableWriteUnprotector</code> 更好的替代。</p>
-<h3 id="SetupVirtualMap"><a href="#SetupVirtualMap" class="headerlink" title="SetupVirtualMap"></a><code>SetupVirtualMap</code></h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: <code>false</code><br><strong>Description</strong>: 将 <code>SetVirtualAddresses</code> 调用修复为虚拟地址.</p>
+<p><em>注 1</em>：由于许多固件自带的内存保护不正确，所以这个 Quirk 一般要和 <code>SyncRuntimePermissions</code> 一起启用。</p>
+<p><em>注 2</em>：根据是否遇到第一阶段启动失败再决定是否启用这一 Quirk。在支持内存属性表 (MAT) 的平台上，这一 Quirk 是 <code>EnableWriteUnprotector</code> 更好的替代。在使用 <code>OpenDuetPkg</code> 时一般是不需要启用这个 Quirk 的，但如果要启动 macOS 10.6 或更早的版本则可能需要启用，原因暂不明确。</p>
+<h3 id="16-SetupVirtualMap"><a href="#16-SetupVirtualMap" class="headerlink" title="16. SetupVirtualMap"></a>16. <code>SetupVirtualMap</code></h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: <code>false</code><br><strong>Description</strong>: 将 <code>SetVirtualAddresses</code> 调用修复为虚拟地址。</p>
 <p>选择让固件在调用 <code>SetVirtualAddresses</code> 后通过虚拟地址访问内存，可能会导致 Early Boot 故障。这个 Quirk 可通过对分配的虚拟地址和物理内存进行 Early Boot 身份映射来解决这个问题。</p>
-<p><em>注</em>：是否启用这个 Quirks 取决于你是否遇到了 Early Boot 故障。目前具有内存保护支持的新固件（例如 OVMF ）由于一些原因不支持此 Quirks：<a href="https://github.com/acidanthera/bugtracker/issues/719" target="_blank" rel="noopener">acidanthera/bugtracker#719</a>。</p>
-<h3 id="SignalAppleOS"><a href="#SignalAppleOS" class="headerlink" title="SignalAppleOS"></a><code>SignalAppleOS</code></h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: <code>false</code><br><strong>Description</strong>: 不论使用什么操作系统、总是向 OSInfo 报告启动的是 macOS。</p>
+<p><em>注</em>：是否启用这个 Quirk 取决于你是否遇到了 Early Boot 故障。目前具有内存保护支持的新固件（例如 OVMF ）由于一些原因不支持此 Quirk: <a target="_blank" rel="noopener" href="https://github.com/acidanthera/bugtracker/issues/719">acidanthera/bugtracker#719</a>。</p>
+<h3 id="17-SignalAppleOS"><a href="#17-SignalAppleOS" class="headerlink" title="17. SignalAppleOS"></a>17. <code>SignalAppleOS</code></h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: <code>false</code><br><strong>Description</strong>: 不论使用什么操作系统，总是向 OS Info 报告启动的是 macOS。</p>
 <p>Mac 设备在不同的操作系统中具有不同的行为，因此如果你在使用 Mac 设备，这一功能会非常有用。例如，你可以通过启用这一选项为某些双 GPU 的 MacBook 型号中在 Windows 和 Linux 中启用 Intel GPU。</p>
-<h3 id="SyncRuntimePermissions"><a href="#SyncRuntimePermissions" class="headerlink" title="SyncRuntimePermissions"></a><code>SyncRuntimePermissions</code></h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: <code>false</code><br><strong>Description</strong>: 更新运行时环境的内存权限。</p>
+<h3 id="18-SyncRuntimePermissions"><a href="#18-SyncRuntimePermissions" class="headerlink" title="18. SyncRuntimePermissions"></a>18. <code>SyncRuntimePermissions</code></h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: <code>false</code><br><strong>Description</strong>: 更新运行时环境的内存权限。</p>
 <p>某些固件无法正确处理运行时权限，表现为：</p>
 <ul>
 <li>把 <code>OpenRuntime</code> 在内存映射中错误地标记为不可执行。</li>
@@ -300,7 +328,7 @@
 <li>把内存属性表中的项目标记为 read-write-execute。</li>
 </ul>
 <p>这个 Quirk 会通过更新内存映射和内存属性表来纠正这一问题。</p>
-<p><em>注</em>：是否开启这一 Quirk 取决于 macOS、Linux 或 Windows 是否遇到 Early Boot 故障。一般来说，只有 2018 年以后发布的固件才会受到影响。</p>
+<p><em>注</em>：是否开启这一 Quirk 取决于是否遇到 Early Boot 故障。一般来说，只有 2017 年以后发布的固件才会受到影响。</p>
 
             </div>
 
@@ -323,7 +351,7 @@
             <aside class="doku-document-toc" id="doku-document-toc">
                 <div class="doku-document-toc-content">
                     <p class="doku-document-toc-title">目录</p>
-                    <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#5-1-简介"><span class="post-toc-text">5.1 简介</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#5-2-属性列表"><span class="post-toc-text">5.2 属性列表</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#5-2-1-MmioWhitelist"><span class="post-toc-text">5.2.1 MmioWhitelist</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#5-2-2-Quirks"><span class="post-toc-text">5.2.2 Quirks</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#5-3-MmioWhitelist-属性"><span class="post-toc-text">5.3 MmioWhitelist 属性</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#5-3-1-Address"><span class="post-toc-text">5.3.1 Address</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#5-3-2-Comment"><span class="post-toc-text">5.3.2 Comment</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#5-3-3-Enabled"><span class="post-toc-text">5.3.3 Enabled</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#5-4-Quirks-属性"><span class="post-toc-text">5.4 Quirks 属性</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#AvoidRuntimeDefrag"><span class="post-toc-text">AvoidRuntimeDefrag</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#DevirtualiseMmio"><span class="post-toc-text">DevirtualiseMmio</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#DisableSingleUser"><span class="post-toc-text">DisableSingleUser</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#DisableVariableWrite"><span class="post-toc-text">DisableVariableWrite</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#DiscardHibernateMap"><span class="post-toc-text">DiscardHibernateMap</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#EnableSafeModeSlide"><span class="post-toc-text">EnableSafeModeSlide</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#EnableWriteUnprotector"><span class="post-toc-text">EnableWriteUnprotector</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#ForceExitBootServices"><span class="post-toc-text">ForceExitBootServices</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#ProtectMemoryRegions"><span class="post-toc-text">ProtectMemoryRegions</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#ProtectSecureBoot"><span class="post-toc-text">ProtectSecureBoot</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#ProtectUefiServices"><span class="post-toc-text">ProtectUefiServices</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#ProvideCustomSlide"><span class="post-toc-text">ProvideCustomSlide</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#RebuildAppleMemoryMap"><span class="post-toc-text">RebuildAppleMemoryMap</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#SetupVirtualMap"><span class="post-toc-text">SetupVirtualMap</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#SignalAppleOS"><span class="post-toc-text">SignalAppleOS</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#SyncRuntimePermissions"><span class="post-toc-text">SyncRuntimePermissions</span></a></li></ol></li></ol>
+                    <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#5-1-%E7%AE%80%E4%BB%8B"><span class="post-toc-text">5.1 简介</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#5-2-%E5%B1%9E%E6%80%A7%E5%88%97%E8%A1%A8"><span class="post-toc-text">5.2 属性列表</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#1-MmioWhitelist"><span class="post-toc-text">1. MmioWhitelist</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#2-Patch"><span class="post-toc-text">2. Patch</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#3-Quirks"><span class="post-toc-text">3. Quirks</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#5-3-MmioWhitelist-%E5%B1%9E%E6%80%A7"><span class="post-toc-text">5.3 MmioWhitelist 属性</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#1-Address"><span class="post-toc-text">1. Address</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#2-Comment"><span class="post-toc-text">2. Comment</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#3-Enabled"><span class="post-toc-text">3. Enabled</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#5-4-Patch-%E5%B1%9E%E6%80%A7"><span class="post-toc-text">5.4 Patch 属性</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#1-Arch"><span class="post-toc-text">1. Arch</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#2-Comment-1"><span class="post-toc-text">2. Comment</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#3-Count"><span class="post-toc-text">3. Count</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#4-Enabled"><span class="post-toc-text">4. Enabled</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#5-Find"><span class="post-toc-text">5. Find</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#6-Identifier"><span class="post-toc-text">6. Identifier</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#7-Limit"><span class="post-toc-text">7. Limit</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#8-Mask"><span class="post-toc-text">8. Mask</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#9-Replace"><span class="post-toc-text">9. Replace</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#10-ReplaceMask"><span class="post-toc-text">10. ReplaceMask</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#11-Skip"><span class="post-toc-text">11. Skip</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#5-5-Quirks-%E5%B1%9E%E6%80%A7"><span class="post-toc-text">5.5 Quirks 属性</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#2-AllowRelocationBlock"><span class="post-toc-text">2. AllowRelocationBlock</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#2-AvoidRuntimeDefrag"><span class="post-toc-text">2. AvoidRuntimeDefrag</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#3-DevirtualiseMmio"><span class="post-toc-text">3. DevirtualiseMmio</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#4-DisableSingleUser"><span class="post-toc-text">4. DisableSingleUser</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#5-DisableVariableWrite"><span class="post-toc-text">5. DisableVariableWrite</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#6-DiscardHibernateMap"><span class="post-toc-text">6. DiscardHibernateMap</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#7-EnableSafeModeSlide"><span class="post-toc-text">7. EnableSafeModeSlide</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#8-EnableWriteUnprotector"><span class="post-toc-text">8. EnableWriteUnprotector</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#9-ForceExitBootServices"><span class="post-toc-text">9. ForceExitBootServices</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#10-ProtectMemoryRegions"><span class="post-toc-text">10. ProtectMemoryRegions</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#11-ProtectSecureBoot"><span class="post-toc-text">11. ProtectSecureBoot</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#12-ProtectUefiServices"><span class="post-toc-text">12. ProtectUefiServices</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#13-ProvideCustomSlide"><span class="post-toc-text">13. ProvideCustomSlide</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#14-ProvideMaxSlide"><span class="post-toc-text">14. ProvideMaxSlide</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#15-RebuildAppleMemoryMap"><span class="post-toc-text">15. RebuildAppleMemoryMap</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#16-SetupVirtualMap"><span class="post-toc-text">16. SetupVirtualMap</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#17-SignalAppleOS"><span class="post-toc-text">17. SignalAppleOS</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#18-SyncRuntimePermissions"><span class="post-toc-text">18. SyncRuntimePermissions</span></a></li></ol></li></ol>
                 </div>
             </aside>
         </div>

@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
 <title>2. 配置 | OpenCore 简体中文参考手册(非官方)</title>
-<meta name="generator" content="Hexo 4.2.1">
+<meta name="generator" content="Hexo 5.1.1">
 <meta http-equiv="x-dns-prefetch-control" content="on">
 <meta name="description" content="由 Sukka 和黑苹果爱好者们维护的 OpenCore 文档简体中文翻译，实时更新 OpenCore 上游文档改动。努力提供权威的 OpenCore 简体中文参考资料。">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -15,6 +15,7 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.16.2/styles/github.min.css">
 <link rel="stylesheet" href="/theme-doku/css/doku.css">
 <link rel="sitemap" type="application/xml" title="Sitemap" href="/sitemap.xml">
+<link rel="canonical" href="https://oc.skk.moe/2-configuration.html">
 
 </head>
 
@@ -59,7 +60,7 @@
                         
                     </a>
                 
-                    <a class="navbar-item" href="https://github.com/SukkaW/OpenCore-Document-zh_Hans" target="_blank" rel="noopener">
+                    <a class="navbar-item" target="_blank" rel="noopener" href="https://github.com/SukkaW/OpenCore-Document-zh_Hans">
                         
                             <span class="icon">
                                 <i class="fab fa-github"></i>
@@ -134,7 +135,7 @@
                         
                     
                         
-                            <li><a href="https://github.com/SukkaW/OpenCore-Document-zh_Hans" target="_blank" rel="noopener">GitHub</span></a></li>
+                            <li><a target="_blank" rel="noopener" href="https://github.com/SukkaW/OpenCore-Document-zh_Hans">GitHub</span></a></li>
                         
                     
                 </ul>
@@ -194,7 +195,7 @@
                     <p><small>由 Sukka 整理，由 Sukka、derbalkon 翻译</small></p>
                 
                 
-                    <p><small>本页面最后更新于 2020 年 06 月 04 日</small></p>
+                    <p><small>本页面最后更新于 2020 年 08 月 30 日</small></p>
                 
                 <br>
             
@@ -207,8 +208,8 @@
         <div class="column is-9-tablet doku-document-wrapper">
             <div class="content">
                 <h2 id="2-1-配置术语"><a href="#2-1-配置术语" class="headerlink" title="2.1 配置术语"></a>2.1 配置术语</h2><ul>
-<li><code>OC config</code> — OpenCore 的配置文件，格式为 plist，文件名为 <code>config.plist</code>。OpenCore 的配置文件具有可扩展性，并被设计为具有多个命名空间的结构。每个命名空间下允许具有 plist array 或 plist dictionary，在本文档相应部分中对其进行了描述。</li>
-<li><code>valid key</code> — OC Config 中的 plist key object。除了明确描述的 valid key 以外，以 <code>#</code> 符号开头的值（如 <code>#Hello</code>）也将被视为 valid key，并被表示为注释。虽然表示为注释的值会被丢弃，但是它们仍然是 valid key。其他的 plist key 都是无效、不合法的，它们的存在可能会导致未定义、非预期的行为。</li>
+<li><code>OC config</code> — OpenCore 的配置文件，格式为 <code>plist</code>，文件名为 <code>config.plist</code>。OpenCore 的配置文件具有可扩展性，并被设计为具有多个命名空间的结构。每个命名空间下允许具有 <code>plist array</code> 或 <code>plist dictionary</code>，在本文档相应部分中对其进行了描述。</li>
+<li><code>valid key</code> — OC Config 中的 <code>plist key</code> 对象。除了明确描述的 <code>valid key</code> 以外，以 <code>#</code> 符号开头的值（如 <code>#Hello</code>）也将被视为 valid key，并被表示为注释。虽然表示为注释的值会被丢弃，但是它们仍然是 <code>valid key</code>。其他的 <code>plist key</code> 都是无效、不合法的，它们的存在可能会导致未定义、非预期的行为。</li>
 <li><code>valid value</code> — 有效、合法的 <code>plist object</code>，并能匹配一些特定的 <code>plist object</code> 描述中所有附加条件（若有）。</li>
 <li><code>invalid value</code> — 指 <code>plist object</code> 本身是有效、合法的，但属于其他 <code>plist type</code>、与特定 <code>plist object</code> 描述中附加条件不符（例如取值范围）或者在对应集合中空缺。<code>invalid value</code> 会被不确定的方式读取为这个 <code>plist object</code> 的任何可能值（即，重启前后的值可能会不同），可能报错也可能不报错。尽管读取 <code>invalid value</code> 相当于读取某些已定义的 <code>valid value</code>，但是将不兼容的值应用于主机系统可能会产生未定义、非预期的行为。</li>
 <li><code>optional value</code> — 可空缺，或以特定 <code>plist object</code> 描述提供的特定方式（区别于 <code>invalid value</code>）读取的有效值。而其他情况下（译者注：未提供读取方式）的 <code>invalid value</code> 仍然会被应用。Value 除非被明确标记为 <code>optional value</code>，否则必须存在，如果空缺则会被读取为 <code>invalid value</code>。</li>
@@ -219,18 +220,18 @@
 <p>译者注：以上术语的相关描述仅限于本文档所指的 OC Config。</p>
 </blockquote>
 <h2 id="2-2-配置处理"><a href="#2-2-配置处理" class="headerlink" title="2.2 配置处理"></a>2.2 配置处理</h2><p>如果 OpenCore 发现了 OC Config，则至少会读取并处理一次。根据 OpenCore 的引导机制的不同，如果存在多个 OC Config 文件，OpenCore 可能会读取其中任何一个或数个。如果硬盘中没有 OC Config，OpenCore 将会使用可选值和无效值的规则。</p>
-<p>OC Config 有大小、嵌套和键值数量的限制。OC Config 的大小不得超过 16 MB，嵌套层数不得超过 8 层，每个 plist object 中最多有 16384 个节点（一个 plist dictionary 将被计为一对节点）。不符合上述规则的 OC Config 文件将可能导致未定义、非预期的行为。常见的 OC Config 错误格式包括：</p>
+<p>OC Config 有大小、嵌套和键值数量的限制。OC Config 的大小不得超过 16 MB，嵌套层数不得超过 8 层，每个 <code>plist object</code> 中最多有 16384 个节点（一个 <code>plist dictionary</code> 将被计为一对节点）。不符合上述规则的 OC Config 文件将可能导致未定义、非预期的行为。常见的 OC Config 错误格式包括：</p>
 <ul>
-<li>不符合 plist DTD</li>
-<li>存在本文档中没有记载的 plist object</li>
+<li>不符合 <code>plist</code> DTD</li>
+<li>存在本文档中没有记载的 <code>plist object</code></li>
 <li>违反文件大小、嵌套层级和键值数量的限制</li>
 </ul>
-<p>我们建议（但非强制）遇到格式错误的 OC Config 时不停止加载、然后继续进行就好像 OC Config 不存在一样。为了是先前向兼容性，建议（但非强制）要求实现对采用无效值的行为进行警告。采用无效值的建议做法是在使用的情况下遵守以下规则：</p>
+<p>我们建议（但非强制）遇到格式错误的 OC Config 时中止、当作 OC Config 不存在的情况来处理。为了能够向前兼容，我们建议（但非强制）对采用无效值的行为进行警告。采用无效值的建议做法是在使用的情况下遵守以下规则：</p>
 <table>
 <thead>
 <tr>
-<th align="left">Type</th>
-<th align="left">Value</th>
+<th align="left"><strong>Type</strong></th>
+<th align="left"><strong>Value</strong></th>
 </tr>
 </thead>
 <tbody><tr>
@@ -257,9 +258,9 @@
 <h2 id="2-3-配置结构"><a href="#2-3-配置结构" class="headerlink" title="2.3 配置结构"></a>2.3 配置结构</h2><p>OC Config 包括以下几个独立部分，将在本文档中分别进行介绍。默认情况下配置文件将尽可能不启用任何功能以及禁用某些功能。总的来说，这些配置一般由如下的操作构成：</p>
 <ul>
 <li>Add：为数据提供 添加 操作支持。已经存在的值不会被覆盖，必要时请使用 Delete。</li>
-<li>Delete：为数据提供 删除 操作支持</li>
-<li>Patch：为数据提供 补丁 操作支持</li>
-<li>Quirks：提供特定的黑科技支持</li>
+<li>Delete：为数据提供 删除 操作支持。</li>
+<li>Patch：为数据提供 补丁 操作支持。</li>
+<li>Quirks：提供特定的黑科技支持。</li>
 </ul>
 <p>配置文件分为以下几个独立部分：</p>
 <ul>
@@ -275,8 +276,8 @@
 <blockquote>
 <p>译者注：对上述部分的介绍位于文档的第 4 至 11 章节。可以在本网站左侧边栏中的目录中找到这些章节的入口。</p>
 </blockquote>
-<p>你可以使用 <code>ConfigValidity</code> 实用工具校验配置文件是否存在语法错误。请注意，<code>ConfigValidity</code> 的版本必须和 OpenCore 的版本一致，而且不一定能够检测出所有的错误。</p>
-<p><strong>注意</strong>：为了保险起见，目前大多数属性都有默认值（译者注：后续文档中以 <code>FailSafe</code> 字段呈现）。如果在配置项中未指定任何值，默认值将会生效。不要依赖默认值，务必在配置中正确指定所有字段。</p>
+<p>你可以使用 <code>ocvalidate</code> 实用工具校验配置文件是否存在语法错误。请注意，<code>ocvalidate</code> 的版本必须和 OpenCore 的版本一致，而且不一定能够检测出所有的错误。</p>
+<p><em>注</em>：为了保险起见，目前大多数属性都有默认值（译者注：后续文档中以 <code>FailSafe</code> 字段呈现）。如果在配置项中未指定任何值，默认值将会生效。不要依赖默认值，务必在配置中正确指定所有字段。</p>
 
             </div>
 
@@ -299,7 +300,7 @@
             <aside class="doku-document-toc" id="doku-document-toc">
                 <div class="doku-document-toc-content">
                     <p class="doku-document-toc-title">目录</p>
-                    <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#2-1-配置术语"><span class="post-toc-text">2.1 配置术语</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#2-2-配置处理"><span class="post-toc-text">2.2 配置处理</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#2-3-配置结构"><span class="post-toc-text">2.3 配置结构</span></a></li></ol>
+                    <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#2-1-%E9%85%8D%E7%BD%AE%E6%9C%AF%E8%AF%AD"><span class="post-toc-text">2.1 配置术语</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#2-2-%E9%85%8D%E7%BD%AE%E5%A4%84%E7%90%86"><span class="post-toc-text">2.2 配置处理</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#2-3-%E9%85%8D%E7%BD%AE%E7%BB%93%E6%9E%84"><span class="post-toc-text">2.3 配置结构</span></a></li></ol>
                 </div>
             </aside>
         </div>

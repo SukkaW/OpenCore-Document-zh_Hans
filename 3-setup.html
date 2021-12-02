@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
 <title>3. Setup | OpenCore 简体中文参考手册(非官方)</title>
-<meta name="generator" content="Hexo 4.2.1">
+<meta name="generator" content="Hexo 5.1.1">
 <meta http-equiv="x-dns-prefetch-control" content="on">
 <meta name="description" content="由 Sukka 和黑苹果爱好者们维护的 OpenCore 文档简体中文翻译，实时更新 OpenCore 上游文档改动。努力提供权威的 OpenCore 简体中文参考资料。">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -15,6 +15,7 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.16.2/styles/github.min.css">
 <link rel="stylesheet" href="/theme-doku/css/doku.css">
 <link rel="sitemap" type="application/xml" title="Sitemap" href="/sitemap.xml">
+<link rel="canonical" href="https://oc.skk.moe/3-setup.html">
 
 </head>
 
@@ -59,7 +60,7 @@
                         
                     </a>
                 
-                    <a class="navbar-item" href="https://github.com/SukkaW/OpenCore-Document-zh_Hans" target="_blank" rel="noopener">
+                    <a class="navbar-item" target="_blank" rel="noopener" href="https://github.com/SukkaW/OpenCore-Document-zh_Hans">
                         
                             <span class="icon">
                                 <i class="fab fa-github"></i>
@@ -134,7 +135,7 @@
                         
                     
                         
-                            <li><a href="https://github.com/SukkaW/OpenCore-Document-zh_Hans" target="_blank" rel="noopener">GitHub</span></a></li>
+                            <li><a target="_blank" rel="noopener" href="https://github.com/SukkaW/OpenCore-Document-zh_Hans">GitHub</span></a></li>
                         
                     
                 </ul>
@@ -191,10 +192,10 @@
             
             
                 
-                    <p><small>由 Sukka 整理、由 Sukka 翻译。</small></p>
+                    <p><small>由 Sukka、derbalkon 整理、由 Sukka、derbalkon 翻译。</small></p>
                 
                 
-                    <p><small>本页面最后更新于 2020 年 06 月 01 日</small></p>
+                    <p><small>本页面最后更新于 2021 年 02 月 02 日</small></p>
                 
                 <br>
             
@@ -206,91 +207,100 @@
     <div class="columns">
         <div class="column is-9-tablet doku-document-wrapper">
             <div class="content">
-                <h2 id="3-1-目录结构"><a href="#3-1-目录结构" class="headerlink" title="3.1 目录结构"></a>3.1 目录结构</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><code class="hljs plain">ESP<br>├── EFI<br>│    │<br>│    ├── BOOT<br>│    │    └── BOOTx64.efi<br>│    └── OC<br>│        ├── ACPI<br>│        │    ├── DSDT.aml<br>│        │    ├── SSDT-1.aml<br>│        │    └── MYTABLE.aml<br>│        ├── Drivers<br>│        │    ├── MyDriver.efi<br>│        │    └── OtherDriver.efi<br>│        ├── Kexts<br>│        │    ├── MyKext.kext<br>│        │    └── OtherKext.kext<br>│        ├── Resources<br>│        │    └── Audio<br>│        ├── Tools<br>│        │    └── Tool.efi<br>│        ├── OpenCore.efi<br>│        ├── vault.plist<br>│        ├── config.plist<br>│        └── vault.sig<br>├── SysReport<br>├── nvram.plist<br>└── opencore-YYYY-MM-DD-HHMMSS.txt<br><br># Figure 1. 目录结构<br></code></pre></td></tr></table></figure>
+                <h2 id="3-1-目录结构"><a href="#3-1-目录结构" class="headerlink" title="3.1 目录结构"></a>3.1 目录结构</h2><figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><code class="hljs text">ESP<br>├── EFI<br>│    ├── BOOT<br>│    │    └── BOOTx64.efi<br>│    └── OC<br>│        ├── ACPI<br>│        │    ├── DSDT.aml<br>│        │    ├── SSDT-1.aml<br>│        │    └── MYTABLE.aml<br>│        ├── Drivers<br>│        │    ├── MyDriver.efi<br>│        │    └── OtherDriver.efi<br>│        ├── Kexts<br>│        │    ├── MyKext.kext<br>│        │    └── OtherKext.kext<br>│        ├── Resources<br>│        │    ├── Audio<br>│        │    ├── Font<br>│        │    ├── Image<br>│        │    └── Label<br>│        ├── Tools<br>│        │    └── Tool.efi<br>│        ├── OpenCore.efi<br>│        ├── config.plist<br>│        ├── vault.plist<br>│        └── vault.sig<br>├── boot<br>├── nvram.plist<br>├── opencore-YYYY-MM-DD-HHMMSS.txt<br>├── panic-YYYY-MM-DD-HHMMSS.txt<br>└── SysReport<br></code></pre></td></tr></table></figure>
+
+<center><em><strong>Figure 1</strong>: 目录结构</em></center><br>
 
 <p>使用目录引导时，使用的目录结构应该遵循上述目录结构。可用的条目有：</p>
 <ul>
-<li><strong>BOOTx64.efi</strong> 和 <strong>Bootstrap.efi</strong> - 初始引导程序。除非 <code>OpenCore.efi</code> 已作为驱动程序启动，否则将用于加载 <code>OpenCore.efi</code>。对于大部分固件来说，<code>BOOTx64.efi</code> 是 UEFI 默认启动项，而 <code>Bootstrap.efi</code> 可以被注册为自定义启动项，避免 <code>BOOTx64.efi</code> 被其它操作系统所覆盖。</li>
-<li><strong>boot</strong> - Duet bootstrap loader，用于在传统 BIOS 固件上模拟 UEFI 环境、并加载 <code>OpenCore.efi</code>。</li>
-<li><strong>ACPI</strong> - 用于存储 ACPI 补充信息的目录。</li>
-<li><strong>Drivers</strong> - 用于存储 UEFI 补充驱动程序的目录。</li>
-<li><strong>Kexts</strong> - 用于存储内核驱动（kext）补充的目录。</li>
-<li><strong>Tools</strong> - 用于存储补充工具的目录。</li>
-<li><strong>OpenCore.efi</strong> - 主引导驱动程序，负责操作系统加载。</li>
-<li><strong>vault.plist</strong> - OC Config 可能加载的所有文件的哈希。</li>
-<li><strong>config.plist</strong> - OC Config（即 OpenCore 的配置文件，见「配置术语」）。这一目录同时也用于存放 GUI 界面所使用的图片，见 <code>OpenCanopy</code> 相关章节。</li>
-<li><strong>vault.sig</strong> - <code>vault.plist</code> 的签名文件。</li>
-<li><strong>nvram.plist</strong> - OpenCore 变量导入文件。</li>
-<li><strong>Resources</strong> - 媒体资源使用的目录，如 屏幕朗读 的语音文件（见「UEFI Audio 属性」章节）。</li>
-<li><strong>SysReport</strong> - 存放 <code>SysReport</code> 功能产生的系统错误报告。</li>
-<li><strong>opencore-YYYY-MM-DD-HHMMSS.txt</strong> - OpenCore 日志文件。</li>
-<li><strong>panic-YYYY-MM-DD-HHMMSS.txt</strong> - Kernal Panic 日志文件。</li>
+<li><strong>BOOTx64.efi</strong> 或 <strong>BOOTIa32.efi</strong> — 初始引导程序，用来加载 <code>OpenCore.efi</code>。对于大部分固件来说，<code>BOOTx64.efi</code> 是 UEFI 默认启动项，但也可以重命名后放到自定义位置，避免因 <code>BOOTx64.efi</code> 被其它操作系统（如 Windows）所覆盖而导致 OpenCore 无法启动。更多细节请参见 <code>LauncherOption</code>。</li>
+<li><strong>boot</strong> — Duet bootstrap loader，用于在传统 BIOS 固件上模拟 UEFI 环境、并加载 <code>OpenCore.efi</code>。</li>
+<li><strong>ACPI</strong> — 用于存储 ACPI 补充信息的目录。</li>
+<li><strong>Drivers</strong> — 用于存储 UEFI 补充驱动程序的目录。</li>
+<li><strong>Kexts</strong> — 用于存储内核驱动（kext）补充的目录。</li>
+<li><strong>Resources</strong> — 媒体资源使用的目录，如 屏幕朗读 的语音文件（见「UEFI Audio 属性」章节）。这一目录同时也用于存放 GUI 界面所使用的图片，见 <code>OpenCanopy</code> 相关章节。</li>
+<li><strong>Tools</strong> — 用于存储补充工具的目录。</li>
+<li><strong>OpenCore.efi</strong> — 主引导应用程序，负责操作系统加载。<code>OpenCore.efi</code> 所在的目录称为 <code>根目录</code>。默认 <code>根目录</code> 为 “EFI/OC”，但是当直接启动 <code>OpenCore.efi</code> 或通过自定义启动器启动 <code>OpenCore.efi</code> 时，其他包含 <code>OpenCore.efi</code> 的目录也同样支持。</li>
+<li><strong>config.plist</strong> — OC Config（即 OpenCore 的配置文件，见「配置术语」）。</li>
+<li><strong>vault.plist</strong> — OC Config 可能加载的所有文件的哈希。</li>
+<li><strong>vault.sig</strong> — <code>vault.plist</code> 的签名文件。</li>
+<li><strong>SysReport</strong> — 存放 <code>SysReport</code> 功能产生的系统错误报告。</li>
+<li><strong>nvram.plist</strong> — OpenCore 变量导入文件。</li>
+<li><strong>opencore-YYYY-MM-DD-HHMMSS.txt</strong> — OpenCore 日志文件。</li>
+<li><strong>panic-YYYY-MM-DD-HHMMSS.txt</strong> — Kernal Panic 日志文件。</li>
 </ul>
 <p><em>注</em>: 受限于固件的实现行为，OpenCore 可能无法访问绝对路径长度大于 <code>OC_STORAGE_SAFE_PATH_MAX</code>（默认值为 128）的目录。</p>
-<h2 id="3-2-安装和升级"><a href="#3-2-安装和升级" class="headerlink" title="3.2 安装和升级"></a>3.2 安装和升级</h2><p>如果要安装 OpenCore，请在使用 GPT 格式的硬盘上、按照上一节的文件夹结构建立文件和文件夹。尽管本文档的相应部分的确提供了有关你所需的外部资源（如 ACPI 表、UEFI 驱动程序或 kexts）的某些信息，但是本文档不保证会提供关于这些外部资源的全部信息。关于 kext 的完整信息可以查看由 OpenCore 提供的 <a href="https://github.com/acidanthera/OpenCorePkg/blob/master/Docs/Kexts.md" target="_blank" rel="noopener">可选 kext 列表</a>；而本文档也在安全属性的相关章节提供了 Vauting 的相关信息。</p>
-<p>OpenCore 的配置文件可以使用任何常规的文本编辑器（如 nano、vim、VSCode）进行编辑，但是专用软件可以带来更好的体验。在 macOS 上我们推荐使用 <a href="https://developer.apple.com/xcode" target="_blank" rel="noopener">Xcode</a>。你也可以使用 <a href="https://github.com/corpnewt/ProperTree" target="_blank" rel="noopener">ProperTree</a> ，这是一个轻量级的跨平台的开源 plist 编辑器。</p>
+<h2 id="3-2-安装和升级"><a href="#3-2-安装和升级" class="headerlink" title="3.2 安装和升级"></a>3.2 安装和升级</h2><p>如果要安装 OpenCore，请在使用 GPT 格式的硬盘上、按照上一节的文件夹结构建立文件和文件夹。尽管本文档的相应部分的确提供了有关你所需的外部资源（如 ACPI 表、UEFI 驱动程序或 kexts）的某些信息，但是本文档不保证会提供关于这些外部资源的全部信息。关于 kext 的完整信息可以查看由 OpenCore 提供的 <a target="_blank" rel="noopener" href="https://github.com/acidanthera/OpenCorePkg/blob/master/Docs/Kexts.md">可选 kext 列表</a>；而本文档也在安全属性的相关章节提供了 Vauting 的相关信息。</p>
+<p>OpenCore 的配置文件可以使用任何常规的文本编辑器（如 nano、vim、VSCode）进行编辑，但是专用软件可以带来更好的体验。在 macOS 上我们推荐使用 <a target="_blank" rel="noopener" href="https://developer.apple.com/xcode">Xcode</a>。你也可以使用 <a target="_blank" rel="noopener" href="https://github.com/corpnewt/ProperTree">ProperTree</a> ，这是一个轻量级的跨平台的开源 plist 编辑器。</p>
 <p>如果要通过 BIOS 进行开机，你必须使用第三方 UEFI 环境提供程序。<code>OpenDuetPkg</code> 是一个常用的为旧操作系统提供 Legacy 引导的 UEFI 环境提供程序。要在这样的旧操作系统上运行 OpenCore，你可以使用一个独立的工具 <code>BootInstall</code> 安装 <code>OpenDuetPkg</code>（目前已和 OpenCore 打包在一起发布）。</p>
-<p>如果要升级 OpenCore，<a href="https://github.com/acidanthera/OpenCorePkg/blob/master/Docs/Differences/Differences.pdf" target="_blank" rel="noopener"><code>Differences.pdf</code></a> 提供了 OpenCore 配置文件变更的相关信息，<a href="https://github.com/acidanthera/OpenCorePkg/blob/master/Changelog.md" target="_blank" rel="noopener"><code>Changelog.md</code></a> 提供了 OpenCore 的更新日志。</p>
+<p>如果要升级 OpenCore，<a target="_blank" rel="noopener" href="https://github.com/acidanthera/OpenCorePkg/blob/master/Docs/Differences/Differences.pdf"><code>Differences.pdf</code></a> 提供了 OpenCore 配置文件变更的相关信息，<a target="_blank" rel="noopener" href="https://github.com/acidanthera/OpenCorePkg/blob/master/Changelog.md"><code>Changelog.md</code></a> 提供了 OpenCore 的更新日志。</p>
 <blockquote>
 <p>译者注：以下两节是为准备参与 OpenCore 开发的人员准备的。</p>
 </blockquote>
-<h2 id="3-3-贡献代码"><a href="#3-3-贡献代码" class="headerlink" title="3.3 贡献代码"></a>3.3 贡献代码</h2><p>OpenCore can be compiled as an ordinary <a href="https://github.com/tianocore/tianocore.github.io/wiki/EDK-II" target="_blank" rel="noopener">EDK II</a>. Since <a href="https://github.com/tianocore/tianocore.github.io/wiki/UDK" target="_blank" rel="noopener">UDK</a> development was abandoned by TianoCore, OpenCore requires the use of <a href="https://github.com/tianocore/tianocore.github.io/wiki/EDK-II#stable-tags" target="_blank" rel="noopener">EDK II Stable</a>. Currently supported EDK II release is hosted in <a href="https://github.com/acidanthera/audk" target="_blank" rel="noopener">acidanthera/audk</a>. The required patches for the package are present in <code>Patches</code> directory.</p>
-<p>The only officially supported toolchain is <code>XCODE5</code>. Other toolchains might work, but are neither supported, nor recommended. Contribution of clean patches is welcome. Please do follow <a href="https://github.com/tianocore/tianocore.github.io/wiki/Code-Style-C" target="_blank" rel="noopener">EDK II C Codestyle</a>.</p>
-<p>To compile with <code>XCODE5</code>, besides <a href="https://developer.apple.com/xcode" target="_blank" rel="noopener">Xcode</a>, one should also install <a href="https://www.nasm.us" target="_blank" rel="noopener">NASM</a> and <a href="https://github.com/acidanthera/ocbuild/tree/master/external" target="_blank" rel="noopener">MTOC</a>. The latest Xcode version is recommended for use despite the toolchain name. Example<br>command sequence may look as follows:</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs bash">git <span class="hljs-built_in">clone</span> https://github.com/acidanthera/audk UDK<br><span class="hljs-built_in">cd</span> UDK<br>git <span class="hljs-built_in">clone</span> https://github.com/acidanthera/DuetPkg<br>git <span class="hljs-built_in">clone</span> https://github.com/acidanthera/OpenCorePkg<br><span class="hljs-built_in">source</span> edksetup.sh<br>make -C BaseTools<br>build -a X64 -b RELEASE -t XCODE5 -p OpenCorePkg/OpenCorePkg.dsc<br></code></pre></td></tr></table></figure>
+<h2 id="3-3-贡献代码"><a href="#3-3-贡献代码" class="headerlink" title="3.3 贡献代码"></a>3.3 贡献代码</h2><p>OpenCore 可以作为普通的 <a target="_blank" rel="noopener" href="https://github.com/tianocore/tianocore.github.io/wiki/EDK-II">EDK II</a> 进行编译。由于 TianoCore 放弃了对 <a target="_blank" rel="noopener" href="https://github.com/tianocore/tianocore.github.io/wiki/UDK">UDK</a> 的开发，因此 OpenCore 需要使用 <a target="_blank" rel="noopener" href="https://github.com/tianocore/tianocore.github.io/wiki/EDK-II#stable-tags">EDK II Stable</a>。目前支持的 EDK II 版本托管在 <a target="_blank" rel="noopener" href="https://github.com/acidanthera/audk">acidanthera/audk</a>。软件包所需的补丁在 <code>Patches</code> 目录下。</p>
+<p><code>XCODE5</code> 是官方唯一支持的工具链。使用其他工具链虽然也有可能正常工作，但我们的态度是既不推荐、也不支持。也欢迎贡献一些干净、简洁的补丁，代码规范务必遵循 <a target="_blank" rel="noopener" href="https://github.com/tianocore/tianocore.github.io/wiki/Code-Style-C">EDK II C Codestyle</a>。</p>
+<p>要使用 <code>XCODE5</code> 编译，除了 <a target="_blank" rel="noopener" href="https://developer.apple.com/xcode">Xcode</a> 之外，还需要安装 <a target="_blank" rel="noopener" href="https://www.nasm.us">NASM</a> 和 <a target="_blank" rel="noopener" href="https://github.com/acidanthera/ocbuild/tree/master/external">MTOC</a>。建议使用最新的 Xcode 版本，不必因为工具链叫 <code>XCODE5</code> 而纠结于 Xcode 的版本号。命令行举例如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs bash">git <span class="hljs-built_in">clone</span> --depth=1 https://github.com/acidanthera/audk UDK<br><span class="hljs-built_in">cd</span> UDK<br>git submodule update --init --recommend-shallow<br>git <span class="hljs-built_in">clone</span> --depth=1 https://github.com/acidanthera/OpenCorePkg<br><span class="hljs-built_in">source</span> edksetup.sh<br>make -C BaseTools<br>build -a X64 -b RELEASE -t XCODE5 -p OpenCorePkg/OpenCorePkg.dsc<br></code></pre></td></tr></table></figure>
 
-<p>For IDE usage Xcode projects are available in the root of the repositories. Another approach could be <a href="https://www.sublimetext.com" target="_blank" rel="noopener">Sublime Text</a> with <a href="https://niosus.github.io/EasyClangComplete" target="_blank" rel="noopener">EasyClangComplete</a> plugin. Add <code>.clang_complete</code> file with similar content to your UDK root:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><code class="hljs plain">-I&#x2F;UefiPackages&#x2F;MdePkg<br>-I&#x2F;UefiPackages&#x2F;MdePkg&#x2F;Include<br>-I&#x2F;UefiPackages&#x2F;MdePkg&#x2F;Include&#x2F;X64<br>-I&#x2F;UefiPackages&#x2F;OpenCorePkg&#x2F;Include&#x2F;AMI<br>-I&#x2F;UefiPackages&#x2F;OpenCorePkg&#x2F;Include&#x2F;Acidanthera<br>-I&#x2F;UefiPackages&#x2F;OpenCorePkg&#x2F;Include&#x2F;Apple<br>-I&#x2F;UefiPackages&#x2F;OpenCorePkg&#x2F;Include&#x2F;Apple&#x2F;X64<br>-I&#x2F;UefiPackages&#x2F;OpenCorePkg&#x2F;Include&#x2F;Duet<br>-I&#x2F;UefiPackages&#x2F;OpenCorePkg&#x2F;Include&#x2F;Generic<br>-I&#x2F;UefiPackages&#x2F;OpenCorePkg&#x2F;Include&#x2F;Intel<br>-I&#x2F;UefiPackages&#x2F;OpenCorePkg&#x2F;Include&#x2F;Microsoft<br>-I&#x2F;UefiPackages&#x2F;OpenCorePkg&#x2F;Include&#x2F;VMware<br>-I&#x2F;UefiPackages&#x2F;OvmfPkg&#x2F;Include<br>-I&#x2F;UefiPackages&#x2F;UefiCpuPkg&#x2F;Include<br>-IInclude<br>-include<br>&#x2F;UefiPackages&#x2F;MdePkg&#x2F;Include&#x2F;Uefi.h<br>-fshort-wchar<br>-Wall<br>-Wextra<br>-Wno-unused-parameter<br>-Wno-missing-braces<br>-Wno-missing-field-initializers<br>-Wno-tautological-compare<br>-Wno-sign-compare<br>-Wno-varargs<br>-Wno-unused-const-variable<br>-DOC_TARGET_NOOPT&#x3D;1<br>-DNO_MSABI_VA_FUNCS&#x3D;1<br></code></pre></td></tr></table></figure>
+<center><em><strong>Listing 1</strong>: 编译指令</em></center><br>
 
-<blockquote>
-<p><strong>Warning:</strong> Tool developers modifying <code>config.plist</code> or any other OpenCore files must ensure that their tool checks for <code>opencore-version</code> NVRAM variable (see <code>Debug Properties</code> section below) and warn the user if the version listed is unsupported or prerelease. OpenCore configuration may change across the releases and the tool shall ensure that it carefully follows this document. Failure to do so may result in this tool to be considered as malware and blocked with all possible means.</p>
-</blockquote>
-<h2 id="3-4-代码约定"><a href="#3-4-代码约定" class="headerlink" title="3.4 代码约定"></a>3.4 代码约定</h2><p>Just like any other project we have conventions that we follow during the development. All third-party contributors are highly recommended to read and follow the conventions listed below before submitting their patches. In general it is also recommended to firstly discuss the issue in <a href="https://github.com/acidanthera/bugtracker" target="_blank" rel="noopener">Acidanthera Bugtracker</a> before sending the patch to ensure no double work and to avoid your patch being rejected.</p>
-<p><strong>Organisation</strong>. The codebase is contained in <code>OpenCorePkg</code> repo. which is the primary EDK II package.</p>
+<p>对于 IDE 的用法，Xcode 项目可在资源库的根目录下使用。还有一种方法是使用 <a target="_blank" rel="noopener" href="https://www.sublimetext.com">Sublime Text</a> 并带有 <a target="_blank" rel="noopener" href="https://niosus.github.io/EasyClangComplete">EasyClangComplete</a> 插件。在你的 UDK 根目录下添加类似内容的 <code>.clang_complete</code> 文件：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><code class="hljs bash">-I/UefiPackages/MdePkg<br>-I/UefiPackages/MdePkg/Include<br>-I/UefiPackages/MdePkg/Include/X64<br>-I/UefiPackages/OpenCorePkg/Include/AMI<br>-I/UefiPackages/OpenCorePkg/Include/Acidanthera<br>-I/UefiPackages/OpenCorePkg/Include/Apple<br>-I/UefiPackages/OpenCorePkg/Include/Apple/X64<br>-I/UefiPackages/OpenCorePkg/Include/Duet<br>-I/UefiPackages/OpenCorePkg/Include/Generic<br>-I/UefiPackages/OpenCorePkg/Include/Intel<br>-I/UefiPackages/OpenCorePkg/Include/Microsoft<br>-I/UefiPackages/OpenCorePkg/Include/VMware<br>-I/UefiPackages/OvmfPkg/Include<br>-I/UefiPackages/UefiCpuPkg/Include<br>-IInclude<br>-include<br>/UefiPackages/MdePkg/Include/Uefi.h<br>-fshort-wchar<br>-Wall<br>-Wextra<br>-Wno-unused-parameter<br>-Wno-missing-braces<br>-Wno-missing-field-initializers<br>-Wno-tautological-compare<br>-Wno-sign-compare<br>-Wno-varargs<br>-Wno-unused-const-variable<br>-DOC_TARGET_NOOPT=1<br>-DNO_MSABI_VA_FUNCS=1<br></code></pre></td></tr></table></figure>
+
+<center><em><strong>Listing 2</strong>: ECC 配置</em></center><br>
+
+<blockquote class="message doku-blockquote is-danger"><div class="message-header">警告</div><div class="message-body"><p>工具开发人员修改 <code>config.plist</code> 或其他任何 OpenCore 文件时，都务必检查 <code>opencore-version</code> NVRAM 变量（详见后面的 <code>Debug Properties</code> 章节），如果版本号不支持或尚未发布，则需警告用户。OpenCore 配置可能因版本不同而改变，因此工具开发应仔细遵循本文档，否则可能会当作恶意软件并阻止发布。</p>
+</div></blockquote>
+
+<h2 id="3-4-代码约定"><a href="#3-4-代码约定" class="headerlink" title="3.4 代码约定"></a>3.4 代码约定</h2><p>和其他项目一样，我们在开发过程中也有一些约定。强烈建议所有第三方贡献者在提交补丁之前仔细阅读并遵循以下约定。另外，我们也建议在发送补丁之前先在 <a target="_blank" rel="noopener" href="https://github.com/acidanthera/bugtracker">Acidanthera Bugtracker</a> 里讨论一下，以免与其他人的工作重复，导致你的补丁被拒绝。</p>
+<p><strong>组织结构</strong>。代码库包含在 <code>OpenCorePkg</code> 仓库中，它是主要的 EDK II 软件包。</p>
 <ul>
-<li>Whenever changes are required in multiple repositories, separate pull requests should be sent to each.</li>
-<li>Committing the changes should happen firstly to dependent repositories, secondly to primary repositories to avoid automatic build errors.</li>
-<li>Each unique commit should compile with <code>XCODE5</code> and preferably with other toolchains. In the majority of the cases it can be checked by accessing the <a href="https://travis-ci.com/acidanthera" target="_blank" rel="noopener">CI interface</a>. Ensuring that static analysis finds no warnings is preferred.</li>
-<li>External pull requests and tagged commits must be validated. That said, commits in master may build but may not necessarily work.</li>
-<li>Internal branches should be named as follows: <code>author-name-date</code>, e.g. <code>vit9696-ballooning-20191026</code>.</li>
-<li>Commit messages should be prefixed with the primary module (e.g. library or code module) the changes were made in. For example, <code>OcGuardLib: Add OC_ALIGNED macro</code>. For non-library changes <code>Docs</code> or <code>Build</code> prefixes are used.</li>
+<li>每当需要在多个仓库中进行修改时，都应当分别向每个仓库发送拉取请求（Pull Requests）。</li>
+<li>提交更改应该首先提交至依赖仓库，其次才是主仓库，以避免自动构建错误。</li>
+<li>每个独立的提交都应该用 <code>XCODE5</code> 编译，并最好也用其他工具链编译。在大多数情况下都可以通过 <a target="_blank" rel="noopener" href="https://travis-ci.com/acidanthera">CI interface</a> 进行检查。最好确保静态分析不提示任何警告。</li>
+<li>外部的拉取请求和标记的提交都必须经过验证。也就是说，在 master 中的提交可能会被构建，但并不一定成功。</li>
+<li>内部分支应命名如下：<code>作者-名字-日期</code>，比如 <code>vit9696-ballooning-20191026</code>。</li>
+<li>提交说明（Commit Messages）应该以更改的主要模块（如库或代码模块）为前缀。例如，<code>OcGuardLib: Add OC_ALIGNED macro</code>。对于非库的改变，则应使用 <code>Docs</code> 或者 <code>Build</code> 作为前缀。</li>
 </ul>
-<p><strong>Design</strong>. The codebase is written in a subset of freestanding C11 (C17) supported by most modern toolchains used by EDK II. Applying common software development practices or requesting clarification is recommended if any particular case is not discussed below.</p>
+<p><strong>设计</strong>。代码库是使用独立的 C11 (C17) 子集编写的，能够被 EDK II 使用的大多数较新的工具链支持。如果下面没有讨论特殊情况，建议使用常见的软件开发操作，或者另附解释说明。</p>
 <ul>
-<li>Never rely on undefined behaviour and try to avoid implementation defined behaviour unless explicitly covered below (feel free to create an issue when a relevant case is not present).</li>
-<li>Use <code>OcGuardLib</code> to ensure safe integral arithmetics avoiding overflows. Unsigned wraparound should be relied on with care and reduced to the necessary amount.</li>
-<li>Check pointers for correct alignment with <code>OcGuardLib</code> and do not rely on the architecture being able to dereference unaligned pointers.</li>
-<li>Use flexible array members instead of zero-length or one-length arrays where necessary.</li>
-<li>Use static assertions (<code>STATIC_ASSERT</code>) for type and value assumptions, and runtime assertions (<code>ASSERT</code>) for precondition and invariant sanity checking. Do not use runtime assertions to check for errors as they should never alter control flow and potentially be excluded.</li>
-<li>Assume <code>UINT32</code>/<code>INT32</code> to be <code>int</code>-sized and use <code>%u</code>, <code>%d</code>, and <code>%x</code> to print them.</li>
-<li>Assume <code>UINTN</code>/<code>INTN</code> to be of unspecified size, and cast them to <code>UINT64</code>/<code>INT64</code> for printing with <code>%Lu</code>, <code>%Ld</code> and so on as normal.</li>
-<li>Do not rely on integer promotions for numeric literals. Use explicit casts when the type is<br>implementation-dependent or suffixes when type size is known. Assume <code>U</code> for <code>UINT32</code> and <code>ULL</code> for <code>UINT64</code>.</li>
-<li>Do ensure unsigned arithmetics especially in bitwise maths, shifts in particular.</li>
-<li><code>sizeof</code> operator should take variables instead of types where possible to be error prone. Use <code>ARRAY_SIZE</code> to obtain array size in elements. Use <code>L_STR_LEN</code> and <code>L_STR_SIZE</code> macros from <code>OcStringLib</code> to obtain string literal sizes to ensure compiler optimisation.</li>
-<li>Do not use <code>goto</code> keyword. Prefer early <code>return</code>, <code>break</code>, or <code>continue</code> after failing to pass error checking instead of nesting conditionals.</li>
-<li>Use <code>EFIAPI</code>, force UEFI calling convention, only in protocols, external callbacks between modules, and functions with variadic arguments.</li>
-<li>Provide inline documentation to every added function, at least describing its inputs, outputs, precondition, postcondition, and giving a brief description.</li>
-<li>Do not use <code>RETURN_STATUS</code>. Assume <code>EFI_STATUS</code> to be a matching superset that is to be always used when <code>BOOLEAN</code> is not enough.</li>
-<li>Security violations should halt the system or cause a forced reboot.</li>
+<li>永远不要依赖未定义的行为，也要尽量避免实施定义的行为，除非明确涉及到下面的情况（如果缺少相关案例，随时都可以创建一个 Issue，不必拘谨）。</li>
+<li>使用 <code>OcGuardLib</code> 来确保安全的积分运算，避免溢出。依赖无符号数回绕（Unsigned Wraparound）时应当谨慎，不要增加不必要的数量。</li>
+<li>用 <code>OcGuardLib</code> 检查指针是否正确对齐，虽然架构能够反引用未对齐的指针，但是不要依赖它。</li>
+<li>必要时使用柔性数组成员（Flexible Array Member）替代长度为 0 或为 1 的数组。</li>
+<li>使用静态断言（<code>STATIC_ASSERT</code>）进行类型和值的假设，使用运行时断言（<code>ASSERT</code>）进行前提条件和不变指标的合理性检查。不要使用运行时断言来检查错误，因为他们绝不应该控制业务流程，并且有可能被排除。</li>
+<li>把 <code>UINT32</code>/<code>INT32</code> 默认为 <code>int</code> 大小，并用 <code>%u</code>、<code>%d</code> 和 <code>%x</code> 来打印。</li>
+<li>把 <code>UINTN</code>/<code>INTN</code> 默认为未定大小，转换为 <code>UINT64</code>/<code>INT64</code>，与 <code>%Lu</code>、<code>%Ld</code> 等正常打印。</li>
+<li>不要为了数字字面量而依赖整型提升。当类型为实现依赖（implementation-dependent）的时候，使用显式转换（Explicit Cast）；当类型大小已知的时候，使用后缀。默认 <code>U</code> 代表 <code>UINT32</code>， <code>ULL</code> 代表 <code>UINT64</code>。</li>
+<li>尤其要确保按位运算时、特别是按位移位时，作无符号的算术。</li>
+<li><code>sizeof</code> 运算符应该尽可能地采用变量，而不是类型，否则容易出错。使用 <code>ARRAY_SIZE</code> 获取数组的元素大小。使用 <code>OcStringLib</code> 中的 <code>L_STR_LEN</code> 和 <code>L_STR_SIZE</code> 宏，获取字符串文字大小，以保证编译器的优化。</li>
+<li>不要使用 <code>goto</code> 关键词。宁可在未能通过错误检查时，提前使用 <code>return</code>、<code>break</code> 或 <code>continue</code>，也不要嵌套条件语句。</li>
+<li>使用 <code>EFIAPI</code>，强制执行 UEFI 调用约定，只在模块之间的协议、外部回调和带有变量参数的函数中使用。</li>
+<li>为每一个新增函数提供行内注释，至少要描述其输入、输出、前置条件、后置条件，并给出简要说明。</li>
+<li>不要使用 <code>RETURN_STATUS</code>。把 <code>EFI_STATUS</code> 默认为一个当 <code>BOOLEAN</code> 不够用时将始终使用的、相匹配的超集。</li>
+<li>违反安全规定的行为应停止系统运行或强制重启。</li>
 </ul>
-<p><strong>Codestyle</strong>. The codebase follows<br><a href="https://github.com/tianocore/tianocore.github.io/wiki/Code-Style-C" target="_blank" rel="noopener">EDK II codestyle</a> with few changes<br>and clarifications.</p>
+<p><strong>代码规范</strong>。代码库遵循 <a target="_blank" rel="noopener" href="https://github.com/tianocore/tianocore.github.io/wiki/Code-Style-C">EDK II codestyle</a>，并作了些许改动和解释。</p>
 <ul>
-<li>Write inline documentation for the functions and variables only once: in headers, where a header prototype is available, and inline for <code>static</code> variables and functions.</li>
-<li>Use line length of 120 characters or less, preferably 100 characters.</li>
-<li>Use spaces after casts, e.g. <code>(VOID *)(UINTN) Variable</code>.</li>
-<li>Use SPDX license headers as shown in <a href="https://github.com/acidanthera/bugtracker/issues/483" target="_blank" rel="noopener">acidanthera/bugtracker#483</a>.</li>
+<li>只为函数和变量写一次行内注释：在头文件中（如果有头文件原型）和 <code>static</code> 变量、函数的行内书写。</li>
+<li>行长在 120 个字符（100 个字符更好）以内。</li>
+<li>在转换后使用空格，如 <code>(VOID *)(UINTN) Variable</code>。</li>
+<li>换行时使用两个空格来缩进。</li>
+<li>在公共函数前加上 <code>Oc</code> 或其他含义清晰的前缀。</li>
+<li>私有的 <code>static</code> 函数不要加上前缀，私有的 <code>non-static</code> 函数要使用 <code>Internal</code> 前缀。</li>
+<li>使用 SPDX 许可证标头，如 <a target="_blank" rel="noopener" href="https://github.com/acidanthera/bugtracker/issues/483">acidanthera/bugtracker#483</a> 所示。</li>
 </ul>
-<p><strong>Debugging</strong>. The codebase incorporates EDK II debugging and few custom features to improve the experience.</p>
+<p><strong>排错</strong>。代码库中加入了 EDK II 调试和一些自定义功能，以改善体验。</p>
 <ul>
-<li>Use module prefixes, 2-5 letters followed by a colon (<code>:</code>), for debug messages. For <code>OpenCorePkg</code> use <code>OC:</code>, for libraries and drivers use their own unique prefixes.</li>
-<li>Do not use dots (<code>.</code>) in the end of debug messages and separate <code>EFI_STATUS</code>, printed by <code>%r</code>, with a hyphen (e.g. <code>OCRAM: Allocation of %u bytes failed - **%rtextbackslash n</code>).**</li>
-<li>Use <code>DEBUG_CODE_BEGIN ()</code> and <code>DEBUG_CODE_END ()</code> constructions to guard debug checks that may potentially reduce the performance of release builds and are otherwise unnecessary.</li>
-<li>Use <code>DEBUG</code> macro to print debug messages during normal functioning, and <code>RUNTIME_DEBUG</code> for debugging after <code>EXIT_BOOT_SERVICES</code>.</li>
-<li>Use <code>DEBUG_VERBOSE</code> debug level to leave debug messages for future debugging of the code, which are currently not necessary. By default <code>DEBUG_VERBOSE</code> messages are ignored even in <code>DEBUG</code> builds.</li>
-<li>Use <code>DEBUG_INFO</code> debug level for all non critical messages (including errors) and <code>DEBUG_BULK_INFO</code> for extensive messages that should not appear in NVRAM log that is heavily limited in size. These messages are ignored in <code>RELEASE</code> builds.</li>
-<li>Use <code>DEBUG_ERROR</code> to print critical human visible messages that may potentially halt the boot process, and <code>DEBUG_WARN</code> for all other human visible errors, <code>RELEASE</code> builds included.</li>
+<li>调试信息应使用模块前缀，2-5 个字母，后面加一个冒号（<code>:</code>）。对于 <code>OpenCorePkg</code> 使用 <code>OC:</code>，对于库和驱动程序则使用自己独特的前缀。</li>
+<li>不要在调试信息结尾使用句点（<code>.</code>），要将 <code>%r</code> 打印的 <code>EFI_STATUS</code> 用连字符隔开（例如 <code>OCRAM: Allocation of %u bytes failed - **%rtextbackslash n</code>）。</li>
+<li>使用 <code>DEBUG_CODE_BEGIN ()</code> 和 <code>DEBUG_CODE_END ()</code> 结构来看守 可能会降低版本构建性能的 和 在其他方面不必要的 调试检查。</li>
+<li>在正常工作时，使用 <code>DEBUG</code> 宏打印调试信息，在 <code>EXIT_BOOT_SERVICES</code> 后使用 <code>RUNTIME_DEBUG</code> 进行调试。</li>
+<li>使用 <code>DEBUG_VERBOSE</code> 调试级别留下信息，这些信息虽然目前用不到，但可以方便用于以后的调试。默认情况下， <code>DEBUG_VERBOSE</code> 信息即使在 <code>DEBUG</code> 构建中也会被忽略。</li>
+<li>使用 <code>DEBUG_INFO</code> 调试级别来处理所有非关键信息（包括错误），使用 <code>DEBUG_BULK_INFO</code> 来处理不应该出现在 NVRAM 日志中的大量信息，因为 NVRAM 日志的大小十分受限。这些信息在 <code>RELEASE</code> 构建中会被忽略。</li>
+<li>使用 <code>DEBUG_ERROR</code> 来打印关键的、可以看见的、可能会停止启动过程的信息，使用 <code>DEBUG_WARN</code> 来打印所有其他可被看见的错误信息，这些都包含在 <code>RELEASE</code> 构建中。</li>
 </ul>
-<p>When trying to find the problematic change it is useful to rely on <a href="https://git-scm.com/docs/git-bisect" target="_blank" rel="noopener"><code>git-bisect</code></a> functionality.</p>
+<p>当试图找到有问题的更改时，依靠 <a target="_blank" rel="noopener" href="https://git-scm.com/docs/git-bisect"><code>git-bisect</code></a> 功能会很有帮助。另外还有一些非官方资源，提供了按照逐条 Commit 更新的 OpenCore 编译文件，如 <a target="_blank" rel="noopener" href="https://dortania.github.io/builds">Dortania</a>。</p>
 
             </div>
 
@@ -313,7 +323,7 @@
             <aside class="doku-document-toc" id="doku-document-toc">
                 <div class="doku-document-toc-content">
                     <p class="doku-document-toc-title">目录</p>
-                    <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#3-1-目录结构"><span class="post-toc-text">3.1 目录结构</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#3-2-安装和升级"><span class="post-toc-text">3.2 安装和升级</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#3-3-贡献代码"><span class="post-toc-text">3.3 贡献代码</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#3-4-代码约定"><span class="post-toc-text">3.4 代码约定</span></a></li></ol>
+                    <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#3-1-%E7%9B%AE%E5%BD%95%E7%BB%93%E6%9E%84"><span class="post-toc-text">3.1 目录结构</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#3-2-%E5%AE%89%E8%A3%85%E5%92%8C%E5%8D%87%E7%BA%A7"><span class="post-toc-text">3.2 安装和升级</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#3-3-%E8%B4%A1%E7%8C%AE%E4%BB%A3%E7%A0%81"><span class="post-toc-text">3.3 贡献代码</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#3-4-%E4%BB%A3%E7%A0%81%E7%BA%A6%E5%AE%9A"><span class="post-toc-text">3.4 代码约定</span></a></li></ol>
                 </div>
             </aside>
         </div>
