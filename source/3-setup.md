@@ -35,6 +35,10 @@ ESP
 │        ├── config.plist
 │        ├── vault.plist
 │        └── vault.sig
+│──Kernels
+│   ├── kernel
+│   ├── kernelcache
+│   └── prelinkedkernel
 ├── boot
 ├── nvram.plist
 ├── opencore-YYYY-MM-DD-HHMMSS.txt
@@ -46,7 +50,7 @@ ESP
 
 使用目录引导时，使用的目录结构应该遵循上述目录结构。可用的条目有：
 
-- **BOOTx64.efi** 或 **BOOTIa32.efi** --- 初始引导程序，用来加载 `OpenCore.efi`。对于大部分固件来说，`BOOTx64.efi` 是 UEFI 默认启动项，但也可以重命名后放到自定义位置，避免因 `BOOTx64.efi` 被其它操作系统（如 Windows）所覆盖而导致 OpenCore 无法启动。更多细节请参见 `LauncherOption`。
+- **BOOTx64.efi** 或 **BOOTIa32.efi** --- 初始引导程序，用来加载 `OpenCore.efi`。固件默认加载BOOTx64.efi，这与UEFI规范一致。对于大部分固件来说，`BOOTx64.efi` 是 UEFI 默认启动项，但也可以重命名后放到自定义位置，避免因 `BOOTx64.efi` 被其它操作系统（如 Windows）所覆盖而导致 OpenCore 无法启动。更多细节请参见 `LauncherOption`。
 - **boot** --- Duet bootstrap loader，用于在传统 BIOS 固件上模拟 UEFI 环境、并加载 `OpenCore.efi`。
 - **ACPI** --- 用于存储 ACPI 补充信息的目录。
 - **Drivers** --- 用于存储 UEFI 补充驱动程序的目录。
@@ -66,9 +70,11 @@ ESP
 
 ## 3.2 安装和升级
 
-如果要安装 OpenCore，请在使用 GPT 格式的硬盘上、按照上一节的文件夹结构建立文件和文件夹。尽管本文档的相应部分的确提供了有关你所需的外部资源（如 ACPI 表、UEFI 驱动程序或 kexts）的某些信息，但是本文档不保证会提供关于这些外部资源的全部信息。关于 kext 的完整信息可以查看由 OpenCore 提供的 [可选 kext 列表](https://github.com/acidanthera/OpenCorePkg/blob/master/Docs/Kexts.md)；而本文档也在安全属性的相关章节提供了 Vauting 的相关信息。
+如果要安装 OpenCore，请在 GPT 分区的硬盘的EFI卷上、按照上一节的文件夹结构建立文件和文件夹。尽管本文档的相应部分提供了一些你所需的外部资源（如 ACPI 表、UEFI 驱动程序或 kexts）的某些信息，但是本文档不保证会提供关于这些外部资源的全部信息。关于 kext 的完整信息可以查看由 OpenCore 提供的 [可选 kext 列表](https://github.com/acidanthera/OpenCorePkg/blob/master/Docs/Kexts.md)；而本文档也在安全属性的相关章节提供了 Vauting 的相关信息。
 
-OpenCore 的配置文件可以使用任何常规的文本编辑器（如 nano、vim、VSCode）进行编辑，但是专用软件可以带来更好的体验。在 macOS 上我们推荐使用 [Xcode](https://developer.apple.com/xcode)。你也可以使用 [ProperTree](https://github.com/corpnewt/ProperTree) ，这是一个轻量级的跨平台的开源 plist 编辑器。
+OpenCore 的配置文件可以使用任何文本编辑器（如 nano、vim）进行编辑，但是专用软件可以带来更好的体验。在 macOS 上我们推荐使用 [Xcode](https://developer.apple.com/xcode)。你也可以使用 [ProperTree](https://github.com/corpnewt/ProperTree) ，这是一个轻量级的跨平台的开源 plist 编辑器。
+
+强烈建议避免使用了解内部配置结构的配置创建工具，因为这可能导致无效的配置（因为该结构会不断更新）。如果不顾这一警告而使用此类工具，请确保只使用此类工具明确支持的OpenCore的稳定版本。在这种情况下，考虑到其他工具可能含有恶意软件，我们鼓励使用具有透明二进制生成功能的开源实施方案（如OCAT）。此外，为特定硬件设置创建的配置绝不应在不同的硬件设置上使用。
 
 如果要通过 BIOS 进行开机，你必须使用第三方 UEFI 环境提供程序。`OpenDuetPkg` 是一个常用的为旧操作系统提供 Legacy 引导的 UEFI 环境提供程序。要在这样的旧操作系统上运行 OpenCore，你可以使用一个独立的工具 `BootInstall` 安装 `OpenDuetPkg`（目前已和 OpenCore 打包在一起发布）。
 
