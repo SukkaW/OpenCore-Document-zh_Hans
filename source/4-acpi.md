@@ -9,7 +9,7 @@ last_updated: 2021-04-17
 ## 4.1 简介
 
 ACPI（Advanced Configuration and Power Interface，高级配置和电源接口）是发现和配置计算机硬件的开放标准。
-[ACPI 规格](https://uefi.org/specifications) 定义了实现用的标准表（如 `DSDT`、`SSDT`、`FACS`、`DMAR`）和各种方法（如 `_DSM` 和 `_PRW`）。现代硬件几乎不需要更改即可保持 ACPI 兼容性，但是 OpenCore 仍然提供了修改 ACPI 的方法。
+[ACPI 规格](https://uefi.org/specifications) 定义了实现用的标准表（例如 `DSDT`、`SSDT`、`FACS`、`DMAR`）和各种方法（例如 `_DSM` 和 `_PRW`）。现代硬件几乎不需要更改即可保持 ACPI 兼容性，但是 OpenCore 仍然提供了修改 ACPI 的方法。
 
 要反汇编和编译 ACPI 表，可以使用由 [ACPICA](https://www.acpica.org) 开发的 [iASL compiler](https://github.com/acpica/acpica)。你可以从 [Acidanthera/MaciASL](https://github.com/acidanthera/MaciASL/releases) 下载 iASL 的图形界面程序。
 
@@ -24,7 +24,7 @@ ACPI（Advanced Configuration and Power Interface，高级配置和电源接口�
 
 在系统引导前加载补丁使得编写「代理」补丁成为可能 —— 「代理」补丁即通过重命名的方法修补 DSDT 中的原始行为，然后通过 SSDT 注入同名的行为进行替代。
 
-OpenCore、WhateverGreen、VirtualSmc、VoodooPS2 的 GitHub 仓库中都包含了部分 SSDT 和其他 ACPI 修补的方法。在 AppleLife 的 [Laboratory](https://applelife.ru/forums/xakintosh.67) 版块、[DSDT](https://applelife.ru/forums/dsdt.129) 版块提供了不少教程和样例（如 [笔记本电池修补教程](https://applelife.ru/posts/498967)）。[Dortania](https://dortania.github.io) 也编写了许多 [ACPI 有关的教程](https://dortania.github.io/Getting-Started-With-ACPI)。但是请注意，这些教程和 OpenCore 无关，他们提供的解决方法也不一定有用。
+OpenCore、WhateverGreen、VirtualSmc、VoodooPS2 的 GitHub 仓库中都包含了部分 SSDT 和其他 ACPI 修补的方法。在 AppleLife 的 [Laboratory](https://applelife.ru/forums/xakintosh.67) 版块、[DSDT](https://applelife.ru/forums/dsdt.129) 版块提供了不少教程和样例（例如 [笔记本电池修补教程](https://applelife.ru/posts/498967)）。[Dortania](https://dortania.github.io) 也编写了许多 [ACPI 有关的教程](https://dortania.github.io/Getting-Started-With-ACPI)。[daliansky](https://github.com/daliansky) 编写了一份 ACPI 补丁集 [OC-little](https://github.com/daliansky/OC-little)。请注意，来自第三方的建议解决方案可能已经过时，或者可能包含错误。
 
 > 译者注：对于中国黑苹果玩家，强烈推荐 [OC-little](https://github.com/daliansky/OC-little) 项目，提供了众多 SSDT 范例和相关指导；笔记本用户电池修补请参考 [这篇教程](https://xstar-dev.github.io/hackintosh_advanced/Guide_For_Battery_Hotpatch.html)。
 
@@ -76,7 +76,7 @@ OpenCore、WhateverGreen、VirtualSmc、VoodooPS2 的 GitHub 仓库中都包含�
 ### 3. `Path`
 
 **Type**: `plist string`
-**Failsafe**: Empty string
+**Failsafe**: Empty
 **Description**: 需要加载的 ACPI 表所在的路径。示例值如 `DSDT.aml`、`SubDir/SSDT-8.aml`、`SSDT-USBX.aml`。
 
 所有 ACPI 表都从 `OC/ACPI` 目录加载，加载顺序遵循数组中的项目顺序。
@@ -94,32 +94,32 @@ OpenCore、WhateverGreen、VirtualSmc、VoodooPS2 的 GitHub 仓库中都包含�
 ### 2. `Comment`
 
 **Type**: `plist string`
-**Failsafe**: Empty string
+**Failsafe**: Empty
 **Description**: 用于为条目提供人类可读参考的任意 ASCII 字符串（译者注：即注释）。
 
 ### 3. `Enabled`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
-**Description**: 除非此值为 `true`，否则此 ACPI 表不会被舍弃。
+**Description**: 设置为 `true` 可以舍弃这个ACPI表。
 
 ### 4. `OemTableId`
 
 **Type**: `plist data, 8 bytes`
-**Failsafe**: All zero
-**Description**: 将表的 OEM ID 匹配为此处所填的值，全部为 `0` 时忽略。
+**Failsafe**: All zero（匹配任何表的OEM ID）
+**Description**: 将表的 OEM ID 匹配为此处所填的值。
 
 ### 5. `TableLength`
 
 **Type**: `plist integer`
-**Failsafe**: `0`
-**Description**: 将表的大小匹配为此处所填的值，填 `0` 时忽略。
+**Failsafe**: `0`（匹配任何表的大小）
+**Description**: 将表的大小匹配为此处所填的值。
 
 ### 6. `TableSignature`
 
 **Type**: `plist data, 4 bytes`
-**Failsafe**: All zero
-**Description**: 将表的签名匹配为此处的值，全部为 `0` 时忽略。
+**Failsafe**: All zero（匹配任何表的签名）
+**Description**: 将表的签名匹配为此处的值。
 
 *注*：当序列需要在多处替换的时候，务必注意不要指定表的签名，尤其是在进行不同类型的重命名操作的时候。
 
@@ -128,7 +128,7 @@ OpenCore、WhateverGreen、VirtualSmc、VoodooPS2 的 GitHub 仓库中都包含�
 ### 1. `Base`
 
 **Type**: `plist string`
-**Failsafe**: Empty string
+**Failsafe**: Empty（Ignored）
 **Description**: 为重命名补丁指定一个 ACPI 路径，让 OC 通过取得该路径的偏移量来查找（或替换）重命名补丁。留空时忽略。
 
 只有正确的**绝对路径**被支持（例如：`\_SB.PCI0.LPCB.HPET`）。目前支持的 Object 类型有：`Device`、`Field`、`Method`。
@@ -138,49 +138,51 @@ OpenCore、WhateverGreen、VirtualSmc、VoodooPS2 的 GitHub 仓库中都包含�
 ### 2. `BaseSkip`
 
 **Type**: `plist integer`
-**Failsafe**: `0`
-**Description**: 在重命名补丁被应用之前跳过多少次 `Base` 指定的路径。如果将此值设置为 `0`，补丁将会被应用于指定 `Base` 中的所有匹配。
+**Failsafe**: `0` (应用于指定 `Base` 中的所有匹配)
+**Description**: 在重命名补丁被应用查找和替换之前跳过多少次 `Base` 指定的路径。
 
 ### 3. `Comment`
 
 **Type**: `plist string`
-**Failsafe**: Empty string
+**Failsafe**: Empty
 **Description**: 用于为条目提供人类可读参考的任意 ASCII 字符串（译者注：即注释）。
 
 ### 4. `Count`
 
 **Type**: `plist integer`
-**Failsafe**: `0`
-**Description**: 补丁应用的次数。如果将此值设置为 `0`，补丁将会被应用于所有匹配。
+**Failsafe**: `0` (补丁将会被应用于所有匹配)
+**Description**: 补丁应用的次数。
 
 ### 5. `Enabled`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
-**Description**: 除非设置为 `true`，否则此处的 ACPI 补丁不会生效。
+**Description**: 设置为 `true` 以应用此 ACPI 补丁。
 
 ### 6. `Find`
 
 **Type**: `plist data`
-**Failsafe**: Empty data
-**Description**: 需要寻找的 Data，长度必须和 `Replace` 相等。
+**Failsafe**: Empty
+**Description**: 需要寻找的 Data，如果设置，长度必须和 `Replace` 相等。
+
+注意：可以是空的，当指定 `Base` 时，在这种情况下，`Base` 查询后会立即发生替换。
 
 ### 7. `Limit`
 
 **Type**: `plist integer`
-**Failsafe**: `0`
-**Description**: 要搜索的最大字节数。当此值为 `0` 时会遍历整个 ACPI 表。
+**Failsafe**: `0`（遍历整个 ACPI 表）
+**Description**: 要搜索的最大字节数。
 
 ### 8. `Mask`
 
 **Type**: `plist data`
-**Failsafe**: Empty data
+**Failsafe**: Empty (Ignored)
 **Description**: 查找比较期间使用的数据按位掩码。 通过忽略未屏蔽（设置为零）位来进行模糊搜索。可以设置为空数据以忽略，否则此值的长度必须和 `Replace` 的长度相等。
 
 ### 9. `OemTableId`
 
 **Type**: `plist data, 8 bytes`
-**Failsafe**: All zero
+**Failsafe**: All zero（匹配任何表的OEM ID）
 **Description**: 将表的 OEM ID 匹配为此处所填的值，全部为 `0` 时忽略。
 
 ### 10. `Replace`
