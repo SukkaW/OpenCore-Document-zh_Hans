@@ -74,19 +74,24 @@ ESP
 
 OpenCore 的配置文件可以使用任何文本编辑器（如 nano、vim）进行编辑，但是专用软件可以带来更好的体验。在 macOS 上我们推荐使用 [Xcode](https://developer.apple.com/xcode)。你也可以使用 [ProperTree](https://github.com/corpnewt/ProperTree) ，这是一个轻量级的跨平台的开源 plist 编辑器。
 
-强烈建议避免使用了解内部配置结构的配置创建工具，因为这可能导致无效的配置（因为该结构会不断更新）。如果不顾这一警告而使用此类工具，请确保只使用此类工具明确支持的OpenCore的稳定版本。在这种情况下，考虑到其他工具可能含有恶意软件，我们鼓励使用具有透明二进制生成功能的开源实施方案（如OCAT）。此外，为特定硬件设置创建的配置绝不应在不同的硬件设置上使用。
+强烈建议避免使用了解内部配置结构的配置创建工具，因为这可能导致无效的配置（因为该结构会不断更新）。如果不顾这一警告使用此类工具，请确保只使用此类工具明确支持的 OpenCore 的稳定版本。在这种情况下，考虑到其他工具可能含有恶意软件，我们鼓励使用具有透明二进制生成功能的开源方案（如 OCAT）。此外，为特定硬件创建的配置绝不应在不同的硬件上使用。
 
 如果要通过 BIOS 进行开机，你必须使用第三方 UEFI 环境提供程序。`OpenDuetPkg` 是一个常用的为旧操作系统提供 Legacy 引导的 UEFI 环境提供程序。要在这样的旧操作系统上运行 OpenCore，你可以使用一个独立的工具 `BootInstall` 安装 `OpenDuetPkg`（目前已和 OpenCore 打包在一起发布）。
 
-如果要升级 OpenCore，[`Differences.pdf`](https://github.com/acidanthera/OpenCorePkg/blob/master/Docs/Differences/Differences.pdf) 提供了 OpenCore 配置文件变更的相关信息，[`Changelog.md`](https://github.com/acidanthera/OpenCorePkg/blob/master/Changelog.md) 提供了 OpenCore 的更新日志。
+如果要升级 OpenCore，请参考 [`Differences.pdf`](https://github.com/acidanthera/OpenCorePkg/blob/master/Docs/Differences/Differences.pdf) ，它提供了 OpenCore 配置文件变更的相关信息，以及 [`Changelog.md`](https://github.com/acidanthera/OpenCorePkg/blob/master/Changelog.md) 它提供了 OpenCore 的更新日志。
 
 > 译者注：以下两节是为准备参与 OpenCore 开发的人员准备的。
 
 ## 3.3 贡献代码
 
-OpenCore 可以作为普通的 [EDK II](https://github.com/tianocore/tianocore.github.io/wiki/EDK-II) 进行编译。由于 TianoCore 放弃了对 [UDK](https://github.com/tianocore/tianocore.github.io/wiki/UDK) 的开发，因此 OpenCore 需要使用 [EDK II Stable](https://github.com/tianocore/tianocore.github.io/wiki/EDK-II#stable-tags)。目前支持的 EDK II 版本托管在 [acidanthera/audk](https://github.com/acidanthera/audk)。软件包所需的补丁在 `Patches` 目录下。
+OpenCore 可以作为一个标准的 [EDK II](https://github.com/tianocore/tianocore.github.io/wiki/EDK-II) 软件包进行编译，并需要 [EDK II Stable](https://github.com/tianocore/tianocore.github.io/wiki/EDK-II#stable-tags)。目前支持的 EDK II 版本托管在 [acidanthera/audk](https://github.com/acidanthera/audk)。该软件包所需的补丁在 `Patches` 目录下。
 
-`XCODE5` 是官方唯一支持的工具链。使用其他工具链虽然也有可能正常工作，但我们的态度是既不推荐、也不支持。也欢迎贡献一些干净、简洁的补丁，代码规范务必遵循 [EDK II C Codestyle](https://github.com/tianocore/tianocore.github.io/wiki/Code-Style-C)。
+当更新 LaTeX 文档（例如 Configuration.tex）时，请不要重建 PDF 文件，直到合并到主文件。这样可以避免不必要的合并冲突：
+
+-使用 pull-request 方法的外部贡献者应在 pull-request 消息中要求维护者处理 PDF 重建问题。
+-内部贡献者应在合并时以相同或单独的提交中重建文档。当 pull-request 消息中缺少必要的工具时，可以要求其他维护人员重建文档。
+
+`XCODE5` 是官方唯一支持的工具链。其他工具链虽然也有可能正常使用，但我们的态度是既不推荐、也不支持。我们欢迎贡献一些干净、简洁的补丁，代码规范务必遵循 [EDK II C Codestyle](https://github.com/tianocore/tianocore.github.io/wiki/Code-Style-C)。
 
 要使用 `XCODE5` 编译，除了 [Xcode](https://developer.apple.com/xcode) 之外，还需要安装 [NASM](https://www.nasm.us) 和 [MTOC](https://github.com/acidanthera/ocbuild/tree/master/external)。建议使用最新的 Xcode 版本，不必因为工具链叫 `XCODE5` 而纠结于 Xcode 的版本号。命令行举例如下：
 
@@ -95,19 +100,22 @@ git clone --depth=1 https://github.com/acidanthera/audk UDK
 cd UDK
 git submodule update --init --recommend-shallow
 git clone --depth=1 https://github.com/acidanthera/OpenCorePkg
-source edksetup.sh
+. ./edksetup.sh
 make -C BaseTools
 build -a X64 -b RELEASE -t XCODE5 -p OpenCorePkg/OpenCorePkg.dsc
 ```
 
 <center><em><strong>Listing 1</strong>: 编译指令</em></center><br>
 
-对于 IDE 的用法，Xcode 项目可在资源库的根目录下使用。还有一种方法是使用 [Sublime Text](https://www.sublimetext.com) 并带有 [EasyClangComplete](https://niosus.github.io/EasyClangComplete) 插件。在你的 UDK 根目录下添加类似内容的 `.clang_complete` 文件：
+对于 IDE 的用法，Xcode 项目可在资源库的根目录下获得。另一种方法是使用 Language Server Protocols。例如， [Sublime Text](https://www.sublimetext.com) 与 [LSP for Sublime Text](https://lsp.sublimetext.io/) 插件。 在你的 UDK 根目录下添加类似内容的 `compile_flags.txt` 文件：
 
 ```bash
 -I/UefiPackages/MdePkg
 -I/UefiPackages/MdePkg/Include
 -I/UefiPackages/MdePkg/Include/X64
+-I/UefiPackages/MdeModulePkg
+-I/UefiPackages/MdeModulePkg/Include
+-I/UefiPackages/MdeModulePkg/Include/X64
 -I/UefiPackages/OpenCorePkg/Include/AMI
 -I/UefiPackages/OpenCorePkg/Include/Acidanthera
 -I/UefiPackages/OpenCorePkg/Include/Apple
@@ -116,8 +124,10 @@ build -a X64 -b RELEASE -t XCODE5 -p OpenCorePkg/OpenCorePkg.dsc
 -I/UefiPackages/OpenCorePkg/Include/Generic
 -I/UefiPackages/OpenCorePkg/Include/Intel
 -I/UefiPackages/OpenCorePkg/Include/Microsoft
+8-I/UefiPackages/OpenCorePkg/Include/Nvidia
 -I/UefiPackages/OpenCorePkg/Include/VMware
 -I/UefiPackages/OvmfPkg/Include
+-I/UefiPackages/ShellPkg/Include
 -I/UefiPackages/UefiCpuPkg/Include
 -IInclude
 -include
@@ -137,6 +147,8 @@ build -a X64 -b RELEASE -t XCODE5 -p OpenCorePkg/OpenCorePkg.dsc
 ```
 
 <center><em><strong>Listing 2</strong>: ECC 配置</em></center><br>
+
+注意：样本文件中的 `/UefiPackages` 表示一个绝对路径。
 
 {% note danger 警告 %}
 工具开发人员修改 `config.plist` 或其他任何 OpenCore 文件时，都务必检查 `opencore-version` NVRAM 变量（详见后面的 `Debug Properties` 章节），如果版本号不支持或尚未发布，则需警告用户。OpenCore 配置可能因版本不同而改变，因此工具开发应仔细遵循本文档，否则可能会当作恶意软件并阻止发布。
@@ -160,7 +172,7 @@ build -a X64 -b RELEASE -t XCODE5 -p OpenCorePkg/OpenCorePkg.dsc
 - 永远不要依赖未定义的行为，也要尽量避免实施定义的行为，除非明确涉及到下面的情况（如果缺少相关案例，随时都可以创建一个 Issue，不必拘谨）。
 - 使用 `OcGuardLib` 来确保安全的积分运算，避免溢出。依赖无符号数回绕（Unsigned Wraparound）时应当谨慎，不要增加不必要的数量。
 - 用 `OcGuardLib` 检查指针是否正确对齐，虽然架构能够反引用未对齐的指针，但是不要依赖它。
-- 必要时使用柔性数组成员（Flexible Array Member）替代长度为 0 或为 1 的数组。
+- 必要时使用灵活的数组成员（Flexible Array Member）替代长度为 0 或为 1 的数组。
 - 使用静态断言（`STATIC_ASSERT`）进行类型和值的假设，使用运行时断言（`ASSERT`）进行前提条件和不变指标的合理性检查。不要使用运行时断言来检查错误，因为他们绝不应该控制业务流程，并且有可能被排除。
 - 把 `UINT32`/`INT32` 默认为 `int` 大小，并用 `%u`、`%d` 和 `%x` 来打印。
 - 把 `UINTN`/`INTN` 默认为未定大小，转换为 `UINT64`/`INT64`，与 `%Lu`、`%Ld` 等正常打印。
@@ -177,7 +189,7 @@ build -a X64 -b RELEASE -t XCODE5 -p OpenCorePkg/OpenCorePkg.dsc
 
 - 只为函数和变量写一次行内注释：在头文件中（如果有头文件原型）和 `static` 变量、函数的行内书写。
 - 行长在 120 个字符（100 个字符更好）以内。
-- 在转换后使用空格，如 `(VOID *)(UINTN) Variable`。
+- 在转换后使用空格，例如 `(VOID *)(UINTN) Variable`。
 - 换行时使用两个空格来缩进。
 - 在公共函数前加上 `Oc` 或其他含义清晰的前缀。
 - 私有的 `static` 函数不要加上前缀，私有的 `non-static` 函数要使用 `Internal` 前缀。
