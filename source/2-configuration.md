@@ -3,7 +3,7 @@ title: 2. 配置
 description: Configuration
 type: docs
 author_info: 由 Sukka 整理，由 Sukka、derbalkon 翻译
-last_updated: 2020-08-30
+last_updated: 2022-07-12
 ---
 
 ## 2.1 配置术语
