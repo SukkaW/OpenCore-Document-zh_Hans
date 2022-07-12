@@ -3,7 +3,7 @@ title: 1. 简介
 description: Introduction
 type: docs
 author_info: 由 Sukka 整理，由 Sukka、derbalkon 翻译
-last_updated: 2020-11-01
+last_updated: 2022-07-12
 ---
 
 本文档提供关于 OpenCore 用户配置文件的信息，以使 macOS 操作系统正常工作。你应当视本文档为 OpenCore 预期行为的解释。如果在已经发布的 OpenCore 版本中找到与文档中的描述存在偏差的行为，应当视为 OpenCore 存在 Bug 或文档出现错误，应通过 [Acidanthera Bugtracker](https://github.com/acidanthera/bugtracker) 进行反馈。
