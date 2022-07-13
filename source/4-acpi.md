@@ -106,7 +106,7 @@ OpenCore、WhateverGreen、VirtualSmc、VoodooPS2 的 GitHub 仓库中都包含�
 ### 4. `OemTableId`
 
 **Type**: `plist data, 8 bytes`
-**Failsafe**: All zero（匹配任何表的OEM ID）
+**Failsafe**: All zero（匹配任何表的 OEM ID）
 **Description**: 将表的 OEM ID 匹配为此处所填的值。
 
 ### 5. `TableLength`
@@ -177,55 +177,55 @@ OpenCore、WhateverGreen、VirtualSmc、VoodooPS2 的 GitHub 仓库中都包含�
 
 **Type**: `plist data`
 **Failsafe**: Empty (Ignored)
-**Description**: 查找比较期间使用的数据按位掩码。 通过忽略未屏蔽（设置为零）位来进行模糊搜索。可以设置为空数据以忽略，否则此值的长度必须和 `Replace` 的长度相等。
+**Description**: 查找比较期间使用的数据按位掩码。 通过忽略未屏蔽（设置为零）位来进行模糊搜索。如果设置，此值的长度必须和 `Replace` 的长度相等。
 
 ### 9. `OemTableId`
 
 **Type**: `plist data, 8 bytes`
-**Failsafe**: All zero（匹配任何表的OEM ID）
-**Description**: 将表的 OEM ID 匹配为此处所填的值，全部为 `0` 时忽略。
+**Failsafe**: All zero（匹配任何表的 OEM ID）
+**Description**: 将表的 OEM ID 匹配为此处所填的值。
 
 ### 10. `Replace`
 
 **Type**: `plist data`
-**Failsafe**: Empty data
+**Failsafe**: Empty
 **Description**: 一个或多个字节的替换数据。
 
 ### 11. `ReplaceMark`
 
 **Type**: `plist data`
-**Failsafe**: Empty data
-**Description**: 替换数据期间使用的数据按位掩码。 通过忽略未屏蔽（设置为零）位来进行模糊搜索。可以设置为空数据以忽略，否则此值的长度必须和 `Replace` 的长度相等。
+**Failsafe**: Empty (Ignored)
+**Description**: 替换数据期间使用的数据按位掩码。 通过忽略未屏蔽（设置为零）位来进行模糊搜索。如果设置，此值的长度必须和 `Replace` 的长度相等。
 
 ### 12. `Skip`
 
 **Type**: `plist integer`
-**Failsafe**: `0`
+**Failsafe**: `0` (不跳过匹配)
 **Description**: 完成替换之前要跳过的匹配数。
 
 ### 13. `TableLength`
 
 **Type**: `plist integer`
-**Failsafe**: `0`
-**Description**: 将表的大小匹配为此处所填的值，填 `0` 时忽略。
+**Failsafe**: `0` （匹配任何表格的大小）
+**Description**: 将表的大小匹配为此处所填的值。
 
 ### 14. `TableSignature`
 
 **Type**: `plist data, 4 bytes`
-**Failsafe**: All zero
-**Description**: 将表的签名匹配为此处的值，全部为 `0` 时忽略。
+**Failsafe**: All zero (匹配任何表格签名)
+**Description**: 将表的签名匹配为此处的值。
 
 大多数情况下，ACPI 补丁是有害而无益的：
 
-- 避免用 ACPI 补丁重命名设备。这样做可能会使设备重命名失败，或者会对不相关的设备进行错误地重命名（如 `EC` 和 `EC0`）。为了保证 ACPI 的一致性，在 I/O 注册表级别重命名设备会更加安全，比如 [WhateverGreen](https://github.com/acidanthera/WhateverGreen) 的做法。
-- 尽量避免为了支持更高级的功能集而给 `_OSI` 打补丁，除非你非常需要。这样做通常会侵入 APTIO 固件，从而导致需要用打更多的补丁去填坑。现代的固件基本不需要，而真正需要的那些固件只要打一些更小的补丁就可以了。然而，笔记本厂商通常依靠这种方法来确定是否有现代 I2C 输入支持、散热调节功能，或用来添加其他自定义功能。
-- 避免为了启用亮度调节键而给 EC 事件 `_Qxx` 打补丁。传统的方法通常需要在 DSDT 和 SSDT 上进行大量的修改，而且新系统上的 debug kext 并不稳定。请改用 [BrightnessKeys](https://github.com/acidanthera/BrightnessKeys) 内置亮度调节键检测机制。
+- 避免用 ACPI 补丁重命名设备。这样做可能会使设备重命名失败，或者会对不相关的设备进行错误地重命名（如 `EC` 和 `EC0`）。为了保证 ACPI 的一致性，在 I/O 注册表级别重命名设备会更加安全，就像 [WhateverGreen](https://github.com/acidanthera/WhateverGreen) 做的那样。
+- 尽量避免为了支持更高级的功能集而给 `_OSI` 打补丁。虽然这可以在 APTIO 固件上实现一些变通，但它通常会导致需要用打更多的补丁去填坑。现代的固件基本不需要这些，而在真正需要的固件上，只要打一些小补丁就可以了。然而，笔记本厂商通常依靠这种方法来确定是否有现代 I2C 输入支持、散热调节功能，或用来添加其他自定义功能。
+- 避免为了启用亮度调节键而给 EC 事件 `_Qxx` 打补丁。传统的方法通常需要在 DSDT 和 SSDT 上进行大量的修改，而且新系统上的 debug kext 并不稳定。请改用 [BrightnessKeys](https://github.com/acidanthera/BrightnessKeys) 中内置的亮度调节键检测功能来代替。
 - 尽量避免重命名 `_PRW` 或 `_DSM` 之类的魔改举动。
 
-在某些情况下，打补丁确实是有意义的：
+在某些情况下，打补丁是很有用的：
 
 - 刷新 `HPET`（或其他设备）的 method header 来避免老硬件上的 `_OSI` 兼容性检查。可通过将 `A0 10 93 4F 53 46 4C 00` 替换为 `A4 0A 0F A3 A3 A3 A3 A3` 的办法，使带有 `if ((OSFL () == Zero)) { If (HPTE)  ...  Return (Zero)` 的 `_STA` method 达到强制返回 0xF 的目的。
-- 在 SSDT 中实现自定义 method，比如在某些计算机上注入关机修复，可以通过将 `_PTS` 替换为 `ZPTS`，把原来的 method 替换为一个假的名字，并添加一个 callback 回调到原 method 中。
+- 在 SSDT 中实现自定义 method，比如在某些计算机上注入关机修复，通过将 `_PTS` 替换为 `ZPTS`，把原来的 method 替换为一个假的名字，并添加一个 callback 回调到原 method 中。
 
 TianoCore 源文件 [AcpiAml.h](https://github.com/acidanthera/audk/blob/master/MdePkg/Include/IndustryStandard/AcpiAml.h) 可能会对于理解 ACPI 操作码有所帮助。
 
@@ -255,9 +255,9 @@ TianoCore 源文件 [AcpiAml.h](https://github.com/acidanthera/audk/blob/master/
 
 ACPI 表通常由底层固件动态生成。在与位置无关的代码中，ACPI 表可能包含用于设备配置的 MMIO 区域的物理地址，通常按区域（例如 OperationRegion）分组。 更改固件设置或硬件配置，升级或修补固件不可避免地会导致动态生成的 ACPI 代码发生变化，这有时会导致上述 OperationRegion 结构中的地址发生变化。
 
-因此，对 ACPI 表进行任何形式的修改都是非常危险的。最合理的方法是对 ACPI 进行尽可能少的更改，并尝试不替换任何表，尤其是 DSDT。
+因此，对 ACPI 表进行任何形式的修改都是非常危险的。最好的方法是对 ACPI 进行尽可能少的更改，避免替换任何表，尤其是 DSDT。
 
-如果无法不得不替换 DSDT，则至少应尝试确保自定义 DSDT 基于最新的 DSDT 或避免对受影响区域的读写。如果没有其他帮助，可以尝试通过尝试修复 ACPI 地址来避免在 macOS 引导的 PCI Configuration Begin 阶段出现停顿的情况。
+如果无法不得不替换 DSDT，则至少应尝试确保自定义 DSDT 基于最新的 DSDT 或避免对受影响区域的读写。如果没有其他帮助，可以尝试通过尝试修复 ACPI 地址来避免在 macOS 引导的 PCI Configuration Begin 阶段出现停顿的情况。然而，这不是一个灵丹妙药，只在最典型的情况下有效。除非绝对需要，否则不要使用，因为它在某些平台上可能产生相反的效果，导致启动失败。
 
 ### 4. `ResetHwSig`
 
@@ -274,3 +274,11 @@ ACPI 表通常由底层固件动态生成。在与位置无关的代码中，ACP
 **Description**: 将 `BGRT` 表中 `Displayed` 状态字段重置为 `false`。
 
 这适用于提供 `BGRT` 表、但随后无法处理屏幕更新的固件。如果在开机时无法显示 OEM Windows 标志可以尝试开启。
+
+### 6. `SyncTableIds`
+
+**Type**: `plist boolean`
+**Failsafe**: `false`
+**Description**: 将表的标识符与 SLIC 表进行同步。
+
+这可以解决打了补丁的表与 SLIC 表不兼容的问题，造成旧的 Windows 系统中的许可问题。
