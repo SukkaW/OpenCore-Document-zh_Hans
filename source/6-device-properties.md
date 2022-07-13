@@ -28,27 +28,29 @@ AppleACPIPlatformExpert 包含了两个阶段的 `IODeviceTree` 构建，通过�
 
 各阶段的应用取决于 ACPI 表中存在的设备。第一阶段适用于很早、但只适用于存在于 ACPI 表中的设备。第二阶段适用于所有晚于 PCI 配置的设备，如果设备没有出现在 ACPI 中，则会重复第一阶段。
 
-所有的内核驱动可以在不探测设备的情况下检查 `IODeviceTree` 层面（例如 Lilu 和它的插件 `WhateverGreen` 等），因此确保 ACPI 表中的设备存在是尤其重要的。如果不这样做，则可能会因为注入的设备属性被忽略而导致**各种不稳定的行为**，原因是它们没有在第一阶段被构建出来。参见 `SSDT-IMEI.dsl` 和 `SSDT-BRG0.dsl` 的例子。
+所有的内核驱动可以在不探测设备的情况下检查 `IODeviceTree` 层面，例如 Lilu 和它的插件以及WhateverGreen，因此确保 ACPI 表中的设备存在是尤其重要的。如果不这样做，则可能会因为注入的设备属性被忽略而导致**各种不稳定的行为**，原因是它们没有在第一阶段被构建出来。参见 `SSDT-IMEI.dsl` 和 `SSDT-BRG0.dsl` 的例子。
 
 ## 6.2 属性列表
 
 ### 1. `Add`
 
 **Type**: `plist dict`
-**Description**: 将设备属性从设备路径的映射（`plist dict`）设置为变量名称和值的映射（`plist dict`），其中变量名称和值的格式为 `plist metadata`。设备路径必须以规范化字符串格式（Canonical String Format）提供，例如： `PciRoot(0x0)/Pci(0x1,0x0)/Pci(0x0,0x0)`。添加的属性只有在不存在且未被屏蔽的情况下才会被设置。
+**Description**: 将设备属性从设备路径的映射（`plist dict`）设置为变量名称和值的映射（`plist dict`），其中变量名称和值的格式为 `plist metadata`。
 
-*注*：目前，属性只能通过原始驱动程序添加。因此除非安装了单独的驱动程序，否则没有理由 Delete 变量。
+*注*：设备路径必须以规范化字符串格式（Canonical String Format）提供，例如： `PciRoot(0x0)/Pci(0x1,0x0)/Pci(0x0,0x0`。现有的属性不会被改变，除非在 `DeviceProperties` 部分删除。
 
 ### 2. `Delete`
 
 **Type**: `plist dict`
 **Description**: 从设备路径的映射（`plist dict`）到 `plist string` 格式的变量名数组（数据类型 `plist array`）中删除设备属性。
 
+*注*：目前，现有的属性可能只存在于具有 `DeviceProperties` 驱动程序的固件上（例如Apple）。因此，除非安装了新的驱动程序，否则通常没有理由删除变量。
+
 > 译者注：这里的设置等同于 Clover 里的 ACPI 重命名 `_DSM → XDSM => TgtBridge`
 
 ## 6.3 常见属性
 
-一些常见的属性包括：
+一些已知的属性包括：
 
 - `device-id`
   用户指定的设备标识符，用于 I/O 套件匹配。数据类型为 4 byte data。
