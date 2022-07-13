@@ -3,7 +3,7 @@ title: 4. ACPI
 description: 加载、屏蔽、修补 ACPI（DSDT/SSDT）表
 type: docs
 author_info: 由 Sukka 整理、由 Sukka、derbalkon、EricKwok 翻译。感谢黑果小兵提供的参考资料
-last_updated: 2021-04-17
+last_updated: 2022-07-13
 ---
 
 ## 4.1 简介
