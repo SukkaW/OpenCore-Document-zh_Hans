@@ -3,7 +3,7 @@ title: 6. DeviceProperties
 description: PCI 设备属性注入
 type: docs
 author_info: 由 Sukka、derbalkon 整理、由 Sukka、derbalkon 翻译。
-last_updated: 2020-08-21
+last_updated: 2022-07-13
 ---
 
 ## 6.1 简介
