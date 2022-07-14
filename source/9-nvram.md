@@ -8,12 +8,13 @@ last_updated: 2021-01-13
 
 ## 9.1 简介
 
-设置易失性 UEFI 变量（通常被称作 NVRAM 变量），数据类型为 `plist dict`。使用 `man nvram` 获取详细信息。macOS 广泛使用 NVRAM 变量使 操作系统、BootLoader、固件 之间互通，因此需要提供多个 NVRAM 变量才能正常运行 macOS。
+设置易失性 UEFI 变量（通常被称作 NVRAM 变量）。使用 `man nvram` 获取详细信息。macOS 广泛使用 NVRAM 变量使 操作系统、BootLoader、固件 之间互通，因此需要提供多个 NVRAM 变量才能正常运行 macOS。
 
 每个 NVRAM 变量均由其名称、值、属性（参考 UEFI 规范）以及 [GUID](https://en.wikipedia.org/wiki/Universally_unique_identifier) 组成，表示 NVRAM 变量属于哪一区域。macOS 使用如下（包括但不限于）几种 GUID：
 
 - `4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14` (`APPLE_VENDOR_VARIABLE_GUID`)
 - `7C436110-AB2A-4BBB-A880-FE41995C9F82` (`APPLE_BOOT_VARIABLE_GUID`)
+- `5EDDA193-A070-416A-85EB-2A1181F45B18` (Apple Hardware Configuration Storage for MacPro7,1)
 - `8BE4DF61-93CA-11D2-AA0D-00E098032B8C` (`EFI_GLOBAL_VARIABLE_GUID`)
 - `4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102` (`OC_VENDOR_VARIABLE_GUID`)
 
@@ -50,7 +51,8 @@ last_updated: 2021-01-13
 - `Version` --- `plist integer`，文件版本，必须设定为 1。
 - `Add` --- `plist dictionary`，等同于 `config.plist` 中的 `Add`。
 
-变量加载优先于 `Delete`（以及 `Add`）阶段。除非启用了 `LegacyOverwrite`，否则不会覆盖现有的任何变量。允许设置的变量必须指定于 `LegacySchema` 中。第三方脚本可以用来创建 `nvram.plist` 文件，脚本示例可参照 `Utilities`。使用第三方脚本可能要将 `ExposeSensitiveData` 设置为 `0x3` 来为 `boot-path` 变量提供 OpenCore EFI 分区的 UUID。
+变量加载优先于 `Delete`（以及 `Add`）阶段。除非启用了 `LegacyOverwrite`，否则不会覆盖现有的任何变量。允许设置的变量必须指定于 `LegacySchema` 中。
+第三方脚本可以用来创建 `nvram.plist` 文件，脚本示例可参照 [Utilities/LogoutHook](https://github.com/acidanthera/OpenCorePkg/tree/master/Utilities/LogoutHook)。使用第三方脚本可能要将 `ExposeSensitiveData` 设置为 `0x3` 来为 `boot-path` 变量提供 OpenCore EFI 分区的 UUID。
 
 {% note danger 警告 %}
 这一功能非常危险，因为会将不受保护的数据传递给固件中的变量服务。只有在你的硬件不提供硬件 NVRAM 或与之不兼容时才使用。
