@@ -83,7 +83,7 @@ last_updated: 2021-01-13
 **Failsafe**: `false`
 **Description**: 允许将所有添加的变量写入闪存。
 
-*注*：这个 Quirk 本应该在大多数固件上启用，但是由于可能存在 NVRAM 变量存储 GC 或类似的问题的固件，所以我们将这个 Quirk 设计为可配置的。
+*注*：这个 Quirk 本应该在大多数固件上启用，但是由于可能存在 NVRAM 变量存储 garbage collection 或类似的问题的固件，所以我们将这个 Quirk 设计为可配置的。
 
 要从 macOS 中读取 NVRAM 变量的值，可以使用 `nvram`，并将变量 GUID 和名称用 `:` 符号隔开，形如 `nvram 7C436110-AB2A-4BBB-A880-FE41995C9F82:boot-args`。
 
@@ -106,10 +106,12 @@ last_updated: 2021-01-13
 - `4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14:ROM`
   主要的网络适配器的 MAC 地址或替换值。存在于较新的 Mac（至少 2013 年以后）上，用来避免访问特殊内存区域，尤其是在 `boot.efi` 中。
 
-## 9.4 建议变量
+## 9.4 推荐变量
 
 建议使用以下变量来加快启动速度或改善其他表现：
 
+- `4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14:BridgeOSHardwareModel`
+  Bridge OS 的硬件模型变量，用于通过 EfiBoot 传播到 IODT 桥接模型。由 hw.target sysctl 读取，由 SoftwareUpdateCoreSupport 使用。
 - `7C436110-AB2A-4BBB-A880-FE41995C9F82:csr-active-config`
   系统完整性保护的位掩码（32-bit），声明于 XNU 源码 [csr.h](https://opensource.apple.com/source/xnu/xnu-4570.71.2/bsd/sys/csr.h.auto.html)。
 - `4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14:ExtendedFirmwareFeatures`
@@ -128,6 +130,8 @@ last_updated: 2021-01-13
   定义 FireWire 安全模式的 ASCII 字符串。这一变量旧版本才有，可在 [IOFireWireController.cpp](https://opensource.apple.com/source/IOFireWireFamily/IOFireWireFamily-473/IOFireWireFamily.kmodproj/IOFireWireController.cpp.auto.html) 中的 IOFireWireFamily 源码里找到。建议不要设置这个变量，这样可能会加快启动速度。设置为 `full` 等同于不设置该变量，设置为 `none` 将禁用 FireWire 安全性。
 - `4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14:UIScale`
   定义 `boot.efi` 用户界面缩放比例的一字节数据。普通屏幕应为 **01**，HiDPI 屏幕应为 **02**。
+- `7C436110-AB2A-4BBB-A880-FE41995C9F82:ForceDisplayRotationInEFI`
+  32-bit 整数，定义显示旋转。可以是 **0** 表示没有旋转，也可以是 **90**、**180**、**270** 中的任何一个表示匹配的旋转度数。
 - `4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14:DefaultBackgroundColor`
   定义 `boot.efi` 用户界面背景色的四字节 `BGRA` 数据。标准色包括 **BF BF BF 00**（浅灰）和 **00 00 00 00**（西拉黑）。其他颜色可根据用户喜好设置。
 
@@ -156,6 +160,12 @@ last_updated: 2021-01-13
   - `lapic_dont_panic=1` --- 禁用 AP 内核的 LAPIC Panic 伪中断行为
   - `panic_on_display_hang=1` --- 显示设备挂起时触发 Panic
   - `panic_on_gpu_hang=1` --- GPU 挂起时触发 Panic
+  - `serial=VALUE(配置串行记录模式) ` --- 以下是 XNU 使用的 bits。
+    - `0x01 (SERIALMODE_OUTPUT, bit 0) ` --- 启用串行输出。
+    - `0x02 (SERIALMODE_INPUT, bit 1) ` --- 启用串行输入。
+    - `0x04 (SERIALMODE_SYNCDRAIN, bit 2) ` --- 启用串口同步。
+    - `0x08 (SERIALMODE_BASE_TTY, bit 3) ` --- Load Base/恢复/VUnlock TTY。
+    - `0x10 (SERIALMODE_NO_IOLOG, bit 4) ` --- 防止 IOLogs 写入串行。
   - `slide=VALUE` --- 手动设置 KASLR 偏移值
   - `smcdebug=VALUE` --- `AppleSMC` 调试掩码
   - `spin_wait_for_gpu=1` --- 减少 GPU 高负载情况下的超时时间
@@ -235,10 +245,13 @@ last_updated: 2021-01-13
 
   *注*：如要查看现代 macOS 版本上的 `boot.efi` verbose 输出，请启用 `AppleDebug` 选项。这样会把日志保存到通用 OpenCore 日志中。对于 10.15.4 之前的版本，将 `bootercfg` 设置为 `log=1`，可以将 verbose 输出打印在屏幕上。
 
-- `7C436110-AB2A-4BBB-A880-FE41995C9F82:efiboot-perf-record`
-  启用 `boot.efi` 中的性能日志保存功能。性能日志会被保存到物理内存中，并通过 `efiboot-perf-record-data` 和 `efiboot-perf-record-size` 变量进行指向。从 10.15.4 开始，它也可以通过 `AppleDebug` 选项保存到 OpenCore 日志中。
 - `7C436110-AB2A-4BBB-A880-FE41995C9F82:bootercfg-once`
   在首次启动后删除 Booter 参数覆盖，否则等同于 `bootercfg`。
+- `7C436110-AB2A-4BBB-A880-FE41995C9F82:csr-data`
+  指定将被批准的 KEXT 的来源，无论 SIP CSR_ALLOW_UNAPPROVED_KEXTS 值如何。示例如下：
+  <dict><key>kext-allowed-teams</key><array><string>{DEVELOPER-TEAM-ID}</string></array></dict>%00
+- `7C436110-AB2A-4BBB-A880-FE41995C9F82:efiboot-perf-record`
+  启用 `boot.efi` 中的性能日志保存功能。性能日志会被保存到物理内存中，并通过 `efiboot-perf-record-data` 和 `efiboot-perf-record-size` 变量进行指向。从 10.15.4 开始，它也可以通过 `AppleDebug` 选项保存到 OpenCore 日志中。
 - `7C436110-AB2A-4BBB-A880-FE41995C9F82:fmm-computer-name`
   当前保存的主机名称，格式为 ASCII 字符串。
 - `7C436110-AB2A-4BBB-A880-FE41995C9F82:nvda_drv`
@@ -248,4 +261,15 @@ last_updated: 2021-01-13
 - `7C436110-AB2A-4BBB-A880-FE41995C9F82:StartupMute`
   开机时禁用固件引导提示音。8 进制整数。`0x00` 指代不静音、其他任何值（或缺少该值）表示静音。
 - `7C436110-AB2A-4BBB-A880-FE41995C9F82:SystemAudioVolume`
-  固件音频支持的系统音频音量等级。8 进制整数。`0x80` 指代静音。低位用于编码安装的音频编码解码器的音量范围。该值以 `MaximumBootBeepVolume` AppleHDA layout 值为上限，以避免固件中的音频播放声音过大。
+  用于固件音频支持的系统音频音量水平。8位无符号整数。0x80的位意味着静音。其余的位用于编码原始的放大器增益设置，以应用于使用中的音频放大器。这个值的确切含义取决于编解码器（也可能取决于编解码器内的特定放大器）。该值以 `MaximumBootBeepVolume` AppleHDA layout 值为上限，以避免固件中的音频播放声音过大。
+- `7C436110-AB2A-4BBB-A880-FE41995C9F82:SystemAudioVolumeDB`
+  当前的系统音频音量水平，单位是分贝（dB）。`8` 位有符号整数。该值表示相对于放大器参考值 `0dB` 的音频偏移（如果是正值，则为增益，如果是负值，则为衰减），单位为 `dB`。`0dB` 所代表的确切音量取决于编解码器（也可能取决于编解码器中的特定放大器），但它通常是在或接近最大的可用放大器音量。这个变量的典型值从大约 `-60` （具体数值取决于音频硬件）到精确的 `0`。
+  注意：与SystemAudioVolume不同，这个值没有上限。
+- `5EDDA193-A070-416A-85EB-2A1181F45B18:PEXConf`
+  `MacPro7,1` 用户 `PCI` 扩展插槽配置。`8` 个字节的序列描述了默认的 `PCI` 插槽配置。每个字节指的是一个专用 `PCI` 插槽的配置。
+    - 插槽 `1` 位于 `IOService:/AppleACPIPlatformExpert/PC01@0/AppleACPIPCI/BR1A@0`，其路径为硬编码。此插槽不在 muxer 后面。
+    - 插槽 `3` 位于 `IOService:/AppleACPIPlatformExpert/PC03@0/AppleACPIPCI/BR3A@0`，其路径为硬编码。此插槽不在 muxer 后面。
+    - 槽位 `2` 和 `4` 到 `8` 是动态的，根据 `AAPL,slot-name` 属性与 `Slot-N` 值进行匹配，其中 `N` 是槽位编号。此插槽不在 muxer 后面。
+  关于 `MacPro7,1` 插槽如何配置的更多细节，请参考[支持页面](https://support.apple.com/zh-cn/HT210104)。
+- `5EDDA193-A070-416A-85EB-2A1181F45B18:SlotUtilPEXConf`
+  `MacPro7,1` 用户 `PCI` 扩展插槽配置。`8` 个字节的序列描述了默认的 `PCI` 插槽配置
