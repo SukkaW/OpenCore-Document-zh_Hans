@@ -3,7 +3,7 @@ title: 12. 排错
 description: 当你遇到问题的时候应该看看这个
 type: docs
 author_info: 由 xMuu、Sukka、derbalkon 整理，由 Sukka、derbalkon 翻译
-last_updated: 2021-01-31
+last_updated: 2022-07-16
 ---
 
 ## 12.1 旧版 Apple 操作系统
@@ -19,7 +19,7 @@ last_updated: 2021-01-31
 
 ### 2. macOS 10.7
 
-- 同上。
+- 上述问题均存在
 - `SSSE3` 支持（不要和 `SSE3` 混淆）是 macOS 10.7 内核的硬性要求。
 - 包括 Lilu（使用 32 位内核时）及其插件在内的许多 Kext 在 macOS 10.7 或更低版本上都不支持，它们所需的内核 API 比较新，不在 macOS 10.7 SDK 之中。
 - macOS 10.8 之前的系统不支持 KASLR slide，因此会导致内存较低的固件分配内存失败，详见 [acidanthera/bugtracker#1125](https://github.com/acidanthera/bugtracker/issues/1125)。
@@ -36,18 +36,21 @@ last_updated: 2021-01-31
 #!/bin/bash
 # Original.dmg is original image, OSInstall.mpkg is patched package
 mkdir RO
-hdiutil mount Original.dmg -noverify -noautoopen -noautoopenrw -noautofsck -mountpoint RO cp RO/.DS_Store DS_STORE
+hdiutil mount Original.dmg -noverify -noautoopen -noautoopenrw -noautofsck -mountpoint RO
+cp RO/.DS_Store DS_STORE
 hdiutil detach RO -force
 rm -rf RO
 hdiutil convert Original.dmg -format UDRW -o ReadWrite.dmg
 mkdir RW
 xattr -c OSInstall.mpkg
-hdiutil mount ReadWrite.dmg -noverify -noautoopen -noautoopenrw -noautofsck -mountpoint RW cp OSInstall.mpkg RW/System/Installation/Packages/OSInstall.mpkg
+hdiutil mount ReadWrite.dmg -noverify -noautoopen -noautoopenrw -noautofsck -mountpoint RW
+cp OSInstall.mpkg RW/System/Installation/Packages/OSInstall.mpkg
 killall Finder fseventsd
 rm -rf RW/.fseventsd
 cp DS_STORE RW/.DS_Store
 hdiutil detach RW -force
 rm -rf DS_STORE RW
+hdiutil convert ReadWrite.dmg -format UDZO -o ReadOnly.dmg
 ```
 
 ### 4. macOS 10.5
@@ -133,6 +136,8 @@ OpenCore 的设计初衷是在 固件 和 操作系统 之间提供一个安全�
   > ```
 
 - 如果要访问 Apple 的文件系统（APFS、HFS），你可能需要安装单独的软件。已知的工具有 [Apple HFS+ driver](https://forums.macrumors.com/threads/apple-hfs-windows-driver-download.1368010/) ([hack for Windows 10](https://forums.macrumors.com/threads/apple-hfs-windows-driver-download.1368010/post-24180079))、[HFSExplorer](http://www.catacombae.org/hfsexplorer)、MacDrive、Paragon APFS、Paragon HFS+、TransMac，等等。
+
+请记住，永远不要试图从 Windows 修改 Apple 文件系统，因为这往往会导致不可恢复的数据丢失。
 
   > 译者注：**切记不要在 Windows 下写入 APFS 或 HFS，十有八九你会导致分区表错误和无法恢复的数据丢失。别怪我们没有警告过你！！**
 
@@ -225,7 +230,7 @@ OpenCore 遵循 Apple Bless 标准模型、从引导目录中的 `.contentDetail
 
 ### 4. 如何选择默认启动的系统？
 
-OpenCore 使用 UEFI 首选启动项 来选择默认的启动项。设置的方式随 BIOS 不同而不同，具体请参考 macOS [启动磁盘](https://support.apple.com/HT202796) 或 Windows [启动转换](https://support.apple.com/guide/bootcamp-control-panel/start-up-your-mac-in-windows-or-macos-bcmp29b8ac66/mac) 控制面板。
+OpenCore 使用 UEFI 首选启动项 来选择默认的启动项。这个选择可以在 UEFI 设置中改变，具体请参考 macOS [启动磁盘](https://support.apple.com/HT202796) 或 Windows [启动转换](https://support.apple.com/guide/bootcamp-control-panel/start-up-your-mac-in-windows-or-macos-bcmp29b8ac66/mac) 控制面板。
 
 由于使用 OpenCore 提供的 `BOOTx64.efi` 作为首选启动项会限制这项功能（可能还会导致一些固件删除不兼容的引导选项），我们强烈建议你启用 `RequestBootVarRouting` Quirk，这会将你所做的选择保留在 OpenCore 变量空间中。请注意，`RequestBootVarRouting` 需要单独的 `.efi` 驱动文件（译者注：即 OpenRuntime.efi）。
 
