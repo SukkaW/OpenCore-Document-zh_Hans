@@ -465,43 +465,135 @@ APFS 驱动版本将 APFS 驱动与 macOS 版本联系起来。苹果公司最�
 
 **Type**: `plist string`
 **Failsafe**: `Auto` 
-**Description**: 确定是使用 OpenCore 内置协议还是 OEM 苹果事件协议。
+**Description**: 确定是使用 OpenCore 内置协议还是 OEM  Apple Event 协议。
 
-该选项决定是否使用 OEM 苹果事件协议（如有），或者是否使用 OpenCore 的反向工程和更新的重新实现。一般来说，  OpenCore 的重新实现应该是首选，因为它包含了一些更新，如明显改善的精细鼠标光标移动和可配置的按键重复延迟。
+该选项决定是否使用 OEM  Apple Event 协议（如有），或者是否使用 OpenCore 的反向工程和更新的重新实现。一般来说，  OpenCore 的重新实现应该是首选，因为它包含了一些更新，如明显改善的精细鼠标光标移动和可配置的按键的间隔时间。
 
-- Auto --- 如果有可用的、已连接的和最近的，则使用 OEM 苹果事件实现，否则使用 OpenCore 的重新实现。在非苹果硬件上，这将使用 OpenCore 的内置实现。在某些 Mac 上，如经典的 Mac Pro，这将倾向于使用苹果的实现，但在比这更老和更新的 Mac 机型上，该选项通常会使用 OpenCore 的重新实现。在较老的 Mac 上，这是因为可用的实现太老了，无法使用，而在较新的 Mac 上，这是因为苹果公司增加了优化功能，除非需要，否则不会连接苹果事件协议，例如，除了明确启动苹果启动选择器的时候。由于其结果有些不可预测，通常不推荐使用这个选项。
-- Builtin --- 始终使用 OpenCore 对苹果事件协议的最新重新实现。由于 OpenCore 对协议的重新实现进行了改进（更好的精细鼠标控制、可配置的按键延迟），因此即使在苹果硬件上也建议使用此设置。
+- Auto --- 如果有可用的、已连接的和最近的，则使用 OEM  Apple Event 实现，否则使用 OpenCore 的重新实现。在非苹果硬件上，这将使用 OpenCore 的内置实现。在某些 Mac 上，如经典的 Mac Pro，这将倾向于使用苹果的实现，但在比这更老和更新的 Mac 机型上，该选项通常会使用 OpenCore 的重新实现。在较老的 Mac 上，这是因为可用的实现太老了，无法使用，而在较新的 Mac 上，这是因为苹果公司增加了优化功能，除非需要，否则不会连接 Apple Event 协议，例如，除了明确启动苹果启动选择器的时候。由于其结果有些不可预测，通常不推荐使用这个选项。
+- Builtin --- 始终使用 OpenCore 对 Apple Event 协议的最新重新实现。由于 OpenCore 对协议的重新实现进行了改进（更好的精细鼠标控制、可配置的按键延迟），因此即使在苹果硬件上也建议使用此设置。
 - OEM --- 假设苹果的协议在驱动程序连接时可用。在所有苹果硬件上，如果有足够新的苹果 OEM 版本的协议可用，无论是否由苹果的固件自动连接，这个选项将可靠地访问苹果的实现。在所有其他系统上，这个选项将导致没有键盘或鼠标支持。由于上述原因，在大多数情况下，建议优先使用内置选项。
 
 ### 2. `CustomDelays`
 
 **Type**: `plist boolean`
 **Failsafe**: `false` 
-**Description**: 在使用 Apple 事件协议的 OpenCore 重新实现时，启用自定义按键重复延迟。在使用 OEM 苹果实现时没有影响（见 AppleEvent 设置）。
+**Description**: 在使用 Apple Event 协议的 OpenCore 重新实现时，启用自定义按键的间隔时间。在使用 OEM 苹果实现时没有影响（见 AppleEvent 设置）。
 
 - true --- 使用 KeyInitialDelay 和 KeySubsequentDelay 的值。
-- false --- 使用苹果的默认值 500ms(50s) 和 50ms(5s)。
+- false --- 使用苹果的默认值 500ms(50) 和 50ms(5)。
 
+### 3. `KeyInitialDelay`
 
+**Type**: `plist integer`
+**Failsafe**: `50` (第一个键重复前 `500ms`)
+**Description**: 在 OpenCore 对 Apple Event 协议的重新实现中，配置键盘按键的间隔时间，单位为 `10ms`。Apple 事件协议的 OpenCore 再实现中，配置键盘按键的间隔时间，单位为 `10ms`。
 
+苹果 OEM 的默认值是 `50`（`500ms`）。
 
+*注 1 *：在不使用 `KeySupport` 的系统上，此设置可自由用于配置按键的间隔时间。
 
+*注 2 *：在使用 `KeySupport` 的系统上，但不显示 `two long delays` 行为（见 *注 3 *）或总是显示一个坚实的 `set default` 指标（见 `KeyForgetThreshold`），那么这个设置也可以自由地用于配置按键的间隔时间，只是它永远不应该被设置为小于 `KeyForgetThreshold`，以避免不受控制的按键的间隔时间。
 
+*注 3 *：在一些使用 KeySupport 的系统上，你可能会发现在按住一个键时，在正常速度的按键响应之前，你会看到一个额外的慢速响应。如果是这样，你可能希望根据 `KeySubsequentDelay` 的 *注 3 * 来配置 `KeyInitialDelay` 和 `KeySubsequentDelay`。（译者注：简单来说就是多一个响应慢的按键，例如，连续按两次 x 键，出现 3 次响应）
 
+### 4. `KeySubsequentDelay`
 
+**Type**: `plist integer`
+**Failsafe**: `5` (随后的按键重复间隔 `50ms`)
+**Description**: 在 OpenCore 对 Apple Event 协议的重新实现中，配置键盘按键的重复间隔，单位为 `10ms`。
 
+Apple OEM 的默认值是 `5`（`50ms`）。`0` 是这个选项的无效值（将发出调试日志警告，使用 `1` 代替）。
 
+注1：在不使用 `KeySupport` 的系统上，此设置可自由用于配置按键重复行为。
 
+注2： 在使用 `KeySupport` 的系统上，但不显示  `two long delays` 行为（见注3）或总是显示一个坚实的 `set default` 指标（见 `KeyForgetThreshold`）（这应该适用于大多数使用 `AMI KeySupport` 模式的系统），那么这个设置可以自由地用于配置按键重复的后续延迟行为，但它永远不应该被设置为小于 `KeyForgetThreshold`，以避免不受控制的按键重复。
 
+注3：在一些使用 `KeySupport` 的系统上，特别是在非 `AMI` 模式下的 `KeySupport`，你可能会发现，在配置了 `KeyForgetThreshold` 后，当按住一个按键时，在开始正常速度的按键响应之前，你会得到一个额外的慢速按键响应（译者注：简单来说就是多一个响应慢的按键，例如，连续按两次 x 键，出现 3 次响应）。在出现这种情况的系统上， 这是使用 `KeySupport` 来模拟原始键盘数据的一个不可避免的缺陷， `UEFI` 没有提供这种数据。 虽然这个 `two long delays` 的问题对整体可用性的影响很小，但你可能希望解决这个问题，可以通过以下方法来解决：
 
+- 将 `CustomDelays` 设置为 `true`
+- 将按键初始延迟设置为 `0`
+- 将 `KeySubsequentDelay` 设置为至少是你的 `KeyForgetThreshold` 设置的值。
 
+上述程序的工作原理如下。
+- 将 `KeyInitialDelay` 设置为 `0` 会取消 `Apple Event` 的初始重复延迟（当使用 OpenCore 内置的 `Apple Event` 实现并启用 `CustomDelays` 时），因此你将看到的唯一长延迟是由这些机器上的 BIOS 按键支持引入的不可配置的、不可避免的初始长延迟。
+- 按键平滑参数 `KeyForgetThreshold` 有效地充当了一个按键可以被保持的最短时间，因此一个小于这个参数的按键间隔将保证每一次按键都有至少一次额外的时间间隔，无论按键在物理上被敲击的速度如何。
+- 如果你在设置 `KeySubsequentDelay` 等于你的系统的 `KeyForgetThreshold` 值后，仍然经常或偶尔得到双键响应，那么再增加一到两倍 `KeySubsequentDelay`，直到这种影响消失。
 
+### 5. `GraphicsInputMirroring`
 
+**Type**: `plist boolean`
+**Failsafe**: `false` 
+**Description**: Apple的 Apple Event 阻止图形应用程序中的键盘输入出现在基本控制台输入流中。
 
+由于默认设置为 false， OpenCore 的 Apple Event 内置实现复制了这一行为。
 
+在非苹果硬件上， 这可能会阻止键盘输入在图形的应用程序中工作，如使用非苹果按键输入方法的 Windows BitLocker。
 
+所有硬件上的推荐设置是 true 的。
 
-## 11.8 Audio 属性
+*注*： Apple Event 的默认行为是为了防止在退出基于图形的 UEFI 应用程序后出现不需要的排队按键。这个问题已经在 OpenCore 中单独处理。
+
+- true --- 允许键盘输入到达不使用 Apple 输入协议的图形模式应用程序。
+- false --- 在图形模式下，防止按键输入镜像到非 Apple 协议。
+
+### 6. `PointerPollMin`
+
+**Type**: `plist integer`
+**Failsafe**: `0` 
+**Description**: 配置最小指针轮询周期，单位为 `ms`。
+
+这是 OpenCore 内置的 Apple Event 驱动程序轮询指针设备（如鼠标、触控板）的运动事件的最短时间。默认为 `10` 毫秒。设置为 `0` 将使这一默认值保持不变。
+
+*注*： OEM Apple 的实现使用 `2ms` 的轮询率。
+
+### 7. `PointerPollMax`
+
+**Type**: `plist integer`
+**Failsafe**: `0` 
+**Description**: 配置最大指针轮询周期，单位为 `ms`。
+
+这是 OpenCore 内置的 Apple Event 驱动程序轮询指针设备（如鼠标、触控板）的运动事件的最长时间。只要设备没有及时响应，该周期就会增加到这个值。目前的默认值为 80ms。 设置为 `0` 将使这一默认值保持不变。
+
+戴尔笔记本电脑中经常发现的某些触控板驱动程序在没有物理运动发生时，反应可能非常缓慢。 这可能会影响 OpenCanopy 和FileVault 2 用户界面的响应能力和加载时间。增加轮询周期可以减少影响。
+
+*注*： OEM Apple 的实现使用 `2ms` 的轮询率。
+
+### 8. `PointerPollMax`
+
+**Type**: `plist integer，32 bit`
+**Failsafe**: `-1` 
+**Description**: 配置轮询指针的索引。
+
+选择要轮询 Apple Event 运动事件的指针设备。 `-1` 意味着所有设备。一个比特之和用于确定特定的设备。例如，要启
+用设备 `0`、`2`、`3`，其值将是 `1+4+8`（相应的 `2` 的幂）。 总共支持 `32` 个可配置的设备。
+
+即使没有相应的物理设备，某些指针设备也可以存在于固件中。 这些设备通常是占位符、聚合设备或代理。从这些设备中收集信息可能导致用户界面中的运动活动不准确，甚至导致性能问题。 对于有这种问题的笔记本电脑设置，建议禁用这种指针设备。
+
+系统中可用的指针设备的数量可以在日志中找到。更多细节请参考 Found N pointer devices 。
+
+注意：在使用 OEM Apple 实现时没有效果（见 Apple Event 设置）。
+
+### 9. `PointerSpeedDiv`
+
+**Type**: `plist integer`
+**Failsafe**: `1` 
+**Description**: 在 Apple Event 协议的 OpenCore 重新实现中配置指针速度除数。在使用 OEM Apple 实现时没有影响（见 Apple Event 设置）。
+
+配置指针移动的除数。 OEM Apple 的默认值是1， 0 是这个选项的无效值。
+
+*注*：这个选项的推荐值是 `1`， 这个选项的推荐值是 `1`。这个值可以根据用户的偏好，结合 `PointerSpeedMul` 进行修改，以实现自定义的鼠标移动比例。
+
+### 10. `PointerSpeedMul`
+
+**Type**: `plist integer`
+**Failsafe**: `1` 
+**Description**: 在 Apple Event 协议的 OpenCore 重新实现中配置指针速度乘数。在使用 OEM Apple 实现时没有影响（见 Apple Event 设置）。
+
+配置指针移动的乘数。 OEM Apple 的默认值是1。
+
+*注*：这个选项的推荐值是 `1`， 这个选项的推荐值是 `1`。这个值可以根据用户的偏好，结合 `PointerSpeedDiv` 进行修改，以实现自定义的鼠标移动比例。
+
+## 11.12 Audio 属性
 
 ### 1. `AudioCodec`
 
@@ -520,7 +612,7 @@ APFS 驱动版本将 APFS 驱动与 macOS 版本联系起来。苹果公司最�
 ### 2. `AudioDevice`
 
 **Type**: `plist string`
-**Failsafe**: empty string
+**Failsafe**: empty
 **Description**: 特定音频控制器的设备路径，用于音频支持。
 
 一般来说，这里包含了内置模拟音频控制器（`HDEF`）的设备路径，比如 `PciRoot(0x0)/Pci(0x1b,0x0)`。认可的音频控制器列表可以在调试日志中找到（已用粗斜体标出）：
@@ -529,21 +621,43 @@ APFS 驱动版本将 APFS 驱动与 macOS 版本联系起来。苹果公司最�
 <code>OCAU: 2/3 <strong><em>PciRoot(0x0)/Pci(0x3,0x0)</em></strong>/VenMsg(&lt;redacted&gt;,00000000) (1 outputs)</code>
 <code>OCAU: 3/3 <strong><em>PciRoot(0x0)/Pci(0x1B,0x0)</em></strong>/VenMsg(&lt;redacted&gt;,02000000) (7 outputs)</code>
 
-除此之外，该值还可以在 macOS 中通过 `gfxutil -f HDEF` 命令来获取。如果指定了空的设备路径，则会使用第一个可用的音频控制器。
+如果使用 AudioDxe，可用的控制器设备路径也会以这样的格式输出：
 
-### 3. `AudioOut`
+<code>HDA: Connecting controller - PciRoot(0x0)/Pci(0x1B,0x0)<code>
+
+除此之外，该值还可以在 macOS 中通过 `gfxutil -f HDEF` 命令来获取。
+
+指定一个空的设备路径会导致使用第一个可用的编解码器和音频控制器。在这种情况下，AudioCodec 的值被忽略。这可能是一个方便的初始选项，以尝试让 UEFI 音频工作。当这个默认值不起作用时，就需要进行上述的手动设置。
+  
+  
+### 3. `AudioOutMask`
 
 **Type**: `plist integer`
-**Failsafe**: `0`
-**Description**: 特定编解码器的输出端口的索引，从 `0` 开始。
+**Failsafe**: `-1`
+**Description**:位字段，指示用于 UEFI 声音的输出通道。
 
-一般来说，这里包含了内置模拟音频控制器（`HDEF`）的绿色输出的索引。调试日志中输出节点的数量如下（已用粗斜体标出）：
-
-<code>OCAU: 1/3 PciRoot(0x0)/Pci(0x1,0x0)/Pci(0x0,0x1)/VenMsg(&lt;redacted&gt;,00000000) (<strong><em>4 outputs</em></strong>)</code>
-<code>OCAU: 2/3 PciRoot(0x0)/Pci(0x3,0x0)/VenMsg(&lt;redacted&gt;,00000000) (<strong><em>1 outputs</em></strong>)</code>
-<code>OCAU: 3/3 PciRoot(0x0)/Pci(0x1B,0x0)/VenMsg(&lt;redacted&gt;,02000000) (<strong><em>7 outputs</em></strong>)</code>
-
-找到正确端口的最快办法就是暴力地尝试 `0` 到 `N - 1` 的值。
+音频掩码是 `1` 《 音频输出（等同于 2 的幂音频输出）。例如，对于音频输出 `0`，比特掩码是 `1`，对于输出 `3` 是 `8`，对于输出 `0` 和 `3` 是 `9`。
+  
+每个 HDA 编解码器的可用输出节点的数量（N）显示在调试日志中（如下），音频输出 `0` 到 `N-1` 可以选择。
+  
+<code>OCAU: 1/3 PciRoot(0x0)/Pci(0x1,0x0)/Pci(0x0,0x1)/VenMsg(<redacted>,000000) (4个输出) <code>
+<code>OCAU: 2/3 PciRoot(0x0)/Pci(0x3,0x0)/VenMsg(<redacted>,00000000) ( 1个输出)<code>
+<code>OCAU: 3/3 PciRoot(0x0)/Pci(0x1B,0x0)/VenMsg(<redacted>,020000) (7个输出)<code>
+  
+当使用 AudioDxe 时，每个输出通道的额外信息会在驱动程序绑定时被记录下来， 包括每个输出的比特掩码。所需输出的比特掩码值应该加在一起，以获得 AudioOutMas 值：
+  
+<code>HDA: | Port widget @ 0x9 is an output (pin defaults 0x2B4020) (bitmask 1)<code>
+<code>HDA: | Port widget @ 0xA is an output (pin defaults 0x90100112) (bitmask 2)<code>
+<code>HDA: | Port widget @ 0xB is an output (pin defaults 0x90100110) (bitmask 4)<code>
+<code>HDA: | Port widget @ 0x10 is an output (pin defaults 0x4BE030) (bitmask 8)<code>
+ 
+关于可用输出通道的进一步信息可以通过使用命令从 Linux 编解码器转储中找到：
+  
+<code>cat /proc/asound/card{n}/codec#{m}<code>
+  
+使用 AudioOutMask，可以向多个的通道播放声音（例如，主扬声器加低音扬声器； 耳机加扬声器），只要所有选择的输出都支持正在使用的声音文件格式；如果任何一个不支持，那么就不会有声音播放，并且会有警告记录。
+  
+当编解码器上所有可用的输出通道都支持可用的声音文件格式时，`-1` 的值将同时向所有通道播放声音。如果这不起作用，通常最快的方法是逐一尝试每个可用的输出通道，将 AudioOutMask 设置为 `1`、 `2`、 `4` 等，直到 `2ˆN-1`，以便找出哪个通道能产生声音。
 
 ### 4. `AudioSupport`
 
@@ -553,15 +667,55 @@ APFS 驱动版本将 APFS 驱动与 macOS 版本联系起来。苹果公司最�
 
 启用此设置可将音频播放从内置协议路由到音频控制器（`AudioDevice`）上指定编解码器（`AudioCodec`）的专用音频端口（`AudioOut`）。
 
-### 5. `MinimumVolume`
+### 5. `DisconnectHda`
+
+**Type**: `plist boolean`
+**Failsafe**: `false`
+**Description**: 在加载驱动程序之前，断开 HDA 控制器的连接。
+
+在某些系统上可能需要（例如苹果硬件、 VMware Fusion guest），以允许 UEFI 声音驱动（例如 AudioDxe）控制音频硬件。
+
+*注*：除了这个选项外，大多数苹果硬件还需要 `--gpio-setup` 驱动参数， 这在 AudioDxe 部分有涉及。
+
+### 6. `MaximumGain`
 
 **Type**: `plist integer`
-**Failsafe**: `0`
-**Description**: 听到的最小音量水平，从 `0` 到 `100`。
+**Failsafe**: `-15`
+**Description**: 用于 UEFI 音频的最大增益，以分贝（dB）为单位，相对于放大器的参考电平 `0dB`（见注1）。
+  
+当从 `SystemAudioVolumeDB NVRAM` 变量中读取的系统放大器增益高于此值时，所有的 UEFI 音频将使用此增益设置。 这是为了避免在系统音量设置得很高，或者 `SystemAudioVolumeDB NVRAM` 的值被错误地配置时，UEFI 音频过于响亮。
+  
+*注 1 *：分贝（dB）是指与某个参考水平相比的增益（正值；音量增加）或衰减（负值；音量减少）。当你听到喷气式飞机的声级表示为 `120` 分贝时，例如，参考水平是普通人可以听到的声级。然而，一般来说，在声学和计算机音频中，任何参考电平都可以被指定。英特尔 HDA 和 macOS 原生使用分贝来指定音量级别。在大多数英特尔 HDA 硬件上，`0` 分贝的参考电平是硬件的最大声量，因此所有更低的音量是负数。在典型的声音硬件上，最安静的音量大约是 `-55dB` 到 `-60dB`。
 
-当计算出的音量小于 `MinimumVolume` 时，屏幕阅读器将使用这个音量。当计算出的音量小于 `MinimumVolume`，则不播放 Mac 特有的开机启动声音。
+*注 2 *：与 macOS 处理分贝值的方式一致， 该值被转换为有符号的字节；因此，不允许使用 `-128 dB` 到 `+127 dB` 以外的值（这些值远远超出物理上合理的音量水平）。
 
-### 6. `PlayChime`
+*注 3 *： 数字音频输出，在操作系统中没有音量滑块，忽略这个和所有其他增益设置，只有静音设置是相关的。
+  
+### 7. `MinimumAssistGain`
+
+**Type**: `plist integer`
+**Failsafe**: `-30`
+**Description**: 用于选择器音频辅助的最小增益（dB）， 单位为分贝（dB）。
+  
+如果从 `SystemAudioVolumeDB NVRAM` 变量中读取的系统放大器增益低于此值，屏幕阅读器将使用此放大器增益。
+  
+*注 1 *：除了这个设置外，由于音频辅助必须能听到才能发挥其功能，所以即使操作系统的声音被静音或 `StartupMute NVRAM` 变量被设置，音频辅助也不会被静音。
+  
+*注 2 *：关于分贝音量级别的解释， 请参见 `MaximumGain`。  
+  
+ ### 8. `MinimumAudibleGain`
+
+**Type**: `plist integer`
+**Failsafe**: `-128`
+**Description**: 尝试播放任何声音的最小增益， 单位是分贝（dB）。
+  
+如果 `SystemAudioVolumeDB NVRAM` 变量中的系统放大器增益水平低于此值， 则不会播放开机提示音。
+  
+*注 1 *： 这个设置是为了节省由于在听不见的音量水平上进行音频设置而造成的不必要的停顿，因为无论如何都不会听到声音。是否有听不见的音量水平取决于硬件。在一些硬件上（包括 Apple），音频值与硬件匹配得很好，最低的音量水平是非常安静但可以听到的，而在其他一些硬件组合上，音量范围的最低部分可能根本听不到。
+
+*注 2 *：关于分贝音量级别的解释， 请参见 `MaximumGain`。 
+
+### 9. `PlayChime`
 
 **Type**: `plist string`
 **Failsafe**: `Auto`
@@ -573,9 +727,21 @@ APFS 驱动版本将 APFS 驱动与 macOS 版本联系起来。苹果公司最�
 - `Enabled` --- 无条件启用开机声音。
 - `Disabled` --- 无条件禁用开机声音。
 
-*注*：`Enable` 是可以与 `StartupMute` NVRAM 变量分开使用的，以此来避免在固件能够播放启动铃声时发生冲突。
+*注 1 *：`Enable` 是可以与 `StartupMute` NVRAM 变量分开使用的，以此来避免在固件能够播放启动铃声时发生冲突。
 
-### 7. `SetupDelay`
+*注 2 *：无论如何设置，如果系统音频被静音，即 `SystemAudioVolume NVRAM` 变量设置了 `0x80` 位，则不会播放启动铃声。
+  
+### 10. `ResetTrafficClass`
+
+**Type**: `plist boolean`
+**Failsafe**: `0`
+**Description**: 将 HDA Traffic Class Select 寄存器设置为TC0。
+
+只有当 TCSEL 寄存器配置为使用 TC0 traffic class时，AppleHDA.kext 才能正常工作。有关此寄存器的更多详细信息，请参阅 Intel I/O Controller Hub 9（ICH9）Family Datasheet（或任何其他 ICH Datasheet）。
+
+*注*：此选项独立于 AudioSupport。如果使用 AppleALC，则首选使用 AppleALC alctsel 属性。  
+  
+### 11. `SetupDelay`
 
 **Type**: `plist integer`
 **Failsafe**: `0`
@@ -583,19 +749,33 @@ APFS 驱动版本将 APFS 驱动与 macOS 版本联系起来。苹果公司最�
 
 某些编解码器在重新配置后需要特定延迟（由供应商提供，例如音量设置），此选项可对其进行配置。一般来说，必要的延迟时间可能长达 0.5 秒。
 
-### 8. `VolumeAmplifier`
+## 11.13 Drivers 属性
+  
+### 1. `Comment`
 
 **Type**: `plist integer`
-**Failsafe**: `0`
-**Description**: 系统音量到原始音量的线性换算的乘法系数，从 `0` 到 `1000`。
+**Failsafe**: Empty
+**Description**: 用于为条目提供人类可读参考的任意 ASCII 字符串（译者注：即注释）。 
+  
+### 2. `Path`
 
-从 `SystemAudioVolume` 读取的音量范围会因编解码器的不同而不同。为了将 `[0, 127]` 范围内的值转换为原始音量范围 `[0, 100]` 内的值，所读取的值按比例调整为 `VolumeAmplifier` 的百分数：
+**Type**: `plist integer`
+**Failsafe**: Empty
+**Description**: 从 `OC/Drivers` 目录中作为 UEFI 驱动加载的文件的路径。
+  
+### 3. `Path`
 
-![11-1.svg](/img/11-1.svg)
+**Type**: `plist integer`
+**Failsafe**: `false`
+**Description**:  如果设置为 `false` 的，这个驱动条目将被忽略（译者注：即不启用这个驱动）。
+  
+### 4. `Arguments`
 
-*注*：macOS 中使用的转换并不是线性的，但非常接近，因此我们忽略了这种细微差别。
+**Type**: `plist integer`
+**Failsafe**: Empty
+**Description**:  一些OpenCore插件接受可选的额外参数，可以在这里指定为一个字符串（译者注：即驱动参数）。
 
-## 11.9 Input 属性
+## 11.14 Input 属性
 
 ### 1. `KeyFiltering`
 
@@ -609,33 +789,29 @@ APFS 驱动版本将 APFS 驱动与 macOS 版本联系起来。苹果公司最�
 
 **Type**: `plist integer`
 **Failsafe**: `0`
-**Description**: 两次按键之间的间隔时间，单位为毫秒。
+**Description**: 两次按键之间的间隔时间，单位为 `10ms`。如果两次按键的时间间隔，小于这个值，那么视为保持长按。只适用于使用 `KeySupport` 的系统。
 
 `AppleKeyMapAggregator` 协议应该包含当前按下的键的固定长度的缓冲。但是大部分驱动程序仅将按键按下报告为中断、并且按住按键会导致在一定的时间间隔后再提交按下行为。一旦超时到期，我们就是用超时从缓冲区中删除一次按下的键，并且没有新提交。
 
 此选项允许根据你的平台设置此超时。在大多数平台上有效的推荐值为 `5` 毫秒。作为参考，在 VMWare 上按住一个键大约每 2 毫秒就会重复一次，而在 APTIO V 上是 3 - 4 毫秒。因此，可以在较快的平台上设置稍低的值、在较慢的平台设置稍高的值，以提高响应速度。
 
-*注*：某些平台可能需要更高或者更低的值。例如，当 OpenCanopy 检测到按键丢失的时候，尝试稍高的值（比如增加到 `10`），当检测到按键停滞时，尝试稍低的值。由于每个平台各不相同，因此检查从 `1` 到 `25` 的每个值可能会比较合理。
+在同一平台上，一个接一个地按下按键会导致至少60和100毫秒的延迟。理想情况下，KeyForgetThreshold应该保持低于这个值，以避免合并真正的按键。
+  
+调整 KeyForgetThreshold 的值对于在启用了 KeySupport 的系统上实现准确和灵敏的键盘输入是必要的，建议按照下面的说明为你的系统正确地调整它。  
+  
+*注 1 *：要调整 `KeyForgetThreshold`，你可以使用 OpenCanopy 或内置启动选择器中的 `set default` 指示符。如果`KeyForgetThreshold` 太低，那么当按住 `CTRL` 或 `=/+` 时， `set default` 指示符将继续闪烁。你应该配置能避免这种闪烁的最低值。在一些系统上（例如 Aptio IV 和可能使用 AMI KeySupport 模式的其他系统），你可以找到一个最小的`KeyForgetThreshold` 值，在这个值上， `set default` 指示符会亮起并保持不变，而且没有闪烁，如果是这样，就使用这个值。在大多数其他使用 `KeySupport` 的系统上，你会发现，当第一次按住 `CTRL` 或 `=/+` 键时， `set default` 指示符会闪烁一次，然后再经过一个非常短暂的间隔，就会亮起并保持亮起。在这样的系统上，你应该选择最低的 `KeyForgetThreshold` 值，在这个值上，你只看到最初的一次闪烁，然后就没有后续的闪烁了。(在这种情况下，这是使用 `KeySupport` 模拟原始键盘数据的系统上不可避免的缺陷，UEFI 不提供这种数据）。
+  
+*注 2 *：`KeyForgetThreshold` 最多不需要超过 `9` 或 `10`。如果它被设置为一个远高于此的值，将导致明显的键盘输入无反应。因此，为了整体的按键响应，强烈建议配置一个相对较低的值，在这个值上， `set default` 指示符会闪烁一次，然后不再闪烁，而不是使用一个高得多的值（即明显大于 `10`），你可能能找到但不应该使用这个值，在这个值上， `set default` 指示符根本不闪烁。  
 
-### 3. `KeyMergeThreshold`
-
-**Type**: `plist integer`
-**Failsafe**: `0`
-**Description**: 按住按键被重置的间隔时间，单位为毫秒。
-
-与 `KeyForgetThreshold` 类似，这一选项适用于按键提交的顺序。为了能够识别同时按下的按键，我们需要设置一个超时时间，在这个时间内可以假定这两个按键是同时按下的。
-
-对于 VMWare，同时按下多个键的间隔是 2 毫秒。对于 APTIO V 平台为 1 毫秒。一个接一个地按下按键会导致 6 毫秒和 10 毫秒的延迟。此选项的建议值为 2 毫秒，但对于较快的平台可以选取较小的值，反之亦然。
-
-### 4. `KeySupport`
+### 3. `KeySupport`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
-**Description**: 启用这一选项后将会开启内置键盘支持。
+**Description**: 启用内部键盘输入转换为 AppleKeyMapAggregator 协议。
 
-这一选项基于 `AppleGenericInput`（`AptioInputFix`），激活内部键盘拦截器驱动程序以填充 `AppleKeyMapAggregator` 数据库以实现输入功能。如果使用了单独的驱动程序（如 `AppleUsbKbDxe`），则永远不要开启这一选项。
+这一选项基于 `AppleGenericInput`（`AptioInputFix`），激活内部键盘拦截器驱动程序以填充 `AppleKeyMapAggregator` 数据库以实现输入功能。如果使用了单独的驱动程序（如 `AppleUsbKbDxe`），则永远不要开启这一选项。此外，这个选项不是必需的，也不应该在 Apple 固件中启用。
 
-### 5. `KeySupportMode`
+### 4. `KeySupportMode`
 
 **Type**: `plist string`
 **Failsafe**: `Auto`
@@ -648,7 +824,7 @@ APFS 驱动版本将 APFS 驱动与 macOS 版本联系起来。苹果公司最�
 
 *注*：目前 `V1`、`V2` 和 `AMI` 区别于 `Auto`，只对特定的协议进行过滤。这种情况在未来的版本中可能会改变。
 
-### 6. `KeySwap`
+### 5. `KeySwap`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
@@ -656,31 +832,33 @@ APFS 驱动版本将 APFS 驱动与 macOS 版本联系起来。苹果公司最�
 
 此选项对于 `Option` 键位于 `Command` 右侧的键盘来说会很有用。
 
-### 7. `PointerSupport`
+### 6. `PointerSupport`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
-**Description**: 启用后将试图修复 UEFI 选择器协议。
+**Description**: 启用内部指针驱动器。
 
 该选项通过选择 OEM 协议实现标准 UEFI 指针协议 `EFI_SIMPLE_POINTER_PROTOCOL`。该选项在 Z87 华硕主板可能有用（该主板的 `EFI_SIMPLE_POINTER_PROTOCOL` 存在问题）。
 
-### 8. `PointerSupportMode`
+### 7. `PointerSupportMode`
 
 **Type**: `plist string`
-**Failsafe**: empty string
+**Failsafe**: empty
 **Description**: 设置用于内部指针驱动程序的 OEM 协议。
 
 目前只支持 `ASUS` 值，使用的是 Z87 和 Z97 主板上的特殊协议。更多详情请参考 [`LongSoft/UefiTool#116`](https://github.com/LongSoft/UEFITool/pull/116)。如果启用了 `PointerSupport`，此处值不能为空。
 
-### 9. `TimerResolution`
+### 8. `TimerResolution`
 
 **Type**: `plist integer`
 **Failsafe**: `0`
 **Description**: 固件始终刷新的频率（单位 100 纳秒）
 
-设置较低的值可以提高界面和输入处理性能的响应能力。建议值为 `50000`（即 5 毫秒）或稍高一些。选择 ASUS Z87 主板时，请使用 `60000`，苹果主板请使用 `100000`。你也可以将此值保留为 `0`，由 OpenCore 自动计算。
+这个选项允许用 100 纳秒单位的指定值来更新固件架构的定时器周期。设置一个较低的值通常可以提高接口和输入处理的性能和响应性。  
+  
+建议值为 `50000`（即 5 毫秒）或稍高一些。选择 ASUS Z87 主板时，请使用 `60000`，苹果主板请使用 `100000`。你也可以将此值设置为 `0`，不改变固件始终刷新的频率。
 
-## 11.10 Output 属性
+## 11.15 Output 属性
 
 ### 1. `TextRenderer`
 
@@ -704,31 +882,30 @@ UEFI 固件一般用两种渲染模式来支持 `ConsoleControl`：`Graphics` �
 
 `System` 协议的用法比较复杂。一般来说，首选设置 `SystemGraphics` 或 `SystemText`。启用 `ProvideConsoleGop`，将 `Resolution` 设置为 `Max`，启用 `ReplaceTabWithSpace` 几乎在所有平台上都很有用。`SanitiseClearScreen`、`IgnoreTextInGraphics` 和 `ClearScreenOnModeSwitch` 比较特殊，它们的用法取决于固件。
 
-*注*：某些 Mac，比如 `MacPro5,1`，在使用较新的 GPU 时，可能会出现控制台输出中断的情况，因此可能只有 `BuiltinGraphics` 对它们有效。
+*注*：某些 Mac，比如 `MacPro5,1`，在使用较新的 GPU 时，可能会出现控制台不兼容输出的情况（例如：中断），因此可能只有 `BuiltinGraphics` 对它们有效。NVIDIA GPU可能需要额外的[固件升级](https://github.com/acidanthera/bugtracker/issues/1280)。
 
 ### 2. `ConsoleMode`
 
 **Type**: `plist string`
-**Failsafe**: Empty string
+**Failsafe**: Empty （保持当前的控制台模式）
 **Description**: 按照 `WxH`（例如 `80x24`）格式的字符串所指定的方式设置控制台的输出模式。
 
-设置为空字符串则不会改变控制台模式。设置为 `Max` 则会尝试最大的可用控制台模式。目前 `Builtin` 文本渲染器只支持一种控制台模式，所以该选项可以忽略。
+设置为 `Max` 则会尝试最大的可用控制台模式。目前 `Builtin` 文本渲染器只支持一种控制台模式，所以该选项可以忽略。
 
 *注*：在大多数固件上，这个字段最好留空。
 
 ### 3. `Resolution`
 
 **Type**: `plist string`
-**Failsafe**: Empty string
+**Failsafe**: Empty （保持当前屏幕分辨率）
 **Description**: 设置控制台的屏幕分辨率。
 
-- 设置为 `WxH@Bpp`（如 `1920x1080@32`）或 `WxH`（如 `1920x1080`）格式的字符串，向 GOP 请求自定义分辨率。
-- 设置为空字符串，不改变屏幕分辨率。
+- 设置为 `WxH@Bpp`（如 `1920x1080@32`）或 `WxH`（如 `1920x1080`）格式的字符串，向 GOP 请求自定义分辨率（如果有的话）。
 - 设置为 `Max`，尝试使用最大的可用屏幕分辨率。
 
 在 HiDPI 屏幕上，`APPLE_VENDOR_VARIABLE_GUID` `UIScale` NVRAM 变量可能需要设置为 `02`，以便在 `Builtin` 文本渲染器、FileVault 2 UEFI 密码界面和启动界面 logo 启用 HiDPI 缩放。更多细节请参考 [建议变量](9-nvram.html#9-4-建议变量) 部分。
 
-*注*：当控制台句柄没有 GOP 协议时，这些设置会失败。当固件不再提供时，可以将 `ProvideConsoleGop` 设置为 `true` 并添加。
+*注*：当控制台句柄没有 GOP 协议时，这些设置会失败。当固件不再提供时，可以将 `ProvideConsoleGop` 设置为 `true` 添加 GOP 协议。
 
 ### 4. `ForceResolution`
 
@@ -738,7 +915,7 @@ UEFI 固件一般用两种渲染模式来支持 `ConsoleControl`：`Graphics` �
 
 *注*：该选项依赖 [`OC_FORCE_RESOLUTION_PROTOCOL`](https://github.com/acidanthera/OpenCorePkg/blob/master/Include/Acidanthera/Protocol/OcForceResolution.h) 协议。目前只有 `OpenDuetPkg` 支持该协议，而 `OpenDuetPkg` 的实现目前仅支持 Intel iGPU。
 
-### 4. `ClearScreenOnModeSwitch`
+### 5. `ClearScreenOnModeSwitch`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
@@ -746,7 +923,7 @@ UEFI 固件一般用两种渲染模式来支持 `ConsoleControl`：`Graphics` �
 
 *注*：这一选项只会在 `System` 渲染器上生效。
 
-### 5. `DirectGopRendering`
+### 6. `DirectGopRendering`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
@@ -754,7 +931,25 @@ UEFI 固件一般用两种渲染模式来支持 `ConsoleControl`：`Graphics` �
 
 在某些固件上，这样做可能会提供更优的性能，甚至修复渲染问题，比如 `MacPro5,1`。但是，除非有明显的好处，否则还是建议不要使用这个选项，因为可能会导致滚动速度变慢。
 
-### 6. `IgnoreTextInGraphics`
+这个渲染器完全支持 `AppleEg2Info` 协议，将为所有 EFI 应用程序提供屏幕旋转。为了提供与 `EfiBoot` 的无缝旋转兼容性，还应该使用内置的 `AppleFramebufferInfo`，也就是说，在 Mac EFI 上可能需要重写它。  
+
+### 7. `GopPassThrough`
+
+**Type**: `plist string`
+**Failsafe**: `Disabled`
+**Description**: 在 `UGA` 协议实例的基础上提供 `GOP` 协议实例。
+
+该选项通过一个基于 `UGA` 的代理为没有实现 `GOP` 协议的固件提供 `GOP` 协议。
+
+该选项的支持值如下。  
+  
+- Enabled --- 为所有 `UGA` 协议提供 `GOP`。
+- Apple --- 为支持 `AppleFramebufferInfo` 的协议提供 `GOP`。
+- Disabled --- 不提供 `GOP`。  
+  
+*注*：该选项需要启用 `ProvideConsoleGop`。  
+  
+### 8. `IgnoreTextInGraphics`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
@@ -762,7 +957,7 @@ UEFI 固件一般用两种渲染模式来支持 `ConsoleControl`：`Graphics` �
 
 *注*：这一选项只会在 `System` 渲染器上生效。
 
-### 7. `ReplaceTabWithSpace`
+### 9. `ReplaceTabWithSpace`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
@@ -770,7 +965,7 @@ UEFI 固件一般用两种渲染模式来支持 `ConsoleControl`：`Graphics` �
 
 *注*：这一选项只会在 `System` 渲染器上生效。
 
-### 8. `ProvideConsoleGop`
+### 10. `ProvideConsoleGop`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
@@ -780,7 +975,17 @@ macOS bootloader 要求控制台句柄上必须有 GOP 或 UGA（适用于 10.4 
 
 *注*：这个选项也会替换掉控制台句柄上损坏的 GOP 协议，在使用较新的 GPU 的 `MacPro5,1` 时可能会出现这种情况。
 
-### 9. `ReconnectOnResChange`
+### 11. `ReconnectGraphicsOnConnect`
+
+**Type**: `plist boolean`
+**Failsafe**: `false`
+**Description**: 在驱动连接过程中重新连接所有的图形驱动。  
+  
+在某些固件上，可能希望使用一个替代的图形驱动程序，例如 `BiosVideo.efi`。在传统机器上提供更好的屏幕分辨率选项，或者使用支持 `ForceResolution` 的驱动程序。这个选项试图在连接新加载的驱动程序之前断开所有当前连接的图形驱动程序。 
+  
+*注*：这个选项需要启用 `ConnectDrivers`。  
+  
+### 12. `ReconnectOnResChange`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
@@ -790,7 +995,7 @@ macOS bootloader 要求控制台句柄上必须有 GOP 或 UGA（适用于 10.4 
 
 *注*：当 OpenCore 从 Shell 启动时，这个逻辑可能会导致某些主板黑屏，因此这个选项是非必须的。在 0.5.2 之前的版本中，这个选项是强制性的，不可配置。除非需要，否则请不要使用该选项。
 
-### 10. `SanitiseClearScreen`
+### 13. `SanitiseClearScreen`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
@@ -798,7 +1003,23 @@ macOS bootloader 要求控制台句柄上必须有 GOP 或 UGA（适用于 10.4 
 
 *注*：这一选项只会在 `System` 渲染器上生效。在所有已知的受影响的系统中，`ConsoleMode` 必须设置为空字符串才能正常工作。
 
-### 11. `UgaPassThrough`
+### 14. `UIScale`
+
+**Type**: `plist integer，8 bit`
+**Failsafe**: `-1`
+**Description**:  用户界面的缩放系数。  
+  
+对应于4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14：UIScale变量。  
+
+- 1 --- 1倍缩放，对应于普通显示器。
+- 2 --- 2x缩放，对应于HiDPI显示器。
+- -1 --- 保持当前变量不变。
+- 0 -- 根据当前分辨率自动选择缩放比例。
+
+*注 1 *：自动比例系数检测是在总像素面积的基础上进行的，在小型 HiDPI 显示器上可能会失败，在这种情况下，可以使用NVRAM 部分手动管理该值。
+*注 2 *：当从手动指定的 NVRAM 变量切换到该首选项时，可能需要对 NVRAM 进行重置。  
+  
+### 15. `UgaPassThrough`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
@@ -806,13 +1027,13 @@ macOS bootloader 要求控制台句柄上必须有 GOP 或 UGA（适用于 10.4 
 
 有些固件不会去实现老旧的 UGA 协议，但是有些更老的 EFI 应用程序（如 10.4 的 EfiBoot）可能需要用它来进行屏幕输出。
 
-## 11.11 ProtocolOverrides 属性
+## 11.16 ProtocolOverrides 属性
 
 ### 1. `AppleAudio`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
-**Description**: 重新安装内置版本的 Apple 音频协议。
+**Description**: 用内置的版本取代 Apple 音频协议。
 
 Apple 音频协议允许 macOS bootloader 和 OpenCore 播放声音和信号，用于屏幕阅读或可闻及的错误报告。支持的协议有生成「哔」声和 VoiceOver。VoiceOver 协议是带有 T2 芯片的机器特有的，不支持 macOS High Sierra (10.13) 之前的版本。旧版 macOS 版本使用的是 AppleHDA 协议，目前还没有实现。
 
@@ -824,7 +1045,7 @@ Apple 音频协议允许 macOS bootloader 和 OpenCore 播放声音和信号，�
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
-**Description**: 重新安装内置的 Apple Boot Policy 协议，可用于确保 VM 或旧版 Mac 设备上的 APFS 兼容性。
+**Description**: 用内置的版本取代 Apple Boot Policy 协议，可用于确保 VM 或旧版 Mac 设备上的 APFS 兼容性。
 
 *注*：某些 Mac 设备（如 `MacPro5,1`）虽然兼容 APFS，但是其 Apple Boot Policy 协议包含了恢复分区检测问题，因此也建议启用这一选项。
 
@@ -832,43 +1053,48 @@ Apple 音频协议允许 macOS bootloader 和 OpenCore 播放声音和信号，�
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
-**Description**: 重新安装内置的 Apple 调试日志输出协议。
+**Description**: 用内置的版本取代 Apple 调试日志输出协议。
 
-### 4. `AppleEvent`
+### 4. `AppleEg2Info`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
-**Description**: 重新安装内置的 Apple Event 协议，可以确保在 VM 或旧版 Mac 设备上的 FileVault 2 兼容性。
+**Description**: 用内置的版本取代 `Apple EFI Graphics 2` 协议。
 
+*注 1 *：该协议允许更新的 EfiBoot 版本（至少10.15）向 macOS 公开屏幕旋转。有关如何设置屏幕旋转角度，请参阅 `ForceDisplayRotationInfo` 变量说明。
+*注 2 *：在没有 `ForceDisplayRotationInEFI` 原生支持的系统上，必须设置 `DirectGopRendering=true`。  
+  
 ### 5. `AppleFramebufferInfo`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
 **Description**: 重新安装内置的 Apple Framebuffer Info 协议。这样可以覆盖虚拟机或者旧款 Mac 上的缓冲帧信息，从而提高与旧版 EfiBoot（如 macOS 10.4 中的 EfiBoot）的兼容性。
 
+*注*：这个属性的当前实现导致它只有在 GOP 可用时才是有效的（否则它总是相当于false）。
+  
 ### 6. `AppleImageConversion`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
-**Description**: 重新安装内置的 Apple Image Conservation 协议。
+**Description**: 用内置的版本取代 Apple Image Conservation 协议。
 
 ### 7. `AppleImg4Verification`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
-**Description**: 重新安装内置的 Apple IMG4 验证协议。该协议用于验证 Apple 安全启动所使用的 `im4m` 清单文件。
+**Description**: 用内置的版本取代 Apple IMG4 验证协议。该协议用于验证 Apple 安全启动所使用的 `im4m` 清单文件。
 
 ### 8. `AppleKeyMap`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
-**Description**: 重新安装内置的 Apple Key Map 协议。
+**Description**: 用内置的版本取代 Apple Key Map 协议。
 
 ### 9. `AppleRtcRam`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
-**Description**: 重新安装内置的 Apple RTC RAM 协议。
+**Description**: 用内置的版本取代 Apple RTC RAM 协议。
 
 *注*：内置的 Apple RTC RAM 协议可能会过滤掉 RTC 内存地址的潜在 I/O。地址列表可以在 `4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102:rtc-blacklist` 中以数组的方式指定。
 
@@ -876,13 +1102,13 @@ Apple 音频协议允许 macOS bootloader 和 OpenCore 播放声音和信号，�
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
-**Description**: 重新安装内置的 Apple 安全启动协议。
+**Description**: 用内置的版本取代 Apple 安全启动协议。
 
 ### 11. `AppleSmcIo`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
-**Description**: 重新安装内置的 SMC I/O 协议。
+**Description**: 用内置的版本取代 SMC I/O 协议。
 
 这一协议代替了传统的 `VirtualSmc.efi`，并与所有 SMC Kext 驱动兼容。如果你在用 FakeSMC，可能需要手动往 NVRAM 中添加键值对。
 
@@ -890,20 +1116,24 @@ Apple 音频协议允许 macOS bootloader 和 OpenCore 播放声音和信号，�
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
-**Description**: 重新安装内置的 Apple User Interface Theme 协议。
+**Description**: 用内置的版本取代 Apple User Interface Theme 协议。
 
 ### 13. `DataHub`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
-**Description**: 重新安装具有内置版本的 Data Hub 协议。如果已经安装了协议，这将删除所有先前的属性。
+**Description**: 用内置的版本取代 Data Hub 协议。如果已经安装了协议，这将删除所有先前的属性。
 
+*注*：如果协议已经安装，这将丢弃之前的所有条目，因此必须在配置文件中指定系统安全运行所需的所有属性。  
+  
 ### 14. `DeviceProperties`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
-**Description**: 重新安装内置版本的 Device Property 协议。 如果已经安装，它将删除所有以前的属性。这一选项可用于确保在 VM 或旧版 Mac 设备上的兼容性。
+**Description**: 用内置的版本取代 Device Property 协议。 这一选项可用于确保在 VM 或旧版 Mac 设备上的兼容性。
 
+*注*：如果协议已经安装，这将丢弃之前的所有条目，因此必须在配置文件中指定系统安全运行所需的所有属性。  
+  
 ### 15. `FirmwareVolume`
 
 **Type**: `plist boolean`
@@ -916,23 +1146,49 @@ Apple 音频协议允许 macOS bootloader 和 OpenCore 播放声音和信号，�
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
-**Description**: 强制重新安装内置版本的 Hash Services 协议。为了在 SHA-1 哈希协议不完整的固件上确保 FileVault 2 的兼容性，这一 Quirk 应设置为 `true`。对于大多数固件来说，你可以通过将 `UIScale` 设置为 `02` 查看是否会出现禁行图标，来诊断你的固件是否需要这一 Quirk。一般来说，APTIO V（Haswell 和更早的平台）之前的平台都会受到影响。
+**Description**: 用内置版本替换 Hash Services 协议。为了在 SHA-1 哈希协议不完整的固件上确保 FileVault 2 的兼容性，这一 Quirk 应设置为 `true`。对于大多数固件来说，你可以通过将 `UIScale` 设置为 `02` 查看是否会出现禁行图标，来诊断你的固件是否需要这一 Quirk。一般来说，APTIO V（Haswell 和更早的平台）之前的平台都会受到影响。
 
 ### 17. `OSInfo`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
-**Description**: 强制使用内置版本重新安装 OS Info 协议。该协议通常用于通过固件或其他应用程序从 macOS 引导加载程序接收通知。
+**Description**: 用内置版本替换 OS Info 协议。该协议通常用于通过固件或其他应用程序从 macOS 引导加载程序接收通知。
 
 ### 18. `UnicodeCollation`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
-**Description**: 强制重新安装内置版本的 Unicode Collation 服务。建议启用这一选项以确保 UEFI Shell 的兼容性。一些较旧的固件破坏了 Unicode 排序规则，启用后可以修复这些系统上 UEFI Shell 的兼容性 (通常为用于 IvyBridge 或更旧的设备)
+**Description**: 用内置版本替换 Unicode Collation 服务。建议启用这一选项以确保 UEFI Shell 的兼容性。一些较旧的固件破坏了 Unicode 排序规则，启用后可以修复这些系统上 UEFI Shell 的兼容性 (通常为用于 IvyBridge 或更旧的设备)
 
-## 11.12 Quirks 属性
+## 11.17 Quirks 属性
 
-### 1. `DisableSecurityPolicy`
+### 1. `ActivateHpetSupport`
+
+**Type**: `plist boolean`
+**Failsafe**: `false`
+**Description**: 激活 HPET 支持。
+  
+像 ICH6 这样的旧板子在固件首选项中可能并不总是有 HPET 设置，这个选项试图强制启用它。  
+  
+### 2. `EnableVectorAcceleration`
+
+**Type**: `plist boolean`
+**Failsafe**: `false`
+**Description**: 启用 `SHA-512` 和 `SHA-384` 哈希算法的 `AVX` 矢量加速。
+  
+像 ICH6 这样的旧板子在固件首选项中可能并不总是有 HPET 设置，这个选项试图强制启用它。    
+  
+*注*：这个选项可能会在某些笔记本电脑的固件上引起问题，包括联想。  
+  
+ ### 3. `EnableVmx`
+
+**Type**: `plist boolean`
+**Failsafe**: `false`
+**Description**: 启用英特尔虚拟机扩展。
+  
+*注*：需要允许在某些 Mac 硬件上的 Windows 中进行虚拟化。在大多数固件上 OpenCore 启动之前，VMX 被 BIOS 启用或禁用并锁定。在可能的情况下，使用 BIOS 来启用虚拟化。  
+ 
+### 4. `DisableSecurityPolicy`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
@@ -940,29 +1196,53 @@ Apple 音频协议允许 macOS bootloader 和 OpenCore 播放声音和信号，�
 
 *注*：此设置可禁用固件的各种安全功能，因此也会同时破坏安全启动策略。如果打算使用 UEFI 安全启动，请勿启用此项。
 
-### 1. `ExitBootServicesDelay`
+### 5. `ExitBootServicesDelay`
 
 **Type**: `plist integer`
 **Failsafe**: `0`
 **Description**: 在 `EXIT_BOOT_SERVICES` 事件后添加延迟，单位为毫秒。
 
-这是一个非常丑陋的 Quirk，用于修复 `Still waiting for root device` 提示信息。在使用 FileVault 2 时，特别是华硕 Z87-Pro 等 APTIO IV 固件这种错误经常发生。似乎因为某种原因，FileVault 与 `EXIT_BOOT_SERVICES` 同时执行、导致 macOS 无法访问 SATA 控制器。未来应该会找到一个更好的方法。如果需要启用这一选项，设置 3-5 秒的延时就可以了。
+这是一个非常粗略的 Quirk，用于修复 `Still waiting for root device` 提示信息。在使用 FileVault 2 时，特别是华硕 Z87-Pro 等 APTIO IV 固件这种错误经常发生。似乎因为某种原因，FileVault 与 `EXIT_BOOT_SERVICES` 同时执行、导致 macOS 无法访问 SATA 控制器。未来应该会找到一个更好的方法。如果需要启用这一选项，设置 3-5 秒的延时就可以了。
 
-### 2. `IgnoreInvalidFlexRatio`
+### 6. `ForceOcWriteFlash`
+
+**Type**: `plist integer`
+**Failsafe**: `0`
+**Description**: 启用所有 OpenCore 管理的 NVRAM 系统变量向闪存的写入。  
+  
+*注*：这个值在大多数的固件上应该是禁用的，但是为了考虑到可能有易失性变量存储溢出或类似问题的固件，所以留下了可配置的值。没有启用这个 Quirk 时，在联想 Thinkpad T430 和 T530 上可以观察到跨多个操作系统的启动问题。出于安全原因，与安全启动和休眠有关的 Apple 变量不在此列。此外，一些 OpenCore 变量由于不同的原因被豁免，例如由于一个可用的用户选项，启动日志，以及由于时间问题，TSC 频率。在切换该选项时，可能需要对 NVRAM 进行重置，以确保完整的功能。  
+  
+### 7. `ForgeUefiSupport`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
-**Description**: 某些固件，即 APTIO IV，可能在 `MSR_FLEX_RATIO` (`0x194`) MSR 寄存器中含有无效值。这些值可能会导致 macOS 在 Intel 平台上启动失败。
+**Description**: 在 `EFI 1.x` 固件上提供部分 `UEFI 2.x` 支持。
 
-*注*：虽然该选项不会对不受影响的固件造成损害，但在不需要的情况下不建议启用。
+*注*：此设置允许在带有旧 `EFI 1.x` 固件（如MacPro5,1）的硬件上运行为 `UEFI 2.x` 固件（如NVIDIA GOP Option ROM）编写的一些软件。
 
-### 3. `ReleaseUsbOwnership`
+### 8. `IgnoreInvalidFlexRatio`
+
+**Type**: `plist boolean`
+**Failsafe**: `false`
+**Description**: 某些类型的固件（如APTIO IV）可能在 MSR_FLEX_RATIO（0x194）MSR 寄存器中包含无效的值。这些值可能导致英特尔平台上的 macOS 启动失败。  
+
+注意：虽然该选项预计不会损害未受影响的固件，但只有在特别需要时才建议使用该选项。  
+  
+### 9. `ReleaseUsbOwnership`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
 **Description**: 尝试从固件驱动程序中分离 USB 控制器所有权。尽管大多数固件都设法正确执行了该操作或者提供有一个选项，但某些固件没有，从而导致操作系统可能会在启动时冻结。除非需要，否则不建议启用这一选项。
 
-### 4. `RequestBootVarRouting`
+### 10. `ReloadOptionRoms`
+
+**Type**: `plist boolean`
+**Failsafe**: `false`
+**Description**: 查询 PCI 设备并重新加载其可选 ROM（如果可用）。  
+  
+例如，该选项允许在通过 ForgeUefiSupport 升级固件版本后，在旧版 Mac 上重新加载 NVIDIA GOP Option ROM。  
+  
+### 11. `RequestBootVarRouting`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
@@ -976,7 +1256,32 @@ Apple 音频协议允许 macOS bootloader 和 OpenCore 播放声音和信号，�
 - 如遇到中途需要通过 OpenCore 来重启的情况，操作系统不会搞乱 OpenCore 的引导优先级，保证了系统更新和休眠唤醒的流畅性。
 - macOS 等潜在的不兼容的启动项，现在不会被意外删除或损坏了。
 
-### 5. `TscSyncTimeout`
+### 12. `ResizeGpuBars`
+
+**Type**: `plist integer`
+**Failsafe**: `-1`
+**Description**: 配置 GPU PCI BAR 的大小。  
+  
+这个 Quirk 按照规定设置 GPU PCI BAR 的大小，或者选择低于 ResizeGpuBars 值的最大可用值。指定的值遵循 PCI Resizable BAR 的规则。使用 0 代表 1MB，1 代表 2MB，2 代表 4MB，以此类推，直到 19 代表 512GB。
+  
+Resizable BAR 技术允许通过将可配置的内存区域 BAR 映射到 CPU 地址空间（例如，将 VRAM 映射到 RAM），而不是固定的内存区域，来简化 PCI 设备的编程。这项技术是必要的，因为人们不能在默认情况下映射最大的内存区域，原因是要向后兼容不支持 64 位 BAR 的旧硬件。因此，过去十年的设备默认使用 256MB 的 BAR（剩下的 4 位被其他数据使用），但通常允许将它们的大小调整为更小和更大的 2 次方（例如，从 1MB 到 VRAM 大小）。  
+  
+针对 x86 平台的操作系统通常不控制 PCI 地址空间，让 UEFI 固件决定 BAR 地址和大小。这种非法的做法导致 Resizable BAR 技术直到 2020 年都没有被使用，尽管它在 2008 年被标准化，并在不久后被广泛用于硬件。
+
+现代 UEFI 固件允许使用 Resizable BAR 技术，但通常将可配置的选项限制为故障安全默认值（OFF）和最大可用值（ON）。这个 Quirk 允许为测试和开发目的微调这个值。  
+  
+考虑一个有 2 个 BAR 的 GPU。
+- BAR0 支持从 256MB 到 8GB 的大小。它的值是 4GB。
+- BAR1 支持从 2MB 到 256MB 的大小。它的值是 256MB。  
+  
+*例 1 *：将 ResizeGpuBars 设置为 1GB 将改变 BAR0 为 1GB，BAR1 保持不变。
+*例 2 *: 将 ResizeGpuBars 设置为 1MB 将改变 BAR0 为 256MB，BAR0 为2MB。
+*例 3 *：将 ResizeGpuBars 设置为 16GB 将改变 BAR0 为8GB，BAR1 保持不变。 
+
+*注 1 *：这个 Quirk 不应该被用来解决 macOS 对超过 1GB 的 BAR 的限制。应该使用 ResizeAppleGpuBars 来代替。
+*注 2 *：虽然这个 Quirk 可以增加 GPU PCI BAR 的大小，但这在大多数固件上是行不通的，因为这个 Quirk 不会重新定位内存中的 BAR，而且它们可能会重叠。我们欢迎大家为改进这一功能做出贡献。  
+  
+### 13. `TscSyncTimeout`
 
 **Type**: `plist integer`
 **Failsafe**: `0`
@@ -988,7 +1293,7 @@ Apple 音频协议允许 macOS bootloader 和 OpenCore 播放声音和信号，�
 
 *注*：这个 Quirk 不能取代内核驱动的原因是它不能在 ACPI S3 模式（睡眠唤醒）下运行，而且 UEFI 固件提供的多核心支持非常有限，无法精确地更新 MSR 寄存器。
 
-### 6. `UnblockFsConnect`
+### 14. `UnblockFsConnect`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
