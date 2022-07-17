@@ -3,7 +3,7 @@ title: 附录 1. OpenCore 兼容 Kext 列表
 description: OpenCore 支持的内核驱动 (Kext) 及其用途
 type: docs
 author_info: 由 Sukka、derbalkon 整理，感谢黑果小兵的博客提供的资料。
-last_updated: 2020-10-31
+last_updated: 2022-07-17
 ---
 
 ## 有线网卡
