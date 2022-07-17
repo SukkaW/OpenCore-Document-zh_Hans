@@ -32,7 +32,7 @@ OpenCore 仍处于积极的维护之中，OpenCore 参考手册 仍然在高频�
 >
 > 本网站提供的翻译适用于如下描述的 OpenCore 版本：
 >
-> - **OpenCore 版本**：0.6.6
+> - **OpenCore 版本**：0.8.2
 
 本网站以及 `acidanthera` **不会对因本网站引起的任何损失负责**，包括但不限于 Kernel Panic、设备无法开机或正常使用、硬盘损坏或数据丢失、原子弹爆炸、第三次世界大战、[SCP 基金会](https://scp-wiki-cn.wikidot.com/) 无法阻止的全球 CK 级现实重构等。
 
