@@ -92,6 +92,8 @@ last_updated: 2020-10-31
 | [SMCBatteryManager.kext](https://github.com/acidanthera/VirtualSMC) | VirtualSMC 插件，提供电池相关的传感器支持 | 10.0.0 (10.6) Not tested | — |
 | [SMCProcessor.kext](https://github.com/acidanthera/VirtualSMC) | VirtualSMC 插件，提供 CPU 温度传感器支持 | 11.0.0 (10.7) Not tested | — |
 | [SMCDellSensor.kext](https://github.com/acidanthera/VirtualSMC) | VirtualSMC 插件，为戴尔电脑提供温度和风扇传感器支持 | 11.0.0 (10.7) Not tested | — |
+| [AMDRyzenCPUPowerManagement.kext](https://github.com/trulyspinach/SMCAMDProcessor) | XNU 内核扩展，用于 AMD 处理器的电源管理和监控。 | 11.0.0 (10.7) Not tested | — |
+| [SMCAMDProcessor.kext](https://github.com/trulyspinach/SMCAMDProcessor) | 收集传感器数据，并发送到 VirtualSMC，以使 macOS 应用程序能够显示传感器数据，该 kext 依赖 AMDRyzenCPUPowerManagement.kext | 11.0.0 (10.7) Not tested | — |
 
 ## USB 和其他端口
 
@@ -118,6 +120,7 @@ last_updated: 2020-10-31
 | [NightShiftEnabler.kext](https://github.com/cdf/NightShiftEnabler) | 解锁 Night Shift | 16.0.0 (10.12) | — |
 | [WebCamera.kext](https://www.applelife.ru/threads/asus-x550vc-i-asus-x550cc.41752/page-130#post-593586) | 某些旧设备的摄像头驱动 | — | — |
 | [TOSMotionSensor.kext](https://github.com/jslegendre/TOSMotionSensor) | 东芝设备的加速度传感器驱动 | — | — |
+| [NVMeFix.kext](https://github.com/acidanthera/NVMeFix) | NVMeFix 是 Apple NVMe 存储驱动程序 IONVMeFamily 的一组补丁。其目标是提高与非 Apple SSD 的兼容性。它可以在苹果和非苹果计算机上使用 | — | — |
 
 > 更完整的列表（包含旧版）托管在 [这里](https://docs.google.com/spreadsheets/d/15S-ocrkm_VTUJpKxNII-YUyQFd5VYdjbe0DHlZVCQyM)。完整的 Lilu 插件列表（包含旧版）托管在 [这里](https://github.com/acidanthera/Lilu/blob/master/KnownPlugins.md)。仅供开发者使用。
 >
