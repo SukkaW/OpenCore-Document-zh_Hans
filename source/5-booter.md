@@ -243,7 +243,7 @@ Description: 搜索的最大字节数。
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
-**Description**: 将 macOS 启动器签名 设置为 OpenCore 启动器。
+**Description**: 将 macOS 启动器签名设置为 OpenCore 启动器。
 
 启动器签名，本质上是加载的镜像的 `SHA-1` 哈希值，在从休眠唤醒时，Mac EFI 使用该签名来验证启动器的真实性。该选项强制 macOS 使用 OpenCore 启动器的 `SHA-1` 哈希值作为启动器签名，以便让 OpenCore shim 在 Mac EFI 固件上进行休眠唤醒。
 
