@@ -722,7 +722,7 @@ OpenCore 在生成修改过的 DMI 表时，总是设置最新的 SMBIOS 版本�
 **Type**: `plist integer`, 32-bit
 **Failsafe**: `0xFFFFFFFF`（在苹果硬件上指定的 OEM，否则不提供表）
 **SMBIOS**: `APPLE_SMBIOS_TABLE_TYPE133` - `PlatformFeature`
-**Description**: 平台功能位掩码（在较旧的Mac上缺失），详情请参考 [AppleFeatures.h](https://github.com/acidanthera/OpenCorePkg/blob/master/Include/Apple/IndustryStandard/AppleFeatures.h)。
+**Description**: 平台功能位掩码（较旧的 Mac 上缺失该位掩码），详情请参考 [AppleFeatures.h](https://github.com/acidanthera/OpenCorePkg/blob/master/Include/Apple/IndustryStandard/AppleFeatures.h)。
 
 ### 24. `SmcVersion`
 
