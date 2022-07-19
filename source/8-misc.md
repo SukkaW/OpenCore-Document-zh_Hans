@@ -205,7 +205,7 @@ OpenCore 启动选择器中的启动选项的显示顺序和启动过程，是�
 
 *注 2*：虽然从 OpenCore 执行的 NVRAM 重置不会清除在 `Bootstrap` 模式中创建的启动选项，但在加载 OpenCore 之前重置 NVRAM 则会同时清除。在进行某些涉及重要实现的更新时（如 OpenCore 0.6.4），须确保在禁用 `Bootstrap` 的情况下执行一次 NVRAM 重置，然后再重新启用。
 
-*注 3*：英特尔 Visual BIO S的某些版本（例如英特尔 NUC）有一个不幸的错误，即如果添加了提及 USB 驱动器路径的任何启动选项，那么从那时起，当插入任何 USB 驱动器时，这将是唯一的启动选项。如果在该固件上从 USB 驱动器启动 OpenCore，并将 LauncherOption 设置为 `Full` 或 `Short`，那么这一点就适用，之后在插入任何其他 USB 时，只能看到 OpenCore 的启动项（这种高度非标准的 BIOS 行为也会影响其他软件）。避免这种情况的最佳方法是在任何版本的 OpenCore 上将LauncherOption 设置为 `Disabled` 或 `System`，该固件将从 USB 驱动器启动。
+*注 3*：英特尔 Visual BIOS 的某些版本（例如英特尔 NUC）有一个不幸的错误，即如果添加了提及 USB 驱动器路径的任何启动选项，那么从那时起，当插入任何 USB 驱动器时，这将是唯一的启动选项。如果在该固件上从 USB 驱动器启动 OpenCore，并将 LauncherOption 设置为 `Full` 或 `Short`，那么这一点就适用，之后在插入任何其他 USB 时，只能看到 OpenCore 的启动项（这种高度非标准的 BIOS 行为也会影响其他软件）。避免这种情况的最佳方法是在任何版本的 OpenCore 上将LauncherOption 设置为 `Disabled` 或 `System`，该固件将从 USB 驱动器启动。
 
 如果问题已经发生，最快的可靠修复方法是：
 - 在 Intel Visual BIOS 中启用 system  UEFI Shell
