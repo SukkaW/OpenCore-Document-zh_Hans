@@ -622,10 +622,10 @@ macOS Catalina 新增了一项额外的安全措施，导致在电源切换超�
 **Requirement**: 10.8 (10.14)
 **Description**: 向内核提供当前的 CPU 信息。
 
-这个 Quirk 的工作方式因CPU不同而不同：
+这个 Quirk 的工作方式因 CPU 不同而不同：
 
--对于微软的Hyper-V，它向内核提供正确的 TS C和 FSB 值，以及禁用 CPU 拓扑验证（10.8以上）。
-- 对于 KVM 和其他管理程序，它提供预计算的 MSR 35h 值，解决内核在-cpu主机。
+-对于微软的 Hyper-V，它向内核提供正确的 TSC 和 FSB 值，以及禁用 CPU 拓扑验证（10.8以上）。
+- 对于 KVM 和其他管理程序，它提供预计算的 MSR 35h 值，解决内核在 `-cpu host` 下的 kernel panic。
 - 对于英特尔 CPU 来说，它通过将核心数与线程数打补丁的方式，增加了对非对称 SMP 系统（例如英特尔Alder Lake）的支持，同时还补充了所需的补充修改（10.14以上）。
 
 ### 20. `SetApfsTrimTimeout`
