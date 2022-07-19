@@ -2,7 +2,7 @@
 title: 9. NVRAM
 description: NVRAM 注入（如引导标识符和 SIP）
 type: docs
-author_info: 由 xMuu、Sukka 整理，由 Sukka、derbalkon 翻译
+author_info: 由 xMuu、Sukka、cike-567 整理，由 Sukka、derbalkon、cike-567 翻译
 last_updated: 2022-07-15
 ---
 
