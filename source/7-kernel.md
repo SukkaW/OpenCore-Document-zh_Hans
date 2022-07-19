@@ -533,7 +533,7 @@ last_updated: 2022-07-13
 **Requirement**: 10.8
 **Description**: 将 `FeatureFlags` 设置为 `0x0F`，以实现蓝牙的全部功能（包括连续互通功能）。
 
-*注*：此选项是 BT4LEContinuityFixup.kext 的替代品。由于后期修补进度，无法正常工作。
+*注*：此选项是 `BT4LEContinuityFixup.kext` 的替代品。由于后期修补进度，无法正常工作。
 
 ### 11. `ExternalDiskIcons`
 
