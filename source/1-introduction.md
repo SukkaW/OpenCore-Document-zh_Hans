@@ -2,7 +2,7 @@
 title: 1. 简介
 description: Introduction
 type: docs
-author_info: 由 Sukka 整理，由 Sukka、derbalkon 翻译
+author_info: 由 Sukka 、cike-567 整理，由 Sukka、derbalkon 、cike-567 翻译
 last_updated: 2022-07-12
 ---
 
