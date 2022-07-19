@@ -30,6 +30,8 @@ last_updated: 2022-07-17
 | [ATH9KFixup.kext](https://github.com/chunnann/ATH9KFixup) | 高通 Atheros AR9xxx 无线网卡修复 | — | — |
 | [BrcmPatchRAM.kext](https://github.com/acidanthera/BrcmPatchRAM) | 博通网卡蓝牙固件 | 14.0.0 (10.10) | — |
 | [IntelBluetoothFirmware](https://github.com/zxystd/IntelBluetoothFirmware) | Intel 蓝牙固件驱动 | — | — |
+| [AirportItlwm](https://github.com/OpenIntelWireless/itlwm) | Intel WIFI固件驱动 | — | — |
+| [itlwm](https://github.com/OpenIntelWireless/itlwm) | Intel WIFI固件驱动 | — | — |
 | [MT7610](https://d86o2zu8ugzlg.cloudfront.net/mediatek-craft/drivers/MT7612_7610U_D5.0.1.25_SDK1.0.2.18_UI5.0.0.27_20151209.zip) | 联发科 MT7610 官方驱动 | — | — |
 | [RT5370](https://d86o2zu8ugzlg.cloudfront.net/mediatek-craft/drivers/RTUSB_D2870-4.2.9.2_UI-4.0.9.6_2013_11_29.zip) | 联发科 RT5370 官方驱动 | — | — |
 | [RTL8192CU](https://drive.google.com/file/d/1ZtdMqlvKBbHULJhl1u9omuLOy6j0vx48/view?usp=sharing) | Realtek RTL8192CU 驱动 | — | — |
