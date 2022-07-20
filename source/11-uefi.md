@@ -3,7 +3,7 @@ title: 11. UEFI
 description: UEFI 驱动以及加载顺序
 type: docs
 author_info: 由 xMuu、Sukka、derbalkon、cike-567 整理，由 Sukka、derbalkon、cike-567 翻译
-last_updated: 2022-7-16
+last_updated: 2022-7-20
 ---
 
 ## 11.1 简介
@@ -155,33 +155,33 @@ OpenLinuxBoot 是一个实现 `OC_BOOT_ENTRY_PROTOCOL` 的 OpenCore 插件。它
 - 如果之前没有安装 Linux，则按正常程序安装，OpenLinuxBoot 不参与这一阶段。
 - 重新启动到 OpenCore：已安装的 Linux 发行版应该会出现，并在选择时直接从 OpenCore 启动，它无需通过 GRUB 进行链式加载。
 
-如果 OpenCore 已经手动设置为引导 Linux，例如通过 BlessOverride 或 Entries，则可以删除这些设置，以解决 Linux 发行版在引导菜单中显示两次。
+如果 OpenCore 已经手动设置为引导 Linux，例如通过 `BlessOverride` 或 `Entries`，则可以删除这些设置，以解决 Linux 发行版在引导菜单中显示两次。
 
 我们建议用默认的引导程序来安装 Linux，尽管在通过 OpenLinuxBoot 启动的时候不会主动使用它。这是因为 OpenLinuxBoot 必须检测要使用的正确的内核选项，并通过查找默认引导程序留下的文件来实现。如果没有安装引导程序（或者找不到这些选项），启动仍然是可能的，但在 OpenLinuxBoot 试图启动发行版之前，必须手动指定正确的引导选项。
 
 OpenLinuxBoot 通常需要固件中没有的文件系统驱动，比如 `EXT4` 和 `BTRFS` 驱动。这些驱动可以从外部来源获得。在基本情况下测试的驱动程序可以从 [OcBinaryData](https://github.com/acidanthera/OcBinaryData) 下载。请注意，这些驱动没有经过所有场景的可靠性测试，也没有经过防篡改测试，因此它们可能存在潜在的安全或数据丢失风险。
 
-大多数 Linux 发行版需要 `ext4_x64` 驱动，少数可能需要 `btrfs_x64` 驱动，少数可能不需要额外的文件系统驱动：这取决于所安装的发行版启动分区的文件系统，以及系统的固件已经支持哪些文件系统。目前不支持 `LVM`，这是因为人们认为目前没有独立的 `UEFI LVM` 文件系统驱动。
+大多数 Linux 发行版需要 [`ext4_x64`](https://github.com/acidanthera/OcBinaryData) 驱动，少数可能需要 [`btrfs_x64`](https://github.com/acidanthera/OcBinaryData) 驱动，少数可能不需要额外的文件系统驱动：这取决于所安装的发行版启动分区的文件系统，以及系统的固件已经支持哪些文件系统。目前不支持 `LVM`，这是因为人们认为目前没有独立的 `UEFI LVM` 文件系统驱动。
 
-请注意 `SyncRuntimePermissions` Quirk，由于 2017 年后发布的一些固件的错误，可能需要设置它以避免 Linux 内核的早期启动失败（通常以黑屏停止）。当存在并且没有被这个怪癖缓解时，这将影响通过 OpenCore 的启动，无论是否有 OpenLinuxBoot。
+请注意 `SyncRuntimePermissions` Quirk，由于 2017 年后发布的一些固件的错误，可能需要设置它以避免 Linux 内核的早期启动失败（通常以黑屏停止）。当存在并且没有被这个 Quirk 缓解时，这将影响通过 OpenCore 的启动，无论是否有 OpenLinuxBoot。
 
 安装 OpenLinuxBoot 后，建议将启动（或尝试启动）特定发行版时 OpenCore 调试日志中显示的选项与使用 shell 命令 `cat /proc/cmdline` 启动同一发行版时看到的选项进行比较。一般来说（为了运行中的发行版的安全）这些选项应该匹配，如果不匹配，建议使用下面的驱动参数（特别是 `LINUX_BOOT_ADD_RO`，`LINUX_BOOT_ADD_RW`，`autoopts:{PARTUUID}` 和 `autoopts`）来修改所需的选项。但是请注意，以下差异是正常的，不需要修复。
   - 如果默认的引导程序是 GRUB，那么 OpenLinuxBoot 生成的选项将不包含 `BOOT_IMAGE=...`，而 GRUB 的选项则不包含 `initrd=...`。
-  - OpenLinuxBoot 使用 PARTUUID 而不是文件系统的 UUID 来识别 initrd 的位置，这是设计上的问题，因为 UEFI 文件系统驱动不提供 Linux 文件系统的 UUID 值。
+  - OpenLinuxBoot 使用 `PARTUUID` 而不是文件系统的 `UUID` 来识别 `initrd` 的位置，这是设计上的问题，因为 UEFI 文件系统驱动不提供 Linux 文件系统的 `UUID` 值。
   - 不太重要的图形交接选项（比如下面 autoopts 中讨论的 Ubuntu 例子）不会完全匹配，这并不重要，只要发行版能够成功启动。
 
 如果使用具有安全启动功能的 OpenLinuxBoot，用户可能希望使用 OpenCore 实用程序中包含的 `shim-to-cert.tool`，它可以用来提取直接启动发行版内核所需的公钥，就像使用 OpenCore 与 OpenLinuxBoot 时那样，而不是通过 `GRUB shim`。对于非 GRUB 发行版，所需的公钥必须通过用户研究找到。
 
 ### 11.6.1 Configuration
 
-在大多数情况下，默认的参数值应该可以很好地工作，但如果需要，可以在UEFI/Drivers/Arguments中为驱动指定以下选项：
+在大多数情况下，默认的参数值应该可以很好地工作，但如果需要，可以在 `UEFI/Drivers/Arguments` 中为驱动指定以下选项：
 
-- flags - Default：所有的标志都被设置了，除了以下情况：
+- `flags - Default`：所有的标志都被设置了，除了以下情况：
   – `LINUX_BOOT_ADD_RW`
   – `LINUX_BOOT_LOG_VERBOSE`
   – `LINUX_BOOT_ADD_DEBUG_INFO`
 
-可用的flags有：
+可用的 flags 有：
   – `0x00000001 (bit 0) — LINUX_BOOT_SCAN_ESP`，允许扫描EFI系统分区的条目。
   – `0x00000002 (bit 1) — LINUX_BOOT_SCAN_XBOOTLDR`，允许扫描扩展启动加载器分区的条目。
   – `0x00000004 (bit 2) — LINUX_BOOT_SCAN_LINUX_ROOT`，允许扫描Linux根文件系统的条目。
@@ -190,9 +190,11 @@ OpenLinuxBoot 通常需要固件中没有的文件系统驱动，比如 `EXT4` �
 
   以下说明适用于上述所有选项。
 
-  *注 1 *：苹果文件系统 `APFS` 和 `HFS` 从不被扫描。
-  *注 2 *：无论上述标志如何，在它被 OpenLinuxBoot 或任何其他 `OC_BOOT_ENTRY_PROTOCOL` 驱动程序看到之前。文件系统必须首先被 `Misc/Security/ScanPolicy` 所允许。
-  *注 3 *：建议在 OpenLinuxBoot flags 和 `Misc/Security/ScanPolicy` 中启用扫描 `LINUX_ROOT` 和 `LINUX_DATA`，以确保检测到所有有效的 Linux 安装，因为 Linux 启动文件系统往往被标记为 `LINUX_DATA`。
+  *注 1*：苹果文件系统 `APFS` 和 `HFS` 从不被扫描。
+  
+  *注 2*：无论上述标志如何，在它被 OpenLinuxBoot 或任何其他 `OC_BOOT_ENTRY_PROTOCOL` 驱动程序看到之前。文件系统必须首先被 `Misc/Security/ScanPolicy` 所允许。
+  
+  *注 3*：建议在 OpenLinuxBoot flags 和 `Misc/Security/ScanPolicy` 中启用扫描 `LINUX_ROOT` 和 `LINUX_DATA`，以确保检测到所有有效的 Linux 安装，因为 Linux 启动文件系统往往被标记为 `LINUX_DATA`。
 
   - `0x00000100 (bit 8) - LINUX_BOOT_ALLOW_AUTODETECT`, 如果设置允许在没有找到加载器/条目文件时，自动检测和链接 `vmlinuz*` 和 `init* ramdisk` 文件。
   – `0x00000200 (bit 9) - LINUX_BOOT_USE_LATEST`，当 OpenLinuxBoot 生成的 Linux 条目被设为 OpenCore 的默认启动条目时，在安装新版本时自动切换到最新内核。
@@ -205,10 +207,10 @@ OpenLinuxBoot 通常需要固件中没有的文件系统驱动，比如 `EXT4` �
  Fedora 风格的发行版，它们有 `/loader/entries/*.conf` 文件）。一些发行版在加载时运行文件系统检查，要求根文件系统最初通过 `ro kernel`选项被挂载为只读， 这就要求在自动检测的选项中加入这个选项。在自动检测的发行版上设置这个选项； 在不需要这个选项的发行版上， 应该是无害的，但会稍微减慢启动时间（由于要求重新挂载为读写）。当有多个发行版，并且只需要为特定的发行版指定这个选项时，使用 `autoopts:{PARTUUID}+=ro` 来手动添加需要的选项，而不是使用这个标志。
     – `0x00000800 (bit 11) - LINUX_BOOT_ADD_RW`，和 `LINUX_BOOT_ADD_RO` 一样， 这个选项只适用于自动检测的
  Linux。大多数发行版不需要这个选项（它们通常要求在检测到的启动选项中加入`ro` 或 `nothing`），但在一些
- Arch-derived 发行版上需要，例如 EndeavourOS。 当有多个发行版，并且只需要为特定的发行版指定这个选项时，使用  `autoopts:{PARTUUID}+=rw`  在需要的地方手动添加这个选项，而不是使用这个标志。如果这个选项和 `LINUX_BOOT_ADD_RO` 都被指定，那么只有这个选项被应用， `LINUX_BOOT_ADD_RO` 被忽略。
+ Arch-derived 发行版上需要，例如：EndeavourOS。 当有多个发行版，并且只需要为特定的发行版指定这个选项时，使用  `autoopts:{PARTUUID}+=rw`  在需要的地方手动添加这个选项，而不是使用这个标志。如果这个选项和 `LINUX_BOOT_ADD_RO` 都被指定，那么只有这个选项被应用， `LINUX_BOOT_ADD_RO` 被忽略。
     – `0x00002000 (bit 13) - LINUX_BOOT_ALLOW_CONF_AUTO_ROOT`，在某些 BootLoaderSpecByDefault 与 ostree 相结合的情况下， `/loader/entries/*.conf` 文件没有指定所需的 `root=...kernel` 选项（它是由 GRUB 加入的）。如果这个位被设置，并且检测到这种情况，那么就自动添加这个选项。 (例如：Endless OS)。
     – `0x00004000 (bit 14) - LINUX_BOOT_LOG_VERBOSE`，添加额外的调试日志信息，关于扫描 Linux 启动项时遇到的文件和添加的自动检测选项。
-    – `0x00008000 (bit 15) - LINUX_BOOT_ADD_DEBUG_INFO`，在每个生成的条目名称中添加一个人类可读的文件系统类型，然后是分区的唯一分区 uuid 的前八个字符。当一个系统上有多个 Linux 安装时，可以帮助调试由驱动生成的条目的来源。
+    – `0x00008000 (bit 15) - LINUX_BOOT_ADD_DEBUG_INFO`，在每个生成的条目名称中添加一个人类可读的文件系统类型，然后是分区的唯一分区 `uuid` 的前八个字符。当一个系统上有多个 Linux 安装时，可以帮助调试由驱动生成的条目的来源。
 
   Flag 值可以用以 `0x` 开头的十六进制或十进制来指定，例如 `flags=0x80` 或 `flags=128`。也可以指定添加或删除的 flag，使用 `flags+=0xC000` 来添加所有调试选项或 `flags-=0x400` 来删除 `LINUX_BOOT_ADD_RO` 选项。
 
@@ -252,9 +254,9 @@ BootLoaderSpecByDefault（但不是纯粹的 Boot Loader Specification）可以�
 *注 2*：如果 `LauncherOption` 被设置为 `Full` 或 `Short`，那么 OpenCore 的启动项将受到保护。重置 NVRAM 通常会清除任何未通过 `BlessOverride` 指定的其他启动选项，例如将 Linux 安装到自定义位置且不使用 OpenLinuxBoot 驱动程序，或用户指定的 UEFI 启动菜单条目。为了获得不删除其他启动选项的重置 NVRAM 功能，可以使用 `--preserve-boot` 选项（不过请看指定的警告）。
 
 以下配置选项可以在该驱动程序的 `Arguments` 属性指定：
-- `--preserve-boot`，布尔 flag，如果存在则启用。
+- `--preserve-boot`，Boolean flag，如果存在则启用。
 如果启用，在 NVRAM 重置期间，BIOS 启动项不会被清除。 这个选项应该谨慎使用，因为一些启动问题可以通过清除这些条目来解决。
-- `--apple` --布尔 flag，如果存在则启用。
+- `--apple` ，Boolean flag，如果存在则启用。
 仅在苹果固件上， 这将执行一个系统 NVRAM 重置。这可能会导致额外的、理想的操作，如 NVRAM 垃圾收集。这可以通过设置 ResetNVRam NVRAM 变量来实现。在可用的情况下，这与在本机启动时按 `CMD+OPT+P+R` 的效果相同，不过要注意的是，如果从菜单项中访问，将只听到一个启动鸣叫。
 
 *注 1*：由于使用系统 NVRAM 重置， 该选项与 `--preserve-boot` 选项不兼容，将覆盖它，因此所有的 BIOS 启动项将被删除。
@@ -267,7 +269,7 @@ BootLoaderSpecByDefault（但不是纯粹的 Boot Loader Specification）可以�
 
 在 OpenCore 启动选取器中提供一个启动条目，用于启用和禁用系统完整性保护（SIP）。
 
-当 macOS 运行时，SIP 涉及多个配置的软件保护系统，然而所有关于启用这些保护系统的信息都存储在单一的Apple NVRAM 变量 `csr-active-config` 中。只要这个变量在macOS启动前被设置，SIP 就会被完全配置好，所以使用这个启动选项（或以任何其他方式，在 macOS 启动前）设置这个变量，其最终结果与在 macOS Recovery 中使用 `csrutil` 命令配置 SIP 完全相同。
+当 macOS 运行时，SIP 涉及多个配置的软件保护系统，然而所有关于启用这些保护系统的信息都存储在单一的 Apple NVRAM 变量 `csr-active-config` 中。只要这个变量在 macOS 启动前被设置，SIP 就会被完全配置好，所以使用这个启动选项（或以任何其他方式，在 macOS 启动前）设置这个变量，其最终结果与在 macOS Recovery 中使用 `csrutil` 命令配置 SIP 完全相同。
 
 `csr-active-config` 将在 `0` 和用户指定的或默认的禁用值之间切换，表示启用。默认值是 `0x27F`（见下文）。任何其他所
 需的值都可以在该驱动的 `Arguments` 部分中指定一个数字。 这可以指定为十六进制，以 `0x` 开头，也可以指定为十进制。
@@ -307,7 +309,6 @@ UEFI固件中的高清晰度音频（HDA）支持驱动程序，适用于大多�
 注意： 这个选项的值 `7`（启用所有标志），如 MacPro5,1 所要求的那样，与大多数系统兼容，但已知在少数其他系统上会引起声音问题（在新的声音开始之前不允许完成以前的声音），因此这个选项默认不启用。
 
 - `--gpio-pins`，默认：`0`，自动检测。
-
 指定哪些 GPIO 引脚应该由 `--gpio-setup` 来操作。 这是一个位掩码，可能的值从 `0x0` 到 `0xFF`。可用的最大值取决于正在使用的编解码器的音频输出功能组上的可用引脚数量，例如，如果有两个 GPIO 引脚，它就是 `0x3`（最低的两个位），如果有三个引脚，就是 `0x7` ，等等。
 
 当 `--gpio-setup` 被启用时（即非零），那么 `0` 是 `--gpio-pins` 的特殊值，意味着引脚掩码将根据指定编解码器上报告的 GPIO 引脚数量自动生成（见 AudioCodec）。例如，如果编解码器的音频输出功能组报告了 `4` 个 GPIO 引脚，将使用 `0xF` 的掩码。
@@ -316,8 +317,7 @@ UEFI固件中的高清晰度音频（HDA）支持驱动程序，适用于大多�
 
 驱动程序参数的值可以用以 `0x` 开头的十六进制或十进制来指定，例如 `--gpio-pins=0x12` 或 `--gpio-pins=18`。
 
-- `--restore-nosnoop` --布尔 flag，如果存在则启用。
-
+- `--restore-nosnoop`，Boolean flag，如果存在则启用。
 AudioDxe 清除了 Intel HDA No Snoop Enable（NSNPEN）bit。在某些系统上，这个改变必须在退出时被逆转，以避免在Windows 或 Linux 中破坏声音。如果是这样， 这个标志应该被添加到 AudioDxe 驱动参数中。 默认情况下不启用，因为恢复这个 flag 会使声音在其他一些系统的 macOS 中无法工作。
 
 ## 11.9 属性列表
@@ -342,7 +342,7 @@ AudioDxe 清除了 Intel HDA No Snoop Enable（NSNPEN）bit。在某些系统上
 
 除非另有说明（例如 ResetTrafficClass），否则本节中的设置仅用于 UEFI 音频支持（例如 OpenCore 生成的引导蜂鸣音和音频辅助），与操作系统音频支持所需的任何配置（例如 AppleALC ）无关。
 
-音频支持为上游协议提供了一种与所选硬件和音频资源交互的方式。所有音频资源应该保存在 `\EFI\OC\Resources\Audio` 目录。目前支持的音频文件格式为 MP3 和 WAVE PCM。虽然支持哪种音频流格式取决于驱动程序，但大多数常见的音频卡都支持 44100 或 48000Hz 的 16 位立体声。
+音频支持为上游协议提供了一种与所选硬件和音频资源交互的方式。所有音频资源应该保存在 `\EFI\OC\Resources\Audio` 目录。目前支持的音频文件格式为 `MP3` 和 `WAVE PCM`。虽然支持哪种音频流格式取决于驱动程序，但大多数常见的音频卡都支持 `44100` 或 `48000Hz` 的 `16` 位立体声。
 
 音频文件的路径是由音频的类型、本地化语言和路径决定的。每个文件名看起来都类似于：`[audio type]_[audio localisation]_[audio path].[audio ext]`。对于没有本地化的文件，其文件名不包含语言代码，看起来类似于：`[audio type]_[audio path].[audio ext]`。其中音频扩展名为 `mp3` 或 `wav`。
 
@@ -399,7 +399,7 @@ macOS 引导程序和 OpenCore 的音频本地化是分开的。macOS 引导程�
 ### 10. `ReservedMemory`
 
 **Type**: `plist array`
-**Description**: 设计为用 `plist dict` 值填充，用于描述对特定固件和硬件功能要求很高的内存区域，这些区域不应该被操作系统使用。比如被 Intel HD 3000 破坏的第二个 256MB 区域，或是一个有错误的 RAM 的区域。详情请参考下面的 ReservedMemory Properties 章节。
+**Description**: 设计为用 `plist dict` 值填充，用于描述对特定固件和硬件功能要求很高的内存区域，这些区域不应该被操作系统使用。比如被 Intel HD 3000 破坏的第二个 256MB 区域，或是一个有错误的 RAM 的区域。详情请参考下面的 ReservedMemory Properties 部分。
 
 ## 11.10 APFS 属性
 
@@ -445,7 +445,7 @@ APFS 驱动日期将 APFS 驱动与发布日期联系起来。苹果公司最终
 
 - `0` ---  需要 OpenCore 中 APFS 的默认支持发布日期。默认的发布日期会随着时间的推移而增加，因此建议采用这种设置。目前设置为 2021/01/01。
 - `-1` --- 允许加载任何发布日期（强烈不推荐）。
-- 其他数值 --- 使用自定义的最小 APFS 发布日期，例如：2020/04/01的20200401。你可以从 OpenCore 的启动日志和 [OcApfsLib](https://github.com/acidanthera/OpenCorePkg/blob/master/Include/Acidanthera/Library/OcApfsLib.h) 中找到 APFS 发布日期。
+- 其他数值 --- 使用自定义的最小 APFS 发布日期，例如：`2020/04/01的20200401`。你可以从 OpenCore 的启动日志和 [OcApfsLib](https://github.com/acidanthera/OpenCorePkg/blob/master/Include/Acidanthera/Library/OcApfsLib.h) 中找到 APFS 发布日期。
 
 ### 6. `MinVersion`
 
@@ -467,7 +467,7 @@ APFS 驱动版本将 APFS 驱动与 macOS 版本联系起来。苹果公司最�
 **Failsafe**: `Auto` 
 **Description**: 确定是使用 OpenCore 内置协议还是 OEM  Apple Event 协议。
 
-该选项决定是否使用 OEM  Apple Event 协议（如有），或者是否使用 OpenCore 的反向工程和更新的重新实现。一般来说，  OpenCore 的重新实现应该是首选，因为它包含了一些更新，如明显改善的精细鼠标光标移动和可配置的按键的间隔时间。
+该选项决定是否使用 OEM  Apple Event 协议（如有），或者是否使用 OpenCore 的反向工程和更新的重新实现。一般来说，OpenCore 的重新实现应该是首选，因为它包含了一些更新，如明显改善的精细鼠标光标移动和可配置的按键的间隔时间。
 
 - Auto --- 如果有可用的、已连接的和最近的，则使用 OEM  Apple Event 实现，否则使用 OpenCore 的重新实现。在非苹果硬件上，这将使用 OpenCore 的内置实现。在某些 Mac 上，如经典的 Mac Pro，这将倾向于使用苹果的实现，但在比这更老和更新的 Mac 机型上，该选项通常会使用 OpenCore 的重新实现。在较老的 Mac 上，这是因为可用的实现太老了，无法使用，而在较新的 Mac 上，这是因为苹果公司增加了优化功能，除非需要，否则不会连接 Apple Event 协议，例如，除了明确启动苹果启动选择器的时候。由于其结果有些不可预测，通常不推荐使用这个选项。
 - Builtin --- 始终使用 OpenCore 对 Apple Event 协议的最新重新实现。由于 OpenCore 对协议的重新实现进行了改进（更好的精细鼠标控制、可配置的按键延迟），因此即使在苹果硬件上也建议使用此设置。
@@ -479,7 +479,7 @@ APFS 驱动版本将 APFS 驱动与 macOS 版本联系起来。苹果公司最�
 **Failsafe**: `false` 
 **Description**: 在使用 Apple Event 协议的 OpenCore 重新实现时，启用自定义按键的间隔时间。在使用 OEM 苹果实现时没有影响（见 AppleEvent 设置）。
 
-- true --- 使用 KeyInitialDelay 和 KeySubsequentDelay 的值。
+- true --- 使用 `KeyInitialDelay` 和 `KeySubsequentDelay` 的值。
 - false --- 使用苹果的默认值 500ms(50) 和 50ms(5)。
 
 ### 3. `KeyInitialDelay`
@@ -515,7 +515,7 @@ Apple OEM 的默认值是 `5`（`50ms`）。`0` 是这个选项的无效值（�
 - 将 `KeySubsequentDelay` 设置为至少是你的 `KeyForgetThreshold` 设置的值。
 
 上述程序的工作原理如下。
-- 将 `KeyInitialDelay` 设置为 `0` 会取消 `Apple Event` 的初始重复延迟（当使用 OpenCore 内置的 `Apple Event` 实现并启用 `CustomDelays` 时），因此你将看到的唯一长延迟是由这些机器上的 BIOS 按键支持引入的不可配置的、不可避免的初始长延迟。
+- 将 `KeyInitialDelay` 设置为 `0` 会取消 Apple Event 的初始重复延迟（当使用 OpenCore 内置的 Apple Event 实现并启用 `CustomDelays` 时），因此你将看到的唯一长延迟是由这些机器上的 BIOS 按键支持引入的不可配置的、不可避免的初始长延迟。
 - 按键平滑参数 `KeyForgetThreshold` 有效地充当了一个按键可以被保持的最短时间，因此一个小于这个参数的按键间隔将保证每一次按键都有至少一次额外的时间间隔，无论按键在物理上被敲击的速度如何。
 - 如果你在设置 `KeySubsequentDelay` 等于你的系统的 `KeyForgetThreshold` 值后，仍然经常或偶尔得到双键响应，那么再增加一到两倍 `KeySubsequentDelay`，直到这种影响消失。
 
@@ -525,16 +525,16 @@ Apple OEM 的默认值是 `5`（`50ms`）。`0` 是这个选项的无效值（�
 **Failsafe**: `false` 
 **Description**: Apple的 Apple Event 阻止图形应用程序中的键盘输入出现在基本控制台输入流中。
 
-由于默认设置为 false， OpenCore 的 Apple Event 内置实现复制了这一行为。
+由于默认设置为 `false`， OpenCore 的 Apple Event 内置实现复制了这一行为。
 
 在非苹果硬件上， 这可能会阻止键盘输入在图形的应用程序中工作，如使用非苹果按键输入方法的 Windows BitLocker。
 
-所有硬件上的推荐设置是 true 的。
+所有硬件上的推荐设置是 `true` 的。
 
 *注*： Apple Event 的默认行为是为了防止在退出基于图形的 UEFI 应用程序后出现不需要的排队按键。这个问题已经在 OpenCore 中单独处理。
 
-- true --- 允许键盘输入到达不使用 Apple 输入协议的图形模式应用程序。
-- false --- 在图形模式下，防止按键输入镜像到非 Apple 协议。
+- `true` --- 允许键盘输入到达不使用 Apple 输入协议的图形模式应用程序。
+- `false` --- 在图形模式下，防止按键输入镜像到非 Apple 协议。
 
 ### 6. `PointerPollMin`
 
@@ -552,7 +552,7 @@ Apple OEM 的默认值是 `5`（`50ms`）。`0` 是这个选项的无效值（�
 **Failsafe**: `0` 
 **Description**: 配置最大指针轮询周期，单位为 `ms`。
 
-这是 OpenCore 内置的 Apple Event 驱动程序轮询指针设备（如鼠标、触控板）的运动事件的最长时间。只要设备没有及时响应，该周期就会增加到这个值。目前的默认值为 80ms。 设置为 `0` 将使这一默认值保持不变。
+这是 OpenCore 内置的 Apple Event 驱动程序轮询指针设备（如鼠标、触控板）的运动事件的最长时间。只要设备没有及时响应，该周期就会增加到这个值。目前的默认值为 `80ms`。 设置为 `0` 将使这一默认值保持不变。
 
 戴尔笔记本电脑中经常发现的某些触控板驱动程序在没有物理运动发生时，反应可能非常缓慢。 这可能会影响 OpenCanopy 和FileVault 2 用户界面的响应能力和加载时间。增加轮询周期可以减少影响。
 
@@ -569,7 +569,7 @@ Apple OEM 的默认值是 `5`（`50ms`）。`0` 是这个选项的无效值（�
 
 即使没有相应的物理设备，某些指针设备也可以存在于固件中。 这些设备通常是占位符、聚合设备或代理。从这些设备中收集信息可能导致用户界面中的运动活动不准确，甚至导致性能问题。 对于有这种问题的笔记本电脑设置，建议禁用这种指针设备。
 
-系统中可用的指针设备的数量可以在日志中找到。更多细节请参考 Found N pointer devices 。
+系统中可用的指针设备的数量可以在日志中找到。更多细节请参考日志的 Found N pointer devices 部分。
 
 注意：在使用 OEM Apple 实现时没有效果（见 Apple Event 设置）。
 
@@ -579,7 +579,7 @@ Apple OEM 的默认值是 `5`（`50ms`）。`0` 是这个选项的无效值（�
 **Failsafe**: `1` 
 **Description**: 在 Apple Event 协议的 OpenCore 重新实现中配置指针速度除数。在使用 OEM Apple 实现时没有影响（见 Apple Event 设置）。
 
-配置指针移动的除数。 OEM Apple 的默认值是1， 0 是这个选项的无效值。
+配置指针移动的除数。 OEM Apple 的默认值是 `1`，`0` 是这个选项的无效值。
 
 *注*：这个选项的推荐值是 `1`， 这个选项的推荐值是 `1`。这个值可以根据用户的偏好，结合 `PointerSpeedMul` 进行修改，以实现自定义的鼠标移动比例。
 
@@ -589,7 +589,7 @@ Apple OEM 的默认值是 `5`（`50ms`）。`0` 是这个选项的无效值（�
 **Failsafe**: `1` 
 **Description**: 在 Apple Event 协议的 OpenCore 重新实现中配置指针速度乘数。在使用 OEM Apple 实现时没有影响（见 Apple Event 设置）。
 
-配置指针移动的乘数。 OEM Apple 的默认值是1。
+配置指针移动的乘数。 OEM Apple 的默认值是 `1`。
 
 *注*：这个选项的推荐值是 `1`， 这个选项的推荐值是 `1`。这个值可以根据用户的偏好，结合 `PointerSpeedDiv` 进行修改，以实现自定义的鼠标移动比例。
 
@@ -629,14 +629,13 @@ Apple OEM 的默认值是 `5`（`50ms`）。`0` 是这个选项的无效值（�
 
 指定一个空的设备路径会导致使用第一个可用的编解码器和音频控制器。在这种情况下，AudioCodec 的值被忽略。这可能是一个方便的初始选项，以尝试让 UEFI 音频工作。当这个默认值不起作用时，就需要进行上述的手动设置。
   
-  
 ### 3. `AudioOutMask`
 
 **Type**: `plist integer`
 **Failsafe**: `-1`
 **Description**:位字段，指示用于 UEFI 声音的输出通道。
 
-音频掩码是 `1` 《 音频输出（等同于 2 的幂音频输出）。例如，对于音频输出 `0`，比特掩码是 `1`，对于输出 `3` 是 `8`，对于输出 `0` 和 `3` 是 `9`。
+音频掩码为 `1` 《 音频输出（等同于 `2^` 频输出）。例如，对于音频输出 `0`，比特掩码是 `1`，对于输出 `3` 是 `8`，对于输出 `0` 和 `3` 是 `9`。
   
 每个 HDA 编解码器的可用输出节点的数量（N）显示在调试日志中（如下），音频输出 `0` 到 `N-1` 可以选择。
   
@@ -685,11 +684,11 @@ Apple OEM 的默认值是 `5`（`50ms`）。`0` 是这个选项的无效值（�
   
 当从 `SystemAudioVolumeDB NVRAM` 变量中读取的系统放大器增益高于此值时，所有的 UEFI 音频将使用此增益设置。 这是为了避免在系统音量设置得很高，或者 `SystemAudioVolumeDB NVRAM` 的值被错误地配置时，UEFI 音频过于响亮。
   
-*注 1 *：分贝（dB）是指与某个参考水平相比的增益（正值；音量增加）或衰减（负值；音量减少）。当你听到喷气式飞机的声级表示为 `120` 分贝时，例如，参考水平是普通人可以听到的声级。然而，一般来说，在声学和计算机音频中，任何参考电平都可以被指定。英特尔 HDA 和 macOS 原生使用分贝来指定音量级别。在大多数英特尔 HDA 硬件上，`0` 分贝的参考电平是硬件的最大声量，因此所有更低的音量是负数。在典型的声音硬件上，最安静的音量大约是 `-55dB` 到 `-60dB`。
+*注 1*：分贝（dB）是指与某个参考水平相比的增益（正值；音量增加）或衰减（负值；音量减少）。例如，当你听到喷气式飞机的声级表示为 `120` 分贝时，参考水平是普通人可以听到的声级。然而，在声学和计算机音频中，任何参考电平都可以被指定。英特尔 HDA 和 macOS 原生使用分贝来指定音量级别。在大多数英特尔 HDA 硬件上，`0` 分贝的参考电平是硬件的最大声量，因此所有更低的音量是负数。在典型的声音硬件上，最安静的音量大约是 `-55dB` 到 `-60dB`。
 
-*注 2 *：与 macOS 处理分贝值的方式一致， 该值被转换为有符号的字节；因此，不允许使用 `-128 dB` 到 `+127 dB` 以外的值（这些值远远超出物理上合理的音量水平）。
+*注 2*：与 macOS 处理分贝值的方式一致， 该值被转换为有符号的字节；因此，不允许使用 `-128 dB` 到 `+127 dB` 以外的值（这些值远远超出物理上合理的音量水平）。
 
-*注 3 *： 数字音频输出，在操作系统中没有音量滑块，忽略这个和所有其他增益设置，只有静音设置是相关的。
+*注 3*： 数字音频输出，在操作系统中没有音量滑块，忽略这个和所有其他增益设置，只有静音设置是相关的。
   
 ### 7. `MinimumAssistGain`
 
@@ -699,21 +698,21 @@ Apple OEM 的默认值是 `5`（`50ms`）。`0` 是这个选项的无效值（�
   
 如果从 `SystemAudioVolumeDB NVRAM` 变量中读取的系统放大器增益低于此值，屏幕阅读器将使用此放大器增益。
   
-*注 1 *：除了这个设置外，由于音频辅助必须能听到才能发挥其功能，所以即使操作系统的声音被静音或 `StartupMute NVRAM` 变量被设置，音频辅助也不会被静音。
+*注 1*：除了这个设置外，由于音频辅助必须能听到才能发挥其功能，所以即使操作系统的声音被静音或 `StartupMute NVRAM` 变量被设置，音频辅助也不会被静音。
   
-*注 2 *：关于分贝音量级别的解释， 请参见 `MaximumGain`。  
+*注 2*：关于分贝音量级别的解释，请参见 `MaximumGain`。  
   
  ### 8. `MinimumAudibleGain`
 
 **Type**: `plist integer`
 **Failsafe**: `-128`
-**Description**: 尝试播放任何声音的最小增益， 单位是分贝（dB）。
+**Description**: 尝试播放任何声音的最小增益，单位是分贝（dB）。
   
-如果 `SystemAudioVolumeDB NVRAM` 变量中的系统放大器增益水平低于此值， 则不会播放开机提示音。
+如果 `SystemAudioVolumeDB NVRAM` 变量中的系统放大器增益水平低于此值，则不会播放开机提示音。
   
-*注 1 *： 这个设置是为了节省由于在听不见的音量水平上进行音频设置而造成的不必要的停顿，因为无论如何都不会听到声音。是否有听不见的音量水平取决于硬件。在一些硬件上（包括 Apple），音频值与硬件匹配得很好，最低的音量水平是非常安静但可以听到的，而在其他一些硬件组合上，音量范围的最低部分可能根本听不到。
+*注 1*： 这个设置是为了节省由于在听不见的音量水平上进行音频设置而造成的不必要的停顿，因为无论如何都不会听到声音。是否有听不见的音量水平取决于硬件。在一些硬件上（包括 Apple），音频值与硬件匹配得很好，最低的音量水平是非常安静但可以听到的，而在其他一些硬件组合上，音量范围的最低部分可能根本听不到。
 
-*注 2 *：关于分贝音量级别的解释， 请参见 `MaximumGain`。 
+*注 2*：关于分贝音量级别的解释，请参见 `MaximumGain`。 
 
 ### 9. `PlayChime`
 
@@ -727,19 +726,19 @@ Apple OEM 的默认值是 `5`（`50ms`）。`0` 是这个选项的无效值（�
 - `Enabled` --- 无条件启用开机声音。
 - `Disabled` --- 无条件禁用开机声音。
 
-*注 1 *：`Enable` 是可以与 `StartupMute` NVRAM 变量分开使用的，以此来避免在固件能够播放启动铃声时发生冲突。
+*注 1*：`Enable` 是可以与 `StartupMute` NVRAM 变量分开使用的，以此来避免在固件能够播放启动铃声时发生冲突。
 
-*注 2 *：无论如何设置，如果系统音频被静音，即 `SystemAudioVolume NVRAM` 变量设置了 `0x80` 位，则不会播放启动铃声。
+*注 2*：无论如何设置，如果系统音频被静音，即 `SystemAudioVolume` NVRAM 变量设置了 `0x80` 位，则不会播放启动铃声。
   
 ### 10. `ResetTrafficClass`
 
 **Type**: `plist boolean`
 **Failsafe**: `0`
-**Description**: 将 HDA Traffic Class Select 寄存器设置为TC0。
+**Description**: 将 HDA Traffic Class Select 寄存器设置为 TC0。
 
-只有当 TCSEL 寄存器配置为使用 TC0 traffic class时，AppleHDA.kext 才能正常工作。有关此寄存器的更多详细信息，请参阅 Intel I/O Controller Hub 9（ICH9）Family Datasheet（或任何其他 ICH Datasheet）。
+只有当 TCSEL 寄存器配置为 `use TC0 traffic class` 时，AppleHDA.kext 才能正常工作。有关此寄存器的更多详细信息，请参阅 Intel I/O Controller Hub 9（ICH9）Family Datasheet（或任何其他 ICH Datasheet）。
 
-*注*：此选项独立于 AudioSupport。如果使用 AppleALC，则首选使用 AppleALC alctsel 属性。  
+*注*：此选项独立于 `AudioSupport`。如果使用 AppleALC，则首选使用 `AppleALC alctsel` 属性。  
   
 ### 11. `SetupDelay`
 
@@ -793,15 +792,15 @@ Apple OEM 的默认值是 `5`（`50ms`）。`0` 是这个选项的无效值（�
 
 `AppleKeyMapAggregator` 协议应该包含当前按下的键的固定长度的缓冲。但是大部分驱动程序仅将按键按下报告为中断、并且按住按键会导致在一定的时间间隔后再提交按下行为。一旦超时到期，我们就是用超时从缓冲区中删除一次按下的键，并且没有新提交。
 
-此选项允许根据你的平台设置此超时。在大多数平台上有效的推荐值为 `5` 毫秒。作为参考，在 VMWare 上按住一个键大约每 2 毫秒就会重复一次，而在 APTIO V 上是 3 - 4 毫秒。因此，可以在较快的平台上设置稍低的值、在较慢的平台设置稍高的值，以提高响应速度。
+此选项允许根据你的平台设置此超时。在大多数平台上有效的推荐值为 `5` 毫秒。作为参考，在 VMWare 上按住一个键大约每 `2` 毫秒就会重复一次，而在 APTIO V 上是 `3-4` 毫秒。因此，可以在较快的平台上设置稍低的值、在较慢的平台设置稍高的值，以提高响应速度。
 
-在同一平台上，一个接一个地按下按键会导致至少60和100毫秒的延迟。理想情况下，KeyForgetThreshold应该保持低于这个值，以避免合并真正的按键。
+在同一平台上，一个接一个地按下按键会导致至少 `60` 和 `100` 毫秒的延迟。理想情况下，`KeyForgetThreshold` 应该保持低于这个值，以避免合并真正的按键。
   
-调整 KeyForgetThreshold 的值对于在启用了 KeySupport 的系统上实现准确和灵敏的键盘输入是必要的，建议按照下面的说明为你的系统正确地调整它。  
+调整 `KeyForgetThreshold` 的值对于在启用了 `KeySupport` 的系统上实现准确和灵敏的键盘输入是必要的，建议按照下面的说明为你的系统正确地调整它。  
   
-*注 1 *：要调整 `KeyForgetThreshold`，你可以使用 OpenCanopy 或内置启动选择器中的 `set default` 指示符。如果`KeyForgetThreshold` 太低，那么当按住 `CTRL` 或 `=/+` 时， `set default` 指示符将继续闪烁。你应该配置能避免这种闪烁的最低值。在一些系统上（例如 Aptio IV 和可能使用 AMI KeySupport 模式的其他系统），你可以找到一个最小的`KeyForgetThreshold` 值，在这个值上， `set default` 指示符会亮起并保持不变，而且没有闪烁，如果是这样，就使用这个值。在大多数其他使用 `KeySupport` 的系统上，你会发现，当第一次按住 `CTRL` 或 `=/+` 键时， `set default` 指示符会闪烁一次，然后再经过一个非常短暂的间隔，就会亮起并保持亮起。在这样的系统上，你应该选择最低的 `KeyForgetThreshold` 值，在这个值上，你只看到最初的一次闪烁，然后就没有后续的闪烁了。(在这种情况下，这是使用 `KeySupport` 模拟原始键盘数据的系统上不可避免的缺陷，UEFI 不提供这种数据）。
+*注 1*：要调整 `KeyForgetThreshold`，你可以使用 OpenCanopy 或内置启动选择器中的 `set default` 指示符。如果`KeyForgetThreshold` 太低，那么当按住 `CTRL` 或 `=/+` 时， `set default` 指示符将继续闪烁。你应该配置能避免这种闪烁的最低值。在一些系统上（例如 Aptio IV 和可能使用 AMI KeySupport 模式的其他系统），你可以找到一个最小的`KeyForgetThreshold` 值，在这个值上， `set default` 指示符会亮起并保持不变，而且没有闪烁，如果是这样，就使用这个值。在大多数其他使用 `KeySupport` 的系统上，你会发现，当第一次按住 `CTRL` 或 `=/+` 键时， `set default` 指示符会闪烁一次，然后再经过一个非常短暂的间隔，就会亮起并保持亮起。在这样的系统上，你应该选择最低的 `KeyForgetThreshold` 值，在这个值上，你只看到最初的一次闪烁，然后就没有后续的闪烁了。(在这种情况下，这是使用 `KeySupport` 模拟原始键盘数据的系统上不可避免的缺陷，UEFI 不提供这种数据）。
   
-*注 2 *：`KeyForgetThreshold` 最多不需要超过 `9` 或 `10`。如果它被设置为一个远高于此的值，将导致明显的键盘输入无反应。因此，为了整体的按键响应，强烈建议配置一个相对较低的值，在这个值上， `set default` 指示符会闪烁一次，然后不再闪烁，而不是使用一个高得多的值（即明显大于 `10`），你可能能找到但不应该使用这个值，在这个值上， `set default` 指示符根本不闪烁。  
+*注 2*：`KeyForgetThreshold` 最多不需要超过 `9` 或 `10`。如果它被设置为一个远高于此的值，将导致明显的键盘输入无反应。因此，为了整体的按键响应，强烈建议配置一个相对较低的值，在这个值上， `set default` 指示符会闪烁一次，然后不再闪烁，而不是使用一个高得多的值（即明显大于 `10`），你可能能找到但不应该使用这个值，在这个值上， `set default` 指示符根本不闪烁。  
 
 ### 3. `KeySupport`
 
@@ -852,11 +851,11 @@ Apple OEM 的默认值是 `5`（`50ms`）。`0` 是这个选项的无效值（�
 
 **Type**: `plist integer`
 **Failsafe**: `0`
-**Description**: 固件始终刷新的频率（单位 100 纳秒）
+**Description**: 固件始终刷新的频率（单位 `100` 纳秒）
 
-这个选项允许用 100 纳秒单位的指定值来更新固件架构的定时器周期。设置一个较低的值通常可以提高接口和输入处理的性能和响应性。  
+这个选项允许用 `100` 纳秒单位的指定值来更新固件架构的定时器周期。设置一个较低的值通常可以提高接口和输入处理的性能和响应性。  
   
-建议值为 `50000`（即 5 毫秒）或稍高一些。选择 ASUS Z87 主板时，请使用 `60000`，苹果主板请使用 `100000`。你也可以将此值设置为 `0`，不改变固件始终刷新的频率。
+建议值为 `50000`（即 `5` 毫秒）或稍高一些。选择 ASUS Z87 主板时，请使用 `60000`，苹果主板请使用 `100000`。你也可以将此值设置为 `0`，不改变固件始终刷新的频率。
 
 ## 11.15 Output 属性
 
@@ -931,7 +930,7 @@ UEFI 固件一般用两种渲染模式来支持 `ConsoleControl`：`Graphics` �
 
 在某些固件上，这样做可能会提供更优的性能，甚至修复渲染问题，比如 `MacPro5,1`。但是，除非有明显的好处，否则还是建议不要使用这个选项，因为可能会导致滚动速度变慢。
 
-这个渲染器完全支持 `AppleEg2Info` 协议，将为所有 EFI 应用程序提供屏幕旋转。为了提供与 `EfiBoot` 的无缝旋转兼容性，还应该使用内置的 `AppleFramebufferInfo`，也就是说，在 Mac EFI 上可能需要重写它。  
+这个渲染器完全支持 `AppleEg2Info` 协议，将为所有 EFI 应用程序提供屏幕旋转。为了提供与 `EfiBoot` 的无缝旋转兼容性，还应该使用内置的 `AppleFramebufferInfo`，也就是说，在 Mac EFI 上可能需要覆盖它。  
 
 ### 7. `GopPassThrough`
 
@@ -961,7 +960,7 @@ UEFI 固件一般用两种渲染模式来支持 `ConsoleControl`：`Graphics` �
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
-**Description**: 有些固件不会打印 tab 符号，甚至不打印 tab 后面的所有内容，导致很难或根本无法用 UEFI Shell 内置的文本编辑器来编辑属性列表和其他文档。这个选项会使控制台输出空格来替代 tab。
+**Description**: 有些固件不会打印 `tab` 符号，甚至不打印 `tab` 后面的所有内容，导致很难或根本无法用 UEFI Shell 内置的文本编辑器来编辑属性列表和其他文档。这个选项会使控制台输出空格来替代 `tab`。
 
 *注*：这一选项只会在 `System` 渲染器上生效。
 
@@ -1016,8 +1015,9 @@ macOS bootloader 要求控制台句柄上必须有 GOP 或 UGA（适用于 10.4 
 - -1 --- 保持当前变量不变。
 - 0 -- 根据当前分辨率自动选择缩放比例。
 
-*注 1 *：自动比例系数检测是在总像素面积的基础上进行的，在小型 HiDPI 显示器上可能会失败，在这种情况下，可以使用NVRAM 部分手动管理该值。
-*注 2 *：当从手动指定的 NVRAM 变量切换到该首选项时，可能需要对 NVRAM 进行重置。  
+*注 1*：自动比例系数检测是在总像素面积的基础上进行的，在小型 HiDPI 显示器上可能会失败，在这种情况下，可以使用NVRAM 部分手动管理该值。
+
+*注 2*：当从手动指定的 NVRAM 变量切换到该首选项时，可能需要对 NVRAM 进行重置。  
   
 ### 15. `UgaPassThrough`
 
@@ -1033,7 +1033,7 @@ macOS bootloader 要求控制台句柄上必须有 GOP 或 UGA（适用于 10.4 
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
-**Description**: 用内置的版本取代 Apple 音频协议。
+**Description**: 用内置的版本替换 Apple 音频协议。
 
 Apple 音频协议允许 macOS bootloader 和 OpenCore 播放声音和信号，用于屏幕阅读或可闻及的错误报告。支持的协议有生成「哔」声和 VoiceOver。VoiceOver 协议是带有 T2 芯片的机器特有的，不支持 macOS High Sierra (10.13) 之前的版本。旧版 macOS 版本使用的是 AppleHDA 协议，目前还没有实现。
 
@@ -1045,7 +1045,7 @@ Apple 音频协议允许 macOS bootloader 和 OpenCore 播放声音和信号，�
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
-**Description**: 用内置的版本取代 Apple Boot Policy 协议，可用于确保 VM 或旧版 Mac 设备上的 APFS 兼容性。
+**Description**: 用内置的版本替换 Apple Boot Policy 协议，可用于确保 VM 或旧版 Mac 设备上的 APFS 兼容性。
 
 *注*：某些 Mac 设备（如 `MacPro5,1`）虽然兼容 APFS，但是其 Apple Boot Policy 协议包含了恢复分区检测问题，因此也建议启用这一选项。
 
@@ -1053,16 +1053,17 @@ Apple 音频协议允许 macOS bootloader 和 OpenCore 播放声音和信号，�
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
-**Description**: 用内置的版本取代 Apple 调试日志输出协议。
+**Description**: 用内置的版本替换 Apple 调试日志输出协议。
 
 ### 4. `AppleEg2Info`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
-**Description**: 用内置的版本取代 `Apple EFI Graphics 2` 协议。
+**Description**: 用内置的版本替换 `Apple EFI Graphics 2` 协议。
 
-*注 1 *：该协议允许更新的 EfiBoot 版本（至少10.15）向 macOS 公开屏幕旋转。有关如何设置屏幕旋转角度，请参阅 `ForceDisplayRotationInfo` 变量说明。
-*注 2 *：在没有 `ForceDisplayRotationInEFI` 原生支持的系统上，必须设置 `DirectGopRendering=true`。  
+*注 1*：该协议允许更新的 EfiBoot 版本（至少10.15）向 macOS 公开屏幕旋转。有关如何设置屏幕旋转角度，请参阅 `ForceDisplayRotationInfo` 变量说明。
+
+*注 2*：在没有 `ForceDisplayRotationInEFI` 原生支持的系统上，必须设置 `DirectGopRendering=true`。  
   
 ### 5. `AppleFramebufferInfo`
 
@@ -1076,25 +1077,25 @@ Apple 音频协议允许 macOS bootloader 和 OpenCore 播放声音和信号，�
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
-**Description**: 用内置的版本取代 Apple Image Conservation 协议。
+**Description**: 用内置的版本替换 Apple Image Conservation 协议。
 
 ### 7. `AppleImg4Verification`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
-**Description**: 用内置的版本取代 Apple IMG4 验证协议。该协议用于验证 Apple 安全启动所使用的 `im4m` 清单文件。
+**Description**: 用内置的版本替换 Apple IMG4 验证协议。该协议用于验证 Apple 安全启动所使用的 `im4m` 清单文件。
 
 ### 8. `AppleKeyMap`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
-**Description**: 用内置的版本取代 Apple Key Map 协议。
+**Description**: 用内置的版本替换 Apple Key Map 协议。
 
 ### 9. `AppleRtcRam`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
-**Description**: 用内置的版本取代 Apple RTC RAM 协议。
+**Description**: 用内置的版本替换 Apple RTC RAM 协议。
 
 *注*：内置的 Apple RTC RAM 协议可能会过滤掉 RTC 内存地址的潜在 I/O。地址列表可以在 `4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102:rtc-blacklist` 中以数组的方式指定。
 
@@ -1102,13 +1103,13 @@ Apple 音频协议允许 macOS bootloader 和 OpenCore 播放声音和信号，�
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
-**Description**: 用内置的版本取代 Apple 安全启动协议。
+**Description**: 用内置的版本替换 Apple 安全启动协议。
 
 ### 11. `AppleSmcIo`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
-**Description**: 用内置的版本取代 SMC I/O 协议。
+**Description**: 用内置的版本替换 SMC I/O 协议。
 
 这一协议代替了传统的 `VirtualSmc.efi`，并与所有 SMC Kext 驱动兼容。如果你在用 FakeSMC，可能需要手动往 NVRAM 中添加键值对。
 
@@ -1116,13 +1117,13 @@ Apple 音频协议允许 macOS bootloader 和 OpenCore 播放声音和信号，�
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
-**Description**: 用内置的版本取代 Apple User Interface Theme 协议。
+**Description**: 用内置的版本替换 Apple User Interface Theme 协议。
 
 ### 13. `DataHub`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
-**Description**: 用内置的版本取代 Data Hub 协议。如果已经安装了协议，这将删除所有先前的属性。
+**Description**: 用内置的版本替换 Data Hub 协议。如果已经安装了协议，这将删除所有先前的属性。
 
 *注*：如果协议已经安装，这将丢弃之前的所有条目，因此必须在配置文件中指定系统安全运行所需的所有属性。  
   
@@ -1130,7 +1131,7 @@ Apple 音频协议允许 macOS bootloader 和 OpenCore 播放声音和信号，�
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
-**Description**: 用内置的版本取代 Device Property 协议。 这一选项可用于确保在 VM 或旧版 Mac 设备上的兼容性。
+**Description**: 用内置的版本替换 Device Property 协议。 这一选项可用于确保在 VM 或旧版 Mac 设备上的兼容性。
 
 *注*：如果协议已经安装，这将丢弃之前的所有条目，因此必须在配置文件中指定系统安全运行所需的所有属性。  
   
@@ -1202,7 +1203,7 @@ Apple 音频协议允许 macOS bootloader 和 OpenCore 播放声音和信号，�
 **Failsafe**: `0`
 **Description**: 在 `EXIT_BOOT_SERVICES` 事件后添加延迟，单位为毫秒。
 
-这是一个非常粗略的 Quirk，用于修复 `Still waiting for root device` 提示信息。在使用 FileVault 2 时，特别是华硕 Z87-Pro 等 APTIO IV 固件这种错误经常发生。似乎因为某种原因，FileVault 与 `EXIT_BOOT_SERVICES` 同时执行、导致 macOS 无法访问 SATA 控制器。未来应该会找到一个更好的方法。如果需要启用这一选项，设置 3-5 秒的延时就可以了。
+这是一个非常粗略的 Quirk，用于修复 `Still waiting for root device` 提示信息。在使用 FileVault 2 时，特别是华硕 Z87-Pro 等 APTIO IV 固件这种错误经常发生。似乎因为某种原因，FileVault 与 `EXIT_BOOT_SERVICES` 同时执行、导致 macOS 无法访问 SATA 控制器。未来应该会找到一个更好的方法。如果需要启用这一选项，设置 `3-5` 秒的延时就可以了。
 
 ### 6. `ForceOcWriteFlash`
 
@@ -1262,24 +1263,24 @@ Apple 音频协议允许 macOS bootloader 和 OpenCore 播放声音和信号，�
 **Failsafe**: `-1`
 **Description**: 配置 GPU PCI BAR 的大小。  
   
-这个 Quirk 按照规定设置 GPU PCI BAR 的大小，或者选择低于 ResizeGpuBars 值的最大可用值。指定的值遵循 PCI Resizable BAR 的规则。使用 0 代表 1MB，1 代表 2MB，2 代表 4MB，以此类推，直到 19 代表 512GB。
+这个 Quirk 按照规定设置 GPU PCI BAR 的大小，或者选择低于 ResizeGpuBars 值的最大可用值。指定的值遵循 PCI Resizable BAR 的规则。使用 `0` 代表 1MB，`1` 代表 `2MB`，`2` 代表 `4MB`，以此类推，直到 `19` 代表 `512GB`。
   
-Resizable BAR 技术允许通过将可配置的内存区域 BAR 映射到 CPU 地址空间（例如，将 VRAM 映射到 RAM），而不是固定的内存区域，来简化 PCI 设备的编程。这项技术是必要的，因为人们不能在默认情况下映射最大的内存区域，原因是要向后兼容不支持 64 位 BAR 的旧硬件。因此，过去十年的设备默认使用 256MB 的 BAR（剩下的 4 位被其他数据使用），但通常允许将它们的大小调整为更小和更大的 2 次方（例如，从 1MB 到 VRAM 大小）。  
+Resizable BAR 技术允许通过将可配置的内存区域 BAR 映射到 CPU 地址空间（例如，将 VRAM 映射到 RAM），而不是固定的内存区域，来简化 PCI 设备的编程。这项技术是必要的，因为人们不能在默认情况下映射最大的内存区域，原因是要向后兼容不支持 `64` 位 BAR 的旧硬件。因此，过去十年的设备默认使用 `256MB` 的 BAR（剩下的 `4` 位被其他数据使用），但通常允许将它们的大小调整为更小和更大的 `2` 次方（例如，从 `1MB` 到 VRAM 大小）。  
   
 针对 x86 平台的操作系统通常不控制 PCI 地址空间，让 UEFI 固件决定 BAR 地址和大小。这种非法的做法导致 Resizable BAR 技术直到 2020 年都没有被使用，尽管它在 2008 年被标准化，并在不久后被广泛用于硬件。
 
 现代 UEFI 固件允许使用 Resizable BAR 技术，但通常将可配置的选项限制为故障安全默认值（OFF）和最大可用值（ON）。这个 Quirk 允许为测试和开发目的微调这个值。  
   
-考虑一个有 2 个 BAR 的 GPU。
-- BAR0 支持从 256MB 到 8GB 的大小。它的值是 4GB。
-- BAR1 支持从 2MB 到 256MB 的大小。它的值是 256MB。  
+考虑一个有 `2` 个 BAR 的 GPU。
+- BAR0 支持从 `256MB` 到 `8GB` 的大小。它的值是 `4GB`。
+- BAR1 支持从 `2MB` 到 `256MB` 的大小。它的值是 `256MB`。  
   
-*例 1 *：将 ResizeGpuBars 设置为 1GB 将改变 BAR0 为 1GB，BAR1 保持不变。
-*例 2 *: 将 ResizeGpuBars 设置为 1MB 将改变 BAR0 为 256MB，BAR0 为2MB。
-*例 3 *：将 ResizeGpuBars 设置为 16GB 将改变 BAR0 为8GB，BAR1 保持不变。 
+*例 1*：将 ResizeGpuBars 设置为 `1GB` 将改变 BAR0 为 `1GB`，BAR1 保持不变。
+*例 2*: 将 ResizeGpuBars 设置为 `1MB` 将改变 BAR0 为 `256MB`，BAR0 为 `2MB`。
+*例 3*：将 ResizeGpuBars 设置为 `16GB` 将改变 BAR0 为 `8GB`，BAR1 保持不变。 
 
-*注 1 *：这个 Quirk 不应该被用来解决 macOS 对超过 1GB 的 BAR 的限制。应该使用 ResizeAppleGpuBars 来代替。
-*注 2 *：虽然这个 Quirk 可以增加 GPU PCI BAR 的大小，但这在大多数固件上是行不通的，因为这个 Quirk 不会重新定位内存中的 BAR，而且它们可能会重叠。我们欢迎大家为改进这一功能做出贡献。  
+*注 1*：这个 Quirk 不应该被用来解决 macOS 对超过 `1GB` 的 BAR 的限制。应该使用 ResizeAppleGpuBars 来代替。
+*注 2*：虽然这个 Quirk 可以增加 GPU PCI BAR 的大小，但这在大多数固件上是行不通的，因为这个 Quirk 不会重新定位内存中的 BAR，而且它们可能会重叠。我们欢迎大家为改进这一功能做出贡献。  
   
 ### 13. `TscSyncTimeout`
 
@@ -1291,7 +1292,7 @@ Resizable BAR 技术允许通过将可配置的内存区域 BAR 映射到 CPU �
 
 这是一个实验性的 Quirk，只能被用于上述问题。在其他情况下，这个 Quirk 可能会导致操作系统不稳定，所以并不推荐使用。在其他情况下，推荐的解决办法是安装一个内核驱动，如 [VoodooTSCSync](https://github.com/RehabMan/VoodooTSCSync)、[TSCAdjustReset](https://github.com/interferenc/TSCAdjustReset) 或 [CpuTscSync](https://github.com/lvs1974/CpuTscSync)（是 VoodooTSCSync 的一个更有针对性的变种，适用于较新的笔记本电脑）。
 
-*注*：这个 Quirk 不能取代内核驱动的原因是它不能在 ACPI S3 模式（睡眠唤醒）下运行，而且 UEFI 固件提供的多核心支持非常有限，无法精确地更新 MSR 寄存器。
+*注*：这个 Quirk 不能取代内核驱动的原因是它不能在 `ACPI S3` 模式（睡眠唤醒）下运行，而且 UEFI 固件提供的多核心支持非常有限，无法精确地更新 `MSR` 寄存器。
 
 ### 14. `UnblockFsConnect`
 
@@ -1309,21 +1310,21 @@ Resizable BAR 技术允许通过将可配置的内存区域 BAR 映射到 CPU �
 **Failsafe**: `0`
 **Description**: 保留内存区域的起始地址，该区域应被分配为保留区，有效地将此类型的内存标记标记为操作系统不可访问。
 
-这里写的地址必须是内存映射的一部分，具有 `EfiConventionalMemory` 类型，并且按页对齐（4KB）。
+这里写的地址必须是内存映射的一部分，具有 `EfiConventionalMemory` 类型，并且按页对齐（`4KB`）。
 
-*注*：禁用 CSM 后，某些固件可能不会为 S3（睡眠）和 S4（休眠）分配内存区域，因此导致唤醒失败。你可以分别比较禁用和启用 CSM 的内存映射，从低层内存中找到这些区域，并保留该区域来修复这个问题。详见 `Sample.plist`。
+*注*：禁用 CSM 后，某些固件可能不会为 `S3`（睡眠）和 `S4`（休眠）分配内存区域，因此导致唤醒失败。你可以分别比较禁用和启用 CSM 的内存映射，从低层内存中找到这些区域，并保留该区域来修复这个问题。详见 `Sample.plist`。
 
 ### 2. `Comment`
 
 **Type**: `plist string`
 **Failsafe**: Empty string
-**Description**: 用于为条目提供人类可读参考的任意 ASCII 字符串（译者注：即注释）。该值取决于具体的实现定义。
+**Description**: 用于为条目提供人类可读参考的任意 ASCII 字符串（译者注：即注释）。
 
 ### 3. `Size`
 
 **Type**: `plist integer`
 **Failsafe**: `0`
-**Description**: 保留的内存区域的大小，必须按页对齐（4KB）。
+**Description**: 保留的内存区域的大小，必须按页对齐（`4KB`）。
 
 ### 4. `Type`
 
