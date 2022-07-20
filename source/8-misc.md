@@ -27,7 +27,7 @@ OpenCore 大体上遵循 `bless` 模式，即 `Apple Boot Policy`。`bless` 模�
 2. 从 `BootOrder` UEFI 变量中，获取所有可用的启动选项。
 3. 对于每个找到的启动选项：
    - 检索该启动选项的设备路径。
-   - 执行对设备路径的修复（如 NVMe 子类型修复）和扩展（如 Boot Camp）。
+   - 执行对设备路径的修复（如 NVMe 子类型修复）和扩展（例如： Boot Camp）。
    - 失败时，如果是 OpenCore 自定义条目设备路径，则预先构建相应的自定义条目并继承。
    - 通过定位到所产生的设备路径，来获取句柄（失败时忽略）。
    - 在分区句柄列表中找到设备句柄（缺失时忽略）。
@@ -53,7 +53,7 @@ OpenCore 启动选择器中的启动选项的显示顺序和启动过程，是�
 - 备用选项跟随主选项，即，Apple Recovery 会尽可能地跟随相关的 macOS 选项。
 - 选项会按照文件系统句柄固件的顺序列出，以便在整个启动过程中保持一个既定的顺序，不因加载操作系统的不同而变化。
 - 自定义条目、工具和系统条目会被添加到所有选项之后。
-- 辅助选项只有在进入「高级模式」后才会显示（一般是按 `空格` 键）。
+- 辅助选项只有在进入「扩展模式」后才会显示（一般是按空格键）。
 
 启动过程如下：
 
@@ -107,7 +107,7 @@ OpenCore 启动选择器中的启动选项的显示顺序和启动过程，是�
 **Type**: `plist dict`
 **Description**: 执行串行端口初始化并配置 BaseSerialPortLib16550 要求的 `PCD` 值，以使串行端口正常运行。这些值在下面的 Serial 属性和 Serial Custom 属性部分列出和描述。
 
-通过启用 Init，这部分可以确保在固件没有完成的情况下对串行端口进行初始化。为了使 OpenCore 向串行端口打印日志，必须设置 Misc->Debug 部分的 `Target` 第 `3` 位（即串行日志）。
+通过启用 Init，这部分可以确保在固件没有完成的情况下对串行端口进行初始化。为了使 OpenCore 向串行端口打印日志，必须设置 Misc->Debug 部分的 `Target` 第 3 位（即串行日志）。
 
 当使用串口调试时，BaseSerialPortLib16550 默认只识别由主板提供的内部串口。如果启用了 `Override` 选项，将覆盖 BaseSerialPortLib16550.inf 中列出的 `PCD` 值，这样外部串口（例如来自 PCI 卡）也能正常工作。具体来说，在排除  macOS 的故障时，除了覆盖这些 `PCD` 值之外，还需要打开 `CustomPciSerialDevice` 内核 Quirks，以便 XNU 使用这些外部串口。
 
@@ -130,7 +130,7 @@ OpenCore 启动选择器中的启动选项的显示顺序和启动过程，是�
 **Failsafe**: `0`
 **Description**: 为控制台设置特定的属性。
 
-根据 UEFI 规范，文本渲染器支持的颜色参数为前景色与背景色之和。黑色背景色和黑色前景色 (`0`) 的值是预留的。以下是颜色名称一览：
+根据 UEFI 规范，文本渲染器支持的颜色参数为前景色与背景色之和。黑色背景色和黑色前景色的值(0) 是预留的。以下是颜色名称一览：
 
 - `0x00` — `EFI_BLACK`（黑色字体）
 - `0x01` — `EFI_BLUE`（蓝色字体）
@@ -182,10 +182,10 @@ OpenCore 启动选择器中的启动选项的显示顺序和启动过程，是�
 
 - 该引导项是 macOS Recovery 分区
 - 该引导项是 macOS Time Machine 分区
-- 该引导项被标记为 `Auxiliary`
-- 该引导项是系统提供的（如 `Reset NVRAM`）
+- 该引导项被标记为 Auxiliary
+- 该引导项是系统提供的（例如：Reset NVRAM）
 
-即使被隐藏，你仍然可以通过 `空格` 进入「扩展模式」查看所有条目（引导项菜单会被重新加载），隐藏辅助条目可能有助于提高多磁盘系统的引导性能，简单来说就是可能提高启动速度。
+即使被隐藏，你仍然可以通过按空格键进入「扩展模式」查看所有条目（引导项菜单会被重新加载），隐藏辅助条目可能有助于提高多磁盘系统的引导性能，简单来说就是可能提高启动速度。
 
 ### 4. `LauncherOption`
 
@@ -203,16 +203,16 @@ OpenCore 启动选择器中的启动选项的显示顺序和启动过程，是�
 
 *注 1*：某些固件的 NVRAM 本身存在问题，可能会出现无启动项支持，或者其他各种不兼容的情况。虽然可能性不大，但使用此选项可能会导致启动失败。请在已知兼容的主板上使用，风险自行考虑。请查看 [acidanthera/bugtracker#1222](https://github.com/acidanthera/bugtracker/issues/1222) 来了解与 Haswell 及其他一些主板相关的已知问题。
 
-*注 2*：虽然从 OpenCore 执行的 NVRAM 重置不会清除在 `Bootstrap` 模式中创建的启动选项，但在加载 OpenCore 之前重置 NVRAM 则会同时清除。在进行某些涉及重要实现的更新时（如 OpenCore 0.6.4），须确保在禁用 `Bootstrap` 的情况下执行一次 NVRAM 重置，然后再重新启用。
+*注 2*：虽然从 OpenCore 执行的 NVRAM 重置不会清除在 Bootstrap 模式中创建的启动选项，但在加载 OpenCore 之前重置 NVRAM 则会同时清除。在进行某些涉及重要实现的更新时（如 OpenCore 0.6.4），须确保在禁用 Bootstrap 的情况下执行一次 NVRAM 重置，然后再重新启用。
 
-*注 3*：英特尔 Visual BIOS 的某些版本（例如英特尔 NUC）有一个不幸的错误，即如果添加了提及 USB 驱动器路径的任何启动选项，那么从那时起，当插入任何 USB 驱动器时，这将是唯一的启动选项。如果在该固件上从 USB 驱动器启动 OpenCore，并将 LauncherOption 设置为 `Full` 或 `Short`，那么这一点就适用，之后在插入任何其他 USB 时，只能看到 OpenCore 的启动项（这种高度非标准的 BIOS 行为也会影响其他软件）。避免这种情况的最佳方法是在任何版本的 OpenCore 上将LauncherOption 设置为 `Disabled` 或 `System`，该固件将从 USB 驱动器启动。
+*注 3*：英特尔 Visual BIOS 的某些版本（例如：英特尔 NUC）有一个不幸的错误，即如果添加了提及 USB 驱动器路径的任何启动选项，那么从那时起，当插入任何 USB 驱动器时，这将是唯一的启动选项。如果在该固件上从 USB 驱动器启动 OpenCore，并将 LauncherOption 设置为 `Full` 或 `Short`，那么这一点就适用，之后在插入任何其他 USB 时，只能看到 OpenCore 的启动项（这种高度非标准的 BIOS 行为也会影响其他软件）。避免这种情况的最佳方法是在任何版本的 OpenCore 上将LauncherOption 设置为 `Disabled` 或 `System`，该固件将从 USB 驱动器启动。
 
 如果问题已经发生，最快的可靠修复方法是：
 - 在 Intel Visual BIOS 中启用 system  UEFI Shell
 - 在关闭电源的情况下，插入 OpenCore USB
 - 开机并选择 system  UEFI Shell
 - - 由于 system Shell 不包括 bcfg，因此使用 system Shell 来启动 OpenCore 的 OpenShell（例如输入`FS2:\EFI\OC\Tools\OpenShell.efi` 命令，但你需要弄清楚 OpenCore 在哪个驱动器上，并相应地修改驱动器编号FS#:）。
-- 在 OpenShell 中，使用 bcfg boot dump 显示 NVRAM 启动选项，然后使用bcfg boot rm #（其中#是OpenCore启动条目的编号）来删除OpenCore条目。
+- 在 OpenShell 中，使用 bcfg boot dump 显示 NVRAM 启动选项，然后使用 bcfg boot rm #（其中#是OpenCore启动条目的编号）来删除 OpenCore 条目。
 
 如果你有一个为系统配置的 OpenCore，也可以直接从 OpenCore 启动菜单中启动 OpenShell。在这种情况下，如果 OpenCore 启用了 `RequestBootVarRouting`，就有必要在使用 bcfg 之前运行命令 `\EFI\OC\Tools\OpenControl.efi disable` （在禁用 OpenControl 之后，有必要在启动操作系统之前重启或运行 `OpenControl restore`）。如果你的机器上有一个工作版本的Linux，也可以在 Linux 中使用 efibootmgr 来删除违规的条目。Linux 必须不通过 OpenCore 启动，或者通过禁用 `RequestBootVarRouting` 的 OpenCore 启动，这样才能发挥作用。
 
@@ -222,7 +222,7 @@ OpenCore 启动选择器中的启动选项的显示顺序和启动过程，是�
 **Failsafe**: `Default`
 **Description**: `LauncherOption` 的启动引导路径。
 
-`Default` 用于引导 `OpenCore.efi`。其他的路径（如 `\EFI\Launcher.efi`）可用来提供自定义加载器，用于自行加载 `OpenCore.efi`。
+`Default` 用于引导 `OpenCore.efi`。其他的路径（例如：`\EFI\Launcher.efi`）可用来提供自定义加载器，用于自行加载 `OpenCore.efi`。
 
 ### 6. `PickerAttributes`
 
@@ -230,7 +230,7 @@ OpenCore 启动选择器中的启动选项的显示顺序和启动过程，是�
 **Failsafe**: `0`
 **Description**: 设置开机引导菜单的属性。
 
-可以用属性掩码来设置引导菜单的不同属性，其中掩码包含 OpenCore 的预留值（`BIT0` ~ `BIT15`）和 OEM 特定值（`BIT16` ~ `BIT31`）。
+可以用属性掩码来设置引导菜单的不同属性，其中掩码包含 OpenCore 的预留值（`BIT0`~`BIT15`）和 OEM 特定值（`BIT16`~`BIT31`）。
 
 目前 OpenCore 的预留值有：
 - `0x0001` — `OC_ATTR_USE_VOLUME_ICON`，为启动项提供自定义图标：
@@ -273,7 +273,7 @@ OpenCore 启动选择器中的启动选项的显示顺序和启动过程，是�
 **Failsafe**: `false`
 **Description**: 在开机引导菜单中启用屏幕朗读。
 
-macOS Bootloader 屏幕朗读的偏好设置是存在 `isVOEnabled.int32` 文件的 `preferences.efires` 中、并受操作系统控制。这里仅提供一个等效的开关。切换 OpenCore 开机引导菜单和 macOS BootLoader FileVault 2 登录界面也可以使用快捷键 `Command` + `F5`。
+macOS Bootloader 屏幕朗读的偏好设置是存在 `isVOEnabled.int32` 文件的 `preferences.efires` 中、并受操作系统控制。这里仅提供一个等效的开关。切换 OpenCore 开机引导菜单和 macOS BootLoader FileVault 2 登录界面也可以使用快捷键 `Command+F5`。
 
 *注*：屏幕朗读依赖可以正常工作的音频设备。详情请参考 UEFI Audio 属性部分。 
 
@@ -294,7 +294,7 @@ macOS Bootloader 屏幕朗读的偏好设置是存在 `isVOEnabled.int32` 文件
 - `CMD+S` --- 启动至单用户模式。
 - `CMD+S+MINUS` --- 禁用 KASLR slide，需要事先禁用 SIP。
 - `CMD+V` --- 启用 `-v`。
-- `Shift+Enter, Shift+Index` --- 启用安全模式，可与 `CTRL+Enter`、`CTRL+[数字]` 结合使用。
+- `Shift+Enter，Shift+Index` --- 启用安全模式，可与 `CTRL+Enter`、`CTRL+[数字]` 结合使用。
 
 ### 9. `ShowPicker`
 
@@ -314,7 +314,7 @@ macOS Bootloader 屏幕朗读的偏好设置是存在 `isVOEnabled.int32` 文件
 
 ### 11. `Timeout`
 
-**Type**: `plist integer`, 32 bit
+**Type**: `plist integer`，32 bit
 **Failsafe**: `0`
 **Description**: 开机引导菜单中，启动默认启动项之前超时时间（以秒为单位）。 使用 `0` 禁用倒计时。
 
@@ -338,7 +338,7 @@ OpenCore 内置的启动选择器包含了一系列在启动过程中选择的�
 
 - `Default` --- 此项为默认选项，可以让 OpenCore 内置的启动选择器按照 [启动磁盘](https://support.apple.com/zh-cn/guide/mac-help/mchlp1034/mac) 偏好设置中指定的方式加载默认的启动项。
 - `ShowPicker` --- 此项会强制显示启动选择器，通常可以在启动时按住 `OPT` 键来实现。将 `ShowPicker` 设置为 `true` 会使 `ShowPicker` 成为默认选项。
-- `BootApple` --- 此项会启动到第一个找到的 Apple 操作系统，除非 Apple 已经默认选择了操作系统。按住 `X` 来选择此选项。
+- `BootApple` --- 此项会启动到第一个找到的 Apple 操作系统，除非 Apple 已经默认选择了操作系统。按住 `X` 键来选择此选项。
 - `BootAppleRecovery` --- 此项会启动到 Apple 操作系统的恢复系统。这里的系统要么是「与默认选中的操作系统相关的恢复系统」，要么是「第一个找到的非 Apple 的默认操作系统的恢复系统」，要么是「无恢复系统」。按住 `CMD+R` 组合键来选择此选项。
 
 *注 1*：在非 Apple 固件上需要激活 `KeySupport`、`OpenUsbKbDxe` 或类似的驱动程序才能工作。然而，并非所有的键处理功能都能在几种类型的固件上实现。
@@ -361,7 +361,7 @@ OpenCore 内置的启动选择器包含了一系列在启动过程中选择的�
 - Acidanthera\Chardonnay - macOS 10.4风格的图标集。
 
 为了方便起见，还有一些预定义的别名:
-   - Auto — 根据 DefaultBackground 颜色，自动选择一组图标。Acidanthera\GoldenGate 为西拉黑，Acidanthera\Chardonnay为浅灰色。
+   - Auto — 根据 DefaultBackground 颜色，自动选择一组图标。Acidanthera\GoldenGate 为西拉黑，Acidanthera\Chardonnay 为浅灰色。
    - Default —Acidanthera\GoldenGate。
 
 ## 8.4 Debug 属性
@@ -405,7 +405,7 @@ cat Kernel.panic | grep macOSProcessedStackshotData |
 
 ### 5. `DisplayLevel`
 
-**Type**: `plist integer`, 64 bit
+**Type**: `plist integer`，64 bit
 **Failsafe**: `0`
 **Description**: 与屏幕显示相关的 EDK II 调试级别的位掩码（总和）。除非 `Target` 启用了控制台在屏幕上输出日志，否则屏幕上的调试输出将不可见。
 
@@ -725,7 +725,7 @@ rm vault.pub
 
 ### 12. `ScanPolicy`
 
-**Type**: `plist integer`, 32 bit
+**Type**: `plist integer`，32 bit
 **Failsafe**: `0xF0103`
 **Description**: 定义操作系统检测策略。
 
