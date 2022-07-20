@@ -342,7 +342,7 @@ AudioDxe 清除了 Intel HDA No Snoop Enable（NSNPEN）bit。在某些系统上
 
 除非另有说明（例如 ResetTrafficClass），否则本节中的设置仅用于 UEFI 音频支持（例如 OpenCore 生成的引导蜂鸣音和音频辅助），与操作系统音频支持所需的任何配置（例如 AppleALC ）无关。
 
-音频支持为上游协议提供了一种与所选硬件和音频资源交互的方式。所有音频资源应该保存在 `\EFI\OC\Resources\Audio` 目录。目前支持的音频文件格式为 `MP3` 和 `WAVE PCM`。虽然支持哪种音频流格式取决于驱动程序，但大多数常见的音频卡都支持 `44100` 或 `48000Hz` 的 `16` 位立体声。
+音频支持为上游协议提供了一种与所选硬件和音频资源交互的方式。所有音频资源应该保存在 `\EFI\OC\Resources\Audio` 目录。目前支持的音频文件格式为 `MP3` 和 `WAVE PCM`。虽然支持哪种音频流格式取决于驱动程序，但大多数常见的音频卡都支持 4410` 或 48000H` 的 16 位立体声。
 
 音频文件的路径是由音频的类型、本地化语言和路径决定的。每个文件名看起来都类似于：`[audio type]_[audio localisation]_[audio path].[audio ext]`。对于没有本地化的文件，其文件名不包含语言代码，看起来类似于：`[audio type]_[audio path].[audio ext]`。其中音频扩展名为 `mp3` 或 `wav`。
 
@@ -488,13 +488,13 @@ APFS 驱动版本将 APFS 驱动与 macOS 版本联系起来。苹果公司最�
 **Failsafe**: `50` (第一个键重复前 `500ms`)
 **Description**: 在 OpenCore 对 Apple Event 协议的重新实现中，配置键盘按键的间隔时间，单位为 `10ms`。Apple 事件协议的 OpenCore 再实现中，配置键盘按键的间隔时间，单位为 `10ms`。
 
-苹果 OEM 的默认值是 `50`（`500ms`）。
+苹果 OEM 的默认值是 50（500ms）。
 
-*注 1 *：在不使用 `KeySupport` 的系统上，此设置可自由用于配置按键的间隔时间。
+*注 1*：在不使用 `KeySupport` 的系统上，此设置可自由用于配置按键的间隔时间。
 
-*注 2 *：在使用 `KeySupport` 的系统上，但不显示 `two long delays` 行为（见 *注 3 *）或总是显示一个坚实的 `set default` 指标（见 `KeyForgetThreshold`），那么这个设置也可以自由地用于配置按键的间隔时间，只是它永远不应该被设置为小于 `KeyForgetThreshold`，以避免不受控制的按键的间隔时间。
+*注 2*：在使用 `KeySupport` 的系统上，但不显示 `two long delays` 行为（见 *注 3*）或总是显示一个坚实的 `set default` 指标（见 `KeyForgetThreshold`），那么这个设置也可以自由地用于配置按键的间隔时间，只是它永远不应该被设置为小于 `KeyForgetThreshold`，以避免不受控制的按键的间隔时间。
 
-*注 3 *：在一些使用 KeySupport 的系统上，你可能会发现在按住一个键时，在正常速度的按键响应之前，你会看到一个额外的慢速响应。如果是这样，你可能希望根据 `KeySubsequentDelay` 的 *注 3 * 来配置 `KeyInitialDelay` 和 `KeySubsequentDelay`。（译者注：简单来说就是多一个响应慢的按键，例如，连续按两次 x 键，出现 3 次响应）
+*注 3*：在一些使用 KeySupport 的系统上，你可能会发现在按住一个键时，在正常速度的按键响应之前，你会看到一个额外的慢速响应。如果是这样，你可能希望根据 `KeySubsequentDelay` 的 *注 3* 来配置 `KeyInitialDelay` 和 `KeySubsequentDelay`。（译者注：简单来说就是多一个响应慢的按键，例如，连续按两次 x 键，出现 3 次响应）
 
 ### 4. `KeySubsequentDelay`
 
@@ -502,7 +502,7 @@ APFS 驱动版本将 APFS 驱动与 macOS 版本联系起来。苹果公司最�
 **Failsafe**: `5` (随后的按键重复间隔 `50ms`)
 **Description**: 在 OpenCore 对 Apple Event 协议的重新实现中，配置键盘按键的重复间隔，单位为 `10ms`。
 
-Apple OEM 的默认值是 `5`（`50ms`）。`0` 是这个选项的无效值（将发出调试日志警告，使用 `1` 代替）。
+Apple OEM 的默认值是 5（50ms）。`0` 是这个选项的无效值（将发出调试日志警告，使用 `1` 代替）。
 
 注1：在不使用 `KeySupport` 的系统上，此设置可自由用于配置按键重复行为。
 
@@ -544,7 +544,7 @@ Apple OEM 的默认值是 `5`（`50ms`）。`0` 是这个选项的无效值（�
 
 这是 OpenCore 内置的 Apple Event 驱动程序轮询指针设备（如鼠标、触控板）的运动事件的最短时间。默认为 `10` 毫秒。设置为 `0` 将使这一默认值保持不变。
 
-*注*： OEM Apple 的实现使用 `2ms` 的轮询率。
+*注*： OEM Apple 的实现使用 2ms 的轮询率。
 
 ### 7. `PointerPollMax`
 
@@ -552,11 +552,11 @@ Apple OEM 的默认值是 `5`（`50ms`）。`0` 是这个选项的无效值（�
 **Failsafe**: `0` 
 **Description**: 配置最大指针轮询周期，单位为 `ms`。
 
-这是 OpenCore 内置的 Apple Event 驱动程序轮询指针设备（如鼠标、触控板）的运动事件的最长时间。只要设备没有及时响应，该周期就会增加到这个值。目前的默认值为 `80ms`。 设置为 `0` 将使这一默认值保持不变。
+这是 OpenCore 内置的 Apple Event 驱动程序轮询指针设备（如鼠标、触控板）的运动事件的最长时间。只要设备没有及时响应，该周期就会增加到这个值。目前的默认值为 80ms。 设置为 `0` 将使这一默认值保持不变。
 
 戴尔笔记本电脑中经常发现的某些触控板驱动程序在没有物理运动发生时，反应可能非常缓慢。 这可能会影响 OpenCanopy 和FileVault 2 用户界面的响应能力和加载时间。增加轮询周期可以减少影响。
 
-*注*： OEM Apple 的实现使用 `2ms` 的轮询率。
+*注*： OEM Apple 的实现使用 2ms 的轮询率。
 
 ### 8. `PointerPollMax`
 
@@ -734,7 +734,7 @@ Apple OEM 的默认值是 `5`（`50ms`）。`0` 是这个选项的无效值（�
 
 **Type**: `plist boolean`
 **Failsafe**: `0`
-**Description**: 将 HDA Traffic Class Select 寄存器设置为 TC0。
+**Description**: 将 HDA Traffic Class Select 寄存器设置为 `TC0`。
 
 只有当 TCSEL 寄存器配置为 `use TC0 traffic class` 时，AppleHDA.kext 才能正常工作。有关此寄存器的更多详细信息，请参阅 Intel I/O Controller Hub 9（ICH9）Family Datasheet（或任何其他 ICH Datasheet）。
 
@@ -792,15 +792,15 @@ Apple OEM 的默认值是 `5`（`50ms`）。`0` 是这个选项的无效值（�
 
 `AppleKeyMapAggregator` 协议应该包含当前按下的键的固定长度的缓冲。但是大部分驱动程序仅将按键按下报告为中断、并且按住按键会导致在一定的时间间隔后再提交按下行为。一旦超时到期，我们就是用超时从缓冲区中删除一次按下的键，并且没有新提交。
 
-此选项允许根据你的平台设置此超时。在大多数平台上有效的推荐值为 `5` 毫秒。作为参考，在 VMWare 上按住一个键大约每 `2` 毫秒就会重复一次，而在 APTIO V 上是 `3-4` 毫秒。因此，可以在较快的平台上设置稍低的值、在较慢的平台设置稍高的值，以提高响应速度。
+此选项允许根据你的平台设置此超时。在大多数平台上有效的推荐值为 5 毫秒。作为参考，在 VMWare 上按住一个键大约每 2 毫秒就会重复一次，而在 APTIO V 上是 3-4 毫秒。因此，可以在较快的平台上设置稍低的值、在较慢的平台设置稍高的值，以提高响应速度。
 
-在同一平台上，一个接一个地按下按键会导致至少 `60` 和 `100` 毫秒的延迟。理想情况下，`KeyForgetThreshold` 应该保持低于这个值，以避免合并真正的按键。
+在同一平台上，一个接一个地按下按键会导致至少 60 和 100 毫秒的延迟。理想情况下，`KeyForgetThreshold` 应该保持低于这个值，以避免合并真正的按键。
   
 调整 `KeyForgetThreshold` 的值对于在启用了 `KeySupport` 的系统上实现准确和灵敏的键盘输入是必要的，建议按照下面的说明为你的系统正确地调整它。  
   
 *注 1*：要调整 `KeyForgetThreshold`，你可以使用 OpenCanopy 或内置启动选择器中的 `set default` 指示符。如果`KeyForgetThreshold` 太低，那么当按住 `CTRL` 或 `=/+` 时， `set default` 指示符将继续闪烁。你应该配置能避免这种闪烁的最低值。在一些系统上（例如 Aptio IV 和可能使用 AMI KeySupport 模式的其他系统），你可以找到一个最小的`KeyForgetThreshold` 值，在这个值上， `set default` 指示符会亮起并保持不变，而且没有闪烁，如果是这样，就使用这个值。在大多数其他使用 `KeySupport` 的系统上，你会发现，当第一次按住 `CTRL` 或 `=/+` 键时， `set default` 指示符会闪烁一次，然后再经过一个非常短暂的间隔，就会亮起并保持亮起。在这样的系统上，你应该选择最低的 `KeyForgetThreshold` 值，在这个值上，你只看到最初的一次闪烁，然后就没有后续的闪烁了。(在这种情况下，这是使用 `KeySupport` 模拟原始键盘数据的系统上不可避免的缺陷，UEFI 不提供这种数据）。
   
-*注 2*：`KeyForgetThreshold` 最多不需要超过 `9` 或 `10`。如果它被设置为一个远高于此的值，将导致明显的键盘输入无反应。因此，为了整体的按键响应，强烈建议配置一个相对较低的值，在这个值上， `set default` 指示符会闪烁一次，然后不再闪烁，而不是使用一个高得多的值（即明显大于 `10`），你可能能找到但不应该使用这个值，在这个值上， `set default` 指示符根本不闪烁。  
+*注 2*：`KeyForgetThreshold` 最多不需要超过 ` 或 10。如果它被设置为一个远高于此的值，将导致明显的键盘输入无反应。因此，为了整体的按键响应，强烈建议配置一个相对较低的值，在这个值上， `set default` 指示符会闪烁一次，然后不再闪烁，而不是使用一个高得多的值（即明显大于 10），你可能能找到但不应该使用这个值，在这个值上， `set default` 指示符根本不闪烁。  
 
 ### 3. `KeySupport`
 
@@ -855,7 +855,7 @@ Apple OEM 的默认值是 `5`（`50ms`）。`0` 是这个选项的无效值（�
 
 这个选项允许用 `100` 纳秒单位的指定值来更新固件架构的定时器周期。设置一个较低的值通常可以提高接口和输入处理的性能和响应性。  
   
-建议值为 `50000`（即 `5` 毫秒）或稍高一些。选择 ASUS Z87 主板时，请使用 `60000`，苹果主板请使用 `100000`。你也可以将此值设置为 `0`，不改变固件始终刷新的频率。
+建议值为 `50000`（即 5 毫秒）或稍高一些。选择 ASUS Z87 主板时，请使用 `60000`，苹果主板请使用 `100000`。你也可以将此值设置为 0，不改变固件始终刷新的频率。
 
 ## 11.15 Output 属性
 
@@ -1263,23 +1263,23 @@ Apple 音频协议允许 macOS bootloader 和 OpenCore 播放声音和信号，�
 **Failsafe**: `-1`
 **Description**: 配置 GPU PCI BAR 的大小。  
   
-这个 Quirk 按照规定设置 GPU PCI BAR 的大小，或者选择低于 ResizeGpuBars 值的最大可用值。指定的值遵循 PCI Resizable BAR 的规则。使用 `0` 代表 1MB，`1` 代表 `2MB`，`2` 代表 `4MB`，以此类推，直到 `19` 代表 `512GB`。
+这个 Quirk 按照规定设置 GPU PCI BAR 的大小，或者选择低于 ResizeGpuBars 值的最大可用值。指定的值遵循 PCI Resizable BAR 的规则。使用 0 代表 1MB，1 代表 2M`，2 代表 4MB，以此类推，直到 19 代表 512GB。
   
-Resizable BAR 技术允许通过将可配置的内存区域 BAR 映射到 CPU 地址空间（例如，将 VRAM 映射到 RAM），而不是固定的内存区域，来简化 PCI 设备的编程。这项技术是必要的，因为人们不能在默认情况下映射最大的内存区域，原因是要向后兼容不支持 `64` 位 BAR 的旧硬件。因此，过去十年的设备默认使用 `256MB` 的 BAR（剩下的 `4` 位被其他数据使用），但通常允许将它们的大小调整为更小和更大的 `2` 次方（例如，从 `1MB` 到 VRAM 大小）。  
+Resizable BAR 技术允许通过将可配置的内存区域 BAR 映射到 CPU 地址空间（例如，将 VRAM 映射到 RAM），而不是固定的内存区域，来简化 PCI 设备的编程。这项技术是必要的，因为人们不能在默认情况下映射最大的内存区域，原因是要向后兼容不支持 64 位 BAR 的旧硬件。因此，过去十年的设备默认使用 256MB 的 BAR（剩下的 4 位被其他数据使用），但通常允许将它们的大小调整为更小和更大的 2 次方（例如，从 1MB 到 VRAM 大小）。  
   
 针对 x86 平台的操作系统通常不控制 PCI 地址空间，让 UEFI 固件决定 BAR 地址和大小。这种非法的做法导致 Resizable BAR 技术直到 2020 年都没有被使用，尽管它在 2008 年被标准化，并在不久后被广泛用于硬件。
 
 现代 UEFI 固件允许使用 Resizable BAR 技术，但通常将可配置的选项限制为故障安全默认值（OFF）和最大可用值（ON）。这个 Quirk 允许为测试和开发目的微调这个值。  
   
-考虑一个有 `2` 个 BAR 的 GPU。
-- BAR0 支持从 `256MB` 到 `8GB` 的大小。它的值是 `4GB`。
-- BAR1 支持从 `2MB` 到 `256MB` 的大小。它的值是 `256MB`。  
+考虑一个有 2 个 BAR 的 GPU。
+- BAR0 支持从 256MB 到 8GB 的大小。它的值是 4GB。
+- BAR1 支持从 2MB 到 256MB 的大小。它的值是 256MB。  
   
-*例 1*：将 ResizeGpuBars 设置为 `1GB` 将改变 BAR0 为 `1GB`，BAR1 保持不变。
-*例 2*: 将 ResizeGpuBars 设置为 `1MB` 将改变 BAR0 为 `256MB`，BAR0 为 `2MB`。
-*例 3*：将 ResizeGpuBars 设置为 `16GB` 将改变 BAR0 为 `8GB`，BAR1 保持不变。 
+*例 1*：将 ResizeGpuBars 设置为 1GB 将改变 BAR0 为 1GB，BAR1 保持不变。
+*例 2*: 将 ResizeGpuBars 设置为 1MB 将改变 BAR0 为 256MB，BAR0 为 2MB。
+*例 3*：将 ResizeGpuBars 设置为 16GB 将改变 BAR0 为 8GB，BAR1 保持不变。 
 
-*注 1*：这个 Quirk 不应该被用来解决 macOS 对超过 `1GB` 的 BAR 的限制。应该使用 ResizeAppleGpuBars 来代替。
+*注 1*：这个 Quirk 不应该被用来解决 macOS 对超过 1GB 的 BAR 的限制。应该使用 ResizeAppleGpuBars 来代替。
 *注 2*：虽然这个 Quirk 可以增加 GPU PCI BAR 的大小，但这在大多数固件上是行不通的，因为这个 Quirk 不会重新定位内存中的 BAR，而且它们可能会重叠。我们欢迎大家为改进这一功能做出贡献。  
   
 ### 13. `TscSyncTimeout`
