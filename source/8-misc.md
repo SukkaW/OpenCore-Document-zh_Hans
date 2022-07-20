@@ -274,11 +274,11 @@ OpenCore 启动选择器中的启动选项的显示顺序和启动过程，是�
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
-**Description**: 在开机引导菜单中启用 屏幕朗读。
+**Description**: 在开机引导菜单中启用屏幕朗读。
 
-macOS Bootloader 屏幕朗读 的偏好设置是存在 `isVOEnabled.int32` 文件的 `preferences.efires` 中、并受操作系统控制。这里仅提供一个等效的开关。切换 OpenCore 开机引导菜单和 macOS BootLoader FileVault 2 登录界面也可以使用快捷键 `Command` + `F5`。
+macOS Bootloader 屏幕朗读的偏好设置是存在 `isVOEnabled.int32` 文件的 `preferences.efires` 中、并受操作系统控制。这里仅提供一个等效的开关。切换 OpenCore 开机引导菜单和 macOS BootLoader FileVault 2 登录界面也可以使用快捷键 `Command` + `F5`。
 
-*注*：屏幕朗读 依赖可以正常工作的音频设备。详情请参考 UEFI Audio 属性部分。 
+*注*：屏幕朗读依赖可以正常工作的音频设备。详情请参考 UEFI Audio 属性部分。 
 
 ### 8. `PollAppleHotKeys`
 
