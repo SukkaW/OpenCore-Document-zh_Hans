@@ -415,7 +415,7 @@ cat Kernel.panic | grep macOSProcessedStackshotData |
 
 - `0x00000002` (bit `1`) --- `DEBUG_WARN` in `DEBUG`, `NOOPT`, `RELEASE`.
 - `0x00000040` (bit `6`) --- `DEBUG_INFO` in `DEBUG`, `NOOPT`.
-- `0x00400000` (bit `22`) --- `DEBUG_VERBOSE` in custom builds.
+- `0x00400000` (bit `22`) --- `DEBUG_VERBOSE` in `custom builds`.
 - `0x80000000` (bit `31`) --- `DEBUG_ERROR` in `DEBUG`, `NOOPT`, `RELEASE`.
 
 ### 6. `LogModules`
