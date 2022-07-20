@@ -3,7 +3,7 @@ title: 7. Kernel
 description: OpenCore 安全配置，Kext 加载顺序以及屏蔽
 type: docs
 author_info: 由 Sukka、derbalkon、cike-567 整理，由 Sukka、derbalkon、cike-567 翻译。
-last_updated: 2022-07-19
+last_updated: 2022-07-20
 ---
 
 ## 7.1 简介
@@ -20,7 +20,11 @@ last_updated: 2022-07-19
 
 设计为使用 `plist dict` 数据填充以描述每个驱动程序。请参阅下述 Add 属性章节。
 
-*注*：Kext 驱动程序加载的顺序遵照数组中项目的顺序，因此如 Lilu 这种其他驱动程序的依赖驱动应该位于前面。可以通过检查 Kext 驱动中 `Info.plist` 的 `OSBundleLibraries` 值的方法来确定其依赖驱动的加载顺序。`OSBundleLibraries` 中的任何依赖驱动都必须在此 Kext 之前加载。Kext 驱动的内部可能也附带另外的 Kext (`Plug-Ins`)，每个内部的 Kext 也都必须单独添加。
+*注 1*：Kext 驱动程序加载的顺序遵照数组中项目的顺序，因此如 Lilu 这种其他驱动程序的依赖驱动应该位于前面。
+
+*注 2*：可以通过检查 Kext 驱动中 `Info.plist` 的 `OSBundleLibraries` 值的方法来确定其依赖驱动的加载顺序。`OSBundleLibraries` 中的任何依赖驱动都必须在此 Kext 之前加载。
+
+*注 3*：Kext 驱动的内部可能也附带另外的 Kext (`Plug-Ins`)，每个内部的 Kext 也都必须单独添加，并遵循与其他 Kext 相同的全局排序规则。
 
 ### 2. Block
 
@@ -43,7 +47,13 @@ last_updated: 2022-07-19
 
 设计为使用 `plist dict` 值来填充，用于描述驱动程序。参见下面的 Force 属性部分。依赖其他驱动的驱动程序不能被缓存，该部分着重解决了这种驱动程序注入的难点。这个问题会映像到旧的操作系统，在旧的操作系统中存在各种依赖性的 Kext，比如 `IOAudioFamily` 和 `IONetworkingFamily`，可能默认不存在于内核缓存中。
 
-*注*：加载的顺序是 kexts 在 array 中出现的顺序。因此，依赖关系必须出现在依赖它们的 kexts 之前。`Force` 发生在 `Add`。"forced" 的 kext 的签名没有经过任何检查。这使得使用这个功能非常危险，对安全启动不可取。在较新的操作系统中，这个功能可能在加密的分区上不起作用。
+*注 1*：加载的顺序是 Kexts 在 array 中出现的顺序。因此，依赖关系必须出现在依赖它们的 Kexts 之前。
+
+*注 2*：`Force` 发生在 `Add` 之前。
+
+*注 3*："forced" 的 Kexts 的签名没有经过任何检查。这使得使用这个功能非常危险并且不适合安全启动。
+
+*注 4*：在较新的操作系统中，这个功能可能在加密的分区上不起作用。
 
 ### 5. Patch
 
@@ -129,7 +139,7 @@ last_updated: 2022-07-19
 
 **Type**: `plist string`
 **Failsafe**: Empty
-**Description**: Kext 中 `Info.plist` 文件的路径。一般为 `Contents/Info.plist`。
+**Description**: Kext 中 `Info.plist` 文件的路径。例如 `Contents/Info.plist`。
 
 ## 7.4 Block 属性
 
@@ -155,7 +165,7 @@ last_updated: 2022-07-19
 
 **Type**: `plist string`
 **Failsafe**: Empty
-**Description**: Kext Bundle 标识符（比如 `com.apple.driver.AppleTyMCEDriver`）。
+**Description**: Kext Bundle 标识符（例如 `com.apple.driver.AppleTyMCEDriver`）。
 
 ### 5. `MaxKernel`
 
@@ -181,7 +191,11 @@ last_updated: 2022-07-19
 - Disable - 强行让内核驱动的 kmod 启动代码返回失败。
 - Exclude - 通过删除 plist entry 并填入 0，从内核缓存中删除内核驱动。
 
-*注*：排除作为其他依赖项的 kext 是有风险的。目前排除仅适用于预链接内核和更新的机制。在大多数情况下，删除内核驱动之后需要注入新的 kext 作为替代品。
+*注 1*：排除作为其他依赖项的 Kext 是有风险的。
+
+*注 2*：目前排除仅适用于预链接内核和更新的机制。
+
+*注 3*：在大多数情况下，删除内核驱动之后需要注入新的 Kext 作为替代品。
 
 ## 7.5 Emulate 属性
 
@@ -192,7 +206,6 @@ last_updated: 2022-07-19
 **Description**: `EAX`、`EBX`、`ECX`、`EDX` 值的序列，用来取代 XNU 内核中的 `CPUID (1)` 调用。
 
 该属性主要应用于以下三种需求：
-
 - 对不支持的 CPU 型号启用支持（比如英特尔的奔腾处理器）。
 - 对特定 macOS 版本（通常是旧版）不支持的 CPU 型号启用支持。
 - 对不支持的 CPU Variant 启用 XCPM 支持。
@@ -201,7 +214,7 @@ last_updated: 2022-07-19
 
 *注 2*：通常来讲只需要处理 `EAX` 的值，因为它代表完整的 CPUID。剩余的字节要留为 0。字节顺序是小端字节序（Little Endian），比如 `C3 06 03 00` 代表 CPUID `0x0306C3` (Haswell)。
 
-*注 3*：推荐使用下面的组合启用 XCPM 支持：
+*注 3*：推荐使用下面的组合启用 XCPM 支持。请注意，需要设置与所安装的CPU相匹配的正确[频率向量](https://github.com/dortania/bugtracker/issues/190)。：
 
 - Haswell-E (`0x0306F2`) to Haswell (`0x0306C3`):
   `Cpuid1Data`: `C3 06 03 00 00 00 00 00 00 00 00 00 00 00 00 00`  
@@ -220,7 +233,6 @@ last_updated: 2022-07-19
   `Cpuid1Mask: FF FF FF FF 00 00 00 00 00 00 00 00 00 00 00 00`
 
 *注 4*：请记住，目前以下配置不被 XCPM 兼容（至少还没有人成功过）：
-
 - 消费级的 Ivy Bridge（`0x0306A9`），因为苹果针对它禁用了 XCPM 并推荐用户使用传统的电源管理。如果要使用这一选项，你还需要手动添加 `_xcpm_patch` 二进制修补以强制启用 XCPM。
 - 低端处理器（如基于 Haswell 或奔腾），因为它们不被 macOS 支持。如果要启用这些 CPU 请参阅 [acidanthera/bugtracker#365](https://github.com/acidanthera/bugtracker/issues/365) 中的 `Special NOTES` 相关内容。
 
@@ -247,7 +259,7 @@ last_updated: 2022-07-19
 
 **Type**: `plist string`
 **Failsafe**: Empty string
-**Description**: 模拟 CPUID，并在指定的或更低的 macOS 版本上使用 `DummyPowerManagement`。
+**Description**: 模拟 CPUID，并在小于等于指定的 macOS 版本上使用 `DummyPowerManagement`。
 
 *注*：匹配逻辑请参阅 `Add` `MaxKernel` 的描述。
 
@@ -255,7 +267,7 @@ last_updated: 2022-07-19
 
 **Type**: `plist string`
 **Failsafe**: Empty string
-**Description**: 模拟 CPUID，并在指定的或更高的 macOS 版本上使用 `DummyPowerManagement`。
+**Description**: 模拟 CPUID，并在大于等于指定的 macOS 版本上使用 `DummyPowerManagement`。
 
 *注*：匹配逻辑请参阅 `Add` `MaxKernel` 的描述。
 
@@ -271,7 +283,7 @@ last_updated: 2022-07-19
 
 **Type**: `plist string`
 **Failsafe**: Empty
-**Description**: Kext 路径，如 `System/Library/Extensions/IONetworkingFamily.kext`。
+**Description**: Kext 路径，例如 `System/Library/Extensions/IONetworkingFamily.kext`。
 
 ### 3. `Comment`
 
@@ -283,19 +295,19 @@ last_updated: 2022-07-19
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
-**Description**: 是否加载该驱动。
+**Description**: 设置为 `true` 则在内核缓存中不存在时从系统卷加载此 kext 驱动程序。
 
 ### 5. `ExecutablePath`
 
 **Type**: `plist string`
 **Failsafe**: Empty
-**Description**: Kext 中实际可执行文件的路径，如 `Contents/MacOS/IONetworkingFamily`。
+**Description**: Kext 中实际可执行文件的路径，例如 `Contents/MacOS/IONetworkingFamily`。
 
 ### 6. `Identifier`
 
 **Type**: `plist string`
 **Failsafe**: Empty
-**Description**: Kext 标识符，以便在添加前检查是否存在，如 `com.apple.iokit.IONetworkingFamily`。只有在缓存中找不到标识符的驱动程序才会被添加。
+**Description**: Kext 标识符，以便在添加前检查是否存在，例如 `com.apple.iokit.IONetworkingFamily`。只有在缓存中找不到标识符的驱动程序才会被添加。
 
 ### 7. `MaxKernel`
 
@@ -379,7 +391,7 @@ last_updated: 2022-07-19
 
 **Type**: `plist string`
 **Failsafe**: Empty string
-**Description**: 在指定的或更早的 macOS 版本上打补丁。
+**Description**: 在小于指定的或更早的 macOS 版本上打补丁。
 
 *注*：匹配逻辑请参阅 `Add` `MaxKernel` 的描述。
 
@@ -387,7 +399,7 @@ last_updated: 2022-07-19
 
 **Type**: `plist string`
 **Failsafe**: Empty string
-**Description**: 在指定的或更新的 macOS 版本上打补丁。
+**Description**: 在大于等于指定的 macOS 版本上打补丁。
 
 *注*：匹配逻辑请参阅 `Add` `MaxKernel` 的描述。
 
@@ -406,7 +418,7 @@ last_updated: 2022-07-19
 ### 14. `Skip`
 
 **Type**: `plist integer`
-**Failsafe**: `0`
+**Failsafe**: `0` （不跳过任何事件）
 **Description**: 在替换前要跳过的发现事件数。
 
 ## 7.8 Quirks 属性
@@ -415,12 +427,12 @@ last_updated: 2022-07-19
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
-**Requirement**: 10.4
+**Requirement**: 10.4-12
 **Description**: 禁用 `AppleIntelCPUPowerManagement.kext` 中的 `PKG_CST_CONFIG_CONTROL` (`0xE2`) 修改，从而避免早期 Kernel Panic。
 
-某些固件会锁定 `PKG_CST_CONFIG_CONTROL` MSR 寄存器。可以使用附带的 `ControlMsrE2` 工具检查其状态。
+某些固件会锁定 `PKG_CST_CONFIG_CONTROL` MSR 寄存器。可以使用附带的 `ControlMsrE2` 工具检查其状态。请注意，某些类型的固件仅将此寄存器锁定在某些内核上。由于现代固件已经提供了 `CFG Lock` 相关设置、从而可以配置 `PKG_CST_CONFIG_CONTROL` 寄存器锁定，此选项应该尽可能避免。
 
-由于现代固件已经提供了 `CFG Lock` 相关设置、从而可以配置 `PKG_CST_CONFIG_CONTROL` 寄存器锁定，此选项应该尽可能避免。对于一些不显示 `CFG Lock` 配置的固件，可以按照下述配置进行修改：
+对于一些不显示 `CFG Lock` 配置的固件，可以按照下述配置进行修改：
 
 1. 下载 [UEFITool](https://github.com/LongSoft/UEFITool/releases) 和 [IFR-Extractor](https://github.com/LongSoft/Universal-IFR-Extractor/releases)
 2. 使用 UEFITool 中打开固件镜像文件，找到 CFG Lock 的 Unicode 字符串。如果你没有找到，意味着你的固件可能不支持 CFG Lock 解锁，那么你现在可以停下来了。
@@ -434,7 +446,9 @@ last_updated: 2022-07-19
 可变偏移量对于每个主板乃至每一个固件版本都是唯一的。永远不要尝试使用别人的偏移量！
 {% endnote %}
 
-在选定的平台上，`ControlMsrE2` 工具也可以改变这种隐藏的选项。传递所需的参数：lock, unlock for CFG Lock。或者通过控制台来查找和修改其他隐藏选项。作为最后的手段，考虑修补 BIOS（仅适用于高级用户）。
+在选定的平台上，`ControlMsrE2` 工具也可以改变这种隐藏的选项。传递所需的参数：lock, unlock for CFG Lock。或者通过控制台来查找和修改其他隐藏选项。
+
+作为最后的手段，考虑修补 BIOS（仅适用于高级用户）。
 
 ### 2. `AppleXcpmCfgLock`
 
@@ -465,7 +479,7 @@ last_updated: 2022-07-19
 
 该补丁将 `0xFF00` 写入 `MSR_IA32_PERF_CONTROL` (`0x199`)，有效地做到了一直保持最大倍数。
 
-*注*：尽管有助于提高性能，但是在所有操作系统上都强烈建议不要启用这一选项。只有在某些 Xeon 型号的 CPU 才有可能从这个选项中受益。
+*注*：尽管有助于提高性能，但是在所有操作系统上都强烈建议不要启用这一选项，但明确专用于科学或媒体计算的系统除外。只有在某些 Xeon 型号的 CPU 才有可能从这个选项中受益。
 
 ### 5. `CustomPciSerialDevice`
 
@@ -474,19 +488,18 @@ last_updated: 2022-07-19
 **Requirement**: 10.7
 **Description**:  在一个定制的 PCI 串行设备上修改 PMIO 寄存器的基本地址。
 
-该补丁改变了XNU内核用于串行输入和输出的PMIO寄存器基址，从默认的内置COM1串行端口0x3F8，改为存储在指定PCI设备的第一个IO BAR中的基址，或者是一个特定的基址（例如0x2F8用于COM2）。
+该补丁改变了 XNU 内核用于串行输入和输出的 PMIO 寄存器基址，从默认的内置COM1串行端口 0x3F8，改为存储在指定 PCI 设备的第一个 IO BAR 中的基址，或者是一个特定的基址（例如 0x2F8 用于 COM2）。
 
-*注1*：默认情况下，串行日志是禁用的。 启动参数 `serial=3`，启用串行输入和输出，使 XNU 将日志打印到串行端口。
+*注 1*：默认情况下，串行日志是禁用的。 启动参数 `serial=3`，启用串行输入和输出，使 XNU 将日志打印到串行端口。
 
-*注2*：除此修补程序外，应防止 kext Apple16X50PCI0 连接，以使 kprintf 方法正常工作。这可以通过在 DeviceProperties 部分将 PCI 串行端口设备的 class code 属性设置（即删除，然后添加）为 FFFFFF 来实现。
- 作为一个替代解决方案，也可以使用一个无代码的kext PCIeSerialDisable.kext，该kext在 [acidanthera/bugtracker#1954](https://github.com/acidanthera/bugtracker/issues/1954) 的spoiler PCIeSerialDisable.kext/Contents/Info.plist 中。
- 此外，对于某些雷电卡，IOKit personality IOPCITunnelCompatible也需要设置为 true，这可以由 [Acidantarea/bugtracker#2003](https://github.com/acidanthera/bugtracker/issues/2003#issuecomment-1116761087) 上附带的 PCIeSerialThunderboltEnable.kext 完成。
+*注 2*：除此修补程序外，应防止 kext Apple16X50PCI0 连接，以使 kprintf 方法正常工作。这可以通过在 DeviceProperties 部分将 PCI 串行端口设备的 class code 属性设置（即删除，然后添加）为 FFFFFF 来实现。
+ 作为一个替代解决方案，也可以使用一个无代码的kext PCIeSerialDisable.kext，该kext在 [acidanthera/bugtracker#1954](https://github.com/acidanthera/bugtracker/issues/1954) 的spoiler PCIeSerialDisable.kext/Contents/Info.plist 中。此外，对于某些雷电卡，IOKit personality IOPCITunnelCompatible 也需要设置为 `true`，这可以由 [Acidantarea/bugtracker#2003](https://github.com/acidanthera/bugtracker/issues/2003#issuecomment-1116761087) 上附带的 PCIeSerialThunderboltEnable.kext 完成。
  
-*注3*：要正确应用这个补丁，必须启用覆盖，并在自定义中正确设置所有按键。在 Misc->Serial 部分。
+*注 3*：要正确应用这个补丁，必须启用 Override，并在 Custom 中正确设置所有的选项。在 Misc->Serial 部分。
 
-*注4*：这个补丁是为了支持 PMIO，因此如果 Misc->Serial->Custom 部分的 UseMmio 为 `false`，则不适用。对于 MMIO，有启动参数 `pcie_mmio_uart=ADDRESS`  和 `mmio_uart=ADDRESS`，允许内核使用 MMIO 来访问串行端口。
+*注 4*：这个补丁是为了支持 PMIO，因此如果 Misc->Serial->Custom 部分的 UseMmio 为 `false`，则不适用。对于 MMIO，有启动参数 `pcie_mmio_uart=ADDRESS`  和 `mmio_uart=ADDRESS`，允许内核使用 MMIO 来访问串行端口。
 
-*注5*：串行波特率必须在 Misc->Serial->Custom 部分的 `BaudRate` 和通过启动参数 `serialbaud=VALUE` 正确设置。这两个参数应该相互匹配。默认的波特率是 `115200`。
+*注 5*：串行波特率必须在 Misc->Serial->Custom 部分的 `BaudRate` 和通过启动参数 `serialbaud=VALUE` 正确设置。这两个参数应该相互匹配。默认的波特率是 `115200`。
 
 ### 6. `CustomSMBIOSGuid`
 
@@ -502,15 +515,15 @@ last_updated: 2022-07-19
 **Requirement**: 10.8 (not required for older)
 **Description**: 禁用 XNU (VT-d) 中的 `IOMapper` 支持，这可能与固件的实现相冲突。
 
-*注1*：该选项是直接在 ACPI 表中删除 `DMAR` 和在固件首选项中禁用 VT-d 的首选替代方案。不会妨碍其他操作系统中的 VT-d 支持。
+*注 1*：该选项是直接在 ACPI 表中删除 `DMAR` 和在固件首选项中禁用 VT-d 的首选替代方案。不会妨碍其他操作系统中的 VT-d 支持。
 
-注2：固件中错误配置的 IOMMU 可能导致设备损坏，如以太网或 Wi-Fi 适配器。例如，以太网适配器可能会无限在连接-断开中循环，Wi-Fi 适配器可能无法发现网络。技嘉是出现这些问题的最常见的 OEM 厂商之一。
+*注 2*：固件中错误配置的 IOMMU 可能导致设备损坏，如以太网或 Wi-Fi 适配器。例如，以太网适配器可能会无限在连接-断开中循环，Wi-Fi 适配器可能无法发现网络。技嘉是出现这些问题的最常见的 OEM 厂商之一。
 
 ### 8. `DisableLinkeditJettison`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
-**Requirement**: 11.0
+**Requirement**: 11
 **Description**: 禁止丢弃 `__LINKEDIT`。
 
 这个选项能让 `Lilu.kext` 和其他一些功能在 macOS Big Sur 中以最佳性能运行，而不需要 `keepsyms=1` 启动参数。
@@ -530,10 +543,10 @@ last_updated: 2022-07-19
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
-**Requirement**: 10.8
+**Requirement**: 10.8-11
 **Description**: 将 `FeatureFlags` 设置为 `0x0F`，以实现蓝牙的全部功能（包括连续互通功能）。
 
-*注*：此选项是 `BT4LEContinuityFixup.kext` 的替代品。由于后期修补进度，无法正常工作。
+*注*：此选项是 `BT4LEContinuityFixup.kext` 的替代品。由于补丁进度较晚，无法正常工作。
 
 ### 11. `ExternalDiskIcons`
 
@@ -553,13 +566,11 @@ last_updated: 2022-07-19
 
 这个选项可以使基于 Aquantia AQtion 的 10GbE 网卡得到支持，在macOS 10.15.4之前，这些网卡是原生支持的。
 
-*注1*：为了使 Aquantia 卡正常工作，必须禁用 `DisableIoMapper`，不得丢弃 `DMAR` ACPI 表，并且必须在 BIOS 中启用 VT-d。
+*注 1*：为了使 Aquantia 卡正常工作，必须禁用 `DisableIoMapper`，不得丢弃 `DMAR` ACPI 表，并且必须在 BIOS 中启用 VT-d。
 
-*注2*：虽然此补丁应支持所有 Aquantia AQtion 系列的以太网卡，但它仅在基于 AQC-107s 的 10GbE 网卡上进行了测试。
+*注 2*：虽然此补丁应支持所有 Aquantia AQtion 系列的以太网卡，但它仅在基于 AQC-107s 的 10GbE 网卡上进行了测试。
 
-*注3*：为了解决 AppleVTD 在应用这个 Quirk 后的不兼容问题，`DMAR` ACPI表中相应设备的保留内存区域部分可能被删除。这个表应该被拆解和编辑，然后用 iASL 工具重新编译成 AML。为了添加修补后的 `DMAR` 表，应该删除原来的表。更多细节可以在commit [2441455](https://github.com/acidanthera/OpenCorePkg/commit/24414555f2c07e06a3674ec7a2aa1ce4860bbcc7#commitcomment-70530145) 中找到。
-
-*注*：在虚拟机上使用 `x86legacy` 以外的 `SecureBootModel` 时需要开启此选项。
+*注 3*：为了解决 AppleVTD 在应用这个 Quirk 后的不兼容问题，`DMAR` ACPI表中相应设备的保留内存区域部分可能被删除。这个表应该被拆解和编辑，然后用 iASL 工具重新编译成 AML。为了添加修补后的 `DMAR` 表，应该删除原来的表。更多细节可以在commit [2441455](https://github.com/acidanthera/OpenCorePkg/commit/24414555f2c07e06a3674ec7a2aa1ce4860bbcc7#commitcomment-70530145) 中找到。
 
 ### 13. `ForceSecureBootScheme`
 
@@ -623,7 +634,6 @@ macOS Catalina 新增了一项额外的安全措施，导致在电源切换超�
 **Description**: 向内核提供当前的 CPU 信息。
 
 这个 Quirk 的工作方式因 CPU 不同而不同：
-
 - 对于微软的 Hyper-V，它向内核提供正确的 TSC 和 FSB 值，以及禁用 CPU 拓扑验证（10.8以上）。
 - 对于 KVM 和其他管理程序，它提供预计算的 MSR 35h 值，解决内核在 `-cpu host` 下的 kernel panic。
 - 对于英特尔 CPU 来说，它通过将核心数与线程数打补丁的方式，增加了对非对称 SMP 系统（例如英特尔Alder Lake）的支持，同时还补充了所需的补充修改（10.14以上）。
@@ -642,11 +652,11 @@ Trim 过程耗时取决于 SSD 控制器和硬盘碎片，可能需要相当长�
 
 解决这个问题的方法之一是将超时时间设置为一个非常高的值（如 `4294967295`），这样将会以较长的启动时间（数分钟）为代价来确保所有的区块都被 trim 处理。另一种方法是利用超额配置（如果支持），或者创建一个专用的未映射分区，控制器可以在该分区中找到保留块。在这种情况下，可以设置一个非常低的超时时间来禁止 trim 操作，例如 `999`。更多细节详见 [这篇文章](https://interface31.ru/tech_it/2015/04/mozhno-li-effektivno-ispolzovat-ssd-bez-podderzhki-trim.html)。
 
-*注1*：Failsafe -1 表示不应用此补丁，这样 apfs.ext 将保持不动。
+*注 1*：Failsafe -1 表示不应用此补丁，这样 apfs.ext 将保持不动。
 
-*注2*：在 macOS 12.0 及以上版本中，不再可能指定 trim 超时时间。但可以通过设置为 0 来禁用 trim。
+*注 2*：在 macOS 12.0 及以上版本中，不再可能指定 trim 超时时间。但可以通过设置为 0 来禁用 trim。
 
-*注3*：trim 操作只在启动阶段受到影响，当启动卷被加载时。无论是指定超时时间，或者设置为 0 完全禁用 trim，都不会影响正常的 MacOS 运行。
+*注 3*：trim 操作只在启动阶段受到影响，当启动卷被加载时。无论是指定超时时间，或者设置为 0 完全禁用 trim，都不会影响正常的 MacOS 运行。
 
 > 译者注：设置为 0 完全禁用 trim 只影响进入系统的启动阶段，对系统启动之后无影响。设置为 0 或 999 基本上没有差别，主要是 macOS 12.0 及以上版本，只有设置为 0 才能禁用 trim。
 
@@ -684,7 +694,7 @@ Trim 过程耗时取决于 SSD 控制器和硬盘碎片，可能需要相当长�
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
-**Description**: 使用校验值不同的 `kernelcache`（如果可用）。
+**Description**: 在可用时使用校验值不同的 `kernelcache`。
 
 在 macOS 10.6 和更早的版本中，`kernelcache` 文件名有一个校验值，本质上是对 SMBIOS 产品名称和 EfiBoot 设备路径进行 `adler32` 校验和的计算。在某些固件上，由于 ACPI 或硬件的特殊性，UEFI 和 macOS 的 EfiBoot 设备路径不同，使得 `kernelcache` 的校验和总是不同。
 
@@ -697,7 +707,6 @@ Trim 过程耗时取决于 SSD 控制器和硬盘碎片，可能需要相当长�
 **Description**: 如果可用，优先选择指定的内核架构（`i386`, `i386-user32`, `x86_64`）。
 
 macOS 10.7 和更早版本中，XNU 内核可能不会使用 `x86_64` 架构来启动。当 macOS 和配置支持时，该设置将使用指定的架构来启动 macOS:
-
 - `i386` --- 如果可用，则使用 `i386`（32 位）内核。
 - `i386-user32` --- 在可用的情况下使用 `i386`（32 位）内核，并在 64 位处理器上强制使用 32 位用户空间（前提是系统支持）。
    - 在 macOS 上，64 位处理器会被认为支持 `SSSE3` 指令集，但对于较老的 64 位奔腾处理器来说，实际情况并非如此，因此会导致一些应用程序在 macOS 10.6 上崩溃。该行为对应 `-legacy` 内核启动参数。
