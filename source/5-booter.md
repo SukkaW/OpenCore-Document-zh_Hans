@@ -291,9 +291,9 @@ Description: 搜索的最大字节数。
 
 GRUB-shim 对各种 UEFI image services 进行了类似的即时更改，这些服务也受到这个 Quirk 的保护。
 
-*注 1 *：在 VMware 上，是否需要开启这个 Quirk 取决于是否有 `Your Mac OS guest might run unreliably with more than one virtual core.` 这样的消息。
+*注 1*：在 VMware 上，是否需要开启这个 Quirk 取决于是否有 `Your Mac OS guest might run unreliably with more than one virtual core.` 这样的消息。
 
-*注 2 *：如果 OpenCore 是从启用了 BIOS 安全启动的 GRUB 中链式加载的，则需要这个 Quirk。
+*注 2*：如果 OpenCore 是从启用了 BIOS 安全启动的 GRUB 中链式加载的，则需要这个 Quirk。
 
 ### 14. `ProvideCustomSlide`
 
@@ -326,9 +326,9 @@ Apple 内核在解析 UEFI 内存映射时有几个限制：
 - 内存属性表会被忽略。`EfiRuntimeServicesCode` 内存静态获得 `RX` 权限，其他内存类型则获得 `RW` 权限。某些固件驱动会在运行时把数据写到全局变量中，因此 Apple 内核在调用 UEFI Runtime Services 时会崩溃，除非驱动的 `.data` 部分有 `EfiRuntimeServicesData` 类型。
 为了解决这些限制，这个 Quirk 将内存属性表的权限应用到传递给 Apple 内核的内存映射中，如果生成的内存映射超过 4KiB，则可选择尝试统一类似类型的连续插槽。
 
-*注 1 *：由于许多固件自带的内存保护不正确，所以这个 Quirk 一般要和 `SyncRuntimePermissions` 一起启用。
+*注 1*：由于许多固件自带的内存保护不正确，所以这个 Quirk 一般要和 `SyncRuntimePermissions` 一起启用。
 
-*注 2 *：根据是否遇到第一阶段启动失败再决定是否启用这一 Quirk。在支持内存属性表 (MAT) 的平台上，这一 Quirk 是 `EnableWriteUnprotector` 更好的替代。在使用 `OpenDuetPkg` 时一般是不需要启用这个 Quirk 的，但如果要启动 macOS 10.6 或更早的版本则可能需要启用，原因暂不明确。
+*注 2*：根据是否遇到第一阶段启动失败再决定是否启用这一 Quirk。在支持内存属性表 (MAT) 的平台上，这一 Quirk 是 `EnableWriteUnprotector` 更好的替代。在使用 `OpenDuetPkg` 时一般是不需要启用这个 Quirk 的，但如果要启动 macOS 10.6 或更早的版本则可能需要启用，原因暂不明确。
 
 ### 17. `ResizeAppleGpuBars`
 
@@ -341,9 +341,9 @@ Apple 内核在解析 UEFI 内存映射时有几个限制：
 出于开发的目的，可以冒险尝试其他数值。考虑具有 2 个 BAR 的 GPU。
 - BAR0 支持从 256MB 到 8GB 的大小。它的值是 4GB。
 - BAR1 支持从 2MB 到 256MB 的大小。它的值是 256MB。
-*例 1 *：将 ResizeAppleGpuBars 设置为 1GB，将 BAR0 改为 1GB，BAR1 保持不变。
-*例 2 *: 将 ResizeAppleGpuBars 设置为 1MB 将改变 BAR0 为 256MB，BAR0 为 2MB。
-*例 3 *：将 ResizeAppleGpuBars 设置为 16GB，将不做任何改变。
+*例 1*：将 ResizeAppleGpuBars 设置为 1GB，将 BAR0 改为 1GB，BAR1 保持不变。
+*例 2*: 将 ResizeAppleGpuBars 设置为 1MB 将改变 BAR0 为 256MB，BAR0 为 2MB。
+*例 3*：将 ResizeAppleGpuBars 设置为 16GB，将不做任何改变。
 
 *注*：请参阅 `ResizeGpuBars quirk` 了解 GPU PCI BAR size 配置和有关该技术的更多详细信息。
 
