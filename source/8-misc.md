@@ -428,7 +428,7 @@ cat Kernel.panic | grep macOSProcessedStackshotData |
 - `+` --- Positive filtering：仅显示选定的模块。
 - `-` --- Negative filtering：排除所选模块。
 
-当选择多个模块时，应使用逗号 `，` 作为分隔符。例如：`+OCCPU，OCA，OCB` 这表示只打印 `OCCPU`、`OCA`、`OCB` 模块的日志。而 `-OCCPU，OCA，OCB` 表示这些模块被过滤掉（即不记录）。当没有指定符号时，将使用正向过滤 `+`。*表示所有模块都被记录下来。
+当选择多个模块时，应使用逗号 `，` 作为分隔符。例如：`+OCCPU，OCA，OCB` 这表示只打印 `OCCPU`、`OCA`、`OCB` 模块的日志。而 `-OCCPU，OCA，OCB` 表示这些模块被过滤掉（即不记录）。当没有指定符号时，将使用正向过滤 `+`。`*` 表示所有模块都被记录下来。
 
 *注 1*：库的首字母缩写词可以在下面的库部分找到。
 
