@@ -3,10 +3,10 @@ title: 10. PlatformInfo
 description: SMBIOS 机型信息配置
 type: docs
 author_info: 由 xMuu、Sukka、derbalkon、cike-567 整理，由 Sukka、derbalkon、cike-567 翻译
-last_updated: 2022-07-15
+last_updated: 2022-07-20
 ---
 
-机型信息由手动生成或填充的字段组成，以便与 macOS 服务兼容。配置的基础部分可以从 [`AppleModels`](https://github.com/acidanthera/OpenCorePkg/blob/master/AppleModels) 获得，这是一个可以从 [YAML](https://yaml.org/spec/1.2/spec.html) 格式的数据库中生成一组接口的工具包。这些字段将会被写入三个位置：
+机型信息由手动生成或填充的字段组成，以便与 macOS 服务兼容。配置的基础部分可以从 [`AppleModels`](https://github.com/acidanthera/OpenCorePkg/blob/master/AppleModels) 获得，这是一个可以从 [YAML](https://yaml.org/spec/1.2.2/) 格式的数据库中生成一组接口的工具包。这些字段将会被写入三个位置：
 
 - [SMBIOS](https://www.dmtf.org/standards/smbios)
 - [DataHub](https://github.com/acidanthera/OpenCorePkg/blob/master/Include/Intel/Protocol/DataHub.h)
@@ -85,11 +85,10 @@ last_updated: 2022-07-15
 
 基本上每个 UUID `AABBCCDD-EEFF-GGHH-IIJJ-KKLLMMNNOOPP` 都是 16 字节的十六进制数字，编码方式有两种：
 
-- `Big Endian` --- 按原样书写所有字节，顺序不作任何变化（`{AA BB CC DD EE FF GG HH II JJ KK LL MM NN OO PP}`）。这种方法也被称为 [RFC 4122](https://tools.ietf.org/html/rfc4122) 编码，或 `Raw` 编码。
+- `Big Endian` --- 按原样书写所有字节，顺序不作任何变化（`{AA BB CC DD EE FF GG HH II JJ KK LL MM NN OO PP}`）。这种方法也被称为 [RFC 4122](https://datatracker.ietf.org/doc/html/rfc4122) 编码，或 `Raw` 编码。
 - `Little Endian` --- 将字节解释为数字，并使用小字节序（Little Endian）编码格式（`{DD CC BB AA FF EE HH GG II JJ KK LL MM NN OO PP}`）。
 
 SMBIOS 规范没有明确规定 UUID 的编码格式，直到 SMBIOS 2.6 才说明应使用 `Little Endian` 编码，这就导致了固件实现和系统软件的双重混乱，因为在此之前不同的厂商使用不同的编码格式。
-
 - Apple 普遍使用 `Big Endian` 编码格式，唯一例外的是 macOS 的 SMBIOS UUID。
 - `dmidecode` 对 SMBIOS 2.5.x 或更低的版本使用 `Big Endian` 编码格式。对 2.6 或更高的版本使用 `Little Endian` 编码格式。这三种格式 Acidanthera [dmidecode](https://github.com/acidanthera/dmidecode) 均可打印。
 - Windows 普遍使用 `Little Endian` 编码格式，但它只影响数值的观感。
@@ -177,8 +176,8 @@ OpenCore 在生成修改过的 DMI 表时，总是设置最新的 SMBIOS 版本�
 有效值如下：
 
 - `Auto` --- 使用原始的 `PlatformFeature` 值。
-- `Upgradable` --- 显式取消设置 `PlatformFeature` 中 `PT_FEATURE_HAS_SOLDERED_SYSTEM_MEMORY (0x2)`。
-- `Soldered` --- 显式设置 `PlatformFeature` 中的 `PT_FEATURE_HAS_SOLDERED_SYSTEM_MEMORY (0x2)`。
+- `Upgradable` --- 在 `PlatformFeature` 中明确取消设置 `PT_FEATURE_HAS_SOLDERED_SYSTEM_MEMORY (0x2)`。
+- `Soldered` --- 在 `PlatformFeature` 中明确设置的 `PT_FEATURE_HAS_SOLDERED_SYSTEM_MEMORY (0x2)`。
 
 *注*：在某些型号的 Mac 上，SPMemoryReporter.spreporter 会自动忽略 `PT_FEATURE_HAS_SOLDERED_SYSTEM_MEMORY`，并认为其内存是不可升级的，如 `MacBookPro10,x` 和所有的 `MacBookAir`。
 
@@ -191,13 +190,13 @@ OpenCore 在生成修改过的 DMI 表时，总是设置最新的 SMBIOS 版本�
 ### 6. `SystemProductName`
 
 **Type**: `plist string`
-**Failsafe**: OEM specified or not installed
+**Failsafe**: Empty（OEM specified or not installed）
 **Description**: 请参考下文 SMBIOS 章节中的 `SystemProductName`。
 
 ### 7. `SystemSerialNumber`
 
 **Type**: `plist string`
-**Failsafe**: OEM specified or not installed
+**Failsafe**: Empty（OEM specified or not installed）
 **Description**: 请参考下文 SMBIOS 章节中的 `SystemSerialNumber`。
 
 指定特殊字符串值 OEM，以从 NVRAM（SSN 变量）或 SMBIOS 中提取当前值，并在各节中使用它。贯穿各部分。这个功能只能在与 Mac 兼容的固件上使用。
@@ -205,7 +204,7 @@ OpenCore 在生成修改过的 DMI 表时，总是设置最新的 SMBIOS 版本�
 ### 8. `SystemUUID`
 
 **Type**: `plist string`, GUID
-**Failsafe**: OEM specified or not installed
+**Failsafe**: Empty（OEM specified or not installed）
 **Description**: 请参考下文 SMBIOS 章节中的 `SystemUUID`。
 
 指定特殊的字符串值 OEM，从 NVRAM（system-id 变量）或 SMBIOS 中提取当前值，并在各节中使用。并在整个章节中使用它。由于不是每个固件实现都有有效的（和唯一的）值，这个功能不适用于某些设置。由于不是每个固件实现都有有效的（和唯一的）值，所以这个功能不适用于某些设置，并且可能提供意想不到的结果。我们强烈建议明确指定 UUID。请参考 UseRawUuidEncoding 来决定如何解析 SMBIOS 值。
@@ -213,7 +212,7 @@ OpenCore 在生成修改过的 DMI 表时，总是设置最新的 SMBIOS 版本�
 ### 9. `MLB`
 
 **Type**: `plist string`
-**Failsafe**: OEM specified or not installed
+**Failsafe**: Empty（OEM specified or not installed）
 **Description**: 请参考下文 SMBIOS 章节中的 `BoardSerialNumber`。
 
 指定特殊字符串值 OEM，以从 NVRAM（MLB 变量）或 SMBIOS 中提取当前值，并在各节中使用它。贯穿各部分。这个功能只能在与 Mac 兼容的固件上使用。
@@ -221,7 +220,7 @@ OpenCore 在生成修改过的 DMI 表时，总是设置最新的 SMBIOS 版本�
 ### 10. `ROM`
 
 **Type**: `plist data`, 6 bytes
-**Failsafe**: OEM specified or not installed
+**Failsafe**: Empty（OEM specified or not installed）
 **Description**: 参考 `4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14:ROM`。
 
 指定特殊字符串值 OEM，以从 NVRAM（ROM 变量）或 SMBIOS 中提取当前值，并在各节中使用它。贯穿各部分。这个功能只能在与 Mac 兼容的固件上使用。
@@ -268,8 +267,9 @@ OpenCore 在生成修改过的 DMI 表时，总是设置最新的 SMBIOS 版本�
 
 **Type**: `plist integer`, 64-bit
 **Failsafe**: `0`
-**Description**: 在 `gEfiMiscSubClassGuid Sets` 中设置 `StartupPowerEvents`。在 Mac 上找到的值是 Power Management State 位掩码，通常为 0。`X86PlatformPlugin.kext` 能读取的已知 bit 有：
+**Description**: 在 `gEfiMiscSubClassGuid Sets` 中设置 `StartupPowerEvents`。在 Mac 上找到的值是 Power Management State 位掩码，通常为 0。
 
+`X86PlatformPlugin.kext` 能读取的已知 bit 有：
 - `0x00000001` --- Shutdown cause was a `PWROK` event (Same as `GEN_PMCON_2` bit 0)
 - `0x00000002` --- Shutdown cause was a `SYS_PWROK` event (Same as `GEN_PMCON_2` bit 1)
 - `0x00000004` --- Shutdown cause was a `THRMTRIP#`event (Same as `GEN_PMCON_2` bit 3)
@@ -289,7 +289,7 @@ OpenCore 在生成修改过的 DMI 表时，总是设置最新的 SMBIOS 版本�
 
 **Type**: `plist integer`, 64-bit
 **Failsafe**: `0`
-**Description**: 在 `gEfiProcessorSubClassGuid` 中设置 `InitialTSC`。设置初始 TSC 值，通常为 0。
+**Description**: 在 `gEfiProcessorSubClassGuid` 中设置 `InitialTSC`。设置初始 TSC 值，通常为 `0`。
 
 ### 9. `FSBFrequency`
 
@@ -297,7 +297,7 @@ OpenCore 在生成修改过的 DMI 表时，总是设置最新的 SMBIOS 版本�
 **Failsafe**: `0` (Automatic)
 **Description**: 在 `gEfiProcessorSubClassGuid` 中设置 `FSBFrequency`。
 
-设置 CPU FSB 频率。此值等于 CPU 主频除以最高总线比率，以 Hz 为单位。请参考 `MSR_NEHALEM_PLATFORM_INFO`(`CEh`) MSR 值来确定 Intel CPU 的最高总线比率。
+设置 CPU FSB 频率。此值等于 CPU 主频除以最高总线比率，以 Hz 为单位。请参考 `MSR_NEHALEM_PLATFORM_INFO(CEh) MSR` 值来确定 Intel CPU 的最高总线比率。
 
 *注*：此值虽然不是用于 Skylake 或更新的平台，但也可设置。
 
@@ -307,9 +307,9 @@ OpenCore 在生成修改过的 DMI 表时，总是设置最新的 SMBIOS 版本�
 **Failsafe**: `0` (Automatic)
 **Description**: 在 `gEfiProcessorSubClassGuid` 中设置 `ARTFrequency`。
 
-此值包含 CPU ART 频率，即晶体时钟频率。为 Skylake 或更新的平台独有，以 Hz 为单位。Client Intel segment 通常为 24 MHz，Server Intel segment 通常为 25 MHz，Intel Atom CPUs 通常为 19.2 MHz。macOS 10.15 及以下均默认为 24 MHz。
+此值包含 CPU ART 频率，即晶体时钟频率。为 Skylake 或更新的平台独有，以 `Hz` 为单位。Client Intel segment 通常为 `24MHz`，Server Intel segment 通常为 `25MHz`，Intel Atom CPUs 通常为 `19.2MHz`。macOS 10.15 及以下均默认为 `24MHz`。
 
-*注*：由于 Intel Skylake X 平台特有 EMI-reduction 电路，其 ART 频率可能会比 24 或 25 MHz 有所损失（大约 0.25%）。参考 [Acidanthera Bugtracker](https://github.com/acidanthera/bugtracker/issues/448#issuecomment-524914166)。
+*注*：由于 Intel Skylake X 平台特有 EMI-reduction 电路，其 ART 频率可能会比 `24` 或 `25MHz` 有所损失（大约 0.25%）。参考 [Acidanthera Bugtracker](https://github.com/acidanthera/bugtracker/issues/448#issuecomment-524914166)。
 
 ### 11. `DevicePathsSupported`
 
@@ -342,7 +342,7 @@ OpenCore 在生成修改过的 DMI 表时，总是设置最新的 SMBIOS 版本�
 **Type**: `plist integer`, 16-bit
 **Failsafe**: `0xFFFF` (unknown)
 **SMBIOS**: Memory Device (Type 17) — Data Width
-**Description**: 指定内存的数据宽度，以位为单位。`DataWidth` 为 `0` 且 `TotalWidth` 为 `8` 时，表示改设备仅用于提供 8 个纠错位。
+**Description**: 指定内存的数据宽度，以位为单位。`DataWidth` 为 `0` 且 `TotalWidth` 为 `8` 时，表示改设备仅用于提供 `8` 个纠错位。
 
 ### 2. `Devices`
 
@@ -377,7 +377,6 @@ OpenCore 在生成修改过的 DMI 表时，总是设置最新的 SMBIOS 版本�
 当 `CustomMemory` 设置为 `false` 时，该值会根据所设置的 Mac 机型自动设置。
 
 当 `Automatic` 为 `true` 时，如果有的话，设置相应的 Mac 模型的初始值。否则，设置 OcMacInfoLib 的值。当 `Automatic` 为 `false` 时，设置用户指定的值（如果有）。否则，设置固件的初始值。如果没有提供，将设置 Failsafe 的值。
-
 
 - `0x01` — Other
 - `0x02` — Unknown
@@ -463,7 +462,7 @@ OpenCore 在生成修改过的 DMI 表时，总是设置最新的 SMBIOS 版本�
 **SMBIOS**: Memory Device (Type 17) — Manufacturer
 **Description**: 指定该内存设备的制造商。
 
-对于空插槽，必须设置为 NO DIMM，以便 macOS 系统分析器正确显示某些 Mac 型号上的内存插槽。某些 Mac 型号（例如MacPro7,1）对内存布局提出了额外要求。
+对于空插槽，必须设置为 `NO DIMM`，以便 macOS 系统分析器正确显示某些 Mac 型号上的内存插槽。某些 Mac 型号（例如MacPro7,1）对内存布局提出了额外要求。
   - 安装的内存的数量必须是以下之一。`4`, `6`, `8`, `10`, `12`。使用其他的值都会在系统分析器中引起错误。
   - 内存插槽的数量必须等于 `12`。使用其他的值都会在系统分析器中引起错误。
   - 内存必须安装在对应的内存插槽中，这在[支持页面](https://support.apple.com/zh-cn/HT210103)上有说明。SMBIOS 内存设备被映射到以下插槽：`8`、`7`、`10`、`9`、`12`、`11`、`5`、`6`、`3`、`4`、`1`、`2`。
@@ -590,7 +589,7 @@ OpenCore 在生成修改过的 DMI 表时，总是设置最新的 SMBIOS 版本�
 **Type**: `plist string`
 **Failsafe**: Empty（OEM specified）
 **SMBIOS**: System Information (Type 1) --- Product Name
-**Description**: 选择偏好的 Mac 机型来把设备标记为系统支持的机型。在任何配置中都应指定该值，以便之后自动生成 SMBIOS 表的相关值和相关配置参数。如果 `SystemProductName` 与目标操作系统不兼容，可用引导参数 `-no_compat_check` 来覆盖。
+**Description**: 用于标记设备为操作系统所支持的首选 Mac 型号。在任何配置中都应指定该值，以便之后自动生成 SMBIOS 表的相关值和相关配置参数。如果 `SystemProductName` 与目标操作系统不兼容，可用引导参数 `-no_compat_check` 来作为替代。
 
 *注*：如果 `SystemProductName` 未知，并且相关字段也未指定，则默认值会被设定为 `MacPro6,1`。目前已知产品的列表详见 `AppleModels`。
 
@@ -701,14 +700,14 @@ OpenCore 在生成修改过的 DMI 表时，总是设置最新的 SMBIOS 版本�
 **Type**: `plist string`
 **Failsafe**: Empty（OEM specified）
 **SMBIOS**: System Enclosure or Chassis (Type 3) --- Version
-**Description**: 应和 `BoardProduct` 符合。
+**Description**: 应与 `BoardProduct` 匹配。
 
 ### 21. `ChassisSerialNumber`
 
 **Type**: `plist string`
 **Failsafe**: Empty（OEM specified）
 **SMBIOS**: System Enclosure or Chassis (Type 3) --- Version
-**Description**: 应和 `SystemSerialNumber` 符合。
+**Description**: 应与 `SystemSerialNumber` 匹配。
 
 ### 22. `ChassisAssetTag`
 
