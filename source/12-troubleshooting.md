@@ -3,7 +3,7 @@ title: 12. 排错
 description: 当你遇到问题的时候应该看看这个
 type: docs
 author_info: 由 xMuu、Sukka、derbalkon、cike-567 整理，由 Sukka、derbalkon、cike-567 翻译
-last_updated: 2022-07-16
+last_updated: 2022-07-20
 ---
 
 ## 12.1 旧版 Apple 操作系统
@@ -21,7 +21,7 @@ last_updated: 2022-07-16
 
 - 上述问题均存在
 - `SSSE3` 支持（不要和 `SSE3` 混淆）是 macOS 10.7 内核的硬性要求。
-- 包括 Lilu（使用 32 位内核时）及其插件在内的许多 Kext 在 macOS 10.7 或更低版本上都不支持，它们所需的内核 API 比较新，不在 macOS 10.7 SDK 之中。
+- 包括 Lilu（使用 `32` 位内核时）及其插件在内的许多 Kext 在 macOS 10.7 或更低版本上都不支持，它们所需的内核 API 比较新，不在 macOS 10.7 SDK 之中。
 - macOS 10.8 之前的系统不支持 KASLR slide，因此会导致内存较低的固件分配内存失败，详见 [acidanthera/bugtracker#1125](https://github.com/acidanthera/bugtracker/issues/1125)。
 
 ### 3. macOS 10.6
@@ -58,13 +58,13 @@ hdiutil convert ReadWrite.dmg -format UDZO -o ReadOnly.dmg
 - 上述问题均存在。
 - 这个版本的 macOS 不支持 `x86_64` 内核，需要 `i386` 内核扩展和补丁。
 - 这个版本的 macOS 使用了第一个版本（V1）的 `prelinkedkernel`，但它的 Kext 符号表被 Kext 工具破坏了。这个细微的差别使得 `prelinkedkernel` Kext 无法被 OpenCore 注入。`Mkext` Kext 的注入仍然正常，也不会有明显的性能消耗，而且当 `KernelCache` 设置为 `Auto` 时，`Mkext` 会被自动选择。
-- 最后发布的 macOS 10.5 的安装镜像是 macOS 10.5.7 版本号 `9J3050`（`MacBookPro5,3` 专用）。与其他版本系统不同的是，这个镜像不受机型限制，可以原样使用。如果你拥有 macOS 10.5 的合法副本，可以在 [这里](https://archive.org/details/10.5.7-9-j-3050)（或 [MEGA 镜像](https://mega.nz/folder/inRBTarD#zanf7fUbviwz3WHBU5xpCg)）找到原始的 `9J3050` 镜像，更多细节在 `DIGEST.txt` 中。注意，这是经过 OpenCore 测试的最早的 macOS 10.5 版本。
+- 最后发布的 macOS 10.5 的安装镜像是 macOS 10.5.7 版本号 `9J3050`（适用于 `MacBookPro5,3`）。与其他版本系统不同的是，这个镜像不受机型限制，可以原样使用。如果你拥有 macOS 10.5 的合法副本，可以在 [这里](https://archive.org/details/10.5.7-9-j-3050)（或 [MEGA 镜像](https://mega.nz/folder/inRBTarD#zanf7fUbviwz3WHBU5xpCg)）找到原始的 `9J3050` 镜像，更多细节在 `DIGEST.txt` 中。注意，这是经过 OpenCore 测试的最早的 macOS 10.5 版本。
 
 ### 5. macOS 10.4
 
 - 上述问题均存在。
 - 这个版本的 macOS 有一个硬性要求，即需要两张光盘或两个 USB 安装介质来访问第二张 DVD 盘安装介质上的所有可选包。
-- 最后发布的 macOS 10.4 的安装镜像是 macOS 10.4.10 版本号 `8R4061a`（`MacBookPro3,1` 专用）和 `8R4088`（`iMac7,1` 专用）。这些镜像与新版 macOS 一样，仅限于特定的几款机型。如果你拥有 macOS 10.4 的合法副本，可以在 [这里](https://archive.org/details/10.4.10-8-r-4088-acdt)（或 [MEGA 镜像](https://mega.nz/folder/D3ASzLzA#7sjYXE2X09f6aGjol_C7dg)）找到无机型限制的修改版 `8R4088` 镜像（后缀为 `ACDT`），更多细节在 `DIGEST.txt` 中。注意，这些是经过 OpenCore 测试的最早的 macOS 10.4 版本。
+- 最后发布的 macOS 10.4 的安装镜像是 macOS 10.4.10 版本号 `8R4061a`（适用于 `MacBookPro3,1`）和 `8R4088`（适用于 `iMac7,1`）。这些镜像与新版 macOS 一样，仅限于特定的几款机型。如果你拥有 macOS 10.4 的合法副本，可以在 [这里](https://archive.org/details/10.4.10-8-r-4088-acdt)（或 [MEGA 镜像](https://mega.nz/folder/D3ASzLzA#7sjYXE2X09f6aGjol_C7dg)）找到无机型限制的修改版 `8R4088` 镜像（后缀为 `ACDT`），更多细节在 `DIGEST.txt` 中。注意，这些是经过 OpenCore 测试的最早的 macOS 10.4 版本。
 
 ## 12.2 UEFI 安全启动
 
@@ -199,7 +199,7 @@ The operation has completed successfully.
 
 *注*：在一些主板（可能还有一些 USB UART 转换器）上，PIN 的命名可能是不正确的。`GND` 和 `RX` 互换是很常见的，因此你需要将主板 `"TX"` 连接到 USB UART `GND`，主板 `"GND"` 连接到 USB UART `RX`。
 
-务必记得在固件设置中启用 `COM` 口，一定不要使用超过 1 米的 USB 线缆，以免输出数据损坏。如果要额外启用 XNU 内核串行输出，则需要添加 `debug=0x8` 启动参数。
+务必记得在固件设置中启用 `COM` 口，一定不要使用超过 `1` 米的 USB 线缆，以免输出数据损坏。如果要额外启用 XNU 内核串行输出，则需要添加 `debug=0x8` 启动参数。
 
 ## 12.5 技巧和窍门
 
@@ -208,8 +208,8 @@ The operation has completed successfully.
 通常情况下，获取实际的错误信息就足够了。为此，请确保：
 
 - 你正在使用 OpenCore 的 `DEBUG` 或 `NOOPT` 版本。
-- 日志已启用（`1`）并且在屏幕上显示（`2`）：`Misc → Debug → Target = 3`.
-- 将以下这些等级的日志输出到屏幕上：`DEBUG_ERROR` (`0x80000000`)、`DEBUG_WARN` (`0x00000002`) 和 `DEBUG_INFO` (`0x00000040`)：`Misc → Debug → DisplayLevel = 0x80000042`.
+- 日志已启用（`1`）并且在屏幕上显示（`2`）：`Misc → Debug → Target = 3`。
+- 将以下这些等级的日志输出到屏幕上：`DEBUG_ERROR` (`0x80000000`)、`DEBUG_WARN` (`0x00000002`) 和 `DEBUG_INFO` (`0x00000040`)：`Misc → Debug → DisplayLevel = 0x80000042`。
 - 遇到 `DEBUG_ERROR` 这样的致命错误时中止启动：`Misc → Security → HaltLevel = 0x80000000`。
 - 禁用 Watch Dog 以避免自动重启：`Misc → Debug → DisableWatchDog = true`。
 - 已启用 启动菜单 显示：`Misc → Boot → ShowPicker = true`
