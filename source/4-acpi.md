@@ -138,8 +138,8 @@ OpenCore、WhateverGreen、VirtualSmc、VoodooPS2 的 GitHub 仓库中都包含�
 ### 2. `BaseSkip`
 
 **Type**: `plist integer`
-**Failsafe**: `0` (不跳过任何 `Base` 指定的路径)
-**Description**: 在重命名补丁被应用查找和替换之前跳过多少次 `Base` 指定的路径。
+**Failsafe**: `0` (不跳过任何事件)
+**Description**: 在应用查找和替换之前跳过找到的 `Base` 事件数。
 
 ### 3. `Comment`
 
@@ -150,8 +150,8 @@ OpenCore、WhateverGreen、VirtualSmc、VoodooPS2 的 GitHub 仓库中都包含�
 ### 4. `Count`
 
 **Type**: `plist integer`
-**Failsafe**: `0` (补丁将会被应用于所有的匹配项)
-**Description**: 补丁应用的次数。
+**Failsafe**: `0` (将补丁应用于找到的所有事件)
+**Description**: 要修补的事件数。
 
 ### 5. `Enabled`
 
@@ -200,8 +200,8 @@ OpenCore、WhateverGreen、VirtualSmc、VoodooPS2 的 GitHub 仓库中都包含�
 ### 12. `Skip`
 
 **Type**: `plist integer`
-**Failsafe**: `0` (不跳过任何 `Base` 指定的路径)
-**Description**: 在重命名补丁被替换之前跳过多少次 `Base` 指定的路径。
+**Failsafe**: `0` (不跳过任何事件)
+**Description**: 在应用替换之前要跳过的找到的事件数。
 
 ### 13. `TableLength`
 
