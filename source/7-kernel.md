@@ -71,7 +71,7 @@ last_updated: 2022-07-20
 ### 7. Scheme
 
 **Type**: `plist dict`
-**Description**: 通过参数来定义内核空间的操作模式，具体参数见下面 Scheme 属性部分的描述。
+**Description**: 通过参数来定义内核空间的操作模式，具体参数见下面 Scheme 属性章节的描述。
 
 ## 7.3 Add 属性
 
@@ -105,9 +105,9 @@ last_updated: 2022-07-20
 
 **Type**: `plist string`
 **Failsafe**: Empty
-**Description**: Kext 中实际可执行文件的路径（如 `Lilu.kext` 中的可执行文件路径是 `Contents/MacOS/Lilu`）。
+**Description**: Kext 中实际可执行文件的路径（例如 `Lilu.kext` 中的可执行文件路径是 `Contents/MacOS/Lilu`）。
 
-> 译者注：空壳 Kext 没有可执行文件（如 `USBPorts.kext`），此项留空即可。
+> 译者注：空壳 Kext 没有可执行文件（例如：`USBPorts.kext`），此项留空即可。
 
 ### 6. `MaxKernel`
 
@@ -139,7 +139,7 @@ last_updated: 2022-07-20
 
 **Type**: `plist string`
 **Failsafe**: Empty
-**Description**: Kext 中 `Info.plist` 文件的路径。例如 `Contents/Info.plist`。
+**Description**: Kext 中 `Info.plist` 文件的路径。例如：`Contents/Info.plist`。
 
 ## 7.4 Block 属性
 
@@ -147,7 +147,7 @@ last_updated: 2022-07-20
 
 **Type**: `plist string`
 **Failsafe**: `Any` (适用于任何支持的架构)
-**Description**: Kext block 架构（`i386`, `x86_64`）。
+**Description**: Kext block 架构（`i386`，`x86_64`）。
 
 ### 2. `Comment`
 
@@ -165,7 +165,7 @@ last_updated: 2022-07-20
 
 **Type**: `plist string`
 **Failsafe**: Empty
-**Description**: Kext Bundle 标识符（例如 `com.apple.driver.AppleTyMCEDriver`）。
+**Description**: Kext Bundle 标识符（例如：`com.apple.driver.AppleTyMCEDriver`）。
 
 ### 5. `MaxKernel`
 
@@ -214,7 +214,7 @@ last_updated: 2022-07-20
 
 *注 2*：通常来讲只需要处理 `EAX` 的值，因为它代表完整的 CPUID。剩余的字节要留为 0。字节顺序是小端字节序（Little Endian），比如 `C3 06 03 00` 代表 CPUID `0x0306C3` (Haswell)。
 
-*注 3*：推荐使用下面的组合启用 XCPM 支持。请注意，需要设置与所安装的CPU相匹配的正确[频率向量](https://github.com/dortania/bugtracker/issues/190)。：
+*注 3*：推荐使用下面的组合启用 XCPM 支持。请注意，需要设置与所安装的 CPU 相匹配的正确[频率向量](https://github.com/dortania/bugtracker/issues/190)。：
 
 - Haswell-E (`0x0306F2`) to Haswell (`0x0306C3`):
   `Cpuid1Data`: `C3 06 03 00 00 00 00 00 00 00 00 00 00 00 00 00`  
@@ -242,7 +242,7 @@ last_updated: 2022-07-20
 **Failsafe**: All zero
 **Description**: `Cpuid1Data` 中激活的 bit 的位掩码。
 
-当每个 `Cpuid1Mask` bit 都设置为 `0` 时将使用原始的 CPU bit，否则取 `Cpuid1Data` 的值。
+当每个 `Cpuid1Mask` bit 都设置为 0 时将使用原始的 CPU bit，否则取 `Cpuid1Data` 的值。
 
 ### 3. `DummyPowerManagement`
 
@@ -259,7 +259,7 @@ last_updated: 2022-07-20
 
 **Type**: `plist string`
 **Failsafe**: Empty string
-**Description**: 模拟 CPUID，并在小于等于指定的 macOS 版本上使用 `DummyPowerManagement`。
+**Description**: 模拟 `CPUID`，并在小于等于指定的 macOS 版本上使用 `DummyPowerManagement`。
 
 *注*：匹配逻辑请参阅 `Add` `MaxKernel` 的描述。
 
@@ -267,7 +267,7 @@ last_updated: 2022-07-20
 
 **Type**: `plist string`
 **Failsafe**: Empty string
-**Description**: 模拟 CPUID，并在大于等于指定的 macOS 版本上使用 `DummyPowerManagement`。
+**Description**: 模拟 `CPUID`，并在大于等于指定的 macOS 版本上使用 `DummyPowerManagement`。
 
 *注*：匹配逻辑请参阅 `Add` `MaxKernel` 的描述。
 
@@ -277,13 +277,13 @@ last_updated: 2022-07-20
 
 **Type**: `plist string`
 **Failsafe**: `Any` （适用于任何受支持的架构）
-**Description**: Kext 架构（`i386`, `x86_64`）。
+**Description**: Kext 架构（`i386`，`x86_64`）。
 
 ### 2. `BundlePath`
 
 **Type**: `plist string`
 **Failsafe**: Empty
-**Description**: Kext 路径，例如 `System/Library/Extensions/IONetworkingFamily.kext`。
+**Description**: Kext 路径，例如：`System/Library/Extensions/IONetworkingFamily.kext`。
 
 ### 3. `Comment`
 
@@ -301,13 +301,13 @@ last_updated: 2022-07-20
 
 **Type**: `plist string`
 **Failsafe**: Empty
-**Description**: Kext 中实际可执行文件的路径，例如 `Contents/MacOS/IONetworkingFamily`。
+**Description**: Kext 中实际可执行文件的路径，例如：`Contents/MacOS/IONetworkingFamily`。
 
 ### 6. `Identifier`
 
 **Type**: `plist string`
 **Failsafe**: Empty
-**Description**: Kext 标识符，以便在添加前检查是否存在，例如 `com.apple.iokit.IONetworkingFamily`。只有在缓存中找不到标识符的驱动程序才会被添加。
+**Description**: Kext 标识符，以便在添加前检查是否存在，例如：`com.apple.iokit.IONetworkingFamily`。只有在缓存中找不到标识符的驱动程序才会被添加。
 
 ### 7. `MaxKernel`
 
@@ -337,7 +337,7 @@ last_updated: 2022-07-20
 
 **Type**: `plist string`
 **Failsafe**: `Any` （适用于任何受支持的架构）
-**Description**: Kext patch 架构（`i386`, `x86_64`）。
+**Description**: Kext patch 架构（`i386`，`x86_64`）。
 
 ### 2. `Base`
 
@@ -355,7 +355,7 @@ last_updated: 2022-07-20
 
 **Type**: `plist integer`
 **Failsafe**: `0`
-**Description**: 修补的次数，超过这一次数后便不再修补。`0` 表示修补所有查找到的地方。
+**Description**: 修补的次数，超过这一次数后便不再修补。0 表示修补所有查找到的地方。
 
 ### 5. `Enabled`
 
@@ -385,7 +385,7 @@ last_updated: 2022-07-20
 
 **Type**: `plist data`
 **Failsafe**: Empty (Ignored)
-**Description**: 在查找比较的过程中使用数据位掩码。允许通过忽略未被屏蔽的 bit（设置为 `0`）进行模糊搜索。如果设置，则其大小必须等于 `Replace`。
+**Description**: 在查找比较的过程中使用数据位掩码。允许通过忽略未被屏蔽的 bit（设置为 0）进行模糊搜索。如果设置，则其大小必须等于 `Replace`。
 
 ### 10. `MaxKernel`
 
@@ -413,7 +413,7 @@ last_updated: 2022-07-20
 
 **Type**: `plist data`
 **Failsafe**: Empty data
-**Description**: 替换时使用的数据位掩码。允许通过更新掩码（设置为非 `0`）来进行模糊替换。若留空则代表忽略，否则其大小必须等于 `Replace`。
+**Description**: 替换时使用的数据位掩码。允许通过更新掩码（设置为非 0）来进行模糊替换。若留空则代表忽略，否则其大小必须等于 `Replace`。
 
 ### 14. `Skip`
 
@@ -430,12 +430,12 @@ last_updated: 2022-07-20
 **Requirement**: 10.4-12
 **Description**: 禁用 `AppleIntelCPUPowerManagement.kext` 中的 `PKG_CST_CONFIG_CONTROL` (`0xE2`) 修改，从而避免早期 Kernel Panic。
 
-某些固件会锁定 `PKG_CST_CONFIG_CONTROL` MSR 寄存器。可以使用附带的 `ControlMsrE2` 工具检查其状态。请注意，某些类型的固件仅将此寄存器锁定在某些内核上。由于现代固件已经提供了 `CFG Lock` 相关设置、从而可以配置 `PKG_CST_CONFIG_CONTROL` 寄存器锁定，此选项应该尽可能避免。
+某些固件会锁定 `PKG_CST_CONFIG_CONTROL MSR` 寄存器。可以使用附带的 `ControlMsrE2` 工具检查其状态。请注意，某些类型的固件仅将此寄存器锁定在某些内核上。由于现代固件已经提供了 `CFG Lock` 相关设置、从而可以配置 `PKG_CST_CONFIG_CONTROL` 寄存器锁定，此选项应该尽可能避免。
 
 对于一些不显示 `CFG Lock` 配置的固件，可以按照下述配置进行修改：
 
 1. 下载 [UEFITool](https://github.com/LongSoft/UEFITool/releases) 和 [IFR-Extractor](https://github.com/LongSoft/Universal-IFR-Extractor/releases)
-2. 使用 UEFITool 中打开固件镜像文件，找到 CFG Lock 的 Unicode 字符串。如果你没有找到，意味着你的固件可能不支持 CFG Lock 解锁，那么你现在可以停下来了。
+2. 使用 UEFITool 中打开固件镜像文件，找到 CFG Lock 的 Unicode 字符串。如果你没有找到，意味着你的固件可能不支持 `CFG Lock` 解锁，那么你现在可以停下来了。
 3. 从 UEFITool 菜单中的 `Extract Body` 选项提取 `Setup.bin` 中的 PE32 镜像部分。
 4. 对提取出来的文件执行 IFR-Extractor（`./ifrextract Setup.bin Setup.txt`）。
 5. 从 Setup.txt 中找到 `CFG Lock, VarStoreInfo (VarOffset/VarName):`，记住紧随其后的偏移量值（例如 `0x123`）。
@@ -488,18 +488,18 @@ last_updated: 2022-07-20
 **Requirement**: 10.7
 **Description**:  在一个定制的 PCI 串行设备上修改 PMIO 寄存器的基本地址。
 
-该补丁改变了 XNU 内核用于串行输入和输出的 PMIO 寄存器基址，从默认的内置COM1串行端口 0x3F8，改为存储在指定 PCI 设备的第一个 IO BAR 中的基址，或者是一个特定的基址（例如 0x2F8 用于 COM2）。
+该补丁改变了 XNU 内核用于串行输入和输出的 PMIO 寄存器基址，从默认的内置COM1串行端口 `0x3F8`，改为存储在指定 PCI 设备的第一个 IO BAR 中的基址，或者是一个特定的基址（例如 `0x2F8` 用于 COM2）。
 
 *注 1*：默认情况下，串行日志是禁用的。 启动参数 `serial=3`，启用串行输入和输出，使 XNU 将日志打印到串行端口。
 
-*注 2*：除此修补程序外，应防止 kext Apple16X50PCI0 连接，以使 kprintf 方法正常工作。这可以通过在 DeviceProperties 部分将 PCI 串行端口设备的 class code 属性设置（即删除，然后添加）为 FFFFFF 来实现。
- 作为一个替代解决方案，也可以使用一个无代码的kext PCIeSerialDisable.kext，该kext在 [acidanthera/bugtracker#1954](https://github.com/acidanthera/bugtracker/issues/1954) 的spoiler PCIeSerialDisable.kext/Contents/Info.plist 中。此外，对于某些雷电卡，IOKit personality IOPCITunnelCompatible 也需要设置为 `true`，这可以由 [Acidantarea/bugtracker#2003](https://github.com/acidanthera/bugtracker/issues/2003#issuecomment-1116761087) 上附带的 PCIeSerialThunderboltEnable.kext 完成。
+*注 2*：除此修补程序外，应防止 kext `Apple16X50PCI0` 连接，以使 kprintf 方法正常工作。这可以通过在 DeviceProperties 部分将 PCI 串行端口设备的 class code 属性设置（即删除，然后添加）为 `FFFFFF` 来实现。
+ 作为一个替代解决方案，也可以使用一个无代码的 kext `PCIeSerialDisable.kext`，该 kext 在 [acidanthera/bugtracker#1954](https://github.com/acidanthera/bugtracker/issues/1954) 的 spoiler PCIeSerialDisable.kext/Contents/Info.plist 中。此外，对于某些雷电卡，IOKit personality IOPCITunnelCompatible 也需要设置为 `true`，这可以由 [Acidantarea/bugtracker#2003](https://github.com/acidanthera/bugtracker/issues/2003#issuecomment-1116761087) 上附带的 PCIeSerialThunderboltEnable.kext 完成。
  
 *注 3*：要正确应用这个补丁，必须启用 Override，并在 Custom 中正确设置所有的选项。在 Misc->Serial 部分。
 
-*注 4*：这个补丁是为了支持 PMIO，因此如果 Misc->Serial->Custom 部分的 UseMmio 为 `false`，则不适用。对于 MMIO，有启动参数 `pcie_mmio_uart=ADDRESS`  和 `mmio_uart=ADDRESS`，允许内核使用 MMIO 来访问串行端口。
+*注 4*：这个补丁是为了支持 PMIO，因此如果 Misc->Serial->Custom 部分的 `UseMmio` 为 `false`，则不适用。对于 MMIO，有启动参数 `pcie_mmio_uart=ADDRESS`  和 `mmio_uart=ADDRESS`，允许内核使用 MMIO 来访问串行端口。
 
-*注 5*：串行波特率必须在 Misc->Serial->Custom 部分的 `BaudRate` 和通过启动参数 `serialbaud=VALUE` 正确设置。这两个参数应该相互匹配。默认的波特率是 `115200`。
+*注 5*：串行波特率必须在 Misc->Serial->Custom 部分的 `BaudRate` 和通过启动参数 `serialbaud=VALUE` 正确设置。这两个参数应该相互匹配。默认的波特率是 115200。
 
 ### 6. `CustomSMBIOSGuid`
 
@@ -526,14 +526,14 @@ last_updated: 2022-07-20
 **Requirement**: 11
 **Description**: 禁止丢弃 `__LINKEDIT`。
 
-这个选项能让 `Lilu.kext` 和其他一些功能在 macOS Big Sur 中以最佳性能运行，而不需要 `keepsyms=1` 启动参数。
+这个选项能让 `Lilu.kext` 和其他一些可能的 kext 在 macOS Big Sur 中以最佳性能运行，而不需要 `keepsyms=1` 启动参数。
 
 ### 9. `DisableRtcChecksum`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
 **Requirement**: 10.4
-**Description**: 禁用 AppleRTC 初始校验和（`0x58` - `0x59`）写入。
+**Description**: 禁用 AppleRTC 初始校验和（`0x58`-`0x59`）写入。
 
 *注 1*：这个选项不能确保其他区域不被覆盖，如有需要，请使用 [RTCMemoryFixup](https://github.com/acidanthera/RTCMemoryFixup)。
 
@@ -577,7 +577,7 @@ last_updated: 2022-07-20
 **Type**: `plist boolean`
 **Failsafe**: `false`
 **Requirement**: 11
-**Description**: 强制采用 `x86` 方案进行 IMG4 核查。
+**Description**: 强制采用 x86 方案进行 IMG4 核查。
 
 *注*：在虚拟机上使用 `x86legacy` 以外的 `SecureBootModel` 时需要开启此选项。
 
@@ -592,7 +592,7 @@ last_updated: 2022-07-20
 
 *注*：你应该尽可能避免使用这一选项。通常这一选项只需要在配置错误或损坏的固件上开启。
 
-> 译者注：如果你的 BIOS 中存在 Above4GDecoding 选项，请直接在 BIOS 中启用。
+> 译者注：如果你的 BIOS 中存在 `Above4GDecoding` 选项，请直接在 BIOS 中启用。
 
 ### 15. `LapicKernelPanic`
 
