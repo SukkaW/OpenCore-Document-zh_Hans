@@ -236,7 +236,6 @@ OpenCore 启动选择器中的启动选项的显示顺序和启动过程，是�
 
 - `0x0001` — `OC_ATTR_USE_VOLUME_ICON`，为启动项提供自定义图标：
   OpenCore 将尝试通过搜索加载卷宗图标，不存在时回退到默认图标：
-  - 中（如果存在）。
   - APFS 卷宗图标的 `.VolumeIcon.icns` 文件，置于 `Preboot` 卷宗目录（`/System/Volumes/Preboot/{GUID}/`，当在 macOS 内的默认位置时）下（如果存在）。
   - APFS 卷宗图标的 `.VolumeIcon.icns` 文件，置于 `Preboot` 根目录(`/System/Volumes/Preboot/`，当在 macOS 内的默认位置时)下（其他情况）。
   - 其他文件系统的 `.VolumeIcon.icns` 文件，置于其卷宗根目录下。
