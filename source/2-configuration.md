@@ -20,11 +20,11 @@ last_updated: 2022-07-12
 
 ## 2.2 配置处理
 
-如果 OpenCore 发现了 OC Config，则至少会读取并处理一次。根据 OpenCore 的引导机制，如果存在多个 OC Config 文件，OpenCore 可能会读取其中任何一个。如果硬盘中没有 OC Config，OpenCore 将会遵循无效值和可选值的规则。
+如果 OpenCore 发现了 OC Config，则至少会读取并处理一次。根据 OpenCore 的引导机制，如果存在多个 OC Config 文件，OpenCore 可能会读取其中任何一个。如果硬盘中没有 OC Config并且引导没有中止，则OpenCore 将会遵循无效值和可选值的规则。
 
 OC Config 有大小、嵌套和键值数量的限制。OC Config 的大小不得超过 32 MB，嵌套层数不得超过 32 层，每个 `plist object` 中最多有 32768 个节点（一个 `plist dictionary` 将被计为一对节点）。不符合上述规则的 OC Config 文件将可能导致未定义、非预期的行为。常见的 OC Config 错误包括：
 
-- OC Config 不符合 `plist` DTD
+- OC Config 不符合 `plist` DTD 1.0
 - 存在本文档中不支持的或不合法的 `plist object`
 - 违反文件大小、嵌套层级和键值数量的限制
 
