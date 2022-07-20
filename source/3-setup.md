@@ -66,7 +66,7 @@ ESP
 - **opencore-YYYY-MM-DD-HHMMSS.txt** --- OpenCore 日志文件。
 - **panic-YYYY-MM-DD-HHMMSS.txt** --- Kernal Panic 日志文件。
 
-*注*: 受限于固件的实现行为，OpenCore 可能无法访问绝对路径长度大于 `OC_STORAGE_SAFE_PATH_MAX`（默认值为 128）的目录。
+*注*: 受限于固件的实现行为，OpenCore 可能无法访问绝对路径长度大于 `OC_STORAGE_SAFE_PATH_MAX`（默认值为 128 个字符，包括 0-terminator）的目录。
 
 ## 3.2 安装和升级
 
@@ -74,9 +74,9 @@ ESP
 
 OpenCore 的配置文件可以使用任何文本编辑器（如 nano、vim）进行编辑，但是专用软件可以带来更好的体验。在 macOS 上我们推荐使用 [Xcode](https://developer.apple.com/xcode)。你也可以使用 [ProperTree](https://github.com/corpnewt/ProperTree) ，这是一个轻量级的跨平台的开源 plist 编辑器。
 
-强烈建议避免使用了解内部配置结构的配置创建工具，因为这可能导致无效的配置（因为该结构会不断更新）。如果不顾这一警告使用此类工具，请确保只使用此类工具明确支持的 OpenCore 的稳定版本。在这种情况下，考虑到其他工具可能含有恶意软件，我们鼓励使用具有透明二进制生成功能的开源方案（如 OCAT）。此外，为特定硬件创建的配置绝不应在不同的硬件上使用。
+强烈建议避免使用了解内部配置结构的配置创建工具，因为这可能导致无效的配置（因为该结构会不断更新）。如果不顾这一警告使用此类工具，请确保只使用此类工具明确支持的 OpenCore 的稳定版本。在这种情况下，考虑到其他工具可能含有恶意软件，我们鼓励使用具有透明二进制生成功能的开源方案（如 [OCAT](https://github.com/ic005k/OCAuxiliaryTools)）。此外，为特定硬件创建的配置绝不应在不同的硬件上使用。
 
-如果要通过 BIOS 进行开机，你必须使用第三方 UEFI 环境提供程序。`OpenDuetPkg` 是一个常用的为旧操作系统提供 Legacy 引导的 UEFI 环境提供程序。要在这样的旧操作系统上运行 OpenCore，你可以使用一个独立的工具 `BootInstall` 安装 `OpenDuetPkg`（目前已和 OpenCore 打包在一起发布）。
+如果要通过 BIOS 进行开机，你必须使用第三方 UEFI 环境提供程序。`OpenDuetPkg` 是一个常用的为旧操作系统提供 Legacy 引导的 UEFI 环境提供程序。要在这样的旧操作系统上运行 OpenCore，你可以使用一个独立的工具 `BootInstall` 安装 `OpenDuetPkg`（目前已和 OpenCore 打包在一起发布）。[第三方实用程序](https://github.com/corpnewt/gibMacOS)可用于在 macOS 以外的系统上执行此操作。
 
 如果要升级 OpenCore，请参考 [`Differences.pdf`](https://github.com/acidanthera/OpenCorePkg/blob/master/Docs/Differences/Differences.pdf) ，它提供了 OpenCore 配置文件变更的相关信息，以及 [`Changelog.md`](https://github.com/acidanthera/OpenCorePkg/blob/master/Changelog.md) 它提供了 OpenCore 的更新日志。
 
