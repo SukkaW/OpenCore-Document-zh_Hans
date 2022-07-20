@@ -247,7 +247,7 @@ OpenCore 在生成修改过的 DMI 表时，总是设置最新的 SMBIOS 版本�
 
 ### 4. `SystemUUID`
 
-**Type**: `plist string`, GUID
+**Type**: `plist string`，GUID
 **Failsafe**: Empty（Not installed）
 **Description**: 在 `gEfiMiscSubClassGuid` 中设置 `system-id`。在 Mac 上找到的值等于 SMBIOS `SystemUUID`（字节顺序调换）。
 
@@ -259,15 +259,15 @@ OpenCore 在生成修改过的 DMI 表时，总是设置最新的 SMBIOS 版本�
 
 ### 6. `BoardRevision`
 
-**Type**: `plist data`, 1 byte
+**Type**: `plist data`，1 byte
 **Failsafe**: `0`
-**Description**: 在 `gEfiMiscSubClassGuid` 中设置 `board-rev`。在 Mac 上找到的值似乎与 Internal Board Revision 相对应（例如 `01`）。
+**Description**: 在 `gEfiMiscSubClassGuid` 中设置 `board-rev`。在 Mac 上找到的值似乎与 Internal Board Revision 相对应（例如：`01`）。
 
 ### 7. `StartupPowerEvents`
 
-**Type**: `plist integer`, 64-bit
+**Type**: `plist integer`，64-bit
 **Failsafe**: `0`
-**Description**: 在 `gEfiMiscSubClassGuid Sets` 中设置 `StartupPowerEvents`。在 Mac 上找到的值是 Power Management State 位掩码，通常为 0。
+**Description**: 在 `gEfiMiscSubClassGuid Sets` 中设置 `StartupPowerEvents`。在 Mac 上找到的值是 Power Management State 位掩码，通常为 `0`。
 
 `X86PlatformPlugin.kext` 能读取的已知 bit 有：
 - `0x00000001` --- Shutdown cause was a `PWROK` event (Same as `GEN_PMCON_2` bit 0)
@@ -287,13 +287,13 @@ OpenCore 在生成修改过的 DMI 表时，总是设置最新的 SMBIOS 版本�
 
 ### 8. `InitialTSC`
 
-**Type**: `plist integer`, 64-bit
+**Type**: `plist integer`，64-bit
 **Failsafe**: `0`
 **Description**: 在 `gEfiProcessorSubClassGuid` 中设置 `InitialTSC`。设置初始 TSC 值，通常为 `0`。
 
 ### 9. `FSBFrequency`
 
-**Type**: `plist integer`, 64-bit
+**Type**: `plist integer`，64-bit
 **Failsafe**: `0` (Automatic)
 **Description**: 在 `gEfiProcessorSubClassGuid` 中设置 `FSBFrequency`。
 
@@ -303,35 +303,35 @@ OpenCore 在生成修改过的 DMI 表时，总是设置最新的 SMBIOS 版本�
 
 ### 10. `ARTFrequency`
 
-**Type**: `plist integer`, 64-bit
+**Type**: `plist integer`，64-bit
 **Failsafe**: `0` (Automatic)
 **Description**: 在 `gEfiProcessorSubClassGuid` 中设置 `ARTFrequency`。
 
-此值包含 CPU ART 频率，即晶体时钟频率。为 Skylake 或更新的平台独有，以 `Hz` 为单位。Client Intel segment 通常为 `24MHz`，Server Intel segment 通常为 `25MHz`，Intel Atom CPUs 通常为 `19.2MHz`。macOS 10.15 及以下均默认为 `24MHz`。
+此值包含 CPU ART 频率，即晶体时钟频率。为 Skylake 或更新的平台独有，以 Hz 为单位。Client Intel segment 通常为 24MHz，Server Intel segment 通常为 25MHz，Intel Atom CPUs 通常为 19.2MHz。macOS 10.15 及以下均默认为 24MHz。
 
-*注*：由于 Intel Skylake X 平台特有 EMI-reduction 电路，其 ART 频率可能会比 `24` 或 `25MHz` 有所损失（大约 0.25%）。参考 [Acidanthera Bugtracker](https://github.com/acidanthera/bugtracker/issues/448#issuecomment-524914166)。
+*注*：由于 Intel Skylake X 平台特有 EMI-reduction 电路，其 ART 频率可能会比 24 或 25MHz 有所损失（大约 0.25%）。参考 [Acidanthera Bugtracker](https://github.com/acidanthera/bugtracker/issues/448#issuecomment-524914166)。
 
 ### 11. `DevicePathsSupported`
 
-**Type**: `plist integer`, 32-bit
+**Type**: `plist integer`，32-bit
 **Failsafe**: `0`（Not installed）
-**Description**: 在 `gEfiMiscSubClassGuid` 中设置 `DevicePathsSupported`。必须设置为 `1` 才能确保 AppleACPIPlatform.kext 将 SATA 设备路径添加到 `Boot####` 和 `efi-boot-device-data` 变量。所有新款 Mac 都设置为 `1`。
+**Description**: 在 `gEfiMiscSubClassGuid` 中设置 `DevicePathsSupported`。必须设置为 1 才能确保 AppleACPIPlatform.kext 将 SATA 设备路径添加到 `Boot####` 和 `efi-boot-device-data` 变量。所有新款 Mac 都设置为 1。
 
 ### 12. `SmcRevision`
 
-**Type**: `plist data`, 6 bytes
+**Type**: `plist data`，6 bytes
 **Failsafe**: Empty（Not installed）
 **Description**: 在 `gEfiMiscSubClassGuid` 中设置 `REV`。自定义属性由 `VirtualSMC` 或 `FakeSMC` 读取，用于生成 SMC `REV` key。
 
 ### 13. `SmcBranch`
 
-**Type**: `plist data`, 8 bytes
+**Type**: `plist data`，8 bytes
 **Failsafe**: Empty（Not installed）
 **Description**: 在 `gEfiMiscSubClassGuid` 中设置 `RBr`。自定义属性由 `VirtualSMC` 或 `FakeSMC` 读取，用于生成 SMC `RBr` key。
 
 ### 14. `SmcPlatform`
 
-**Type**: `plist data`, 8 bytes
+**Type**: `plist data`，8 bytes
 **Failsafe**: Empty（Not installed）
 **Description**: 在 `gEfiMiscSubClassGuid` 中设置 `RPlt`。自定义属性由 `VirtualSMC` 或 `FakeSMC` 读取，用于生成 SMC `RPlt` key。
 
@@ -339,10 +339,10 @@ OpenCore 在生成修改过的 DMI 表时，总是设置最新的 SMBIOS 版本�
 
 ### 1. `DataWidth`
 
-**Type**: `plist integer`, 16-bit
+**Type**: `plist integer`，16-bit
 **Failsafe**: `0xFFFF` (unknown)
 **SMBIOS**: Memory Device (Type 17) — Data Width
-**Description**: 指定内存的数据宽度，以位为单位。`DataWidth` 为 `0` 且 `TotalWidth` 为 `8` 时，表示改设备仅用于提供 `8` 个纠错位。
+**Description**: 指定内存的数据宽度，以位为单位。`DataWidth` 为 0 且 `TotalWidth` 为 8 时，表示改设备仅用于提供 8 个纠错位。
 
 ### 2. `Devices`
 
@@ -354,7 +354,7 @@ OpenCore 在生成修改过的 DMI 表时，总是设置最新的 SMBIOS 版本�
 
 ### 3. `ErrorCorrection`
 
-**Type**: `plist integer`, 8-bit
+**Type**: `plist integer`，8-bit
 **Failsafe**: `0x03`
 **SMBIOS**: Physical Memory Array (Type 16) — Memory Error Correction
 **Description**: 指定内存支持的主要硬件纠错或检测方法。
@@ -369,14 +369,14 @@ OpenCore 在生成修改过的 DMI 表时，总是设置最新的 SMBIOS 版本�
 
 ### 4. FormFactor
 
-**Type**: `plist integer`, 8-bit
+**Type**: `plist integer`，8-bit
 **Failsafe**: `0x02`
 **SMBIOS**: Memory Device (Type 17) — Form Factor
 **Description**: 指定内存的规格。在 Mac 上通常是 DIMM 或 SODIMM。下面列举的是一些常见的规格。
 
 当 `CustomMemory` 设置为 `false` 时，该值会根据所设置的 Mac 机型自动设置。
 
-当 `Automatic` 为 `true` 时，如果有的话，设置相应的 Mac 模型的初始值。否则，设置 OcMacInfoLib 的值。当 `Automatic` 为 `false` 时，设置用户指定的值（如果有）。否则，设置固件的初始值。如果没有提供，将设置 Failsafe 的值。
+当 `Automatic` 为 `true` 时，如果有的话，设置相应的 Mac 模型的初始值。否则，设置 `OcMacInfoLib` 的值。当 `Automatic` 为 `false` 时，设置用户指定的值（如果有）。否则，设置固件的初始值。如果没有提供，将设置 `Failsafe` 的值。
 
 - `0x01` — Other
 - `0x02` — Unknown
@@ -386,21 +386,21 @@ OpenCore 在生成修改过的 DMI 表时，总是设置最新的 SMBIOS 版本�
 
 ### 5. `MaxCapacity`
 
-**Type**: `plist integer`, 64-bit
+**Type**: `plist integer`，64-bit
 **Failsafe**: `0`
 **SMBIOS**: Physical Memory Array (Type 16) — Maximum Capacity
 **Description**: 指定系统支持的最大内存量，以字节为单位。
 
 ### 6. `TotalWidth`
 
-**Type**: `plist integer`, 16-bit
+**Type**: `plist integer`，16-bit
 **Failsafe**: `0xFFFF` (unknown)
 **SMBIOS**: Memory Device (Type 17) — Total Width
 **Description**: 指定内存的总宽度，以位为单位，包括任何检查或纠错位。如果没有纠错位，则这个值应该等于 `DataWidth`。
 
 ### 7. `Type`
 
-**Type**: `plist integer`, 8-bit
+**Type**: `plist integer`，8-bit
 **Failsafe**: `0x02`
 **SMBIOS**: Memory Device (Type 17) — Memory Type
 **Description**: 指定内存类型。常用的类型如下：
@@ -420,12 +420,12 @@ OpenCore 在生成修改过的 DMI 表时，总是设置最新的 SMBIOS 版本�
 
 ### 8. `TypeDetail`
 
-**Type**: `plist integer`, 16-bit
+**Type**: `plist integer`，16-bit
 **Failsafe**: `0x4`
 **SMBIOS**: Memory Device (Type 17) — Type Detail
 **Description**: 指定附加的内存类型信息。
 
-- `Bit 0` — Reserved, set to 0
+- `Bit 0` — Reserved，set to `0`
 - `Bit 1` — Other
 - `Bit 2` — Unknown
 - `Bit 7` — Synchronous
@@ -462,10 +462,10 @@ OpenCore 在生成修改过的 DMI 表时，总是设置最新的 SMBIOS 版本�
 **SMBIOS**: Memory Device (Type 17) — Manufacturer
 **Description**: 指定该内存设备的制造商。
 
-对于空插槽，必须设置为 `NO DIMM`，以便 macOS 系统分析器正确显示某些 Mac 型号上的内存插槽。某些 Mac 型号（例如MacPro7,1）对内存布局提出了额外要求。
-  - 安装的内存的数量必须是以下之一。`4`, `6`, `8`, `10`, `12`。使用其他的值都会在系统分析器中引起错误。
-  - 内存插槽的数量必须等于 `12`。使用其他的值都会在系统分析器中引起错误。
-  - 内存必须安装在对应的内存插槽中，这在[支持页面](https://support.apple.com/zh-cn/HT210103)上有说明。SMBIOS 内存设备被映射到以下插槽：`8`、`7`、`10`、`9`、`12`、`11`、`5`、`6`、`3`、`4`、`1`、`2`。
+对于空插槽，必须设置为 NO DIMM，以便 macOS 系统分析器正确显示某些 Mac 型号上的内存插槽。某些 Mac 型号（例如MacPro7,1）对内存布局提出了额外要求。
+  - 安装的内存的数量必须是以下之一：4、6、8、10、12。使用其他的值都会在系统分析器中引起错误。
+  - 内存插槽的数量必须等于 12。使用其他的值都会在系统分析器中引起错误。
+  - 内存必须安装在对应的内存插槽中，这在[支持页面](https://support.apple.com/zh-cn/HT210103)上有说明。SMBIOS 内存设备被映射到以下插槽：8、7、10、9、12、11、5、6、3、4、1、2。
 
 ### 5. `PartNumber`
 
@@ -483,14 +483,14 @@ OpenCore 在生成修改过的 DMI 表时，总是设置最新的 SMBIOS 版本�
 
 ### 7. `Size`
 
-**Type**: `plist integer`, 32-bit
+**Type**: `plist integer`，32-bit
 **Failsafe**: `0`
 **SMBIOS**: Memory Device (Type 17) — Size
 **Description**: 指定内存设备的大小，以兆字节为单位。`0` 表示该插槽未插入内存。
 
 ### 8. `Speed`
 
-**Type**: `plist integer`, 16-bit
+**Type**: `plist integer`，16-bit
 **Failsafe**: `0`
 **SMBIOS**: Memory Device (Type 17) — Speed
 **Description**: 指定设备的最大速度，单位为每秒百万传输量（MT/s）。`0` 表示未知速度。
@@ -505,7 +505,7 @@ OpenCore 在生成修改过的 DMI 表时，总是设置最新的 SMBIOS 版本�
 
 ### 2. `ROM`
 
-**Type**: `plist data`, 6 bytes
+**Type**: `plist data`，6 bytes
 **Failsafe**: Empty（Not installed）
 **Description**: 指定 NVRAM 变量 `4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14:HW_ROM` 和 `4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14:ROM`。
 
@@ -517,7 +517,7 @@ OpenCore 在生成修改过的 DMI 表时，总是设置最新的 SMBIOS 版本�
 
 ### 4. `FirmwareFeatures`
 
-**Type**: `plist data`, 8 bytes
+**Type**: `plist data`，8 bytes
 **Failsafe**: Empty（Not installed）
 **Description**: 此变量与 `FirmwareFeaturesMask` 配对使用。指定 NVRAM 变量：
 
@@ -526,7 +526,7 @@ OpenCore 在生成修改过的 DMI 表时，总是设置最新的 SMBIOS 版本�
 
 ### 5. `FirmwareFeaturesMask`
 
-**Type**: `plist data`, 8 bytes
+**Type**: `plist data`，8 bytes
 **Failsafe**: Empty（Not installed）
 **Description**: 此变量与 `FirmwareFeatures` 配对使用。指定 NVRAM 变量：
 
@@ -609,7 +609,7 @@ OpenCore 在生成修改过的 DMI 表时，总是设置最新的 SMBIOS 版本�
 
 ### 8. `SystemUUID`
 
-**Type**: `plist string`, GUID
+**Type**: `plist string`，GUID
 **Failsafe**: Empty（OEM specified）
 **SMBIOS**: System Information (Type 1) --- UUID
 **Description**: UUID 被设计为在时间和空间上都是唯一的标识符，其生成是随机与去中心化的。
@@ -718,35 +718,35 @@ OpenCore 在生成修改过的 DMI 表时，总是设置最新的 SMBIOS 版本�
 
 ### 23. `PlatformFeature`
 
-**Type**: `plist integer`, 32-bit
+**Type**: `plist integer`，32-bit
 **Failsafe**: `0xFFFFFFFF`（在苹果硬件上指定的 OEM，否则不提供表）
 **SMBIOS**: `APPLE_SMBIOS_TABLE_TYPE133` - `PlatformFeature`
 **Description**: 平台功能位掩码（较旧的 Mac 上缺失该位掩码），详情请参考 [AppleFeatures.h](https://github.com/acidanthera/OpenCorePkg/blob/master/Include/Apple/IndustryStandard/AppleFeatures.h)。
 
 ### 24. `SmcVersion`
 
-**Type**: `plist data`, 16 bytes
+**Type**: `plist data`，16 bytes
 **Failsafe**: All zero（在苹果硬件上指定的 OEM，否则不提供表）
 **SMBIOS**: `APPLE_SMBIOS_TABLE_TYPE134` - `Version`
 **Description**: ASCII 字符串，包含 SMC 版本号（大写）。配备 Apple T2 安全芯片的 Mac 没有这一字段。
 
 ### 25. `FirmwareFeatures`
 
-**Type**: `plist data`, 8 bytes
+**Type**: `plist data`，8 bytes
 **Failsafe**: `0`（在苹果硬件上指定的 OEM，否则不提供表，否则为 `0`）
 **SMBIOS**: `APPLE_SMBIOS_TABLE_TYPE128` - `FirmwareFeatures` and `ExtendedFirmwareFeatures`
 **Description**: 64 位固件功能位掩码。详情请参考 [AppleFeatures.h](https://github.com/acidanthera/OpenCorePkg/blob/master/Include/Apple/IndustryStandard/AppleFeatures.h)。低 32 位与 `FirmwareFeatures` 匹配，高 64 位与 `ExtendedFirmwareFeatures` 匹配。
 
 ### 26.`FirmwareFeaturesMask`
 
-**Type**: `plist data`, 8 bytes
+**Type**: `plist data`，8 bytes
 **Failsafe**: `0`（在苹果硬件上指定的 OEM，否则不提供表，否则为 `0`）
 **SMBIOS**: `APPLE_SMBIOS_TABLE_TYPE128` - `FirmwareFeaturesMask` and `ExtendedFirmwareFeaturesMask`
 **Description**: 扩展固件功能位掩码。详情请参考 [AppleFeatures.h](https://github.com/acidanthera/OpenCorePkg/blob/master/Include/Apple/IndustryStandard/AppleFeatures.h)。低 32 位与 `FirmwareFeatures` 匹配，高 64 位与 `ExtendedFirmwareFeatures` 匹配。
 
 ### 27. `ProcessorType`
 
-**Type**: `plist integer`, 16-bit
+**Type**: `plist integer`，16-bit
 **Failsafe**: `0` (Automatic)
 **SMBIOS**: `APPLE_SMBIOS_TABLE_TYPE131` - `ProcessorType`
 **Description**: 由处理器的主要和次要类型组成。
