@@ -824,7 +824,7 @@ Apple 安全启动最初出现于搭载 T2 芯片的机型上的 macOS 10.13。�
 
 关于如何结合 UEFI 安全启动来配置 Apple 安全启动的细节，请参考本文档 [UEFI 安全启动](12-troubleshooting.html#12-2-UEFI-安全启动) 部分。
 
-## 8.6 Serial 属性
+## 8.6 Serial 自定义属性
 
 ### 1. `Custom`
 
