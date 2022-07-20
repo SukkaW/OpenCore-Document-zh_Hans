@@ -459,7 +459,6 @@ cat Kernel.panic | grep macOSProcessedStackshotData |
 - `0x10` (bit `4`) --- 启用 UEFI 变量记录
 - `0x20` (bit `5`) --- 启用非易失性 UEFI 变量记录
 - `0x40` (bit `6`) --- 启用在 ESP 分区生成日志文件
-- `0x80` (bit `7`) --- 与 0x40 结合，启用更快但不安全的(见下文警告2)文件记录。
 
 控制台日志会比其他日志少，根据 build 类型（`RELEASE`、`DEBUG` 或 `NOOPT`）的不同，读取到的日志量也会不同（从最少到最多）。
 
