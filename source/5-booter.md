@@ -16,7 +16,7 @@ last_updated: 2022-07-20
 - 禁用了 `Fast Boot` 和 `Hardware Fast Boot`。如果 BIOS 里有相关选项，禁用掉。
 - 如果有 `Above 4G Decoding` 或类似功能，请在固件设置中启用。注意，在某些主板上（特别是 ASUS WS-X299-PRO）这个选项会造成不良影响，必须禁用掉。虽然目前还不知道是不是其他主板也有同样问题，但是如果你遇到了不稳定的启动故障，可以首先考虑检查一下这个选项。
 - 启用了 `DisableIoMapper` Quirk、或者在 BIOS 中禁用 `VT-d`、或者删去了 ACPI DMAR 表。
-- 启动参数中 **没有** `slide`。 除非你没法开机、并且在日志里看见了 `No slide values are usable! Use custom slide!`，否则不论如何也不要使用这个启动参数。
+- NVRAM 和其他地方都 **没有** `slide` 启动参数。 除非你没法开机、并且在日志里看见了 `No slide values are usable! Use custom slide!`，否则不论如何也不要使用这个启动参数。
 - `CFG Lock` (MSR `0xE2` 写保护) 在 BIOS 中被禁用。如果 BIOS 中没有、而且你心灵手巧，你可以考虑 [手动打补丁将其禁用](https://github.com/LongSoft/UEFITool/blob/master/UEFIPatch/patches.txt) 。更多细节请参考 ControMsrE2（位于7.8节）。
 - 在 BIOS 中禁用 `CSM` (Compatibility Support Module)。NVIDIA 6xx / AMD 2xx 或更老的平台可能需要刷新 GOP ROM，具体步骤参考 [GopUpdate](https://www.win-raid.com/t892f16-AMD-and-Nvidia-GOP-update-No-requests-DIY.html) 或者 [AMD UEFI GOP MAKER](http://www.insanelymac.com/forum/topic/299614-asus-eah6450-video-bios-uefi-gop-upgrade-and-gop-uefi-binary-in-efi-for-many-ati-cards/page-1#entry2042163)。
 - 如果有 `EHCI / XHCI Hand-off` 功能，建议仅在出现 USB 设备连接时启动停滞的情况下启用。
@@ -116,19 +116,19 @@ sudo pmset standby 0
 
 **Type**: `plist string`
 **Failsafe**: Empty (匹配任何启动器)
-**Description**: `Apple` 代表 macOS 启动器（通常是 `boot.efi`）；带有后缀的名称（如 `bootmgfw.efi`）代表特定的启动器。
+**Description**: `Apple` 代表 macOS 启动器（通常是 `boot.efi`）；带有后缀的名称（例如：`bootmgfw.efi`）代表特定的启动器。
 
 ### 7. `Limit`
 
 Type: `plist integer`
-Failsafe: `0` (搜索全部引导器)
+Failsafe: `0` (搜索所以引导程序)
 Description: 搜索的最大字节数。
 
 ### 8. `Mask`
 
 **Type**: `plist data`
 **Failsafe**: Empty (Ignored)
-**Description**: 在查找比较的过程中使用的数据位掩码。允许通过忽略未被屏蔽的 bit（设置为 `0`）进行模糊搜索。如果设置，则其大小必须等于 `Find`。
+**Description**: 在查找比较的过程中使用的数据位掩码。允许通过忽略未被屏蔽的 bit（设置为 0）进行模糊搜索。如果设置，则其大小必须等于 `Find`。
 
 ### 9. `Replace`
 
@@ -140,7 +140,7 @@ Description: 搜索的最大字节数。
 
 **Type**: `plist data`
 **Failsafe**: Empty (Ignored)
-**Description**: 替换时使用的数据位掩码。允许通过更新掩码（设置为非 `0`）来进行模糊替换。如果设置，否则其大小必须等于 `Replace`。
+**Description**: 替换时使用的数据位掩码。允许通过更新掩码（设置为非 0）来进行模糊替换。如果设置，否则其大小必须等于 `Replace`。
 
 ### 11. `Skip`
 
@@ -172,7 +172,7 @@ Description: 搜索的最大字节数。
 **Failsafe**: `false`
 **Description**: 防止 `boot.efi` 运行时执行内存碎片整理。
 
-这个选项修复了包括日期、时间、NVRAM、电源控制等 UEFI Runtime 服务。提供使用可变存储的某些服务的固件的支持，如变量存储。可变存储可能会尝试通过非可变存储区域的物理地址访问内存，但这有时可能已经被 boot.efi 移动了。这个选项可以防止 boot.efi 移动这种数据。
+这个选项修复了包括日期、时间、NVRAM、电源控制等 UEFI Runtime 服务。提供使用可变存储的某些服务的固件的支持，如变量存储。可变存储可能会尝试通过非可变存储区域的物理地址访问内存，但这有时可能已经被 `boot.efi` 移动了。这个选项可以防止 `boot.efi` 移动这种数据。
 
 *注*：除 Apple 和 VMware 固件外，都需要启用此选项。
 
@@ -182,7 +182,7 @@ Description: 搜索的最大字节数。
 **Failsafe**: `false`
 **Description**: 从某些 MMIO 区域中删除 Runtime 属性。
 
-通过删除已知内存区域的 Runtime bit，此选项可减少内存映射中 Stolen Memory Footprint。 这个 Quirk 可能会使可用的 KASLR slide 增加，但如果没有其他措施，则不一定与目标主板兼容。 通常，这会释放 64 到 256 MB 的内存（具体数值会显示在调试日志中）。在某些平台上这是引导 macOS 的唯一方法，否则在引导加载程序阶段会出现内存分配错误。
+通过删除已知内存区域的 Runtime bit，此选项可减少内存映射中 Stolen Memory Footprint。 这个 Quirk 可能会使可用的 KASLR slide 增加，但如果没有其他措施，则不一定与目标主板兼容。 通常，这会释放 64 到 256MB 的内存（具体数值会显示在调试日志中）。在某些平台上这是引导 macOS 的唯一方法，否则在引导加载程序阶段会出现内存分配错误。
 
 该选项通常对所有固件都有用，除了一些非常古老的固件（例如 Sandy Bridge）。在某些固件上，可能需要一个例外映射列表。为了使 NVRAM 和休眠功能正常工作，获取其虚拟地址仍然是必要的。 请参考 `MmioWhitelist` 章节来实现。
 
@@ -224,7 +224,7 @@ Description: 搜索的最大字节数。
 **Failsafe**: `false`
 **Description**: 修补引导加载程序以在安全模式下启用 KASLR。
 
-这个选项与启动到安全模式（启动时按住 Shift 或使用 `-x` 启动参数）有关。默认情况下，安全模式会使用 `slide=0`，就像系统在启动时使用 `slide=0` 启动参数一样。这个 Quirk 会试图给 `boot.efi` 打上补丁，解除这一限制，并允许使用其他值(从 `1` 到 `255`)。这个 Quirks 需要启用 `ProvideCustomSlide` 。
+这个选项与启动到安全模式（启动时按住 Shift 或使用 `-x` 启动参数）有关。默认情况下，安全模式会使用 `slide=0`，就像系统在启动时使用 `slide=0` 启动参数一样。这个 Quirk 会试图给 `boot.efi` 打上补丁，解除这一限制，并允许使用其他值(从 1 到 255)。这个 Quirks 需要启用 `ProvideCustomSlide` 。
 
 *注*：除非启动到安全模式失败，否则不需要启用此选项。
 
@@ -244,7 +244,7 @@ Description: 搜索的最大字节数。
 **Failsafe**: `false`
 **Description**: 将 macOS 启动器签名设置为 OpenCore 启动器。
 
-启动器签名，本质上是加载的镜像的 `SHA-1` 哈希值，在从休眠唤醒时，Mac EFI 使用该签名来验证启动器的真实性。该选项强制 macOS 使用 OpenCore 启动器的 `SHA-1` 哈希值作为启动器签名，以便让 OpenCore shim 在 Mac EFI 固件上进行休眠唤醒。
+启动器签名，本质上是加载的镜像的 SHA-1 哈希值，在从休眠唤醒时，Mac EFI 使用该签名来验证启动器的真实性。该选项强制 macOS 使用 OpenCore 启动器的 SHA-1 哈希值作为启动器签名，以便让 OpenCore shim 在 Mac EFI 固件上进行休眠唤醒。
 
 *注*：OpenCore 启动器路径由 `LauncherPath` 属性决定。
 
@@ -279,7 +279,7 @@ Description: 搜索的最大字节数。
 
 尝试从操作系统写入 `db`、`dbx`、`PK` 和 `KEK` 时生成报告。
 
-*注*：这个 Quirk 主要试图避免碎片整理导致的 NVRAM 相关问题，如 Insyde 或 `MacPro5,1`。
+*注*：这个 Quirk 主要试图避免碎片整理导致的 NVRAM 相关问题，例如 Insyde 或 MacPro5,1。
 
 ### 13. `ProtectUefiServices`
 
@@ -287,7 +287,7 @@ Description: 搜索的最大字节数。
 **Failsafe**: `false`
 **Description**: 保护 UEFI 服务不被固件覆盖。
 
-一些现代的固件，包括 VMware 等虚拟机上的固件，可能会在加载驱动及相关操作的过程中，更新 UEFI 服务的指针。这一行为会直接破坏其他影响内存管理的 Quirk，如 `DevirtualiseMmio`、`ProtectMemoryRegions`，或 `RebuildAppleMemoryMap`；也可能会破坏其他 Quirk，具体取决于 Quirk 的作用。
+一些现代的固件，包括 VMware 等虚拟机上的固件，可能会在加载驱动及相关操作的过程中，更新 UEFI 服务的指针。这一行为会直接破坏其他影响内存管理的 Quirk，例如 `DevirtualiseMmio`、`ProtectMemoryRegions` 或 `RebuildAppleMemoryMap`。也可能会破坏其他 Quirk，具体取决于 Quirk 的作用。
 
 GRUB-shim 对各种 UEFI image services 进行了类似的即时更改，这些服务也受到这个 Quirk 的保护。
 
@@ -301,7 +301,7 @@ GRUB-shim 对各种 UEFI image services 进行了类似的即时更改，这些�
 **Failsafe**: `false`
 **Description**: 为低内存设备提供自定义 KASLR slide 值。
 
-开启这个选项后，将会对固件进行内存映射分析，检查所有 slide（从 `1` 到 `255`）中是否有可用的。由于 `boot.efi` 私用 rdrand 或伪随机 rdtsc 随机生成此值，因此有可能出现冲突的 slide 值被使用并导致引导失败。如果出现潜在的冲突，这个选项将会强制为 macOS 选择一个伪随机值。这同时确保了 `slide=` 参数不会被传递给操作系统（出于安全原因）。
+开启这个选项后，将会对固件进行内存映射分析，检查所有 slide（从 1 到 255）中是否有可用的。由于 `boot.efi` 私用 rdrand 或伪随机 rdtsc 随机生成此值，因此有可能出现冲突的 slide 值被使用并导致引导失败。如果出现潜在的冲突，这个选项将会强制为 macOS 选择一个伪随机值。这同时确保了 `slide=` 参数不会被传递给操作系统（出于安全原因）。
 
 *注*：OpenCore 会自动检查是否需要启用这一选项。如果 OpenCore 的调试日志中出现 `OCABC: Only N/256 slide values are usable!` 则请启用这一选项。
 
@@ -311,7 +311,7 @@ GRUB-shim 对各种 UEFI image services 进行了类似的即时更改，这些�
 **Failsafe**: `0`
 **Description**: 当更大的 KASLR slide 值不可用时，手动提供最大 KASLR slide 值。
 
-当 `ProvideCustomSlide` 启用时，该选项通过用户指定的 `1` 到 `254`（含）之间的值来覆盖上限为 `255` 的最大 slide 值。较新的固件会从上到下分配内存池中的内存，导致扫描 slide 时的空闲内存被当作内核加载时的临时内存来使用。如果这些内存不可用，启用这个选项则不会继续评估更高的 slide 值。
+当 `ProvideCustomSlide` 启用时，该选项通过用户指定的 1 到 254（含）之间的值来覆盖上限为 255 的最大 slide 值。较新的固件会从上到下分配内存池中的内存，导致扫描 slide 时的空闲内存被当作内核加载时的临时内存来使用。如果这些内存不可用，启用这个选项则不会继续评估更高的 slide 值。
 
 *注*：当 `ProvideCustomSlide` 启用、并且随机化的 slide 落入不可用的范围时，如果出现随机的启动失败，则有必要开启这个 Quirk。开启 `AppleDebug` 时，调试日志通常会包含 `AAPL: [EB|‘LD:LKC] } Err(0x9)` 这样的信息。如果要找到最合适的值，请手动将 `slide=X` 追加到 `boot-args` 里，并用日志记录下不会导致启动失败的最大值。
 
@@ -322,7 +322,7 @@ GRUB-shim 对各种 UEFI image services 进行了类似的即时更改，这些�
 **Description**: 生成与 macOS 兼容的内存映射。
 
 Apple 内核在解析 UEFI 内存映射时有几个限制：
-- 内存映射的大小不能超过 4096 字节，因为 Apple 内核将其映射为一个 4 KiB 页面。由于某些固件的内存映射大小非常大（大约超过 100 个条目），Apple 内核会在启动时崩溃。
+- 内存映射的大小不能超过 4096 字节，因为 Apple 内核将其映射为一个 4KiB 页面。由于某些固件的内存映射大小非常大（大约超过 100 个条目），Apple 内核会在启动时崩溃。
 - 内存属性表会被忽略。`EfiRuntimeServicesCode` 内存静态获得 `RX` 权限，其他内存类型则获得 `RW` 权限。某些固件驱动会在运行时把数据写到全局变量中，因此 Apple 内核在调用 UEFI Runtime Services 时会崩溃，除非驱动的 `.data` 部分有 `EfiRuntimeServicesData` 类型。
 为了解决这些限制，这个 Quirk 将内存属性表的权限应用到传递给 Apple 内核的内存映射中，如果生成的内存映射超过 4KiB，则可选择尝试统一类似类型的连续插槽。
 
@@ -336,16 +336,17 @@ Apple 内核在解析 UEFI 内存映射时有几个限制：
 **Failsafe**: `-1`
 **Description**: 减少 GPU PCI BAR 的大小，以便与 MacOS 兼容。
 
-这个 Quirk 将 MacOS 的 GPU PCI BAR 大小减少到指定的值，如果不支持的话，则更低。指定的值遵循 PCI Resizable BAR 规则。虽然 MacOS 支持理论上的1GB最大值。实际上，所有非默认值可能无法正常工作。由于这个原因，这个 Quirk 的唯一支持值是最小的 BAR 大小，即0。 使用-1来禁用这个 Quirk。
+这个 Quirk 将 MacOS 的 GPU PCI BAR 大小减少到指定的值，如果不支持的话，则更低。指定的值遵循 PCI Resizable BAR 规则。虽然 MacOS 支持理论上的1GB最大值。实际上，所有非默认值可能无法正常工作。由于这个原因，这个 Quirk 的唯一支持值是最小的 BAR 大小，即 0。 使用 -1 来禁用这个 Quirk。
 
 出于开发的目的，可以冒险尝试其他数值。考虑具有 2 个 BAR 的 GPU。
 - BAR0 支持从 256MB 到 8GB 的大小。它的值是 4GB。
 - BAR1 支持从 2MB 到 256MB 的大小。它的值是 256MB。
+
 *例 1*：将 ResizeAppleGpuBars 设置为 1GB，将 BAR0 改为 1GB，BAR1 保持不变。
 *例 2*: 将 ResizeAppleGpuBars 设置为 1MB 将改变 BAR0 为 256MB，BAR0 为 2MB。
 *例 3*：将 ResizeAppleGpuBars 设置为 16GB，将不做任何改变。
 
-*注*：请参阅 `ResizeGpuBars quirk` 了解 GPU PCI BAR size 配置和有关该技术的更多详细信息。
+*注*：请参阅 `ResizeGpuBars` quirk 了解 GPU PCI BAR size 配置和有关该技术的更多详细信息。
 
 ### 18. `SetupVirtualMap`
 
