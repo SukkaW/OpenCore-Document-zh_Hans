@@ -3,7 +3,7 @@ title: 3. Setup
 description: Setup
 type: docs
 author_info: 由 Sukka、derbalkon、cike-567 整理、由 Sukka、derbalkon、cike-567 翻译。
-last_updated: 2022-07-12
+last_updated: 2022-07-20
 ---
 
 ## 3.1 目录结构
