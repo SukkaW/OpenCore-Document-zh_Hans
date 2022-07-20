@@ -17,7 +17,7 @@ last_updated: 2022-07-13
 - 如果有 `Above 4G Decoding` 或类似功能，请在固件设置中启用。注意，在某些主板上（特别是 ASUS WS-X299-PRO）这个选项会造成不良影响，必须禁用掉。虽然目前还不知道是不是其他主板也有同样问题，但是如果你遇到了不稳定的启动故障，可以首先考虑检查一下这个选项。
 - 启用了 `DisableIoMapper` Quirk、或者在 BIOS 中禁用 `VT-d`、或者删去了 ACPI DMAR 表。
 - 启动参数中 **没有** `slide`。 除非你没法开机、并且在日志里看见了 `No slide values are usable! Use custom slide!`，否则不论如何也不要使用这个启动参数。
-- `CFG Lock` (MSR `0xE2` 写保护) 在 BIOS 中被禁用。如果 BIOS 中没有、而且你心灵手巧，你可以考虑 [手动打补丁将其禁用](https://github.com/LongSoft/UEFITool/blob/master/UEFIPatch/patches.txt) 。更多细节请参考 [VerifyMsrE2](https://github.com/acidanthera/AppleSupportPkg#verifymsre2)。
+- `CFG Lock` (MSR `0xE2` 写保护) 在 BIOS 中被禁用。如果 BIOS 中没有、而且你心灵手巧，你可以考虑 [手动打补丁将其禁用](https://github.com/LongSoft/UEFITool/blob/master/UEFIPatch/patches.txt) 。更多细节请参考 ControMsrE2（位于7.8节）。
 - 在 BIOS 中禁用 `CSM` (Compatibility Support Module)。NVIDIA 6xx / AMD 2xx 或更老的平台可能需要刷新 GOP ROM，具体步骤参考 [GopUpdate](https://www.win-raid.com/t892f16-AMD-and-Nvidia-GOP-update-No-requests-DIY.html) 或者 [AMD UEFI GOP MAKER](http://www.insanelymac.com/forum/topic/299614-asus-eah6450-video-bios-uefi-gop-upgrade-and-gop-uefi-binary-in-efi-for-many-ati-cards/page-1#entry2042163)。
 - 如果有 `EHCI / XHCI Hand-off` 功能，建议仅在出现 USB 设备连接时启动停滞的情况下启用。
 - 在 BIOS 中启用 `VT-x`、`Hyper Threading`、`Execute Disable Bit`。
@@ -224,8 +224,7 @@ Description: 搜索的最大字节数。
 **Failsafe**: `false`
 **Description**: 修补引导加载程序以在安全模式下启用 KASLR。
 
-这个选项与启动到安全模式（启动时按住 Shift 或使用 `-x` 启动参数）有关。默认情况下，安全模式会使用 `slide=0`，就像系统在启动时使用 `slide=0` 启动参数一样。这个 Quirk 会试图给 `boot.efi` 打上补丁，解除这一限制，并允许使用其他值
-(从 `1` 到 `255`)。这个 Quirks 需要启用 `ProvideCustomSlide` 。
+这个选项与启动到安全模式（启动时按住 Shift 或使用 `-x` 启动参数）有关。默认情况下，安全模式会使用 `slide=0`，就像系统在启动时使用 `slide=0` 启动参数一样。这个 Quirk 会试图给 `boot.efi` 打上补丁，解除这一限制，并允许使用其他值(从 `1` 到 `255`)。这个 Quirks 需要启用 `ProvideCustomSlide` 。
 
 *注*：除非启动到安全模式失败，否则不需要启用此选项。
 
@@ -266,10 +265,8 @@ Description: 搜索的最大字节数。
 **Description**: 保护内存区域免于不正确的读写。
 
 有些固件会错误映射内存区域：
-
 - CSM 区域会被标记为引导服务的代码或数据，从而成为 XNU 内核的空闲内存。
 - MMIO 区域会被标记为预留内存，保持不被映射的状态，但在运行时可能需要在 NVRAM 的支持下才能访问。
-
 这一 Quirk 会尝试修复这些区域的类型，比如用 ACPI NVS 标记 CSM，MMIO 标记 MMIO。
 
 *注*：是否启用这一 Quirk 取决于你是否遇到了休眠、睡眠无法唤醒、启动失败或其他问题。一般来说，只有古董固件才需要启用。
@@ -294,7 +291,9 @@ Description: 搜索的最大字节数。
 
 GRUB-shim 对各种 UEFI image services 进行了类似的即时更改，这些服务也受到这个 Quirk 的保护。
 
-*注*：在 VMware 上，是否需要开启这个 Quirk 取决于是否有 `Your Mac OS guest might run unreliably with more than one virtual core.` 这样的消息。如果 OpenCore 是从启用了 BIOS 安全启动的 GRUB 中链式加载的，则需要这个 Quirk。
+*注 1 *：在 VMware 上，是否需要开启这个 Quirk 取决于是否有 `Your Mac OS guest might run unreliably with more than one virtual core.` 这样的消息。
+
+*注 2 *：如果 OpenCore 是从启用了 BIOS 安全启动的 GRUB 中链式加载的，则需要这个 Quirk。
 
 ### 14. `ProvideCustomSlide`
 
@@ -323,15 +322,13 @@ GRUB-shim 对各种 UEFI image services 进行了类似的即时更改，这些�
 **Description**: 生成与 macOS 兼容的内存映射。
 
 Apple 内核在解析 UEFI 内存映射时有几个限制：
-
 - 内存映射的大小不能超过 4096 字节，因为 Apple 内核将其映射为一个 4 KiB 页面。由于某些固件的内存映射大小非常大（大约超过 100 个条目），Apple 内核会在启动时崩溃。
 - 内存属性表会被忽略。`EfiRuntimeServicesCode` 内存静态获得 `RX` 权限，其他内存类型则获得 `RW` 权限。某些固件驱动会在运行时把数据写到全局变量中，因此 Apple 内核在调用 UEFI Runtime Services 时会崩溃，除非驱动的 `.data` 部分有 `EfiRuntimeServicesData` 类型。
-
 为了解决这些限制，这个 Quirk 将内存属性表的权限应用到传递给 Apple 内核的内存映射中，如果生成的内存映射超过 4KiB，则可选择尝试统一类似类型的连续插槽。
 
-*注 1*：由于许多固件自带的内存保护不正确，所以这个 Quirk 一般要和 `SyncRuntimePermissions` 一起启用。
+*注 1 *：由于许多固件自带的内存保护不正确，所以这个 Quirk 一般要和 `SyncRuntimePermissions` 一起启用。
 
-*注 2*：根据是否遇到第一阶段启动失败再决定是否启用这一 Quirk。在支持内存属性表 (MAT) 的平台上，这一 Quirk 是 `EnableWriteUnprotector` 更好的替代。在使用 `OpenDuetPkg` 时一般是不需要启用这个 Quirk 的，但如果要启动 macOS 10.6 或更早的版本则可能需要启用，原因暂不明确。
+*注 2 *：根据是否遇到第一阶段启动失败再决定是否启用这一 Quirk。在支持内存属性表 (MAT) 的平台上，这一 Quirk 是 `EnableWriteUnprotector` 更好的替代。在使用 `OpenDuetPkg` 时一般是不需要启用这个 Quirk 的，但如果要启动 macOS 10.6 或更早的版本则可能需要启用，原因暂不明确。
 
 ### 17. `ResizeAppleGpuBars`
 
@@ -344,9 +341,9 @@ Apple 内核在解析 UEFI 内存映射时有几个限制：
 出于开发的目的，可以冒险尝试其他数值。考虑具有 2 个 BAR 的 GPU。
 - BAR0 支持从 256MB 到 8GB 的大小。它的值是 4GB。
 - BAR1 支持从 2MB 到 256MB 的大小。它的值是 256MB。
-例1：将 ResizeAppleGpuBars 设置为 1GB，将 BAR0 改为 1GB，BAR1 保持不变。
-例2: 将 ResizeAppleGpuBars 设置为 1MB 将改变 BAR0 为 256MB，BAR0 为 2MB。
-例3：将 ResizeAppleGpuBars 设置为 16GB，将不做任何改变。
+*例 1 *：将 ResizeAppleGpuBars 设置为 1GB，将 BAR0 改为 1GB，BAR1 保持不变。
+*例 2 *: 将 ResizeAppleGpuBars 设置为 1MB 将改变 BAR0 为 256MB，BAR0 为 2MB。
+*例 3 *：将 ResizeAppleGpuBars 设置为 16GB，将不做任何改变。
 
 *注*：请参阅 `ResizeGpuBars quirk` 了解 GPU PCI BAR size 配置和有关该技术的更多详细信息。
 
@@ -358,7 +355,7 @@ Apple 内核在解析 UEFI 内存映射时有几个限制：
 
 选择让固件在调用 `SetVirtualAddresses` 后通过虚拟地址访问内存，可能会导致 Early Boot 故障。这个 Quirk 可通过对分配的虚拟地址和物理内存进行 Early Boot 身份映射来解决这个问题。
 
-*注*：是否启用这个 Quirk 取决于你是否遇到了 Early Boot 故障。目前具有内存保护支持的新固件（例如 OVMF ）由于一些原因不支持此 Quirk: [acidanthera/bugtracker#719](https://github.com/acidanthera/bugtracker/issues/719)。
+*注*：是否启用这个 Quirk 取决于你是否遇到了 Early Boot 故障。
 
 ### 19. `SignalAppleOS`
 
@@ -375,12 +372,10 @@ Mac 设备在不同的操作系统中具有不同的行为，因此如果你在�
 **Description**: 更新运行时环境的内存权限。
 
 某些固件无法正确处理运行时权限，表现为：
-
 - 把 `OpenRuntime` 在内存映射中错误地标记为不可执行。
 - 把 `OpenRuntime` 在内存属性表中错误的标记为不可执行。
 - 在 `OpenRuntime` 加载之后丢失内存属性表中的条目。
 - 把内存属性表中的项目标记为 read-write-execute。
-
 这个 Quirk 会通过更新内存映射和内存属性表来纠正这一问题。
 
 *注*：是否开启这一 Quirk 取决于是否遇到 Early Boot 故障（包括但不限于在黑屏时停止以及更明显的崩溃，影响同一台机子上的其他系统）。一般来说，只有 2017 年以后发布的固件才会受到影响。
