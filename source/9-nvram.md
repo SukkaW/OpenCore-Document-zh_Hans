@@ -3,7 +3,7 @@ title: 9. NVRAM
 description: NVRAM 注入（如引导标识符和 SIP）
 type: docs
 author_info: 由 xMuu、Sukka、cike-567 整理，由 Sukka、derbalkon、cike-567 翻译
-last_updated: 2022-07-15
+last_updated: 2022-07-20
 ---
 
 ## 9.1 简介
@@ -18,11 +18,11 @@ last_updated: 2022-07-15
 - `8BE4DF61-93CA-11D2-AA0D-00E098032B8C` (`EFI_GLOBAL_VARIABLE_GUID`)
 - `4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102` (`OC_VENDOR_VARIABLE_GUID`)
 
-*注*：某些变量可以通过 `PlatformNVRAM` 或 `PlatformInfo` 节的 `Generic` 子节添加。请确保本节中的变量不会与它们发生冲突，否则可能导致未定义的行为。
+*注*：某些变量可以通过 `PlatformNVRAM` 或 `PlatformInfo` 章节的 `Generic` 子节添加。请确保本节中的变量不会与它们发生冲突，否则可能导致未定义的行为。
 
 为了使 macOS 正常运行，通常需要使用 `OC_FIRMWARE_RUNTIME` 协议。该协议的实现目前是 `OpenRuntime`（原名 `FwRuntimeServices.efi`）驱动程序的一部分。虽然可能带来一些好处，但根据用途不同也会存在某些限制。
 
-- 并非所有工具都可能知道受保护的名称空间。当使用 `RequestBootVarRouting` 时，在独立的命名空间中会限制对 `Boot` 前缀的变量访问。要访问原始变量，工具必须了解 `OC_FIRMWARE_RUNTIME` 协议的工作原理。
+并非所有工具都可能知道受保护的名称空间。当使用 `RequestBootVarRouting` 时，在独立的命名空间中会限制对 `Boot` 前缀的变量访问。要访问原始变量，工具必须了解 `OC_FIRMWARE_RUNTIME` 协议的工作原理。
 
 ## 9.2 属性列表
 
@@ -47,11 +47,11 @@ last_updated: 2022-07-15
 **Description**: 允许从 ESP 分区的根目录中的 `nvram.plist` 文件读取 NVRAM 变量。
 
 该文件必须以 `plist dictionary` 为文件根格式，并包含以下两个字段：
-
 - `Version` --- `plist integer`，文件版本，必须设定为 1。
 - `Add` --- `plist dictionary`，等同于 `config.plist` 中的 `Add`。
 
 变量加载优先于 `Delete`（以及 `Add`）阶段。除非启用了 `LegacyOverwrite`，否则不会覆盖现有的任何变量。允许设置的变量必须指定于 `LegacySchema` 中。
+
 第三方脚本可以用来创建 `nvram.plist` 文件，脚本示例可参照 [Utilities/LogoutHook](https://github.com/acidanthera/OpenCorePkg/tree/master/Utilities/LogoutHook)。使用第三方脚本可能要将 `ExposeSensitiveData` 设置为 `0x3` 来为 `boot-path` 变量提供 OpenCore EFI 分区的 UUID。
 
 {% note danger 警告 %}
@@ -87,9 +87,9 @@ last_updated: 2022-07-15
 
 要从 macOS 中读取 NVRAM 变量的值，可以使用 `nvram`，并将变量 GUID 和名称用 `:` 符号隔开，形如 `nvram 7C436110-AB2A-4BBB-A880-FE41995C9F82:boot-args`。
 
-变量列表可参照相关文档（持续更新）：[NVRAM Variables](https://docs.google.com/spreadsheets/d/1HTCBwfOBkXsHiK7os3b2CUc6k68axdJYdGl-TyXqLu0)。
+变量列表可参照相关文档（持续更新）：[NVRAM Variables](https://docs.google.com/spreadsheets/d/1HTCBwfOBkXsHiK7os3b2CUc6k68axdJYdGl-TyXqLu0/edit#gid=0)。
 
-## 9.3 必需变量
+## 9.3 强制变量
 
 {% note danger 警告 %}
 这些变量可通过 PlatformNVRAM 或 PlatformInfo 的 Generic 部分添加。推荐使用 `PlatformInfo` 来设置这些变量。
@@ -111,7 +111,7 @@ last_updated: 2022-07-15
 建议使用以下变量来加快启动速度或改善其他表现：
 
 - `4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14:BridgeOSHardwareModel`
-  Bridge OS 的硬件模型变量，用于通过 EfiBoot 传播到 IODT 桥接模型。由 hw.target sysctl 读取，由 SoftwareUpdateCoreSupport 使用。
+  `Bridge OS` 的硬件模型变量，用于通过 EfiBoot 传播到 `IODT` 桥接模型。由 `hw.target sysctl` 读取，由 `SoftwareUpdateCoreSupport` 使用。
 - `7C436110-AB2A-4BBB-A880-FE41995C9F82:csr-active-config`
   系统完整性保护的位掩码（32-bit），声明于 XNU 源码 [csr.h](https://opensource.apple.com/source/xnu/xnu-4570.71.2/bsd/sys/csr.h.auto.html)。
 - `4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14:ExtendedFirmwareFeatures`
@@ -141,7 +141,6 @@ last_updated: 2022-07-15
 
 - `7C436110-AB2A-4BBB-A880-FE41995C9F82:boot-args`
   内核参数，用于将配置传递给 Apple 内核和驱动程序。很多参数可以通过在内核或驱动程序代码中寻找 `PE_parse_boot_argn` 函数找到。已知的引导参数包括：
-
   - `acpi_layer=0xFFFFFFFF`
   - `acpi_level=0xFFFF5F` --- 表示 [`ACPI_ALL_COMPONENTS`](https://github.com/acpica/acpica/blob/master/source/include/acoutput.h)
   - `arch=i386` --- 强制内核架构为 `i386`，详见 `KernelArch` 选项
@@ -156,7 +155,7 @@ last_updated: 2022-07-15
   - `nvram-log=1` --- 启用 AppleEFINVRAM 日志
   - `nv_disable=1` --- 禁用 NVIDIA GPU 加速
   - `nvda_drv=1` --- 启用 NVIDIA web driver 的传统方法，这一参数在 macOS 10.12 中被去除
-  - `npci=0x2000` --- [旧方法](https://www.insanelymac.com/forum/topic/260539-1068-officially-released/?do=findComment&comment=1707972) 禁用 `kIOPCIConfiguratorPFM64`
+  - `npci=0x2000` --- [旧方法](https://www.insanelymac.com/forum/topic/260539-1068-officially-released/page/11/#comment-1707972) 禁用 `kIOPCIConfiguratorPFM64`
   - `lapic_dont_panic=1` --- 禁用 AP 内核的 LAPIC Panic 伪中断行为
   - `panic_on_display_hang=1` --- 显示设备挂起时触发 Panic
   - `panic_on_gpu_hang=1` --- GPU 挂起时触发 Panic
@@ -180,7 +179,6 @@ last_updated: 2022-07-15
 
 - `7C436110-AB2A-4BBB-A880-FE41995C9F82:bootercfg`
   Booter 参数，类似于 `boot-args`，但用于 `boot.efi` 。接受参数为一组十六进制的 64 位值，带或不带 `0x`。在不同阶段，`boot.efi` 会请求不同的调试（日志）模式（例如，在 `ExitBootServices` 之后它只会打印到串行调试接口）。有些 Booter 参数会控制这些请求是否成功。下面是已知请求的列表：
-
   - `0x00` – `INIT`
   - `0x01` – `VERBOSE` （如 `-v`，强制控制台记录日志）
   - `0x02` – `EXIT`
@@ -196,7 +194,6 @@ last_updated: 2022-07-15
   - `0x0C` – `UNKNOWN`
 
   在 10.15 中，由于某种重构和 [新调试协议](https://github.com/acidanthera/OpenCorePkg/blob/master/Include/Apple/Protocol/AppleDebugLog.h) 的引入，10.15.4 之前的调试支持基本上不能用了。下面的一些参数和值可能不适用于 10.15.4 之前的版本。以下是已知参数的列表：
-
   - `boot-save-log=VALUE` --- 正常启动时的调试日志保存模式
     - `0`
     - `1`
