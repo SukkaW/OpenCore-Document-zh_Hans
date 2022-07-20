@@ -37,7 +37,9 @@ AppleACPIPlatformExpert 包含了两个阶段的 `IODeviceTree` 构建，通过�
 **Type**: `plist dict`
 **Description**: 将设备属性从设备路径的映射（`plist dict`）设置为变量名称和值的映射（`plist dict`），其中变量名称和值的格式为 `plist metadata`。
 
-*注*：设备路径必须以规范化字符串格式（Canonical String Format）提供，例如： `PciRoot(0x0)/Pci(0x1,0x0)/Pci(0x0,0x0`。现有的属性不会被改变，除非在 `DeviceProperties` 部分删除。
+*注 1 *：设备路径必须以规范化字符串格式（Canonical String Format）提供，例如： `PciRoot(0x0)/Pci(0x1,0x0)/Pci(0x0,0x0`。
+
+*注 2 *：现有的属性不会被改变，除非在 `DeviceProperties` 部分删除。
 
 ### 2. `Delete`
 
