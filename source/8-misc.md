@@ -3,7 +3,7 @@ title: 8. Misc
 description: 关于 OpenCore 行为的其他配置
 type: docs
 author_info: 由 xMuu、Sukka、derbalkon、EricKwok、cike-567 整理、由 Sukka、derbalkon、EricKwok、cike-567 翻译。
-last_updated: 2022-07-14
+last_updated: 2022-07-20
 ---
 
 ## 8.1 简介
@@ -18,7 +18,8 @@ OpenCore 大体上遵循 `bless` 模式，即 `Apple Boot Policy`。`bless` 模�
 
 - 替代选项可能在没有主选项的情况下存在，反之亦然。
 - 请注意，这些选项描述的操作系统不一定都在同一个分区上。
-- 每个主选项和备用选项都可以作为辅助选项（Auxiliary Option），也可以不作为辅助选项，具体细节参考下面的 `HideAuxiliary` 章节。
+- 每个主选项和备用选项都可以作为辅助选项（Auxiliary Option），也可以不作为辅助选项。
+  - 具体细节参考下面的 `HideAuxiliary` 章节。
 
 用来确定启动选项的算法如下：
 
@@ -104,13 +105,13 @@ OpenCore 启动选择器中的启动选项的显示顺序和启动过程，是�
 ### 6. `Serial`
 
 **Type**: `plist dict`
-**Description**: 执行串行端口初始化并配置 BaseSerialPortLib16550 要求的 `PCD` 值，以使串行端口正常运行。这些值在下面的串行属性和串行自定义属性部分列出和描述。
+**Description**: 执行串行端口初始化并配置 BaseSerialPortLib16550 要求的 `PCD` 值，以使串行端口正常运行。这些值在下面的 Serial 属性和 Serial Custom 属性部分列出和描述。
 
 通过启用 Init，这部分可以确保在固件没有完成的情况下对串行端口进行初始化。为了使 OpenCore 向串行端口打印日志，必须设置 Misc->Debug 部分的 `Target` 第 `3` 位（即串行日志）。
 
-当使用串口调试时，BaseSerialPortLib16550 默认只识别由主板提供的内部串口。如果启用了 `Override` 选项，将覆盖BaseSerialPortLib16550.inf 中列出的 `PCD` 值，这样外部串口（例如来自 PCI 卡）也能正常工作。具体来说，在排除  macOS 的故障时，除了覆盖这些 `PCD` 值之外，还需要打开 `CustomPciSerialDevice` 内核 Quirks，以便 XNU 使用这些外部串口。
+当使用串口调试时，BaseSerialPortLib16550 默认只识别由主板提供的内部串口。如果启用了 `Override` 选项，将覆盖 BaseSerialPortLib16550.inf 中列出的 `PCD` 值，这样外部串口（例如来自 PCI 卡）也能正常工作。具体来说，在排除  macOS 的故障时，除了覆盖这些 `PCD` 值之外，还需要打开 `CustomPciSerialDevice` 内核 Quirks，以便 XNU 使用这些外部串口。
 
-请参考 MdeModulePkg.dec 对每个键的解释。
+请参考 [MdeModulePkg.dec](https://github.com/acidanthera/audk/blob/master/MdeModulePkg/MdeModulePkg.dec) 对每个键的解释。
 
 ### 7. `Tools`
 
@@ -193,7 +194,6 @@ OpenCore 启动选择器中的启动选项的显示顺序和启动过程，是�
 **Description**: 在固件偏好设置中注册启动器选项，以保证 bootloader 的持久与一致性。
 
 有效值有：
-
 - `Disabled` --- 什么都不做。
 - `Full` --- 在 bootloader 启动时，在 UEFI 变量存储中创建或更新最高优先级的启动项。要使用这个选项，必须同时开启 `RequestBootVarRouting`。
 - `Short` --- 创建一个短的、非完整的启动项。此值对于某些固件很有用，比如 Insyde，或者其他无法处理完整设备路径的固件。
@@ -233,7 +233,6 @@ OpenCore 启动选择器中的启动选项的显示顺序和启动过程，是�
 可以用属性掩码来设置引导菜单的不同属性，其中掩码包含 OpenCore 的预留值（`BIT0` ~ `BIT15`）和 OEM 特定值（`BIT16` ~ `BIT31`）。
 
 目前 OpenCore 的预留值有：
-
 - `0x0001` — `OC_ATTR_USE_VOLUME_ICON`，为启动项提供自定义图标：
   OpenCore 将尝试通过搜索加载卷宗图标，不存在时回退到默认图标：
   - APFS 卷宗图标的 `.VolumeIcon.icns` 文件，置于 `Preboot` 卷宗目录（`/System/Volumes/Preboot/{GUID}/`，当在 macOS 内的默认位置时）下（如果存在）。
@@ -252,23 +251,21 @@ OpenCore 启动选择器中的启动选项的显示顺序和启动过程，是�
 - `0x0040` - `OC_ATTR_USE_MINIMAL_UI`，显示最小化 UI，不显示关机或重启的按钮。在 OpenCanopy 和 Builtin picker 中生效。
 - `0x0080` - `OC_ATTR_USE_FLAVOUR_ICON`，提供弹性的启动项内容描述，可以在不同的图标集中选择最好的图标：
    
-   当启用的时候，OpenCanopy 中的启动项和 audio assist 项目音频以及 Builtin boot picker 可以被 content flavor 指定。要指定 content flavor，请参考以下规则：
-   
-   - 对于一个 Tool 项目，将会从其 `Flavour` 中读取
-   - 对于一个自动发现项目，包括由 OpenLinuxBoot 驱动生成的引导入口协议条目，将会从 bootloader 同目录下的 `.contentFlavour` 文件中读取（如果有的话）
-   - 对于一个自定义项目，如果其 `Flavour` 为 `Auto`，则从 bootloader 同目录下的 `.contentFlavour` 文件中读取，否则由 `Flavour` 指定
-   - 如果读取到的 `Flavour` 项目为 `Auto` 或 `.contentFlavour` 文件不存在，则根据启动项类型来选择图标（如：Windows 将会被自动设置为 Windows 图标）
+当启用的时候，OpenCanopy 中的启动项和 audio assist 项目音频以及 Builtin boot picker 可以被 content flavor 指定。要指定 content flavor，请参考以下规则：
+- 对于一个 Tool 项目，将会从其 `Flavour` 中读取
+- 对于一个自动发现项目，包括由 OpenLinuxBoot 驱动生成的引导入口协议条目，将会从 bootloader 同目录下的 `.contentFlavour` 文件中读取（如果有的话）
+- 对于一个自定义项目，如果其 `Flavour` 为 `Auto`，则从 bootloader 同目录下的 `.contentFlavour` 文件中读取，否则由 `Flavour` 指定
+- 如果读取到的 `Flavour` 项目为 `Auto` 或 `.contentFlavour` 文件不存在，则根据启动项类型来选择图标（如：Windows 将会被自动设置为 Windows 图标）
 
-   `Flavour` 的值是一个由 `:` 分隔的名字，必须是可打印的 7-bit ASCII，最长限制在64字符内。此项目大约能填写五个名字，最前面的名字有最高的优先级，最后面的名字由最低的优先级。这样的结构允许用一个更具体的方式来描述一个启动项，使用被音频-图标集支持的自选图标。如果找不到音频或图标文件，则启动器会自动尝试下一个 flavour，而如果所有的 flavour 都找不到文件，则启动器会根据启动项类型来自动选择图标。以下是一个 flavour 的例子：`BigSur:Apple, Windows10:Windows. OpenShell:UEFIShell:Shell.`
+`Flavour` 的值是一个由 `:` 分隔的名字，必须是可打印的 7-bit ASCII，最长限制在64字符内。此项目大约能填写五个名字，最前面的名字有最高的优先级，最后面的名字由最低的优先级。这样的结构允许用一个更具体的方式来描述一个启动项，根据音频-图标集的支持情况，灵活选择图标。如果找不到音频或图标文件，则启动器会自动尝试下一个 flavour，而如果所有的 flavour 都找不到文件，则启动器会根据启动项类型来自动选择图标。以下是一个 flavour 的例子：`BigSur:Apple, Windows10:Windows. OpenShell:UEFIShell:Shell.`
    
-   使用 flavour 意味着你可以容易地在图标集之中选择自己想要的图标，在图标集所有的图标中选择一个最合适的图标。比如，指定一个 flavour 图标 `Debian:Linux` 则将会尝试使用 `Debian.icns` 这个图标，如果没找到的话则尝试 `Linux.icns`，如果还没找到的话则会回退到 OS 的默认图标，也就是 `HardDrive.icns`。
+使用 flavour 意味着你可以容易地在图标集之中选择自己想要的图标，在图标集所有的图标中选择一个最合适的图标。比如，指定一个 flavour 图标 `Debian:Linux` 则将会尝试使用 `Debian.icns` 这个图标，如果没找到的话则尝试 `Linux.icns`，如果还没找到的话则会回退到 OS 的默认图标，也就是 `HardDrive.icns`。
    
-   一些需要注意的事情：
-   
-   - 为了安全考虑，Ext<Flavour>.icns 和 <Flavour>.icns 都会被支持，并且当启动项是外接硬盘时仅有 Ext<Flavour>.icns 会被使用（就像默认的 ExtHardDrive.icns 那样）。
-   - 当 `.VolumeIcon.icns` 和 `.contentFlavour` 都存在时，以 `.VolumeIcon.icns` 为准。
-   - 为了使 tools 的图标和屏幕朗读工作正常（例如 UEFI Shell），在 `Flavour` 设置中指定的系统的默认启动项图标（见 Docs/Flavours.md）将仍然被应用，即使 `Flavour` 是禁用状态。在这个情况下非系统的图标将会被忽略。此外，UEFIShell 和 NVRAMReset 的 flavours 将会被特殊处理，以辨识它们的正确的屏幕朗读器、默认 builtin 标签等。
-   - 一个推荐的 falvours 列表在 Docs/Flavours.md 中
+一些需要注意的事情：
+- 为了安全考虑，Ext<Flavour>.icns 和 <Flavour>.icns 都会被支持，并且当启动项是外接硬盘时仅有 Ext<Flavour>.icns 会被使用（就像默认的 ExtHardDrive.icns 那样）。
+- 当 `.VolumeIcon.icns` 和 `.contentFlavour` 都存在时，以 `.VolumeIcon.icns` 为准。
+- 为了使 tools 的图标和屏幕朗读工作正常（例如 UEFI Shell），在 `Flavour` 设置中指定的系统的默认启动项图标（见 Docs/Flavours.md）将仍然被应用，即使 `Flavour` 是禁用状态。在这个情况下非系统的图标将会被忽略。此外，UEFIShell 和 NVRAMReset 的 flavours 将会被特殊处理，以辨识它们的正确的屏幕朗读器、默认 builtin 标签等。
+- 一个推荐的 falvours 列表在 Docs/Flavours.md 中
 
 ### 7. `PickerAudioAssist`
 
@@ -290,13 +287,14 @@ macOS Bootloader 屏幕朗读的偏好设置是存在 `isVOEnabled.int32` 文件
 
 在某些固件上，由于驱动程序不兼容，使用 `Modifier Hotkey` 可能会有问题。为了解决这个问题，这个选项允许在 OpenCore  启动选择器中以更宽松的方式注册某些热键。这种扩展包括支持在选择启动项目之前敲击组合键，以及在选择启动项目时可靠地检测 Shift 键，以解决在启动期间持续按住的热键在许多 PS/2 键盘上不能被可靠地检测的问题。
 
+已知的 `Modifier Hotkey` 如下：
 - `CMD+C+MINUS` --- 禁用主板兼容性检查。
 - `CMD+K` --- 从 RELEASE 版本的内核启动，类似于 `kcsuffix=release` 参数。
 - `CMD+R` --- 从恢复分区启动。
 - `CMD+S` --- 启动至单用户模式。
 - `CMD+S+MINUS` --- 禁用 KASLR slide，需要事先禁用 SIP。
 - `CMD+V` --- 启用 `-v`。
-- `Shift+Enter, Shift+Index` --- 启用安全模式。
+- `Shift+Enter, Shift+Index` --- 启用安全模式，可与 `CTRL+Enter`、`CTRL+[数字]` 结合使用。
 
 ### 9. `ShowPicker`
 
@@ -338,7 +336,7 @@ macOS Bootloader 屏幕朗读的偏好设置是存在 `isVOEnabled.int32` 文件
 
 OpenCore 内置的启动选择器包含了一系列在启动过程中选择的操作。支持的操作与 Apple BDS 类似，一般来说能够通过在启动过程中按住 `Action Hotkey` 来实现，目前有以下几种：
 
-- `Default` --- 此项为默认选项，可以让 OpenCore 内置的启动选择器按照 [启动磁盘](https://support.apple.com/HT202796) 偏好设置中指定的方式加载默认的启动项。
+- `Default` --- 此项为默认选项，可以让 OpenCore 内置的启动选择器按照 [启动磁盘](https://support.apple.com/zh-cn/guide/mac-help/mchlp1034/mac) 偏好设置中指定的方式加载默认的启动项。
 - `ShowPicker` --- 此项会强制显示启动选择器，通常可以在启动时按住 `OPT` 键来实现。将 `ShowPicker` 设置为 `true` 会使 `ShowPicker` 成为默认选项。
 - `BootApple` --- 此项会启动到第一个找到的 Apple 操作系统，除非 Apple 已经默认选择了操作系统。按住 `X` 来选择此选项。
 - `BootAppleRecovery` --- 此项会启动到 Apple 操作系统的恢复系统。这里的系统要么是「与默认选中的操作系统相关的恢复系统」，要么是「第一个找到的非 Apple 的默认操作系统的恢复系统」，要么是「无恢复系统」。按住 `CMD+R` 组合键来选择此选项。
@@ -483,14 +481,13 @@ nvram 4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102:boot-log |
    
 虽然 OpenCore 的引导日志已经包含了基本的版本信息（包括 build 类型和日期），但即使在禁用引导日志的情况下，这些数据也可以在 NVRAM 中的 `opencore-version` 变量中找到。
 
-文件记录会在 EFI 卷宗的根目录下创建一个名为 `opencore-YYYY-MM-DD-HHMMSS.txt` 的文件，其中包含了日志的内容（大写字母部分会被替换为固件中的日期和时间）请注意，固件中的一些文件系统驱动程序不可靠，并且可能会通过 UEFI 写入文件时损坏数据。因此，OpenCore 会尝试用最安全同时也是最慢的方式来写入日志。当你在使用慢速存储驱动器时，请确保已将 `DisableWatchDog` 设置为 `true`。如果你在使用 SSD，应该尽量避免使用这一选项，大量的 I/O 操作会很快耗尽 SSD 的寿命。
+文件记录会在 EFI 卷宗的根目录下创建一个名为 `opencore-YYYY-MM-DD-HHMMSS.txt` 的文件，其中包含了日志的内容（大写字母部分会被替换为固件中的日期和时间）请注意，固件中的一些文件系统驱动程序不可靠，并且可能会通过 UEFI 写入文件时损坏数据。因此，OpenCore 会尝试用最安全同时也是最慢的方式来写入日志。当你在使用慢速存储驱动器时，请确保已将 `DisableWatchDog` 设置为 `true`。如果你在使用 SSD，应该尽量避免使用这一选项，大量的 I/O 操作会加速消耗 SSD 的寿命。
 
-在解释日志时，请注意这些行的前缀是描述日志行的相关位置（模块）的标签，以便更好地将该行归入功能。
+在解释日志时，请注意这些行的前缀是描述日志行的相关位置（模块）的标签，从而确定该行日志的归属。
 
-每一行日志都包含有一个描述日志类型的前缀，从而确定该行日志的归属。以下是已知的前缀列表：
+以下是已知的前缀列表：
 
 **Drivers and tools**:
-
 - `BMF` — OpenCanopy, bitmap font
 - `BS` — Bootstrap
 - `GSTT` — GoptStop
@@ -505,7 +502,6 @@ nvram 4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102:boot-log |
 - `VMOPT` — VerifyMemOpt
 
 **Libraries**:
-
 - `AAPL` — OcLogAggregatorLib, Apple EfiBoot logging
 - `OCABC` — OcAfterBootCompatLib
 - `OCAE` — OcAppleEventLib
@@ -558,7 +554,7 @@ nvram 4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102:boot-log |
 **Failsafe**: `false`
 **Description**: 允许使用 `CTRL+Enter` 和 `CTRL+[数字]` 设置默认启动项。
    
-*注 1*：当启用 `PollAppleHotKeys` 时，可与 `Shift+Enter` 或 `Shift+Index` 结合使用。
+*注 1*：当启用 `PollAppleHotKeys` 时，可与 `Shift+Enter` 或 `Shift+[数字]` 结合使用。
 
 *注 2*：为了支持在预启动期间对修饰键无响应的系统（这包括 V1 和 V2 KeySupport 模式），OpenCore 还允许按住 `=/+` 键，以触发 `set default` 模式。
    
@@ -572,7 +568,7 @@ nvram 4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102:boot-log |
 
 将此值设置为任何非零的 64 位整数，将允许使用个性化的 Apple 安全启动标识符。如果你想使用此设置，请确保使用加密的随机数生成器生成一个 64 位的随机数。还有一种方法是将 `SystemUUID` 的前 8 个字节用于 `ApECID`，没有 T2 芯片的 Mac 的 macOS 11 就是这样做的。
 
-如果这个值设置妥当，并且 `SecureBootModel` 值有效且不是 `Disabled`，那么就可以实现 Apple 安全启动的 [完整安全性](https://support.apple.com/HT208330)。
+如果这个值设置妥当，并且 `SecureBootModel` 值有效且不是 `Disabled`，那么就可以实现 Apple 安全启动的 [完整安全性](https://support.apple.com/en-us/HT208198)。
 
 要使用个性化的 Apple 安全启动，必须重新安装操作系统，或对其进行个性化定制。在操作系统被个性化定制之前，只能加载 macOS DMG 恢复镜像。DMG 恢复镜像可以随时用 `macrecovery` 实用工具下载，然后放到 `com.apple.recovery.boot` 里，如 [技巧和窍门](12-troubleshooting.html#12-5-技巧和窍门) 部分所述。请记住，[`DmgLoading`](8-misc.html#6-DmgLoading) 需要设置为 `Signed` 才能通过 Apple 安全启动来加载 DMG。
 
@@ -599,7 +595,7 @@ diskutil mount -mountpoint /var/tmp/OSPersonalizationTemp $disk
 **Failsafe**: `false`
 **Description**: 启用与 `VirtualSMC` 兼容的 authenticated restart。
 
-`authenticated restart` 可以在重启 FileVault2 分区时不用再次输入密码。你可以使用下述指令执行一次 `authenticated restart`：`sudo fdesetup authrestart`。macOS 在安装系统更新使用的也是 `authenticated restart`。
+`authenticated restart` 可以在重启 FileVault2 分区时不用再次输入密码。你可以使用下述指令执行一次：`sudo fdesetup authrestart`。macOS 在安装系统更新使用的也是 `authenticated restart`。
 
 VirtualSMC 通过将磁盘加密密钥拆分保存在 NVRAM 和 RTC 中来执行 authenticated restart。虽然 OpenCore 在启动系统后立刻删除密钥，但是这仍然可能被视为安全隐患。因此这个选项是可选的。
 
@@ -618,7 +614,6 @@ VirtualSMC 通过将磁盘加密密钥拆分保存在 NVRAM 和 RTC 中来执行
 **Description**: 定义用于 macOS Recovery 的磁盘映像（Disk Image, DMG）加载策略。
 
 有效值如下：
-
 - `Disabled` --- 加载 DMG 磁盘映像的行为将会失败。大多数情况下 `Disabled` 策略仍会允许加载 macOS Recovery，因为通常会有 `boot.efi` 文件，它与 Apple 安全启动兼容。但是，手动下载存储在 `com.apple.recovery.boot` 目录中的 DMG 磁盘映像将无法被加载。
 - `Signed` --- 仅加载 Apple 签名的 DMG 磁盘映像。由于 Apple 安全启动的设计，不管 Apple 安全启动是什么状态，`Signed` 策略都会允许加载任何 Apple 签名的 macOS Recovery，这可能并不总是令人满意。虽然使用已签名的 DMG 磁盘映像更可取，但验证磁盘映像签名可能会稍微减慢启动时间（最多1秒）。
 - `Any` --- 任何 DMG 磁盘映像都会作为普通文件系统挂载。强烈不建议使用 `Any` 策略，当激活了 Apple 安全启动时会导致启动失败。
@@ -645,27 +640,24 @@ VirtualSMC 通过将磁盘加密密钥拆分保存在 NVRAM 和 RTC 中来执行
 - `0x08` --- 将 OEM 信息作为一组 UEFI 变量暴露出来
 
 根据加载顺序，暴露的启动器路径指向 OpenCore.efi 或其引导器。如要获得引导器路径，请在 macOS 中使用以下命令：
-
 ```bash
 nvram 4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102:boot-path
 ```
 
 如要使用启动器路径加载启动器卷宗，请在 macOS 中使用以下命令：
-
 ```bash
 u=$(nvram 4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102:boot-path | sed 's/.*GPT,\([^,]*\),.*/\1/'); \
   if [ "$u" != "" ]; then sudo diskutil mount $u ; fi
 ```
 
 如要获取 OpenCore 版本信息，请在 macOS 中使用以下命令：
-
 ```bash
 nvram 4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102:opencore-version
 ```
 
 如果 OpenCore 的版本没有公布，该变量将包含 UNK-000-0000-00-00 序列。
+   
 如要获取 OEM 信息，请在 macOS 中使用以下命令：
-
 ```bash
 nvram 4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102:oem-product # SMBIOS Type1 ProductName
 nvram 4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102:oem-vendor # SMBIOS Type2 Manufacturer
@@ -697,29 +689,27 @@ nvram 4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102:oem-board # SMBIOS Type2 ProductName
 **Description**: 启用 OpenCore 的 Vault 机制。
 
 有效值：
-
 - `Optional` --- 无要求，不设置 Vault，不安全。
 - `Basic` --- 需要有 `vault.plist` 文件存放在 `OC` 目录下。这个值提供了基本的文件系统完整性验证，可以防止无意中的文件系统损坏。
 - `Secure` --- 需要有 `vault.sig` 签名的 `vault.plist` 文件存放在 `OC` 目录下。这个值包括了 `Basic` 完整性检查，但也会尝试建立一个可信的引导链。
 
 `vault.plist` 文件应该包含 OpenCore 使用的所有文件的 SHA-256 哈希值。强烈建议使用这个文件，以确保无意中的文件修改（包括文件系统损坏）不会被忽视。要自动创建这个文件，请使用 [`create_vault.sh`](https://github.com/acidanthera/OpenCorePkg/tree/master/Utilities/CreateVault) 脚本。无论底层的文件系统如何，路径名和大小写必须在 `config.plist` 和 `vault.plist` 之间相匹配。
 
-`vault.sig` 文件应该包含一个来自 `vault.plist` SHA-256 哈希值的原始的 256 字节 RSA-2048 签名。这个签名是根据嵌入到 `OpenCore.efi` 中的公钥来验证的。如要嵌入公钥，以下任一步骤均可：
-
+`vault.sig` 文件应该包含一个来自 `vault.plist` SHA-256 哈希值的原始的 256 字节 RSA-2048 签名。这个签名是根据嵌入到 `OpenCore.efi` 中的公钥来验证的。
+   
+如要嵌入公钥，以下任一步骤均可：
 - 在 `OpenCore.efi` 编译过程中，在 [`OpenCoreVault.c`](https://github.com/acidanthera/OpenCorePkg/blob/master/Platform/OpenCore/OpenCoreVault.c) 文件中提供公钥。
 - 用二进制补丁的方式将 `OpenCore.efi` 中 `=BEGIN OC VAULT=` 和 `==END OC VAULT==` ASCII 码之间的 0 替换为公钥。
 
 RSA 公钥的 520 字节格式可参阅 Chromium OS 文档。如要从 X.509 证书或 PEM 文件中转换公钥，请使用 [RsaTool](https://github.com/acidanthera/OpenCorePkg/tree/master/Utilities/CreateVault)。
 
 以下操作的完整指令：
-
 - 创建 `vault.plist`
 - 创建一个新的 RSA 密钥（总是要这样做，以避免加载旧配置）
 - 将 RSA 密钥嵌入到 `OpenCore.efi`
 - 创建 `vault.sig`
 
 可以参照如下指令：
-
 ```bash
 cd /Volumes/EFI/EFI/OC
 /path/to/create_vault.sh .
@@ -742,7 +732,6 @@ rm vault.pub
 通过设置该值来根据所选 flag 的位掩码（总和）防止从非信任源扫描（和启动）。由于不可能可靠地检测到每一个文件类型或设备类型，因此在开放环境中不能完全依赖此功能，需要采取额外的措施。
 
 第三方驱动程序可能会根据提供的扫描策略引入额外的安全（和性能）措施。扫描策略暴露在 `4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102` GUID的 `scan-policy` 变量中，仅适用于 UEFI 启动服务。
-
 - `0x00000001` (bit `0`) --- `OC_SCAN_FILE_SYSTEM_LOCK`，将扫描限制于仅扫描此策略定义的已知文件系统。文件系统驱动可能感知不到这个策略，为了避免挂载不必要的文件系统，最好不要加载它的驱动程序。此 bit 不影响 dmg 挂载，因为它可能有各种文件系统。已知文件系统的前缀为 `OC_SCAN_ALLOW_FS_`。
 - `0x00000002` (bit `1`) --- `OC_SCAN_DEVICE_LOCK`，将扫描限制于仅扫描此策略定义的已知设备类型。由于协议隧道并不一定能被检测到，因此请注意，在某些系统上可能会出现 USB 硬盘被识别成 SATA 等情况。如有类似情况，请务必报告。已知设备类型的前缀为 `OC_SCAN_ALLOW_DEVICE_`。
 - `0x00000100` (bit `8`) --- `OC_SCAN_ALLOW_FS_APFS`，允许扫描 APFS 文件系统。
@@ -763,7 +752,6 @@ rm vault.pub
 - `0x01000000` (bit `24`) --- `OC_SCAN_ALLOW_DEVICE_PCI`，允许扫描直接连接到 PCI 总线的设备(例如 VIRTIO)。
 
 *注*：举例：根据以上描述，`0xF0103` 值允许扫描带有 APFS 文件系统的 SATA、SAS、SCSI 和 NVMe 设备，不扫描 USB、CD 和 FireWire 设备上的 APFS 文件系统，也不扫描任何带有 HFS 或 FAT32 文件系统的设备。该值表示如下组合：
-
 - `OC_SCAN_FILE_SYSTEM_LOCK`
 - `OC_SCAN_DEVICE_LOCK`
 - `OC_SCAN_ALLOW_FS_APFS`
@@ -779,7 +767,6 @@ rm vault.pub
 **Description**: Apple 安全启动的机型。
 
 定义 Apple 安全启动的机型和策略。指定此值能够定义哪些操作系统可以启动。早于指定机型发布时间的操作系统将无法启动。有效值如下：
-
 - `Default` --- 最近的可用型号，目前设置为 `j137`
 - `Disabled` --- 无机型，禁用 Apple 安全启动
 - `j137` --- iMacPro1,1 (December 2017). Minimum macOS 10.13.2 (17C2111)
@@ -799,7 +786,6 @@ rm vault.pub
 - `j185` --- iMac20,1 (August 2020). Minimum macOS 10.15.6 (19G2005)
 - `j185f` --- iMac20,2 (August 2020). Minimum macOS 10.15.6 (19G2005)
 - `x86legacy` --- Macs and VMs without T2 chip. Minimum macOS 11.0.1 (20B29)
-
 
 {% note danger 警告 %}
 并非所有的苹果安全启动模式都支持所有的硬件配置。
@@ -824,7 +810,7 @@ Apple 安全启动最初出现于搭载 T2 芯片的机型上的 macOS 10.13。�
 
 关于如何结合 UEFI 安全启动来配置 Apple 安全启动的细节，请参考本文档 [UEFI 安全启动](12-troubleshooting.html#12-2-UEFI-安全启动) 部分。
 
-## 8.6 Serial 自定义属性
+## 8.6 Serial 属性
 
 ### 1. `Custom`
 
@@ -843,16 +829,16 @@ Apple 安全启动最初出现于搭载 T2 芯片的机型上的 macOS 10.13。�
 ### 3. `Override`
 
 **Type**: `plist boolean`
-**Description**: 覆盖串行端口属性。如果此选项设置为 `false`，则不会覆盖来自自定义的任何串行端口属性。    
- 
+**Description**: 覆盖串行端口属性。如果此选项设置为 `false`，则不会覆盖来自自定义的任何串行端口属性。   
+   
 这个选项将覆盖下面串行自定义属性部分中列出的串行端口属性。
 
-## 8.6.1 Serial 属性   
+## 8.6.1 Serial Custom 属性   
    
 ### 1. `BaudRate`
 
 **Type**: `plist integer`
-**Failsafe**: 115200
+**Failsafe**: `115200`
 **Description**:  设置串口的波特率。
 
 这个选项将覆盖 [MdeModulePkg.dec](https://github.com/acidanthera/audk/blob/master/MdeModulePkg/MdeModulePkg.dec) 中定义的 `gEfiMdeModulePkgTokenSpaceGuid.PcdSerialBaudRate` 的值。
@@ -860,7 +846,7 @@ Apple 安全启动最初出现于搭载 T2 芯片的机型上的 macOS 10.13。�
 ### 2. `ClockRate`
 
 **Type**: `plist integer`
-**Failsafe**: 1843200
+**Failsafe**: `1843200`
 **Description**: 设置串口的时钟速率。
 
 这个选项将覆盖 [MdeModulePkg.dec](https://github.com/acidanthera/audk/blob/master/MdeModulePkg/MdeModulePkg.dec) 中定义的 gEfiMdeModulePkgTokenSpaceGuid.PcdSerialClockRate 的值。
@@ -905,8 +891,9 @@ Apple 安全启动最初出现于搭载 T2 芯片的机型上的 macOS 10.13。�
 
 这个选项将覆盖 [MdeModulePkg.dec](https://github.com/acidanthera/audk/blob/master/MdeModulePkg/MdeModulePkg.dec) 中定义的  gEfiMdeModulePkgTokenSpaceGuid.PcdSerialPciDeviceInfo 的值。
    
-*注 1 *：这个选项的最大允许大小是41字节。更多详细信息请参考 [acidanthera/bugtracker#1954](https://github.com/acidanthera/bugtracker/issues/1954#issuecomment-1084220743)。
-*注 2 *：这个选项可以通过运行 [FindSerialPort](https://github.com/acidanthera/OpenCorePkg/tree/master/Utilities/FindSerialPort) 工具来设置。          
+*注 1*：这个选项的最大允许大小是 `41` 字节。更多详细信息请参考 [acidanthera/bugtracker#1954](https://github.com/acidanthera/bugtracker/issues/1954#issuecomment-1084220743)。
+
+*注 2*：这个选项可以通过运行 [FindSerialPort](https://github.com/acidanthera/OpenCorePkg/tree/master/Utilities/FindSerialPort) 工具来设置。   
    
 ### 8. `RegisterAccessWidth`
 
@@ -1004,7 +991,7 @@ Apple 安全启动最初出现于搭载 T2 芯片的机型上的 macOS 10.13。�
 
 这通常应该禁用，因为传递目录可能会使工具在没有检查文件完整性的情况下就意外地访问了文件，降低了安全性。需要启用该项的情况有：工具需要外部文件来正常工作；工具需要外部文件来更好地实现某些功能（如 `memtest86` 的记录和配置功能，Shell 自动执行脚本的功能）。
 
-*注*：此属性的开关仅对工具有效。对于 `Entries` 该属性始终为 `true`。
+*注*：此属性仅对 `Tools` 有效。对于 `Entries` 该属性始终为 `true`。
 
 ### 9. TextMode
 
