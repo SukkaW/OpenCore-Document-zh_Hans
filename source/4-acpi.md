@@ -138,7 +138,7 @@ OpenCore、WhateverGreen、VirtualSmc、VoodooPS2 的 GitHub 仓库中都包含�
 ### 2. `BaseSkip`
 
 **Type**: `plist integer`
-**Failsafe**: `0` (应用于指定 `Base` 中的所有匹配)
+**Failsafe**: `0` (不跳过任何 `Base` 指定的路径)
 **Description**: 在重命名补丁被应用查找和替换之前跳过多少次 `Base` 指定的路径。
 
 ### 3. `Comment`
@@ -150,7 +150,7 @@ OpenCore、WhateverGreen、VirtualSmc、VoodooPS2 的 GitHub 仓库中都包含�
 ### 4. `Count`
 
 **Type**: `plist integer`
-**Failsafe**: `0` (补丁将会被应用于所有匹配)
+**Failsafe**: `0` (补丁将会被应用于所有的匹配项)
 **Description**: 补丁应用的次数。
 
 ### 5. `Enabled`
@@ -200,8 +200,8 @@ OpenCore、WhateverGreen、VirtualSmc、VoodooPS2 的 GitHub 仓库中都包含�
 ### 12. `Skip`
 
 **Type**: `plist integer`
-**Failsafe**: `0` (不跳过匹配)
-**Description**: 完成替换之前要跳过的匹配数。
+**Failsafe**: `0` (不跳过任何 `Base` 指定的路径)
+**Description**: 在重命名补丁被替换之前跳过多少次 `Base` 指定的路径。
 
 ### 13. `TableLength`
 
@@ -245,7 +245,7 @@ TianoCore 源文件 [AcpiAml.h](https://github.com/acidanthera/audk/blob/master/
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
-**Description**: 清理 ACPI 表头字段以解决 macOS ACPI 实现错误导致的引导崩溃。*参考*：由 Alex James（theracermaster）在调试 AppleACPIPlatform 时发现。从 macOS Mojave (10.14) 开始，这个错误已经被修复。
+**Description**: 清理 ACPI 表头字段以解决 macOS ACPI 实现错误导致的引导崩溃。*参考*：由 Alex James（theracermaster）在[调试 AppleACPIPlatform](https://alextjam.es/debugging-appleacpiplatform/) 时发现。在 macOS Mojave (10.14) 中，这个错误已经被修复。
 
 ### 3. `RebaseRegions`
 
@@ -255,9 +255,9 @@ TianoCore 源文件 [AcpiAml.h](https://github.com/acidanthera/audk/blob/master/
 
 ACPI 表通常由底层固件动态生成。在与位置无关的代码中，ACPI 表可能包含用于设备配置的 MMIO 区域的物理地址，通常按区域（例如 OperationRegion）分组。 更改固件设置或硬件配置，升级或修补固件不可避免地会导致动态生成的 ACPI 代码发生变化，这有时会导致上述 OperationRegion 结构中的地址发生变化。
 
-因此，对 ACPI 表进行任何形式的修改都是非常危险的。最好的方法是对 ACPI 进行尽可能少的更改，避免替换任何表，尤其是 DSDT。
+因此，对 ACPI 表进行任何形式的修改都是非常危险的。最好的方法是对 ACPI 进行尽可能少的更改，避免替换任何表，尤其是 DSDT。如果无法不得不替换 DSDT，则至少应尝试确保自定义 DSDT 基于最新的 DSDT 或避免对受影响区域的读写。
 
-如果无法不得不替换 DSDT，则至少应尝试确保自定义 DSDT 基于最新的 DSDT 或避免对受影响区域的读写。如果没有其他帮助，可以尝试通过尝试修复 ACPI 地址来避免在 macOS 引导的 PCI Configuration Begin 阶段出现停顿的情况。然而，这不是一个灵丹妙药，只在最典型的情况下有效。除非绝对需要，否则不要使用，因为它在某些平台上可能产生相反的效果，导致启动失败。
+如果没有其他帮助，可以尝试通过尝试修复 ACPI 地址来避免在 macOS 引导的 PCI Configuration Begin 阶段出现停顿的情况。然而，这不是一个灵丹妙药，只在最典型的情况下有效。除非绝对需要，否则不要使用，因为它在某些平台上可能产生相反的效果，导致启动失败。
 
 ### 4. `ResetHwSig`
 
