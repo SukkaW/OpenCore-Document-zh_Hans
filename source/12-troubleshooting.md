@@ -21,14 +21,14 @@ last_updated: 2022-07-20
 
 - 上述问题均存在
 - `SSSE3` 支持（不要和 `SSE3` 混淆）是 macOS 10.7 内核的硬性要求。
-- 包括 Lilu（使用 `32` 位内核时）及其插件在内的许多 Kext 在 macOS 10.7 或更低版本上都不支持，它们所需的内核 API 比较新，不在 macOS 10.7 SDK 之中。
+- 包括 Lilu（使用 32 位内核时）及其插件在内的许多 Kext 在 macOS 10.7 或更低版本上都不支持，它们所需的内核 API 比较新，不在 macOS 10.7 SDK 之中。
 - macOS 10.8 之前的系统不支持 KASLR slide，因此会导致内存较低的固件分配内存失败，详见 [acidanthera/bugtracker#1125](https://github.com/acidanthera/bugtracker/issues/1125)。
 
 ### 3. macOS 10.6
 
 - 上述问题均存在。
 - `SSSE3` 支持是启用了 64 位用户空间的 macOS 10.6 内核的要求。这个限制大多可以通过启用 `LegacyCommpage` Quirk 来解除。
-- 最近发布的 macOS 10.6 安装镜像为 macOS 10.6.7 版本号 `10J3250`（`MacBookPro8,x` 专用）和 `10J4139`（`iMac12,x` 专用，不含 Xcode）。这些镜像仅限于特定的几款机型，并且不支持使用 `-no_compat_check` 来忽略兼容性检查。如果你拥有 macOS 10.6 的合法副本，又不想被上述限制所约束，可以在 [这里](https://archive.org/details/10.6.7-10j3250-disk-images)（或 [MEGA 镜像](https://mega.nz/folder/z5YUhYTb#gA_IRY5KMuYpnNCg7kR3ug)）找到无机型限制的修改版镜像（`ACDT` 后缀），更多细节在 `DIGEST.txt` 中。记住，这些都是经过 OpenCore 测试的最早的 macOS 10.6 版本。
+- 最近发布的 macOS 10.6 安装镜像为 macOS 10.6.7 版本号 `10J3250`（适用于 `MacBookPro8,x`）和 `10J4139`（适用于 `iMac12,x`，不含 Xcode）。这些镜像仅限于特定的几款机型，并且不支持使用 `-no_compat_check` 来忽略兼容性检查。如果你拥有 macOS 10.6 的合法副本，又不想被上述限制所约束，可以在 [这里](https://archive.org/details/10.6.7-10j3250-disk-images)（或 [MEGA 镜像](https://mega.nz/folder/z5YUhYTb#gA_IRY5KMuYpnNCg7kR3ug)）找到无机型限制的修改版镜像（`ACDT` 后缀），更多细节在 `DIGEST.txt` 中。记住，这些都是经过 OpenCore 测试的最早的 macOS 10.6 版本。
 
 机型检查可以被手动去除，大体思路是用 `Flat Package Editor` 之类的工具编辑 `OSInstall.mpkg`，让 `Distribution` 脚本在 `hwbeModelCheck` 函数中总是返回 `true`。仅更新映像中某一的文件而不影响到其他文件是相当困难的，而且还有可能因为内核缓存日期的改变而导致启动速度变慢，因此建议按照如下命令重建映像：
 
@@ -72,10 +72,10 @@ OpenCore 的设计初衷是在 固件 和 操作系统 之间提供一个安全�
 
 1. 如果要启动的系统是 macOS，则需要通过设置 `SecureBootModel` 来启用 Apple 安全启动。请注意，并不是每个 macOS 版本都能使用 Apple 安全启动，具体限制详见 [Apple 安全启动](8-misc.html#14-SecureBootModel) 章节。
 2. 旧的 DMG 恢复镜像往往很脆弱、易受攻击，如果担心因为加载它而突破防线，可以通过设置 `DmgLoading` 为 `Disabled` 来禁用 DMG 加载。**非必需**，但建议使用。参阅 [DMG 加载](8-misc.html#6-DmgLoading) 部分来权衡利弊。
-3. 将 `MinDate` 和 `MinVersion` 设置为 `0`，以确保 APFS JumpStart 功能限制旧的驱动程序加载。更多细节参见 [APFS JumpStart](11-uefi.html#11-7-APFS-属性) 部分。除此之外，手动安装 `apfs.efi` 驱动也可以达到相同效果。
+3. 将 `MinDate` 和 `MinVersion` 设置为 `0`，限制旧的驱动程序加载，以确保 APFS JumpStart 功能。更多细节参见 [APFS JumpStart](11-uefi.html#11-7-APFS-属性) 部分。除此之外，手动安装 `apfs.efi` 驱动也可以达到相同效果。
 4. 确保你想要运行的操作系统不加载 `Force` 驱动也能正常启动。
 5. 确保使用 `ScanPolicy` 限制加载不受信任的设备。要想做到足够安全，最好的办法是禁止加载 所有可移动设备 和 未知的文件系统。
-6. 使用私钥给所有已安装的驱动程序和工具签名。不要对提供管理员权限的工具（如 UEFI Shell）签名。
+6. 使用私钥给所有已安装的驱动程序和工具签名。不要对提供管理员权限的工具（例如：UEFI Shell）签名。
 7. 加密存储你的配置，详见 [Vault](8-misc.html#12-Vault) 部分。
 8. 使用同一私钥签名该系统使用的所有 OpenCore 二进制文件（`BOOTX64.efi`, `BOOTIa32.efi`, `OpenCore.efi`, 自定义启动器）。
 9. 如果需要用到第三方操作系统（非微软或 Apple 制造）的 bootloader，也同样为它们签名。对于 Linux，可以选择安装微软签名的 Shim bootloader，具体解释见 [Debian Wiki](https://wiki.debian.org/SecureBoot)。
@@ -195,7 +195,7 @@ The operation has completed successfully.
 
 与其他硬件相关的项目类似，OpenCore 也支持审计与调试。使用 `NOOPT` 或 `DEBUG` 构建版本（而非 `RELEASE` 构建版本）可以产生更多的调试输出。对于 `NOOPT` 构建版本，你还可以使用 GDB 或 IDA Pro 进行调试。对于 GDB 请查看 [OpenCore Debug](https://github.com/acidanthera/OpenCorePkg/tree/master/Debug) 相关页面；对于 IDA Pro，你需要 7.3 或更高版本，更多详细信息请参考 IDA Pro 提供的页面：[Debugging the XNU Kernel with IDA Pro](https://www.hex-rays.com/products/ida/support/tutorials/index.shtml)。
 
-可以使用串口调试来获取启动过程中的日志。串口调试是在 `Target` 中开启的，例如 `0xB` 代表在屏幕上显示并输出串行。可使用 `SerialInit` 配置选项来初始化串行。对于 macOS 来说，最好是选择基于 CP2102 的 UART 设备。将主板 `TX` 连接到 USB UART `RX`，主板 `GND` 连接到 USB UART `GND`。使用 `screen` 实用工具，或者下载 GUI 软件获取输出，如 [CoolTerm](https://freeware.the-meiers.org)。
+可以使用串口调试来获取启动过程中的日志。串口调试是在 `Target` 中开启的，例如 `0xB` 代表在屏幕上显示并输出串行。可使用 `SerialInit` 配置选项来初始化串行。对于 macOS 来说，最好是选择基于 CP2102 的 UART 设备。将主板 `TX` 连接到 USB UART `RX`，主板 `GND` 连接到 USB UART `GND`。使用 `screen` 实用工具，或者下载 GUI 软件获取输出，例如： [CoolTerm](https://freeware.the-meiers.org)。
 
 *注*：在一些主板（可能还有一些 USB UART 转换器）上，PIN 的命名可能是不正确的。`GND` 和 `RX` 互换是很常见的，因此你需要将主板 `"TX"` 连接到 USB UART `GND`，主板 `"GND"` 连接到 USB UART `RX`。
 
