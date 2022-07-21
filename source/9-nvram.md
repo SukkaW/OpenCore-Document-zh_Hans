@@ -47,7 +47,7 @@ last_updated: 2022-07-20
 **Description**: 允许从 ESP 分区的根目录中的 `nvram.plist` 文件读取 NVRAM 变量。
 
 该文件必须以 `plist dictionary` 为文件根格式，并包含以下两个字段：
-- `Version` --- `plist integer`，文件版本，必须设定为 1。
+- `Version` --- `plist integer`，文件版本，必须设定为 `1`。
 - `Add` --- `plist dictionary`，等同于 `config.plist` 中的 `Add`。
 
 变量加载优先于 `Delete`（以及 `Add`）阶段。除非启用了 `LegacyOverwrite`，否则不会覆盖现有的任何变量。允许设置的变量必须指定于 `LegacySchema` 中。
