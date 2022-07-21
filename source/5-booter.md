@@ -3,7 +3,7 @@ title: 5. Booter
 description: 配置 OpenRuntime.efi（Slide 值计算、KASLR）
 type: docs
 author_info: 由 Sukka、derbalkon、cike-567 整理，由 Sukka、derbalkon、cike-567 翻译。
-last_updated: 2022-07-20
+last_updated: 2022-07-21
 ---
 
 ## 5.1 简介
@@ -15,9 +15,9 @@ last_updated: 2022-07-20
 - 具有最新版本的 UEFI 固件（去主板厂家的官网上看看）。
 - 禁用了 `Fast Boot` 和 `Hardware Fast Boot`。如果 BIOS 里有相关选项，禁用掉。
 - 如果有 `Above 4G Decoding` 或类似功能，请在固件设置中启用。注意，在某些主板上（特别是 ASUS WS-X299-PRO）这个选项会造成不良影响，必须禁用掉。虽然目前还不知道是不是其他主板也有同样问题，但是如果你遇到了不稳定的启动故障，可以首先考虑检查一下这个选项。
-- 启用了 `DisableIoMapper` Quirk、或者在 BIOS 中禁用 `VT-d`、或者删去了 ACPI DMAR 表。
+- 启用了 `DisableIoMapper` Quirk、或者在 BIOS 中禁用 `VT-d`、或者删去了 ACPI `DMAR` 表。
 - NVRAM 和其他地方都 **没有** `slide` 启动参数。 除非你没法开机、并且在日志里看见了 `No slide values are usable! Use custom slide!`，否则不论如何也不要使用这个启动参数。
-- `CFG Lock` (MSR `0xE2` 写保护) 在 BIOS 中被禁用。如果 BIOS 中没有、而且你心灵手巧，你可以考虑 [手动打补丁将其禁用](https://github.com/LongSoft/UEFITool/blob/master/UEFIPatch/patches.txt) 。更多细节请参考 ControMsrE2（位于7.8节）。
+- `CFG Lock` (`MSR 0xE2` 写保护) 在 BIOS 中被禁用。如果 BIOS 中没有、而且你心灵手巧，你可以考虑 [手动打补丁将其禁用](https://github.com/LongSoft/UEFITool/blob/master/UEFIPatch/patches.txt) 。更多细节请参考 ControMsrE2（位于7.8节）。
 - 在 BIOS 中禁用 `CSM` (Compatibility Support Module)。NVIDIA 6xx / AMD 2xx 或更老的平台可能需要刷新 GOP ROM，具体步骤参考 [GopUpdate](https://www.win-raid.com/t892f16-AMD-and-Nvidia-GOP-update-No-requests-DIY.html) 或者 [AMD UEFI GOP MAKER](http://www.insanelymac.com/forum/topic/299614-asus-eah6450-video-bios-uefi-gop-upgrade-and-gop-uefi-binary-in-efi-for-many-ati-cards/page-1#entry2042163)。
 - 如果有 `EHCI / XHCI Hand-off` 功能，建议仅在出现 USB 设备连接时启动停滞的情况下启用。
 - 在 BIOS 中启用 `VT-x`、`Hyper Threading`、`Execute Disable Bit`。
@@ -41,7 +41,7 @@ sudo pmset standby 0
 
 **Type**: `plist array`
 **Failsafe**: Empty
-**Description**: 设计为用 `plist dict` 值填充，用来描述在启用 `DevirtualiseMmio` 这个 Quirk 时特定固件能够运作的关键地址。详见下面的 MmioWhitelist 属性章节。
+**Description**: 设计为用 `plist dict` 值填充，用来描述在启用 `DevirtualiseMmio` 这个 Quirk 时特定固件能够运作的关键地址。详见下面的 MmioWhitelist 属性部分。
 
 > 译者注：如果开机卡在 `PCI...` 可以尝试开启 Item 1 下的 Patch。
 
@@ -128,7 +128,7 @@ Description: 搜索的最大字节数。
 
 **Type**: `plist data`
 **Failsafe**: Empty (Ignored)
-**Description**: 在查找比较的过程中使用的数据位掩码。允许通过忽略未被屏蔽的 bit（设置为 0）进行模糊搜索。如果设置，则其大小必须等于 `Find`。
+**Description**: 在查找比较的过程中使用的数据位掩码。允许通过忽略未被屏蔽的 bit（设置为 `0`）进行模糊搜索。如果设置，则其大小必须等于 `Find`。
 
 ### 9. `Replace`
 
@@ -140,7 +140,7 @@ Description: 搜索的最大字节数。
 
 **Type**: `plist data`
 **Failsafe**: Empty (Ignored)
-**Description**: 替换时使用的数据位掩码。允许通过更新掩码（设置为非 0）来进行模糊替换。如果设置，否则其大小必须等于 `Replace`。
+**Description**: 替换时使用的数据位掩码。允许通过更新掩码（设置为非 `0`）来进行模糊替换。如果设置，否则其大小必须等于 `Replace`。
 
 ### 11. `Skip`
 
@@ -184,7 +184,7 @@ Description: 搜索的最大字节数。
 
 通过删除已知内存区域的 Runtime bit，此选项可减少内存映射中 Stolen Memory Footprint。 这个 Quirk 可能会使可用的 KASLR slide 增加，但如果没有其他措施，则不一定与目标主板兼容。 通常，这会释放 64 到 256MB 的内存（具体数值会显示在调试日志中）。在某些平台上这是引导 macOS 的唯一方法，否则在引导加载程序阶段会出现内存分配错误。
 
-该选项通常对所有固件都有用，除了一些非常古老的固件（例如 Sandy Bridge）。在某些固件上，可能需要一个例外映射列表。为了使 NVRAM 和休眠功能正常工作，获取其虚拟地址仍然是必要的。 请参考 `MmioWhitelist` 章节来实现。
+该选项通常对所有固件都有用，除了一些非常古老的固件（例如 Sandy Bridge）。在某些固件上，可能需要一个例外映射列表。为了使 NVRAM 和休眠功能正常工作，获取其虚拟地址仍然是必要的。 请参考 `MmioWhitelist` 部分来实现。
 
 > 译者注：对于某些 300 系列主板是必须的
 
@@ -214,7 +214,7 @@ Description: 搜索的最大字节数。
 **Failsafe**: `false`
 **Description**: 复用原始的休眠内存映射。
 
-这一选项强制 XNU 内核忽略新提供的内存映射，并假定它在从休眠状态唤醒后没有改变。这种行为是 [Windows](https://docs.microsoft.com/windows-hardware/design/device-experiences/oem-uefi#hibernation-state-s4-transition-requirements) 要求的。 因为 Windows 强制要求 S4 唤醒后保留运行内存的大小和位置。
+这一选项强制 XNU 内核忽略新提供的内存映射，并假定它在从休眠状态唤醒后没有改变。这种行为是 [Windows](https://docs.microsoft.com/windows-hardware/design/device-experiences/oem-uefi#hibernation-state-s4-transition-requirements) 要求的。 因为 Windows 强制要求 `S4` 唤醒后保留运行内存的大小和位置。
 
 *注*：这可能用于解决较旧较罕见的硬件上的错误内存映射。例如 Insyde 固件的 Ivy Bridge 笔记本电脑，比如 Acer V3-571G。除非您完全了解这一选项可能导致的后果，否则请勿使用此功能。
 
@@ -279,7 +279,7 @@ Description: 搜索的最大字节数。
 
 尝试从操作系统写入 `db`、`dbx`、`PK` 和 `KEK` 时生成报告。
 
-*注*：这个 Quirk 主要试图避免碎片整理导致的 NVRAM 相关问题，例如 Insyde 或 MacPro5,1。
+*注*：这个 Quirk 主要试图避免碎片整理导致的 NVRAM 相关问题，例如 Insyde 或 `MacPro5,1`。
 
 ### 13. `ProtectUefiServices`
 
@@ -322,7 +322,7 @@ GRUB-shim 对各种 UEFI image services 进行了类似的即时更改，这些�
 **Description**: 生成与 macOS 兼容的内存映射。
 
 Apple 内核在解析 UEFI 内存映射时有几个限制：
-- 内存映射的大小不能超过 4096 字节，因为 Apple 内核将其映射为一个 4KiB 页面。由于某些固件的内存映射大小非常大（大约超过 100 个条目），Apple 内核会在启动时崩溃。
+- 内存映射的大小不能超过 4096 字节，因为 Apple 内核将其映射为一个 `4KiB` 页面。由于某些固件的内存映射大小非常大（大约超过 100 个条目），Apple 内核会在启动时崩溃。
 - 内存属性表会被忽略。`EfiRuntimeServicesCode` 内存静态获得 `RX` 权限，其他内存类型则获得 `RW` 权限。某些固件驱动会在运行时把数据写到全局变量中，因此 Apple 内核在调用 UEFI Runtime Services 时会崩溃，除非驱动的 `.data` 部分有 `EfiRuntimeServicesData` 类型。
 为了解决这些限制，这个 Quirk 将内存属性表的权限应用到传递给 Apple 内核的内存映射中，如果生成的内存映射超过 4KiB，则可选择尝试统一类似类型的连续插槽。
 
@@ -376,7 +376,7 @@ Mac 设备在不同的操作系统中具有不同的行为，因此如果你在�
 - 把 `OpenRuntime` 在内存映射中错误地标记为不可执行。
 - 把 `OpenRuntime` 在内存属性表中错误的标记为不可执行。
 - 在 `OpenRuntime` 加载之后丢失内存属性表中的条目。
-- 把内存属性表中的项目标记为 read-write-execute。
+- 把内存属性表中的项目标记为 `read-write-execute`。
 这个 Quirk 会通过更新内存映射和内存属性表来纠正这一问题。
 
 *注*：是否开启这一 Quirk 取决于是否遇到 Early Boot 故障（包括但不限于在黑屏时停止以及更明显的崩溃，影响同一台机子上的其他系统）。一般来说，只有 2017 年以后发布的固件才会受到影响。
