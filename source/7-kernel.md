@@ -3,7 +3,7 @@ title: 7. Kernel
 description: OpenCore 安全配置，Kext 加载顺序以及屏蔽
 type: docs
 author_info: 由 Sukka、derbalkon、cike-567 整理，由 Sukka、derbalkon、cike-567 翻译。
-last_updated: 2022-07-20
+last_updated: 2022-07-21
 ---
 
 ## 7.1 简介
@@ -45,7 +45,7 @@ last_updated: 2022-07-20
 **Failsafe**: Empty
 **Description**: 如果内核驱动没有被缓存，则从系统卷宗强制加载内核驱动。
 
-设计为使用 `plist dict` 值来填充，用于描述驱动程序。参见下面的 Force 属性部分。依赖其他驱动的驱动程序不能被缓存，该部分着重解决了这种驱动程序注入的难点。这个问题会映像到旧的操作系统，在旧的操作系统中存在各种依赖性的 Kext，比如 `IOAudioFamily` 和 `IONetworkingFamily`，可能默认不存在于内核缓存中。
+设计为使用 `plist dict` 值来填充，用于描述驱动程序。参见下面的 `Force` 属性部分。依赖其他驱动的驱动程序不能被缓存，该部分着重解决了这种驱动程序注入的难点。这个问题会映像到旧的操作系统，在旧的操作系统中存在各种依赖性的 Kext，比如 `IOAudioFamily` 和 `IONetworkingFamily`，可能默认不存在于内核缓存中。
 
 *注 1*：加载的顺序是 Kexts 在 array 中出现的顺序。因此，依赖关系必须出现在依赖它们的 Kexts 之前。
 
@@ -61,7 +61,7 @@ last_updated: 2022-07-20
 **Failsafe**: Empty
 **Description**: 在添加和删除驱动程序步骤之前执行的对现有 Kext 驱动程序的二进制修补。
 
-设计为使用 `plist dictionary` 数据填充以描述每个驱动程序。请参阅下述 Patch 属性章节。
+设计为使用 `plist dictionary` 数据填充以描述每个驱动程序。请参阅下述 Patch 属性部分。
 
 ### 6. Quirks
 
@@ -71,7 +71,7 @@ last_updated: 2022-07-20
 ### 7. Scheme
 
 **Type**: `plist dict`
-**Description**: 通过参数来定义内核空间的操作模式，具体参数见下面 Scheme 属性章节的描述。
+**Description**: 通过参数来定义内核空间的操作模式，具体参数见下面 Scheme 属性部分的描述。
 
 ## 7.3 Add 属性
 
@@ -189,7 +189,7 @@ last_updated: 2022-07-20
 
 有效值：
 - Disable - 强行让内核驱动的 kmod 启动代码返回失败。
-- Exclude - 通过删除 plist entry 并填入 0，从内核缓存中删除内核驱动。
+- Exclude - 通过删除 plist entry 并填入 `0`，从内核缓存中删除内核驱动。
 
 *注 1*：排除作为其他依赖项的 Kext 是有风险的。
 
@@ -212,7 +212,7 @@ last_updated: 2022-07-20
 
 *注 1*：还有一种可能的情况，即 CPU 型号是支持的，但其电源管理不支持（比如虚拟机）。在这种情况下，可以通过设置 `MinKernel` 和 `MaxKernel` 来限制特定 macOS 内核版本的 CPU 虚拟化和虚拟电源管理补丁。
 
-*注 2*：通常来讲只需要处理 `EAX` 的值，因为它代表完整的 CPUID。剩余的字节要留为 0。字节顺序是小端字节序（Little Endian），比如 `C3 06 03 00` 代表 CPUID `0x0306C3` (Haswell)。
+*注 2*：通常来讲只需要处理 `EAX` 的值，因为它代表完整的 CPUID。剩余的字节要留为 `0`。字节顺序是小端字节序（Little Endian），比如 `C3 06 03 00` 代表 CPUID `0x0306C3` (Haswell)。
 
 *注 3*：推荐使用下面的组合启用 XCPM 支持。请注意，需要设置与所安装的 CPU 相匹配的正确[频率向量](https://github.com/dortania/bugtracker/issues/190)。：
 
@@ -242,7 +242,7 @@ last_updated: 2022-07-20
 **Failsafe**: All zero
 **Description**: `Cpuid1Data` 中激活的 bit 的位掩码。
 
-当每个 `Cpuid1Mask` bit 都设置为 0 时将使用原始的 CPU bit，否则取 `Cpuid1Data` 的值。
+当每个 `Cpuid1Mask` bit 都设置为 `0` 时将使用原始的 CPU bit，否则取 `Cpuid1Data` 的值。
 
 ### 3. `DummyPowerManagement`
 
@@ -343,7 +343,7 @@ last_updated: 2022-07-20
 
 **Type**: `plist string`
 **Failsafe**: Empty (Ignored)
-**Description**: 通过获取所提供的 Symbol 名称的地址，来选择 Symbol 匹配的 Base 进行补丁查找（或直接替换）。
+**Description**: 通过获取所提供的 Symbol 名称的地址，来选择 Symbol 匹配的 `Base` 进行补丁查找（或直接替换）。
 
 ### 3. `Comment`
 
@@ -355,7 +355,7 @@ last_updated: 2022-07-20
 
 **Type**: `plist integer`
 **Failsafe**: `0`
-**Description**: 修补的次数，超过这一次数后便不再修补。0 表示修补所有查找到的地方。
+**Description**: 修补的次数，超过这一次数后便不再修补。`0` 表示修补所有查找到的地方。
 
 ### 5. `Enabled`
 
@@ -385,7 +385,7 @@ last_updated: 2022-07-20
 
 **Type**: `plist data`
 **Failsafe**: Empty (Ignored)
-**Description**: 在查找比较的过程中使用数据位掩码。允许通过忽略未被屏蔽的 bit（设置为 0）进行模糊搜索。如果设置，则其大小必须等于 `Replace`。
+**Description**: 在查找比较的过程中使用数据位掩码。允许通过忽略未被屏蔽的 bit（设置为 `0`）进行模糊搜索。如果设置，则其大小必须等于 `Replace`。
 
 ### 10. `MaxKernel`
 
@@ -413,7 +413,7 @@ last_updated: 2022-07-20
 
 **Type**: `plist data`
 **Failsafe**: Empty data
-**Description**: 替换时使用的数据位掩码。允许通过更新掩码（设置为非 0）来进行模糊替换。若留空则代表忽略，否则其大小必须等于 `Replace`。
+**Description**: 替换时使用的数据位掩码。允许通过更新掩码（设置为非 `0`）来进行模糊替换。若留空则代表忽略，否则其大小必须等于 `Replace`。
 
 ### 14. `Skip`
 
@@ -647,18 +647,18 @@ macOS Catalina 新增了一项额外的安全措施，导致在电源切换超�
 
 APFS 文件系统的设计方式是，空间由 Spaceman (The Space Manager) 结构控制，要么为已使用，要么为空闲。而其他文件系统，则可以被标记为 已使用、空闲 或 *未映射*。macOS 启动时，所有空闲的空间都会被 trim 处理。由于 `DSM` 命令的特性，每个命令最多拥有 256 个范围，因此 NVMe 驱动器的 trim 过程发生在 LBA 范围内。硬盘上存储的内容越分散，就需要越多的命令对所有空闲空间进行 trim。
 
-Trim 过程耗时取决于 SSD 控制器和硬盘碎片，可能需要相当长的时间，导致启动时间肉眼可见地变长，APFS 驱动程序忽略之前未映射的区域，并在启动时一次又一次地对这些区域进行 trim。为了解决开机速度慢的问题，macOS 驱动引入了一个超时时间（`9.999999` 秒）来中止未能及时完成的 trim 操作。
+Trim 过程耗时取决于 SSD 控制器和硬盘碎片，可能需要相当长的时间，导致启动时间肉眼可见地变长，APFS 驱动程序忽略之前未映射的区域，并在启动时一次又一次地对这些区域进行 trim。为了解决开机速度慢的问题，macOS 驱动引入了一个超时时间（9.999999 秒）来中止未能及时完成的 trim 操作。
 在一些控制器上（如三星）解除分配的过程较慢，很容易达到超时时间。从本质上讲，这意味着碎片级别很高，macOS 会尝试 trim 之前已经解除分配的低位区块，但永远没有足够的时间去解除分配高位区块。这意味着这些 SSD 安装后不久，trim 指令就会不起作用，导致闪存的额外损耗，甚至损坏。
 
-解决这个问题的方法之一是将超时时间设置为一个非常高的值（如 `4294967295`），这样将会以较长的启动时间（数分钟）为代价来确保所有的区块都被 trim 处理。另一种方法是利用超额配置（如果支持），或者创建一个专用的未映射分区，控制器可以在该分区中找到保留块。在这种情况下，可以设置一个非常低的超时时间来禁止 trim 操作，例如 `999`。更多细节详见 [这篇文章](https://interface31.ru/tech_it/2015/04/mozhno-li-effektivno-ispolzovat-ssd-bez-podderzhki-trim.html)。
+解决这个问题的方法之一是将超时时间设置为一个非常高的值（例如：4294967295），这样将会以较长的启动时间（数分钟）为代价来确保所有的区块都被 trim 处理。另一种方法是利用超额配置（如果支持），或者创建一个专用的未映射分区，控制器可以在该分区中找到保留块。在这种情况下，可以设置一个非常低的超时时间来禁止 trim 操作，例如：999。更多细节详见 [这篇文章](https://interface31.ru/tech_it/2015/04/mozhno-li-effektivno-ispolzovat-ssd-bez-podderzhki-trim.html)。
 
-*注 1*：Failsafe -1 表示不应用此补丁，这样 apfs.ext 将保持不动。
+*注 1*：`Failsafe -1` 表示不应用此补丁，这样 apfs.ext 将保持不动。
 
-*注 2*：在 macOS 12.0 及以上版本中，不再可能指定 trim 超时时间。但可以通过设置为 0 来禁用 trim。
+*注 2*：在 macOS 12.0 及以上版本中，不再可能指定 trim 超时时间。但可以通过设置为 `0` 来禁用 trim。
 
-*注 3*：trim 操作只在启动阶段受到影响，当启动卷被加载时。无论是指定超时时间，或者设置为 0 完全禁用 trim，都不会影响正常的 MacOS 运行。
+*注 3*：trim 操作只在启动阶段受到影响，当启动卷被加载时。无论是指定超时时间，或者设置为 `0` 完全禁用 trim，都不会影响正常的 MacOS 运行。
 
-> 译者注：设置为 0 完全禁用 trim 只影响进入系统的启动阶段，对系统启动之后无影响。设置为 0 或 999 基本上没有差别，主要是 macOS 12.0 及以上版本，只有设置为 0 才能禁用 trim。
+> 译者注：设置为 `0` 完全禁用 trim 只影响进入系统的启动阶段，对系统启动之后无影响。设置为 `0` 或 `999` 基本上没有差别，主要是 macOS 12.0 及以上版本，只有设置为 `0` 才能禁用 trim。
 
 ### 21. `ThirdPartyDrives`
 
