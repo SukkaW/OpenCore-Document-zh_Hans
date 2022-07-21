@@ -3,7 +3,7 @@ title: 11. UEFI
 description: UEFI 驱动以及加载顺序
 type: docs
 author_info: 由 xMuu、Sukka、derbalkon、cike-567 整理，由 Sukka、derbalkon、cike-567 翻译
-last_updated: 2022-7-20
+last_updated: 2022-7-21
 ---
 
 ## 11.1 简介
@@ -84,14 +84,14 @@ sudo bless --verbose --file /Volumes/VOLNAME/DIR/OpenShell.efi \
 - [`PavpProvision`](https://github.com/acidanthera/OpenCorePkg) --- 执行 EPID 配置（需要配置证书数据）。
 - [`ResetSystem`](https://github.com/acidanthera/OpenCorePkg)* --- 用于执行系统重置的实用程序。以重置类型作为参数：`ColdReset`, `Firmware`, `WarmReset`, `Shutdown`。默认为 `ColdReset`。
 - [`RtcRw`](https://github.com/acidanthera/OpenCorePkg)* --- 读取和写入 RTC (CMOS) 存储器的使用程序。
-- [`ControlMsrE2`](https://github.com/acidanthera/OpenCorePkg)* --- 检查 `CFG Lock`（MSR `0xE2` 写保护）在所有 CPU 核心之间的一致性，并在选定的平台上改变此类隐藏选项。
+- [`ControlMsrE2`](https://github.com/acidanthera/OpenCorePkg)* --- 检查 `CFG Lock`（`MSR 0xE2` 写保护）在所有 CPU 核心之间的一致性，并在选定的平台上改变此类隐藏选项。
 - [`TpmInfo`](https://github.com/acidanthera/OpenCorePkg)* --- 检查平台上的 `Intel PTT`（Platform Trust Technology）能力，如果启用，允许使用 `fTPM 2.0`。该工具不检查 `fTPM 2.0` 是否真的被启用。
 
 ## 11.4 OpenCanopy
 
 OpenCanopy 是一个 OpenCore 的图形化界面接口，基于 [OpenCorePkg](https://github.com/acidanthera/OpenCorePkg) `OcBootManagementLib` 实现，提供与现有的文字模式类似的功能。当 `PickerMode` 设置为 `External` 时启用。
 
-OpenCanopy 所需的图象资源位于 `Resources` 目录下，一些简单的资源（字体和图标）可以在 [OcBinaryData 仓库](https://github.com/acidanthera/OcBinaryData) 中获取。可以在网络上找到自定义图标（比如 [这里](https://github.com/blackosx/OpenCanopyIcons) 和 [这里](https://applelife.ru/threads/kastomizacija-opencanopy.2945020/)）。
+OpenCanopy 所需的图象资源位于 `Resources` 目录下，一些简单的资源（字体和图标）可以在 [OcBinaryData 仓库](https://github.com/acidanthera/OcBinaryData) 中获取。可以在网络上找到自定义图标（例如： [这里](https://github.com/blackosx/OpenCanopyIcons) 和 [这里](https://applelife.ru/threads/kastomizacija-opencanopy.2945020/)）。
 
 OpenCanopy 为 `PickerAttributes` 提供了全面的支持，并提供了一套可配置的内置图标集。默认选择的图标由 `DefaultBackgroundColor` 变量决定，当该变量的值定义为浅灰时，则使用 `Old` 前缀的图标，定义为其他颜色时则使用没有前缀名的图标。
 
@@ -177,16 +177,16 @@ OpenLinuxBoot 通常需要固件中没有的文件系统驱动，比如 `EXT4` �
 在大多数情况下，默认的参数值应该可以很好地工作，但如果需要，可以在 `UEFI/Drivers/Arguments` 中为驱动指定以下选项：
 
 - `flags - Default`：所有的标志都被设置了，除了以下情况：
-  – `LINUX_BOOT_ADD_RW`
-  – `LINUX_BOOT_LOG_VERBOSE`
-  – `LINUX_BOOT_ADD_DEBUG_INFO`
+  - `LINUX_BOOT_ADD_RW`
+  - `LINUX_BOOT_LOG_VERBOSE`
+  - `LINUX_BOOT_ADD_DEBUG_INFO`
 
-可用的 flags 有：
-  – `0x00000001 (bit 0) — LINUX_BOOT_SCAN_ESP`，允许扫描EFI系统分区的条目。
-  – `0x00000002 (bit 1) — LINUX_BOOT_SCAN_XBOOTLDR`，允许扫描扩展启动加载器分区的条目。
-  – `0x00000004 (bit 2) — LINUX_BOOT_SCAN_LINUX_ROOT`，允许扫描Linux根文件系统的条目。
-  – `0x00000008 (bit 3) — LINUX_BOOT_SCAN_LINUX_DATA`，允许扫描Linux数据文件系统的条目。
-  – `0x00000080 (bit 7) — LINUX_BOOT_SCAN_OTHER`，允许扫描没有被上述任何一个匹配的文件系统上的条目。
+  可用的 `flags` 有：
+    - `0x00000001 (bit 0) — LINUX_BOOT_SCAN_ESP`，允许扫描EFI系统分区的条目。
+    - `0x00000002 (bit 1) — LINUX_BOOT_SCAN_XBOOTLDR`，允许扫描扩展启动加载器分区的条目。
+    - `0x00000004 (bit 2) — LINUX_BOOT_SCAN_LINUX_ROOT`，允许扫描Linux根文件系统的条目。
+    - `0x00000008 (bit 3) — LINUX_BOOT_SCAN_LINUX_DATA`，允许扫描Linux数据文件系统的条目。
+    - `0x00000080 (bit 7) — LINUX_BOOT_SCAN_OTHER`，允许扫描没有被上述任何一个匹配的文件系统上的条目。
 
   以下说明适用于上述所有选项。
 
@@ -196,21 +196,20 @@ OpenLinuxBoot 通常需要固件中没有的文件系统驱动，比如 `EXT4` �
   
   *注 3*：建议在 OpenLinuxBoot flags 和 `Misc/Security/ScanPolicy` 中启用扫描 `LINUX_ROOT` 和 `LINUX_DATA`，以确保检测到所有有效的 Linux 安装，因为 Linux 启动文件系统往往被标记为 `LINUX_DATA`。
 
-  - `0x00000100 (bit 8) - LINUX_BOOT_ALLOW_AUTODETECT`, 如果设置允许在没有找到加载器/条目文件时，自动检测和链接 `vmlinuz*` 和 `init* ramdisk` 文件。
-  – `0x00000200 (bit 9) - LINUX_BOOT_USE_LATEST`，当 OpenLinuxBoot 生成的 Linux 条目被设为 OpenCore 的默认启动条目时，在安装新版本时自动切换到最新内核。
+    - `0x00000100 (bit 8) - LINUX_BOOT_ALLOW_AUTODETECT`, 如果设置允许在没有找到加载器/条目文件时，自动检测和链接 `vmlinuz*` 和 `init* ramdisk` 文件。
+    - `0x00000200 (bit 9) - LINUX_BOOT_USE_LATEST`，当 OpenLinuxBoot 生成的 Linux 条目被设为 OpenCore 的默认启动条目时，在安装新版本时自动切换到最新内核。
 
   设置此选项后，内部菜单条目 `id` 将在同一 Linux 安装的内核版本之间共享。Linux 启动选项总是按最高的内核版本排序，所以这意味着在设置了这个选项后，同一安装的最新内核 版本总是显示为默认版本。
 
   *注*：推荐在所有系统上使用该选项。
 
-    – `0x00000400 (bit 10) - LINUX_BOOT_ADD_RO`，这个选项只适用于自动检测的 Linux（即不适用 BLSpec 或
- Fedora 风格的发行版，它们有 `/loader/entries/*.conf` 文件）。一些发行版在加载时运行文件系统检查，要求根文件系统最初通过 `ro kernel`选项被挂载为只读， 这就要求在自动检测的选项中加入这个选项。在自动检测的发行版上设置这个选项； 在不需要这个选项的发行版上， 应该是无害的，但会稍微减慢启动时间（由于要求重新挂载为读写）。当有多个发行版，并且只需要为特定的发行版指定这个选项时，使用 `autoopts:{PARTUUID}+=ro` 来手动添加需要的选项，而不是使用这个标志。
-    – `0x00000800 (bit 11) - LINUX_BOOT_ADD_RW`，和 `LINUX_BOOT_ADD_RO` 一样， 这个选项只适用于自动检测的
+    - `0x00000400 (bit 10) - LINUX_BOOT_ADD_RO`，这个选项只适用于自动检测的 Linux（即不适用 BLSpec 或 Fedora 风格的发行版，它们有 `/loader/entries/*.conf` 文件）。一些发行版在加载时运行文件系统检查，要求根文件系统最初通过 `ro kernel`选项被挂载为只读， 这就要求在自动检测的选项中加入这个选项。在自动检测的发行版上设置这个选项； 在不需要这个选项的发行版上， 应该是无害的，但会稍微减慢启动时间（由于要求重新挂载为读写）。当有多个发行版，并且只需要为特定的发行版指定这个选项时，使用 `autoopts:{PARTUUID}+=ro` 来手动添加需要的选项，而不是使用这个标志。
+    - `0x00000800 (bit 11) - LINUX_BOOT_ADD_RW`，和 `LINUX_BOOT_ADD_RO` 一样， 这个选项只适用于自动检测的
  Linux。大多数发行版不需要这个选项（它们通常要求在检测到的启动选项中加入`ro` 或 `nothing`），但在一些
  Arch-derived 发行版上需要，例如：EndeavourOS。 当有多个发行版，并且只需要为特定的发行版指定这个选项时，使用  `autoopts:{PARTUUID}+=rw`  在需要的地方手动添加这个选项，而不是使用这个标志。如果这个选项和 `LINUX_BOOT_ADD_RO` 都被指定，那么只有这个选项被应用， `LINUX_BOOT_ADD_RO` 被忽略。
-    – `0x00002000 (bit 13) - LINUX_BOOT_ALLOW_CONF_AUTO_ROOT`，在某些 BootLoaderSpecByDefault 与 ostree 相结合的情况下， `/loader/entries/*.conf` 文件没有指定所需的 `root=...kernel` 选项（它是由 GRUB 加入的）。如果这个位被设置，并且检测到这种情况，那么就自动添加这个选项。 (例如：Endless OS)。
-    – `0x00004000 (bit 14) - LINUX_BOOT_LOG_VERBOSE`，添加额外的调试日志信息，关于扫描 Linux 启动项时遇到的文件和添加的自动检测选项。
-    – `0x00008000 (bit 15) - LINUX_BOOT_ADD_DEBUG_INFO`，在每个生成的条目名称中添加一个人类可读的文件系统类型，然后是分区的唯一分区 `uuid` 的前八个字符。当一个系统上有多个 Linux 安装时，可以帮助调试由驱动生成的条目的来源。
+    - `0x00002000 (bit 13) - LINUX_BOOT_ALLOW_CONF_AUTO_ROOT`，在某些 BootLoaderSpecByDefault 与 ostree 相结合的情况下， `/loader/entries/*.conf` 文件没有指定所需的 `root=...kernel` 选项（它是由 GRUB 加入的）。如果这个位被设置，并且检测到这种情况，那么就自动添加这个选项。 (例如：Endless OS)。
+    - `0x00004000 (bit 14) - LINUX_BOOT_LOG_VERBOSE`，添加额外的调试日志信息，关于扫描 Linux 启动项时遇到的文件和添加的自动检测选项。
+    - `0x00008000 (bit 15) - LINUX_BOOT_ADD_DEBUG_INFO`，在每个生成的条目名称中添加一个人类可读的文件系统类型，然后是分区的唯一分区 `uuid` 的前八个字符。当一个系统上有多个 Linux 安装时，可以帮助调试由驱动生成的条目的来源。
 
   Flag 值可以用以 `0x` 开头的十六进制或十进制来指定，例如 `flags=0x80` 或 `flags=128`。也可以指定添加或删除的 flag，使用 `flags+=0xC000` 来添加所有调试选项或 `flags-=0x400` 来删除 `LINUX_BOOT_ADD_RO` 选项。
 
@@ -284,41 +283,34 @@ BootLoaderSpecByDefault（但不是纯粹的 Boot Loader Specification）可以�
 ## 11.8 AudioDxe
 
 UEFI固件中的高清晰度音频（HDA）支持驱动程序，适用于大多数英特尔和其他一些模拟音频控制器。
-注意： AudioDxe 是一个阶段性的驱动程序，参考[acidanthera/bugtracker#740}(https://github.com/acidanthera/bugtracker/issues/740)了解已知问题。
+注意： AudioDxe 是一个阶段性的驱动程序，参考[acidanthera/bugtracker#740](https://github.com/acidanthera/bugtracker/issues/740)了解已知问题。
 
 ### 11.8.1 Configuration
 
 大多数 UEFI 音频配置是通过 UEFI 音频属性部分处理的，但除此之外，还有一些为了让 `AudioDxe` 正确驱动某些设备，可能需要以下配置选项。所有的选项都被指定为文本字符串，如果需要一个以上的选项，用空格隔开，在 UEFI 驱动的 `Arguments` 属性中。
 
-- `--force-device`，字符串值，没有默认值。
-当这个选项存在并且有一个值（例如 --force-device=PciRoot(0x0)/Pci(0x1f,0x3)），它强制 AudioDxe 连接到指定的 PCI 设备，即使该设备不报告自己是一个 HDA 音频控制器。
-
-在驱动连接期间， AudioDxe 自动提供所有可用的 HDA 控制器的所有支持的编解码器的音频服务。然而，如果相关的控制器错误地报告了它的身份（通常，它将报告自己是一个传统的音频设备，而不是一个 HDA 控制器），那么这个参数可能需要。
-
-如果音频设备可以在 macOS 中工作，但没有显示被 AudioDxe 检测到的迹象，则适用（例如，当在 DisplayLevel 中包含 DEBUG_INFO 并使用 AudioDxe 的 DEBUG 构建时，在 OpenCore 日志的 Connecting drivers... 阶段没有显示控制器和编解码器布局信息）。
-
 - `--gpio-setup`，如果没有提供参数，默认值为 `0`（禁用 GPIO 设置）或者默认值为 `7`（启用所有 GPIO 设置阶段）。
 
-可用的值如下，可以通过添加来组合：
-– `0x00000001 (bit 0) - GPIO_SETUP_STAGE_DATA`，在指定的引脚上设置 GPIO 引脚数据高电平。例如在 `MacBookPro10,2` 和 `MacPro5,1` 上需要。
-– `0x00000002 (bit 1) - GPIO_SETUP_STAGE_DIRECTION`，设置 GPIO 数据方向为指定引脚上的输出。例如在 MacPro5,1 上需要。
-– `0x00000004 (bit 2) - GPIO_SETUP_STAGE_ENABLE`，启用指定的 GPIO 引脚。例如在 MacPro5,1 上需要。
+  可用的值如下，可以通过添加来组合：
+    - `0x00000001 (bit 0) - GPIO_SETUP_STAGE_DATA`，在指定的引脚上设置 GPIO 引脚数据高电平。例如在 `MacBookPro10,2` 和 `MacPro5,1` 上需要。
+    - `0x00000002 (bit 1) - GPIO_SETUP_STAGE_DIRECTION`，设置 GPIO 数据方向为指定引脚上的输出。例如在 `MacPro5,1` 上需要。
+    - `0x00000004 (bit 2) - GPIO_SETUP_STAGE_ENABLE`，启用指定的 GPIO 引脚。例如在 `MacPro5,1` 上需要。
 
-如果音频似乎在正确的编解码器上 "播放"，例如根据调试日志，但在任何通道上都听不到声音，建议在 AudioDxe 驱动参数中使用 `--gpio-setup`（不包含值）。如果没有指定值，所有的阶段都将被启用（相当于指定 `7`）。如果这能产生声音，就有可能尝试更少的 bit，例如 `--gpio-setup=1`，`--gpio-setup=3`，以发现哪些阶段是实际需要的。
+  如果音频似乎在正确的编解码器上 "播放"，例如根据调试日志，但在任何通道上都听不到声音，建议在 AudioDxe 驱动参数中使用 `--gpio-setup`（不包含值）。如果没有指定值，所有的阶段都将被启用（相当于指定 `7`）。如果这能产生声音，就有可能尝试更少的 bit，例如 `--gpio-setup=1`，`--gpio-setup=3`，以发现哪些阶段是实际需要的。
 
-注意： 这个选项的值 `7`（启用所有标志），如 MacPro5,1 所要求的那样，与大多数系统兼容，但已知在少数其他系统上会引起声音问题（在新的声音开始之前不允许完成以前的声音），因此这个选项默认不启用。
+  注意： 这个选项的值 `7`（启用所有标志），例如 `MacPro5,1` 所要求的那样，与大多数系统兼容，但已知在少数其他系统上会引起声音问题（在新的声音开始之前不允许完成以前的声音），因此这个选项默认不启用。
 
 - `--gpio-pins`，默认：`0`，自动检测。
-指定哪些 GPIO 引脚应该由 `--gpio-setup` 来操作。 这是一个位掩码，可能的值从 `0x0` 到 `0xFF`。可用的最大值取决于正在使用的编解码器的音频输出功能组上的可用引脚数量，例如，如果有两个 GPIO 引脚，它就是 `0x3`（最低的两个位），如果有三个引脚，就是 `0x7` ，等等。
+  指定哪些 GPIO 引脚应该由 `--gpio-setup` 来操作。 这是一个位掩码，可能的值从 `0x0` 到 `0xFF`。可用的最大值取决于正在使用的编解码器的音频输出功能组上的可用引脚数量，例如，如果有两个 GPIO 引脚，它就是 `0x3`（最低的两个位），如果有三个引脚，就是 `0x7` ，等等。
 
-当 `--gpio-setup` 被启用时（即非零），那么 `0` 是 `--gpio-pins` 的特殊值，意味着引脚掩码将根据指定编解码器上报告的 GPIO 引脚数量自动生成（见 AudioCodec）。例如，如果编解码器的音频输出功能组报告了 `4` 个 GPIO 引脚，将使用 `0xF` 的掩码。
+  当 `--gpio-setup` 被启用时（即非零），那么 `0` 是 `--gpio-pins` 的特殊值，意味着引脚掩码将根据指定编解码器上报告的 GPIO 引脚数量自动生成（见 AudioCodec）。例如，如果编解码器的音频输出功能组报告了 `4` 个 GPIO 引脚，将使用 `0xF` 的掩码。
 
-使用中的值可以在调试日志中看到，比如一行：`HDA: GPIO setup on pins 0x0F - Success`。
+  使用中的值可以在调试日志中看到，比如一行：`HDA: GPIO setup on pins 0x0F - Success`。
 
-驱动程序参数的值可以用以 `0x` 开头的十六进制或十进制来指定，例如 `--gpio-pins=0x12` 或 `--gpio-pins=18`。
+  驱动程序参数的值可以用以 `0x` 开头的十六进制或十进制来指定，例如 `--gpio-pins=0x12` 或 `--gpio-pins=18`。
 
 - `--restore-nosnoop`，Boolean flag，如果存在则启用。
-AudioDxe 清除了 Intel HDA No Snoop Enable（NSNPEN）bit。在某些系统上，这个改变必须在退出时被逆转，以避免在Windows 或 Linux 中破坏声音。如果是这样， 这个标志应该被添加到 AudioDxe 驱动参数中。 默认情况下不启用，因为恢复这个 flag 会使声音在其他一些系统的 macOS 中无法工作。
+  AudioDxe 清除了 `Intel HDA No Snoop Enable（NSNPEN）bit`。在某些系统上，这个改变必须在退出时被逆转，以避免在Windows 或 Linux 中破坏声音。如果是这样， 这个标志应该被添加到 AudioDxe 驱动参数中。 默认情况下不启用，因为恢复这个 `flag` 会使声音在其他一些系统的 macOS 中无法工作。
 
 ## 11.9 属性列表
 
@@ -342,13 +334,13 @@ AudioDxe 清除了 Intel HDA No Snoop Enable（NSNPEN）bit。在某些系统上
 
 除非另有说明（例如 ResetTrafficClass），否则本节中的设置仅用于 UEFI 音频支持（例如 OpenCore 生成的引导蜂鸣音和音频辅助），与操作系统音频支持所需的任何配置（例如 AppleALC ）无关。
 
-音频支持为上游协议提供了一种与所选硬件和音频资源交互的方式。所有音频资源应该保存在 `\EFI\OC\Resources\Audio` 目录。目前支持的音频文件格式为 `MP3` 和 `WAVE PCM`。虽然支持哪种音频流格式取决于驱动程序，但大多数常见的音频卡都支持 4410` 或 48000H` 的 16 位立体声。
+音频支持为上游协议提供了一种与所选硬件和音频资源交互的方式。所有音频资源应该保存在 `\EFI\OC\Resources\Audio` 目录。目前支持的音频文件格式为 `MP3` 和 `WAVE PCM`。虽然支持哪种音频流格式取决于驱动程序，但大多数常见的音频卡都支持 4410 或 48000H 的 16 位立体声。
 
 音频文件的路径是由音频的类型、本地化语言和路径决定的。每个文件名看起来都类似于：`[audio type]_[audio localisation]_[audio path].[audio ext]`。对于没有本地化的文件，其文件名不包含语言代码，看起来类似于：`[audio type]_[audio path].[audio ext]`。其中音频扩展名为 `mp3` 或 `wav`。
 
 - OpenCore 音频文件的音频类型可以是 `OCEFIAudio`，macOS 引导程序的音频文件的音频类型可以是 `AXEFIAudio`。
-- 音频本地化语言由两个字母的语言代码表示（如 `en`），中文、西班牙语和葡萄牙语除外。具体请看 [`APPLE_VOICE_OVER_LANGUAGE_CODE` 的定义](https://github.com/acidanthera/OpenCorePkg/blob/master/Include/Apple/Protocol/AppleVoiceOver.h) 来了解所有支持的本地化列表。
-- 音频路径是对应于文件标识符的基本文件名。macOS 引导程序的音频路径参考 [`APPLE_VOICE_OVER_AUDIO_FILE` 的定义](https://github.com/acidanthera/OpenCorePkg/blob/master/Include/Apple/Protocol/AppleVoiceOver.h)。OpenCore 的音频路径参考 [`OC_VOICE_OVER_AUDIO_FILE` 的定义](https://github.com/acidanthera/OpenCorePkg/blob/master/Include/Acidanthera/Protocol/OcAudio.h)。唯一例外的是 OpenCore 启动提示音文件：`OCEFIAudio_VoiceOver_Boot.mp3`。
+- 音频本地化语言由两个字母的语言代码表示（如 `en`），中文、西班牙语和葡萄牙语除外。具体请看 [`APPLE_VOICE_OVER_LANGUAGE_CODE`](https://github.com/acidanthera/OpenCorePkg/blob/master/Include/Apple/Protocol/AppleVoiceOver.h) 的定义来了解所有支持的本地化列表。
+- 音频路径是对应于文件标识符的基本文件名。macOS 引导程序的音频路径参考 [`APPLE_VOICE_OVER_AUDIO_FILE`](https://github.com/acidanthera/OpenCorePkg/blob/master/Include/Apple/Protocol/AppleVoiceOver.h) 的定义。OpenCore 的音频路径参考 [`OC_VOICE_OVER_AUDIO_FILE`](https://github.com/acidanthera/OpenCorePkg/blob/master/Include/Acidanthera/Protocol/OcAudio.h) 的定义。唯一例外的是 OpenCore 启动提示音文件：`OCEFIAudio_VoiceOver_Boot.mp3`。
 
 macOS 引导程序和 OpenCore 的音频本地化是分开的。macOS 引导程序是在 `systemLanguage.utf8` 文件中的 `preferences.efires` 归档中设置，并由操作系统控制。OpenCore 则是使用 `prev-lang:kbd` 变量的值来控制。当某一特定文件的音频本地化缺失时，将会使用英语（`en`）来代替。示例音频文件可以在 [OcBinaryData 仓库](https://github.com/acidanthera/OcBinaryData) 中找到。
 
@@ -409,7 +401,7 @@ macOS 引导程序和 OpenCore 的音频本地化是分开的。macOS 引导程�
 **Failsafe**: `False`
 **Description**: 从一个 APFS 容器中加载 APFS 驱动。
 
-APFS 的 EFI 驱动内置在所有可以作为系统启动盘的 APFS 容器之中。这一选项将会根据基于 `ScanPolicy` 找到的 APFS 容器，从中加载 APFS 驱动。更多详情请查看 [苹果 APFS 文件系统参考手册](https://developer.apple.com/support/apple-file-system/Apple-File-System-Reference.pdf) 中的 `EFI Jummpstart` 章节。
+APFS 的 EFI 驱动内置在所有可以作为系统启动盘的 APFS 容器之中。这一选项将会根据基于 `ScanPolicy` 找到的 APFS 容器，从中加载 APFS 驱动。更多详情请查看 [苹果 APFS 文件系统参考手册](https://developer.apple.com/support/apple-file-system/Apple-File-System-Reference.pdf) 中的 `EFI Jummpstart` 部分。
 
 ### 2. `GlobalConnect`
 
@@ -457,7 +449,7 @@ APFS 驱动版本将 APFS 驱动与 macOS 版本联系起来。苹果公司最�
 
 - `0` --- 需要 OpenCore 中 APFS 的默认支持版本。默认版本会随着时间的推移而增加，因此推荐使用这一设置。目前设置为允许 macOS Big Sur 和更新的版本（1600000000000000）。
 - `-1` --- 允许加载任何版本（强烈不推荐）。
-- 其他数值 --- 使用自定义的最小APFS版本，例如macOS Catalina 10.15.4的1412101001000000。你可以从 OpenCore 的启动日志和 [OcApfsLib](https://github.com/acidanthera/OpenCorePkg/blob/master/Include/Acidanthera/Library/OcApfsLib.h) 中找到 APFS 驱动的版本号。
+- 其他数值 --- 使用自定义的最小APFS版本，例如：macOS Catalina 10.15.4 的 `1412101001000000`。你可以从 OpenCore 的启动日志和 [OcApfsLib](https://github.com/acidanthera/OpenCorePkg/blob/master/Include/Acidanthera/Library/OcApfsLib.h) 中找到 APFS 驱动的版本号。
 
 ## 11.11 AppleInput 属性
 
@@ -480,7 +472,7 @@ APFS 驱动版本将 APFS 驱动与 macOS 版本联系起来。苹果公司最�
 **Description**: 在使用 Apple Event 协议的 OpenCore 重新实现时，启用自定义按键的间隔时间。在使用 OEM 苹果实现时没有影响（见 AppleEvent 设置）。
 
 - true --- 使用 `KeyInitialDelay` 和 `KeySubsequentDelay` 的值。
-- false --- 使用苹果的默认值 500ms(50) 和 50ms(5)。
+- false --- 使用 Apple 的默认值 500ms(50) 和 50ms(5)。
 
 ### 3. `KeyInitialDelay`
 
@@ -492,9 +484,9 @@ APFS 驱动版本将 APFS 驱动与 macOS 版本联系起来。苹果公司最�
 
 *注 1*：在不使用 `KeySupport` 的系统上，此设置可自由用于配置按键的间隔时间。
 
-*注 2*：在使用 `KeySupport` 的系统上，但不显示 `two long delays` 行为（见 *注 3*）或总是显示一个坚实的 `set default` 指标（见 `KeyForgetThreshold`），那么这个设置也可以自由地用于配置按键的间隔时间，只是它永远不应该被设置为小于 `KeyForgetThreshold`，以避免不受控制的按键的间隔时间。
+*注 2*：在使用 `KeySupport` 的系统上，但不显示 `two long delays` 行为（见 `*注 3*`）或总是显示一个坚实的 `set default` 指标（见 `KeyForgetThreshold`），那么这个设置也可以自由地用于配置按键的间隔时间，只是它永远不应该被设置为小于 `KeyForgetThreshold`，以避免不受控制的按键的间隔时间。
 
-*注 3*：在一些使用 KeySupport 的系统上，你可能会发现在按住一个键时，在正常速度的按键响应之前，你会看到一个额外的慢速响应。如果是这样，你可能希望根据 `KeySubsequentDelay` 的 *注 3* 来配置 `KeyInitialDelay` 和 `KeySubsequentDelay`。（译者注：简单来说就是多一个响应慢的按键，例如，连续按两次 x 键，出现 3 次响应）
+*注 3*：在一些使用 KeySupport 的系统上，你可能会发现在按住一个键时，在正常速度的按键响应之前，你会看到一个额外的慢速响应。如果是这样，你可能希望根据 `KeySubsequentDelay` 的 `*注 3*` 来配置 `KeyInitialDelay` 和 `KeySubsequentDelay`。
 
 ### 4. `KeySubsequentDelay`
 
@@ -504,11 +496,11 @@ APFS 驱动版本将 APFS 驱动与 macOS 版本联系起来。苹果公司最�
 
 Apple OEM 的默认值是 5（50ms）。`0` 是这个选项的无效值（将发出调试日志警告，使用 `1` 代替）。
 
-注1：在不使用 `KeySupport` 的系统上，此设置可自由用于配置按键重复行为。
+*注 1*：在不使用 `KeySupport` 的系统上，此设置可自由用于配置按键重复行为。
 
-注2： 在使用 `KeySupport` 的系统上，但不显示  `two long delays` 行为（见注3）或总是显示一个坚实的 `set default` 指标（见 `KeyForgetThreshold`）（这应该适用于大多数使用 `AMI KeySupport` 模式的系统），那么这个设置可以自由地用于配置按键重复的后续延迟行为，但它永远不应该被设置为小于 `KeyForgetThreshold`，以避免不受控制的按键重复。
+*注 2*： 在使用 `KeySupport` 的系统上，但不显示  `two long delays` 行为（见 `*注 3*`）或总是显示一个坚实的 `set default` 指标（见 `KeyForgetThreshold`）（这应该适用于大多数使用 `AMI KeySupport` 模式的系统），那么这个设置可以自由地用于配置按键重复的后续延迟行为，但它永远不应该被设置为小于 `KeyForgetThreshold`，以避免不受控制的按键重复。
 
-注3：在一些使用 `KeySupport` 的系统上，特别是在非 `AMI` 模式下的 `KeySupport`，你可能会发现，在配置了 `KeyForgetThreshold` 后，当按住一个按键时，在开始正常速度的按键响应之前，你会得到一个额外的慢速按键响应（译者注：简单来说就是多一个响应慢的按键，例如，连续按两次 x 键，出现 3 次响应）。在出现这种情况的系统上， 这是使用 `KeySupport` 来模拟原始键盘数据的一个不可避免的缺陷， `UEFI` 没有提供这种数据。 虽然这个 `two long delays` 的问题对整体可用性的影响很小，但你可能希望解决这个问题，可以通过以下方法来解决：
+*注 3*：在一些使用 `KeySupport` 的系统上，特别是在非 `AMI` 模式下的 `KeySupport`，你可能会发现，在配置了 `KeyForgetThreshold` 后，当按住一个按键时，在开始正常速度的按键响应之前，你会得到一个额外的慢速按键响应。在出现这种情况的系统上， 这是使用 `KeySupport` 来模拟原始键盘数据的一个不可避免的缺陷， `UEFI` 没有提供这种数据。 虽然这个 `two long delays` 的问题对整体可用性的影响很小，但你可能希望解决这个问题，可以通过以下方法来解决：
 
 - 将 `CustomDelays` 设置为 `true`
 - 将按键初始延迟设置为 `0`
@@ -534,7 +526,7 @@ Apple OEM 的默认值是 5（50ms）。`0` 是这个选项的无效值（将发
 *注*： Apple Event 的默认行为是为了防止在退出基于图形的 UEFI 应用程序后出现不需要的排队按键。这个问题已经在 OpenCore 中单独处理。
 
 - `true` --- 允许键盘输入到达不使用 Apple 输入协议的图形模式应用程序。
-- `false` --- 在图形模式下，防止按键输入镜像到非 Apple 协议。
+- `false` --- 在图形模式下，防止按键输入映射到非 Apple 协议。
 
 ### 6. `PointerPollMin`
 
@@ -554,7 +546,7 @@ Apple OEM 的默认值是 5（50ms）。`0` 是这个选项的无效值（将发
 
 这是 OpenCore 内置的 Apple Event 驱动程序轮询指针设备（如鼠标、触控板）的运动事件的最长时间。只要设备没有及时响应，该周期就会增加到这个值。目前的默认值为 80ms。 设置为 `0` 将使这一默认值保持不变。
 
-戴尔笔记本电脑中经常发现的某些触控板驱动程序在没有物理运动发生时，反应可能非常缓慢。 这可能会影响 OpenCanopy 和FileVault 2 用户界面的响应能力和加载时间。增加轮询周期可以减少影响。
+戴尔笔记本电脑中经常发现的某些触控板驱动程序在没有物理运动发生时，反应可能非常缓慢。 这可能会影响 OpenCanopy 和 FileVault 2 用户界面的响应能力和加载时间。增加轮询周期可以减少影响。
 
 *注*： OEM Apple 的实现使用 2ms 的轮询率。
 
@@ -564,8 +556,7 @@ Apple OEM 的默认值是 5（50ms）。`0` 是这个选项的无效值（将发
 **Failsafe**: `-1` 
 **Description**: 配置轮询指针的索引。
 
-选择要轮询 Apple Event 运动事件的指针设备。 `-1` 意味着所有设备。一个比特之和用于确定特定的设备。例如，要启
-用设备 `0`、`2`、`3`，其值将是 `1+4+8`（相应的 `2` 的幂）。 总共支持 `32` 个可配置的设备。
+选择要轮询 Apple Event 运动事件的指针设备。 `-1` 意味着所有设备。一个比特之和用于确定特定的设备。例如，要启用设备 `0`、`2`、`3`，其值将是 `1+4+8`（相应的 `2` 的幂）。 总共支持 `32` 个可配置的设备。
 
 即使没有相应的物理设备，某些指针设备也可以存在于固件中。 这些设备通常是占位符、聚合设备或代理。从这些设备中收集信息可能导致用户界面中的运动活动不准确，甚至导致性能问题。 对于有这种问题的笔记本电脑设置，建议禁用这种指针设备。
 
@@ -601,7 +592,7 @@ Apple OEM 的默认值是 5（50ms）。`0` 是这个选项的无效值（将发
 **Failsafe**: `0`
 **Description**: 特定音频控制器上的编解码器地址，用于音频支持。
 
-一般来说，这里包含了内置模拟音频控制器（`HDEF`）上的第一个音频编解码器地址。音频编解码器地址（比如 `2`）可以在调试日志中找到（已用粗斜体标出）：
+一般来说，这里包含了内置模拟音频控制器（`HDEF`）上的第一个音频编解码器地址。音频编解码器地址（例：`2`）可以在调试日志中找到（已用粗斜体标出）：
 
 <code>OCAU: 1/3 PciRoot(0x0)/Pci(0x1,0x0)/Pci(0x0,0x1)/VenMsg(&lt;redacted&gt;,<strong><em>00000000</em></strong>) (4 outputs)</code>
 <code>OCAU: 2/3 PciRoot(0x0)/Pci(0x3,0x0)/VenMsg(&lt;redacted&gt;,<strong><em>00000000</em></strong>) (1 outputs)</code>
@@ -623,7 +614,7 @@ Apple OEM 的默认值是 5（50ms）。`0` 是这个选项的无效值（将发
 
 如果使用 AudioDxe，可用的控制器设备路径也会以这样的格式输出：
 
-<code>HDA: Connecting controller - PciRoot(0x0)/Pci(0x1B,0x0)<code>
+<code>HDA: Connecting controller - PciRoot(0x0)/Pci(0x1B,0x0)</code>
 
 除此之外，该值还可以在 macOS 中通过 `gfxutil -f HDEF` 命令来获取。
 
@@ -635,24 +626,24 @@ Apple OEM 的默认值是 5（50ms）。`0` 是这个选项的无效值（将发
 **Failsafe**: `-1`
 **Description**:位字段，指示用于 UEFI 声音的输出通道。
 
-音频掩码为 `1` 《 音频输出（等同于 `2^` 频输出）。例如，对于音频输出 `0`，比特掩码是 `1`，对于输出 `3` 是 `8`，对于输出 `0` 和 `3` 是 `9`。
+音频掩码为 `1` < 音频输出（等同于 `2^` 音频输出）。例如，对于音频输出 `0`，比特掩码是 `1`，对于输出 `3` 是 `8`，对于输出 `0` 和 `3` 是 `9`。
   
 每个 HDA 编解码器的可用输出节点的数量（N）显示在调试日志中（如下），音频输出 `0` 到 `N-1` 可以选择。
-  
-<code>OCAU: 1/3 PciRoot(0x0)/Pci(0x1,0x0)/Pci(0x0,0x1)/VenMsg(<redacted>,000000) (4个输出) <code>
-<code>OCAU: 2/3 PciRoot(0x0)/Pci(0x3,0x0)/VenMsg(<redacted>,00000000) ( 1个输出)<code>
-<code>OCAU: 3/3 PciRoot(0x0)/Pci(0x1B,0x0)/VenMsg(<redacted>,020000) (7个输出)<code>
+
+<code>OCAU: 1/3 PciRoot(0x0)/Pci(0x1,0x0)/Pci(0x0,0x1)/VenMsg(&lt;redacted&gt;,00000000) (4 outputs)</code>
+<code>OCAU: 2/3 PciRoot(0x0)/Pci(0x3,0x0)/VenMsg(&lt;redacted&gt;,00000000) (1 outputs)</code>
+<code>OCAU: 3/3 PciRoot(0x0)/Pci(0x1B,0x0)/VenMsg(&lt;redacted&gt;,02000000) (7 outputs)</code>
   
 当使用 AudioDxe 时，每个输出通道的额外信息会在驱动程序绑定时被记录下来， 包括每个输出的比特掩码。所需输出的比特掩码值应该加在一起，以获得 AudioOutMas 值：
   
-<code>HDA: | Port widget @ 0x9 is an output (pin defaults 0x2B4020) (bitmask 1)<code>
-<code>HDA: | Port widget @ 0xA is an output (pin defaults 0x90100112) (bitmask 2)<code>
-<code>HDA: | Port widget @ 0xB is an output (pin defaults 0x90100110) (bitmask 4)<code>
-<code>HDA: | Port widget @ 0x10 is an output (pin defaults 0x4BE030) (bitmask 8)<code>
+<code>HDA: | Port widget @ 0x9 is an output (pin defaults 0x2B4020) (bitmask 1)</code>
+<code>HDA: | Port widget @ 0xA is an output (pin defaults 0x90100112) (bitmask 2)</code>
+<code>HDA: | Port widget @ 0xB is an output (pin defaults 0x90100110) (bitmask 4)</code>
+<code>HDA: | Port widget @ 0x10 is an output (pin defaults 0x4BE030) (bitmask 8)</code>
  
 关于可用输出通道的进一步信息可以通过使用命令从 Linux 编解码器转储中找到：
   
-<code>cat /proc/asound/card{n}/codec#{m}<code>
+<code>cat /proc/asound/card{n}/codec#{m}</code>
   
 使用 AudioOutMask，可以向多个的通道播放声音（例如，主扬声器加低音扬声器； 耳机加扬声器），只要所有选择的输出都支持正在使用的声音文件格式；如果任何一个不支持，那么就不会有声音播放，并且会有警告记录。
   
@@ -700,7 +691,7 @@ Apple OEM 的默认值是 5（50ms）。`0` 是这个选项的无效值（将发
   
 *注 1*：除了这个设置外，由于音频辅助必须能听到才能发挥其功能，所以即使操作系统的声音被静音或 `StartupMute NVRAM` 变量被设置，音频辅助也不会被静音。
   
-*注 2*：关于分贝音量级别的解释，请参见 `MaximumGain`。  
+*注 2*：关于分贝音量级别的解释，请参见 `MaximumGain` 部分。  
   
  ### 8. `MinimumAudibleGain`
 
@@ -800,7 +791,7 @@ Apple OEM 的默认值是 5（50ms）。`0` 是这个选项的无效值（将发
   
 *注 1*：要调整 `KeyForgetThreshold`，你可以使用 OpenCanopy 或内置启动选择器中的 `set default` 指示符。如果`KeyForgetThreshold` 太低，那么当按住 `CTRL` 或 `=/+` 时， `set default` 指示符将继续闪烁。你应该配置能避免这种闪烁的最低值。在一些系统上（例如 Aptio IV 和可能使用 AMI KeySupport 模式的其他系统），你可以找到一个最小的`KeyForgetThreshold` 值，在这个值上， `set default` 指示符会亮起并保持不变，而且没有闪烁，如果是这样，就使用这个值。在大多数其他使用 `KeySupport` 的系统上，你会发现，当第一次按住 `CTRL` 或 `=/+` 键时， `set default` 指示符会闪烁一次，然后再经过一个非常短暂的间隔，就会亮起并保持亮起。在这样的系统上，你应该选择最低的 `KeyForgetThreshold` 值，在这个值上，你只看到最初的一次闪烁，然后就没有后续的闪烁了。(在这种情况下，这是使用 `KeySupport` 模拟原始键盘数据的系统上不可避免的缺陷，UEFI 不提供这种数据）。
   
-*注 2*：`KeyForgetThreshold` 最多不需要超过 ` 或 10。如果它被设置为一个远高于此的值，将导致明显的键盘输入无反应。因此，为了整体的按键响应，强烈建议配置一个相对较低的值，在这个值上， `set default` 指示符会闪烁一次，然后不再闪烁，而不是使用一个高得多的值（即明显大于 10），你可能能找到但不应该使用这个值，在这个值上， `set default` 指示符根本不闪烁。  
+*注 2*：`KeyForgetThreshold` 最多不需要超过 9 或 10。如果它被设置为一个远高于此的值，将导致明显的键盘输入无反应。因此，为了整体的按键响应，强烈建议配置一个相对较低的值，在这个值上， `set default` 指示符会闪烁一次，然后不再闪烁，而不是使用一个高得多的值（即明显大于 10），你可能能找到但不应该使用这个值，在这个值上， `set default` 指示符根本不闪烁。  
 
 ### 3. `KeySupport`
 
@@ -808,7 +799,7 @@ Apple OEM 的默认值是 5（50ms）。`0` 是这个选项的无效值（将发
 **Failsafe**: `false`
 **Description**: 启用内部键盘输入转换为 AppleKeyMapAggregator 协议。
 
-这一选项基于 `AppleGenericInput`（`AptioInputFix`），激活内部键盘拦截器驱动程序以填充 `AppleKeyMapAggregator` 数据库以实现输入功能。如果使用了单独的驱动程序（如 `AppleUsbKbDxe`），则永远不要开启这一选项。此外，这个选项不是必需的，也不应该在 Apple 固件中启用。
+这一选项基于 `AppleGenericInput`（`AptioInputFix`），激活内部键盘拦截器驱动程序以填充 `AppleKeyMapAggregator` 数据库以实现输入功能。如果使用了单独的驱动程序（例如：`AppleUsbKbDxe`），则永远不要开启这一选项。此外，这个选项不是必需的，也不应该在 Apple 固件中启用。
 
 ### 4. `KeySupportMode`
 
@@ -853,7 +844,7 @@ Apple OEM 的默认值是 5（50ms）。`0` 是这个选项的无效值（将发
 **Failsafe**: `0`
 **Description**: 固件始终刷新的频率（单位 `100` 纳秒）
 
-这个选项允许用 `100` 纳秒单位的指定值来更新固件架构的定时器周期。设置一个较低的值通常可以提高接口和输入处理的性能和响应性。  
+这个选项允许用 `100` 纳秒为单位的指定值来更新固件架构的定时器周期。设置一个较低的值通常可以提高接口和输入处理的性能和响应性。  
   
 建议值为 `50000`（即 5 毫秒）或稍高一些。选择 ASUS Z87 主板时，请使用 `60000`，苹果主板请使用 `100000`。你也可以将此值设置为 0，不改变固件始终刷新的频率。
 
@@ -870,12 +861,11 @@ Apple OEM 的默认值是 5（50ms）。`0` 是这个选项的无效值（将发
 UEFI 固件一般用两种渲染模式来支持 `ConsoleControl`：`Graphics` 和 `Text`。有些固件不支持 `ConsoleControl` 和渲染模式。OpenCore 和 macOS 希望文本只在 `Graphics` 模式下显示，而图形可以在任何模式下绘制。由于 UEFI 规范并不要求这样做，因此具体的行为各不相同。
 
 有效值为文本渲染器和渲染模式的组合：
-
-- `BuiltinGraphics` --- 切换到 `Graphics` 模式，并使用 `Builtin` 渲染器和自定义 `ConsoleControl`。
-- `BuiltinText` --- 切换到 `Text` 模式，并使用 `Builtin` 渲染器和自定义 `ConsoleControl`。
-- `SystemGraphics` --- 切换到 `Graphics` 模式，并使用 `System` 渲染器和自定义 `ConsoleControl`。
-- `SystemText` --- 切换到 `Text` 模式，并使用 `System` 渲染器和自定义 `ConsoleControl`。
-- `SystemGeneric` --- 使用 `System` 渲染器和系统 `ConsoleControl`，前提是它们能正常工作。
+  - `BuiltinGraphics` --- 切换到 `Graphics` 模式，并使用 `Builtin` 渲染器和自定义 `ConsoleControl`。
+  - `BuiltinText` --- 切换到 `Text` 模式，并使用 `Builtin` 渲染器和自定义 `ConsoleControl`。
+  - `SystemGraphics` --- 切换到 `Graphics` 模式，并使用 `System` 渲染器和自定义 `ConsoleControl`。
+  - `SystemText` --- 切换到 `Text` 模式，并使用 `System` 渲染器和自定义 `ConsoleControl`。
+  - `SystemGeneric` --- 使用 `System` 渲染器和系统 `ConsoleControl`，前提是它们能正常工作。
 
 `BuiltinGraphics` 的用法通常是比较直接的。对于大多数平台，需要启用 `ProvideConsoleGop`，将 `Resolution` 设置为 `Max`。某些非常老旧且问题很多的笔记本只能在 `Text` 模式下绘图，对它们来说，`BuiltinText` 是 `BuiltinGraphics` 的替代选择。
 
@@ -899,7 +889,7 @@ UEFI 固件一般用两种渲染模式来支持 `ConsoleControl`：`Graphics` �
 **Failsafe**: Empty （保持当前屏幕分辨率）
 **Description**: 设置控制台的屏幕分辨率。
 
-- 设置为 `WxH@Bpp`（如 `1920x1080@32`）或 `WxH`（如 `1920x1080`）格式的字符串，向 GOP 请求自定义分辨率（如果有的话）。
+- 设置为 `WxH@Bpp`（如 `1920x1080@32`）或 `WxH`（例如：`1920x1080`）格式的字符串，向 GOP 请求自定义分辨率（如果有的话）。
 - 设置为 `Max`，尝试使用最大的可用屏幕分辨率。
 
 在 HiDPI 屏幕上，`APPLE_VENDOR_VARIABLE_GUID` `UIScale` NVRAM 变量可能需要设置为 `02`，以便在 `Builtin` 文本渲染器、FileVault 2 UEFI 密码界面和启动界面 logo 启用 HiDPI 缩放。更多细节请参考 [建议变量](9-nvram.html#9-4-建议变量) 部分。
@@ -928,7 +918,7 @@ UEFI 固件一般用两种渲染模式来支持 `ConsoleControl`：`Graphics` �
 **Failsafe**: `false`
 **Description**: 为控制台使用内置的图形输出协议渲染器。
 
-在某些固件上，这样做可能会提供更优的性能，甚至修复渲染问题，比如 `MacPro5,1`。但是，除非有明显的好处，否则还是建议不要使用这个选项，因为可能会导致滚动速度变慢。
+在某些固件上，这样做可能会提供更优的性能，甚至修复渲染问题，例如：`MacPro5,1`。但是，除非有明显的好处，否则还是建议不要使用这个选项，因为可能会导致滚动速度变慢。
 
 这个渲染器完全支持 `AppleEg2Info` 协议，将为所有 EFI 应用程序提供屏幕旋转。为了提供与 `EfiBoot` 的无缝旋转兼容性，还应该使用内置的 `AppleFramebufferInfo`，也就是说，在 Mac EFI 上可能需要覆盖它。  
 
@@ -940,11 +930,10 @@ UEFI 固件一般用两种渲染模式来支持 `ConsoleControl`：`Graphics` �
 
 该选项通过一个基于 `UGA` 的代理为没有实现 `GOP` 协议的固件提供 `GOP` 协议。
 
-该选项的支持值如下。  
-  
-- Enabled --- 为所有 `UGA` 协议提供 `GOP`。
-- Apple --- 为支持 `AppleFramebufferInfo` 的协议提供 `GOP`。
-- Disabled --- 不提供 `GOP`。  
+该选项的支持值如下：
+  - Enabled --- 为所有 `UGA` 协议提供 `GOP`。
+  - Apple --- 为支持 `AppleFramebufferInfo` 的协议提供 `GOP`。
+  - Disabled --- 不提供 `GOP`。  
   
 *注*：该选项需要启用 `ProvideConsoleGop`。  
   
@@ -970,7 +959,7 @@ UEFI 固件一般用两种渲染模式来支持 `ConsoleControl`：`Graphics` �
 **Failsafe**: `false`
 **Description**: 确保控制台句柄上有 GOP (Graphics Output Protocol)。
 
-macOS bootloader 要求控制台句柄上必须有 GOP 或 UGA（适用于 10.4 EfiBoot），但 UEFI 规范并未涵盖图形协议的确切位置。此选项会确保 GOP 和 UGA（如果存在）在控制台句柄上可用。
+macOS bootloader 要求控制台句柄上必须有 GOP 或 UGA（适用于 10.4 `EfiBoot`），但 UEFI 规范并未涵盖图形协议的确切位置。此选项会确保 GOP 和 UGA（如果存在）在控制台句柄上可用。
 
 *注*：这个选项也会替换掉控制台句柄上损坏的 GOP 协议，在使用较新的 GPU 的 `MacPro5,1` 时可能会出现这种情况。
 
@@ -998,7 +987,7 @@ macOS bootloader 要求控制台句柄上必须有 GOP 或 UGA（适用于 10.4 
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
-**Description**: 有些固件在使用较大的显示器（如 2K 或 4K）时，清除屏幕内容会导致屏幕分辨率重置为 failsafe 值（如 `1024x768`）。这个选项为这种情况提供了一个变通方法。
+**Description**: 有些固件在使用较大的显示器（如 2K 或 4K）时，清除屏幕内容会导致屏幕分辨率重置为 `failsafe` 值（如 `1024x768`）。这个选项为这种情况提供了一个变通方法。
 
 *注*：这一选项只会在 `System` 渲染器上生效。在所有已知的受影响的系统中，`ConsoleMode` 必须设置为空字符串才能正常工作。
 
@@ -1009,11 +998,10 @@ macOS bootloader 要求控制台句柄上必须有 GOP 或 UGA（适用于 10.4 
 **Description**:  用户界面的缩放系数。  
   
 对应于4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14：UIScale变量。  
-
-- 1 --- 1倍缩放，对应于普通显示器。
-- 2 --- 2x缩放，对应于HiDPI显示器。
-- -1 --- 保持当前变量不变。
-- 0 -- 根据当前分辨率自动选择缩放比例。
+  - 1 --- 1倍缩放，对应于普通显示器。
+  - 2 --- 2x缩放，对应于HiDPI显示器。
+  - -1 --- 保持当前变量不变。
+  - 0 -- 根据当前分辨率自动选择缩放比例。
 
 *注 1*：自动比例系数检测是在总像素面积的基础上进行的，在小型 HiDPI 显示器上可能会失败，在这种情况下，可以使用NVRAM 部分手动管理该值。
 
@@ -1035,7 +1023,7 @@ macOS bootloader 要求控制台句柄上必须有 GOP 或 UGA（适用于 10.4 
 **Failsafe**: `false`
 **Description**: 用内置的版本替换 Apple 音频协议。
 
-Apple 音频协议允许 macOS bootloader 和 OpenCore 播放声音和信号，用于屏幕阅读或可闻及的错误报告。支持的协议有生成「哔」声和 VoiceOver。VoiceOver 协议是带有 T2 芯片的机器特有的，不支持 macOS High Sierra (10.13) 之前的版本。旧版 macOS 版本使用的是 AppleHDA 协议，目前还没有实现。
+Apple 音频协议允许 macOS bootloader 和 OpenCore 播放声音和信号，用于屏幕阅读或声音错误报告。支持的协议有生成「哔」声和 VoiceOver。VoiceOver 协议是带有 T2 芯片的机器特有的，不支持 macOS High Sierra (10.13) 之前的版本。旧版 macOS 版本使用的是 AppleHDA 协议，目前还没有实现。
 
 每次只能有一组音频协议可用，所以如果为了在 Mac 系统上的 OpenCore 用户界面实现其中一些协议的音频播放，这一设置应该启用。
 
@@ -1047,7 +1035,7 @@ Apple 音频协议允许 macOS bootloader 和 OpenCore 播放声音和信号，�
 **Failsafe**: `false`
 **Description**: 用内置的版本替换 Apple Boot Policy 协议，可用于确保 VM 或旧版 Mac 设备上的 APFS 兼容性。
 
-*注*：某些 Mac 设备（如 `MacPro5,1`）虽然兼容 APFS，但是其 Apple Boot Policy 协议包含了恢复分区检测问题，因此也建议启用这一选项。
+*注*：某些 Mac 设备（例如：`MacPro5,1`）虽然兼容 APFS，但是其 Apple Boot Policy 协议包含了恢复分区检测问题，因此也建议启用这一选项。
 
 ### 3. `AppleDebugLog`
 
@@ -1061,7 +1049,7 @@ Apple 音频协议允许 macOS bootloader 和 OpenCore 播放声音和信号，�
 **Failsafe**: `false`
 **Description**: 用内置的版本替换 `Apple EFI Graphics 2` 协议。
 
-*注 1*：该协议允许更新的 EfiBoot 版本（至少10.15）向 macOS 公开屏幕旋转。有关如何设置屏幕旋转角度，请参阅 `ForceDisplayRotationInfo` 变量说明。
+*注 1*：该协议允许更新的 `EfiBoot` 版本（至少10.15）向 macOS 公开屏幕旋转。有关如何设置屏幕旋转角度，请参阅 `ForceDisplayRotationInfo` 变量说明。
 
 *注 2*：在没有 `ForceDisplayRotationInEFI` 原生支持的系统上，必须设置 `DirectGopRendering=true`。  
   
@@ -1069,7 +1057,7 @@ Apple 音频协议允许 macOS bootloader 和 OpenCore 播放声音和信号，�
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
-**Description**: 重新安装内置的 Apple Framebuffer Info 协议。这样可以覆盖虚拟机或者旧款 Mac 上的缓冲帧信息，从而提高与旧版 EfiBoot（如 macOS 10.4 中的 EfiBoot）的兼容性。
+**Description**: 重新安装内置的 Apple Framebuffer Info 协议。这样可以覆盖虚拟机或者旧款 Mac 上的缓冲帧信息，从而提高与旧版 EfiBoot（如 macOS 10.4 中的 `EfiBoot`）的兼容性。
 
 *注*：这个属性的当前实现导致它只有在 GOP 可用时才是有效的（否则它总是相当于false）。
   
@@ -1203,7 +1191,7 @@ Apple 音频协议允许 macOS bootloader 和 OpenCore 播放声音和信号，�
 **Failsafe**: `0`
 **Description**: 在 `EXIT_BOOT_SERVICES` 事件后添加延迟，单位为毫秒。
 
-这是一个非常粗略的 Quirk，用于修复 `Still waiting for root device` 提示信息。在使用 FileVault 2 时，特别是华硕 Z87-Pro 等 APTIO IV 固件这种错误经常发生。似乎因为某种原因，FileVault 与 `EXIT_BOOT_SERVICES` 同时执行、导致 macOS 无法访问 SATA 控制器。未来应该会找到一个更好的方法。如果需要启用这一选项，设置 `3-5` 秒的延时就可以了。
+这是一个非常粗略的 Quirk，用于修复 `Still waiting for root device` 提示信息。在使用 FileVault 2 时，特别是华硕 Z87-Pro 等 APTIO IV 固件这种错误经常发生。似乎因为某种原因，FileVault 与 `EXIT_BOOT_SERVICES` 同时执行、导致 macOS 无法访问 SATA 控制器。未来应该会找到一个更好的方法。如果需要启用这一选项，设置 3-5 秒的延时就可以了。
 
 ### 6. `ForceOcWriteFlash`
 
@@ -1219,13 +1207,13 @@ Apple 音频协议允许 macOS bootloader 和 OpenCore 播放声音和信号，�
 **Failsafe**: `false`
 **Description**: 在 `EFI 1.x` 固件上提供部分 `UEFI 2.x` 支持。
 
-*注*：此设置允许在带有旧 `EFI 1.x` 固件（如MacPro5,1）的硬件上运行为 `UEFI 2.x` 固件（如NVIDIA GOP Option ROM）编写的一些软件。
+*注*：此设置允许在带有旧 `EFI 1.x` 固件（例如：MacPro5,1）的硬件上运行为 `UEFI 2.x` 固件（如NVIDIA GOP Option ROM）编写的一些软件。
 
 ### 8. `IgnoreInvalidFlexRatio`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
-**Description**: 某些类型的固件（如APTIO IV）可能在 MSR_FLEX_RATIO（0x194）MSR 寄存器中包含无效的值。这些值可能导致英特尔平台上的 macOS 启动失败。  
+**Description**: 某些类型的固件（如APTIO IV）可能在 `MSR_FLEX_RATIO（0x194）MSR` 寄存器中包含无效的值。这些值可能导致英特尔平台上的 macOS 启动失败。  
 
 注意：虽然该选项预计不会损害未受影响的固件，但只有在特别需要时才建议使用该选项。  
   
@@ -1263,7 +1251,7 @@ Apple 音频协议允许 macOS bootloader 和 OpenCore 播放声音和信号，�
 **Failsafe**: `-1`
 **Description**: 配置 GPU PCI BAR 的大小。  
   
-这个 Quirk 按照规定设置 GPU PCI BAR 的大小，或者选择低于 ResizeGpuBars 值的最大可用值。指定的值遵循 PCI Resizable BAR 的规则。使用 0 代表 1MB，1 代表 2M`，2 代表 4MB，以此类推，直到 19 代表 512GB。
+这个 Quirk 按照规定设置 GPU PCI BAR 的大小，或者选择低于 ResizeGpuBars 值的最大可用值。指定的值遵循 PCI Resizable BAR 的规则。使用 0 代表 1MB，1 代表 2M，2 代表 4MB，以此类推，直到 19 代表 512GB。
   
 Resizable BAR 技术允许通过将可配置的内存区域 BAR 映射到 CPU 地址空间（例如，将 VRAM 映射到 RAM），而不是固定的内存区域，来简化 PCI 设备的编程。这项技术是必要的，因为人们不能在默认情况下映射最大的内存区域，原因是要向后兼容不支持 64 位 BAR 的旧硬件。因此，过去十年的设备默认使用 256MB 的 BAR（剩下的 4 位被其他数据使用），但通常允许将它们的大小调整为更小和更大的 2 次方（例如，从 1MB 到 VRAM 大小）。  
   
@@ -1276,10 +1264,13 @@ Resizable BAR 技术允许通过将可配置的内存区域 BAR 映射到 CPU �
 - BAR1 支持从 2MB 到 256MB 的大小。它的值是 256MB。  
   
 *例 1*：将 ResizeGpuBars 设置为 1GB 将改变 BAR0 为 1GB，BAR1 保持不变。
+
 *例 2*: 将 ResizeGpuBars 设置为 1MB 将改变 BAR0 为 256MB，BAR0 为 2MB。
+
 *例 3*：将 ResizeGpuBars 设置为 16GB 将改变 BAR0 为 8GB，BAR1 保持不变。 
 
 *注 1*：这个 Quirk 不应该被用来解决 macOS 对超过 1GB 的 BAR 的限制。应该使用 ResizeAppleGpuBars 来代替。
+
 *注 2*：虽然这个 Quirk 可以增加 GPU PCI BAR 的大小，但这在大多数固件上是行不通的，因为这个 Quirk 不会重新定位内存中的 BAR，而且它们可能会重叠。我们欢迎大家为改进这一功能做出贡献。  
   
 ### 13. `TscSyncTimeout`
@@ -1292,7 +1283,7 @@ Resizable BAR 技术允许通过将可配置的内存区域 BAR 映射到 CPU �
 
 这是一个实验性的 Quirk，只能被用于上述问题。在其他情况下，这个 Quirk 可能会导致操作系统不稳定，所以并不推荐使用。在其他情况下，推荐的解决办法是安装一个内核驱动，如 [VoodooTSCSync](https://github.com/RehabMan/VoodooTSCSync)、[TSCAdjustReset](https://github.com/interferenc/TSCAdjustReset) 或 [CpuTscSync](https://github.com/lvs1974/CpuTscSync)（是 VoodooTSCSync 的一个更有针对性的变种，适用于较新的笔记本电脑）。
 
-*注*：这个 Quirk 不能取代内核驱动的原因是它不能在 `ACPI S3` 模式（睡眠唤醒）下运行，而且 UEFI 固件提供的多核心支持非常有限，无法精确地更新 `MSR` 寄存器。
+*注*：这个 Quirk 不能取代内核驱动的原因是它不能在 ACPI `S3` 模式（睡眠唤醒）下运行，而且 UEFI 固件提供的多核心支持非常有限，无法精确地更新 `MSR` 寄存器。
 
 ### 14. `UnblockFsConnect`
 
@@ -1331,22 +1322,21 @@ Resizable BAR 技术允许通过将可配置的内存区域 BAR 映射到 CPU �
 **Type**: `plist string`
 **Failsafe**: `Reserved`
 **Description**: 内存区域类型，与 UEFI 规范的内存描述符类型的匹配映射如下：
-
-- `Reserved` — `EfiReservedMemoryType`
-- `LoaderCode` — `EfiLoaderCode`
-- `LoaderData` — `EfiLoaderData`
-- `BootServiceCode` — `EfiBootServicesCode`
-- `BootServiceData` — `EfiBootServicesData`
-- `RuntimeCode` — `EfiRuntimeServicesCode`
-- `RuntimeData` — `EfiRuntimeServicesData`
-- `Available` — `EfiConventionalMemory`
-- `Persistent` — `EfiPersistentMemory`
-- `UnusableMemory` — `EfiUnusableMemory`
-- `ACPIReclaimMemory` — `EfiACPIReclaimMemory`
-- `ACPIMemoryNVS` — `EfiACPIMemoryNVS`
-- `MemoryMappedIO` — `EfiMemoryMappedIO`
-- `MemoryMappedIOPortSpace` — `EfiMemoryMappedIOPortSpace`
-- `PalCode` — `EfiPalCode`
+  - `Reserved` — `EfiReservedMemoryType`
+  - `LoaderCode` — `EfiLoaderCode`
+  - `LoaderData` — `EfiLoaderData`
+  - `BootServiceCode` — `EfiBootServicesCode`
+  - `BootServiceData` — `EfiBootServicesData`
+  - `RuntimeCode` — `EfiRuntimeServicesCode`
+  - `RuntimeData` — `EfiRuntimeServicesData`
+  - `Available` — `EfiConventionalMemory`
+  - `Persistent` — `EfiPersistentMemory`
+  - `UnusableMemory` — `EfiUnusableMemory`
+  - `ACPIReclaimMemory` — `EfiACPIReclaimMemory`
+  - `ACPIMemoryNVS` — `EfiACPIMemoryNVS`
+  - `MemoryMappedIO` — `EfiMemoryMappedIO`
+  - `MemoryMappedIOPortSpace` — `EfiMemoryMappedIOPortSpace`
+  - `PalCode` — `EfiPalCode`
 
 ### 5. `Enabled`
 
