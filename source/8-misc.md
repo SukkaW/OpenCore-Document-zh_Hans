@@ -3,7 +3,7 @@ title: 8. Misc
 description: 关于 OpenCore 行为的其他配置
 type: docs
 author_info: 由 xMuu、Sukka、derbalkon、EricKwok、cike-567 整理、由 Sukka、derbalkon、EricKwok、cike-567 翻译。
-last_updated: 2022-07-20
+last_updated: 2022-07-21
 ---
 
 ## 8.1 简介
@@ -69,7 +69,7 @@ OpenCore 启动选择器中的启动选项的显示顺序和启动过程，是�
 
 *注 3*：某些操作系统（说的就是你，Windows）会在第一次启动时，或 NVRAM 重置后，创建他们的启动选项，并将其标记为最上面的选项。这种情况发生时，默认的启动条目选择将会更新，直到下一次重新手动配置。
 
-> 译者注：全新安装或者升级 win11，会删除所有包含 NTFS 分区的硬盘的第一个ESP分区的 EFI 文件夹里的内容，升级前需要备份 OpenCore。win11 安装第一次启动，会将对所有包含 NTFS 分区硬盘的 ESP 分区写入相同的 EFI 文件夹。
+> 译者注：全新安装 windows 会使用已有的 ESP 分区的，并在里面放入自己的 EFI 文件。升级 win11，会覆盖 ESP 分区的 EFI 文件夹里的 BOOT 文件夹。总之备份好 opencore。
 
 ## 8.2 属性列表
 
@@ -83,7 +83,7 @@ OpenCore 启动选择器中的启动选项的显示顺序和启动过程，是�
 **Type**: `plist array`
 **Description**: 通过 Bless Model 添加自定义扫描路径。
 
-设计为填充 `plist string` 条目，其中包含指向自定义引导程序的绝对 UEFI 路径，例如，用于 Debian 引导程序的 `\EFI\debian\grubx64.efi`。这允许引导选择器自动发现异常的引导路径。在设计上它们等效于预定义的 Bless 路径（如 `\System\Library\CoreServices\boot.efi` 和 `\EFI\Microsoft\Boot\bootmgfw.efi`），但与预定义的 Bless 路径不同，它们具有最高优先级。
+设计为填充 `plist string` 条目，其中包含指向自定义引导程序的绝对 UEFI 路径，例如，用于 Debian 引导程序的 `\EFI\debian\grubx64.efi`。这允许引导选择器自动发现异常的引导路径。在设计上它们等效于预定义的 `Bless` 路径（如 `\System\Library\CoreServices\boot.efi` 和 `\EFI\Microsoft\Boot\bootmgfw.efi`），但与预定义的 `Bless` 路径不同，它们具有最高优先级。
 
 ### 3. `Debug`
 
@@ -107,7 +107,7 @@ OpenCore 启动选择器中的启动选项的显示顺序和启动过程，是�
 **Type**: `plist dict`
 **Description**: 执行串行端口初始化并配置 BaseSerialPortLib16550 要求的 `PCD` 值，以使串行端口正常运行。这些值在下面的 Serial 属性和 Serial Custom 属性部分列出和描述。
 
-通过启用 Init，这部分可以确保在固件没有完成的情况下对串行端口进行初始化。为了使 OpenCore 向串行端口打印日志，必须设置 Misc->Debug 部分的 `Target` 第 3 位（即串行日志）。
+通过启用 Init，这部分可以确保在固件没有完成的情况下对串行端口进行初始化。为了使 OpenCore 向串行端口打印日志，必须设置 Misc->Debug 部分的 `Target` 第 `3` 位（即串行日志）。
 
 当使用串口调试时，BaseSerialPortLib16550 默认只识别由主板提供的内部串口。如果启用了 `Override` 选项，将覆盖 BaseSerialPortLib16550.inf 中列出的 `PCD` 值，这样外部串口（例如来自 PCI 卡）也能正常工作。具体来说，在排除  macOS 的故障时，除了覆盖这些 `PCD` 值之外，还需要打开 `CustomPciSerialDevice` 内核 Quirks，以便 XNU 使用这些外部串口。
 
@@ -120,7 +120,7 @@ OpenCore 启动选择器中的启动选项的显示顺序和启动过程，是�
 
 应填入 `plist dict` 类型的值来描述相应的加载条目。详见 Entry 属性部分。
 
-*注*：某些 UEFI 工具（例如 UEFI shell）可能非常危险，利用这些工具可以轻易地绕过安全启动链，所以 **千万不要** 出现在生产环境配置中，尤其是设置了 Vault 和安全启动保护的设备（译者注：即，工具仅作调试用）。具体的工具示例参见本文档的 UEFI 章节。
+*注*：某些 UEFI 工具（例如 UEFI shell）可能非常危险，利用这些工具可以轻易地绕过安全启动链，所以 **千万不要** 出现在生产环境配置中，尤其是设置了 Vault 和安全启动保护的设备（译者注：即，工具仅作调试用）。具体的工具示例参见本文档的 UEFI 部分。
 
 ## 8.3 Boot 属性
 
@@ -130,7 +130,7 @@ OpenCore 启动选择器中的启动选项的显示顺序和启动过程，是�
 **Failsafe**: `0`
 **Description**: 为控制台设置特定的属性。
 
-根据 UEFI 规范，文本渲染器支持的颜色参数为前景色与背景色之和。黑色背景色和黑色前景色的值(0) 是预留的。以下是颜色名称一览：
+根据 UEFI 规范，文本渲染器支持的颜色参数为前景色与背景色之和。黑色背景色和黑色前景色的值(`0`) 是预留的。以下是颜色名称一览：
 
 - `0x00` — `EFI_BLACK`（黑色字体）
 - `0x01` — `EFI_BLUE`（蓝色字体）
@@ -157,7 +157,7 @@ OpenCore 启动选择器中的启动选项的显示顺序和启动过程，是�
 - `0x60` — `EFI_BACKGROUND_BROWN`（棕色背景）
 - `0x70` — `EFI_BACKGROUND_LIGHTGRAY`（亮灰色背景）
 
-*注*：这个选项可能和 TextRenderer 的 `System` 参数有冲突，设置一个非黑的背景可以用来测试 GOP 是否正常运行。
+*注*：这个选项可能和 `TextRenderer` 的 `System` 参数有冲突，设置一个非黑的背景可以用来测试 GOP 是否正常运行。
 
 ### 2. `HibernateMode`
 
@@ -197,7 +197,7 @@ OpenCore 启动选择器中的启动选项的显示顺序和启动过程，是�
 - `Disabled` --- 什么都不做。
 - `Full` --- 在 bootloader 启动时，在 UEFI 变量存储中创建或更新最高优先级的启动项。要使用这个选项，必须同时开启 `RequestBootVarRouting`。
 - `Short` --- 创建一个短的、非完整的启动项。此值对于某些固件很有用，比如 Insyde，或者其他无法处理完整设备路径的固件。
-- `System` --- 不创建启动项，而是认为该项是 blessed 的。这种 variant 在依赖 ForceBooterSignature 特性和 OpenCore 启动器路径时非常有用。管理是通过 bless 工具进行的，不涉及 OpenCore。
+- `System` --- 不创建启动项，而是认为该项是 blessed 的。这种 variant 在依赖 `ForceBooterSignature` 属性和 OpenCore 启动器路径时非常有用。管理是通过 bless 工具进行的，不涉及 OpenCore。
 
 在安装和升级第三方操作系统时 `\EFI\BOOT\BOOTx64.efi` 文件可能会被覆盖掉，该选项则保证了出现覆盖情况时 bootloader 的一致性。创建一个自定义启动项后，`\EFI\BOOT\BOOTx64.efi` 这个文件路径将不再用于引导 OpenCore。自定义的引导路径在 `LauncherPath` 选项中指定。
 
@@ -247,7 +247,7 @@ OpenCore 启动选择器中的启动选项的显示顺序和启动过程，是�
 - `0x0004` — `OC_ATTR_USE_GENERIC_LABEL_IMAGE`，为没有自定义条目的启动项提供预定义的标签图像。可能会缺少实际启动项的详细信息。
 - `0x0008` — `OC_ATTR_HIDE_THEMED_ICONS`，优先选择特定图标集的图标，以配合主题风格，比如可以强制显示特定图标集内置的 Time Machine 图标。需要同时启用 `OC_ATTR_USE_VOLUME_ICON`。
 - `0x0010` — `OC_ATTR_USE_POINTER_CONTROL`，在启动选择器中启用指针控制。例如，可以利用鼠标或触摸板来控制 UI 元素。
-- `0x0020` - `OC_ATTR_SHOW_DEBUG_DISPLAY`，在启动选择器中显示额外的时间和调试信息。仅在 Dubug 和 NOOPT 版本的 Builtin picker 中生效。
+- `0x0020` - `OC_ATTR_SHOW_DEBUG_DISPLAY`，在启动选择器中显示额外的时间和调试信息。仅在 `Dubug` 和 `NOOPT` 版本的 Builtin picker 中生效。
 - `0x0040` - `OC_ATTR_USE_MINIMAL_UI`，显示最小化 UI，不显示关机或重启的按钮。在 OpenCanopy 和 Builtin picker 中生效。
 - `0x0080` - `OC_ATTR_USE_FLAVOUR_ICON`，提供弹性的启动项内容描述，可以在不同的图标集中选择最好的图标：
    
@@ -255,17 +255,17 @@ OpenCore 启动选择器中的启动选项的显示顺序和启动过程，是�
 - 对于一个 Tool 项目，将会从其 `Flavour` 中读取
 - 对于一个自动发现项目，包括由 OpenLinuxBoot 驱动生成的引导入口协议条目，将会从 bootloader 同目录下的 `.contentFlavour` 文件中读取（如果有的话）
 - 对于一个自定义项目，如果其 `Flavour` 为 `Auto`，则从 bootloader 同目录下的 `.contentFlavour` 文件中读取，否则由 `Flavour` 指定
-- 如果读取到的 `Flavour` 项目为 `Auto` 或 `.contentFlavour` 文件不存在，则根据启动项类型来选择图标（如：Windows 将会被自动设置为 Windows 图标）
+- 如果读取到的 `Flavour` 项目为 `Auto` 或 `.contentFlavour` 文件不存在，则根据启动项类型来选择图标（例如：Windows 将会被自动设置为 Windows 图标）
 
-`Flavour` 的值是一个由 `:` 分隔的名字，必须是可打印的 7-bit ASCII，最长限制在64字符内。此项目大约能填写五个名字，最前面的名字有最高的优先级，最后面的名字由最低的优先级。这样的结构允许用一个更具体的方式来描述一个启动项，根据音频-图标集的支持情况，灵活选择图标。如果找不到音频或图标文件，则启动器会自动尝试下一个 flavour，而如果所有的 flavour 都找不到文件，则启动器会根据启动项类型来自动选择图标。以下是一个 flavour 的例子：`BigSur:Apple, Windows10:Windows. OpenShell:UEFIShell:Shell.`
+`Flavour` 的值是一个由 `:` 分隔的名字，必须是可打印的 7-bit ASCII，最长限制在64字符内。此项目大约能填写五个名字，最前面的名字有最高的优先级，最后面的名字由最低的优先级。这样的结构允许用一个更具体的方式来描述一个启动项，根据音频-图标集的支持情况，灵活选择图标。如果找不到音频或图标文件，则启动器会自动尝试下一个 `flavour`，而如果所有的 `flavour` 都找不到文件，则启动器会根据启动项类型来自动选择图标。以下是一个 `flavour` 的例子：`BigSur:Apple, Windows10:Windows. OpenShell:UEFIShell:Shell.`
    
-使用 flavour 意味着你可以容易地在图标集之中选择自己想要的图标，在图标集所有的图标中选择一个最合适的图标。比如，指定一个 flavour 图标 `Debian:Linux` 则将会尝试使用 `Debian.icns` 这个图标，如果没找到的话则尝试 `Linux.icns`，如果还没找到的话则会回退到 OS 的默认图标，也就是 `HardDrive.icns`。
+使用 `flavour` 意味着你可以容易地在图标集之中选择自己想要的图标，在图标集所有的图标中选择一个最合适的图标。比如，指定一个 `flavour` 图标 `Debian:Linux` 则将会尝试使用 `Debian.icns` 这个图标，如果没找到的话则尝试 `Linux.icns`，如果还没找到的话则会回退到 OS 的默认图标，也就是 `HardDrive.icns`。
    
 一些需要注意的事情：
 - 为了安全考虑，Ext<Flavour>.icns 和 <Flavour>.icns 都会被支持，并且当启动项是外接硬盘时仅有 Ext<Flavour>.icns 会被使用（就像默认的 ExtHardDrive.icns 那样）。
 - 当 `.VolumeIcon.icns` 和 `.contentFlavour` 都存在时，以 `.VolumeIcon.icns` 为准。
-- 为了使 tools 的图标和屏幕朗读工作正常（例如 UEFI Shell），在 `Flavour` 设置中指定的系统的默认启动项图标（见 Docs/Flavours.md）将仍然被应用，即使 `Flavour` 是禁用状态。在这个情况下非系统的图标将会被忽略。此外，UEFIShell 和 NVRAMReset 的 flavours 将会被特殊处理，以辨识它们的正确的屏幕朗读器、默认 builtin 标签等。
-- 一个推荐的 falvours 列表在 Docs/Flavours.md 中
+- 为了使 tools 的图标和屏幕朗读工作正常（例如 UEFI Shell），在 `Flavour` 设置中指定的系统的默认启动项图标（见 Docs/Flavours.md）将仍然被应用，即使 `Flavour` 是禁用状态。在这个情况下非系统的图标将会被忽略。此外，UEFIShell 和 NVRAMReset 的 `flavours` 将会被特殊处理，以辨识它们的正确的屏幕朗读器、默认 builtin 标签等。
+- 一个推荐的 `falvour`s 列表在 `Docs/Flavours.md` 中
 
 ### 7. `PickerAudioAssist`
 
@@ -466,7 +466,7 @@ Data Hub 日志中不包括 Kernel 和 Kext 的日志。要获取 Data Hub 日�
 ioreg -lw0 -p IODeviceTree | grep boot-log | sort | sed 's/.*<\(.*\)>.*/\1/' | xxd -r -p
 ```
 
-UEFI 变量日志中不包含某些信息，也没有性能数据。为了保持系统的完整性，日志大小被限制在 32 KB。有些固件可能会提前截断它，或者在没有内存的情况下完全放弃。使用非易失性 flag 将会在每打印一行后把日志写入 NVRAM 闪存。如要获取 UEFI 变量日志，请在 macOS 中使用以下命令：
+UEFI 变量日志中不包含某些信息，也没有性能数据。为了保持系统的完整性，日志大小被限制在 32 KB。有些固件可能会提前截断它，或者在没有内存的情况下完全放弃。使用非易失性 `flag` 将会在每打印一行后把日志写入 NVRAM 闪存。如要获取 UEFI 变量日志，请在 macOS 中使用以下命令：
 
 要获取 UEFI 变量日志，请在 macOS 中使用以下命令：
 
@@ -695,11 +695,11 @@ nvram 4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102:oem-board # SMBIOS Type2 ProductName
 
 `vault.plist` 文件应该包含 OpenCore 使用的所有文件的 SHA-256 哈希值。强烈建议使用这个文件，以确保无意中的文件修改（包括文件系统损坏）不会被忽视。要自动创建这个文件，请使用 [`create_vault.sh`](https://github.com/acidanthera/OpenCorePkg/tree/master/Utilities/CreateVault) 脚本。无论底层的文件系统如何，路径名和大小写必须在 `config.plist` 和 `vault.plist` 之间相匹配。
 
-`vault.sig` 文件应该包含一个来自 `vault.plist` SHA-256 哈希值的原始的 256 字节 RSA-2048 签名。这个签名是根据嵌入到 `OpenCore.efi` 中的公钥来验证的。
+`vault.sig` 文件应该包含一个来自 `vault.plist` 的 SHA-256 哈希值的原始的 256 字节 RSA-2048 签名。这个签名是根据嵌入到 `OpenCore.efi` 中的公钥来验证的。
    
 如要嵌入公钥，以下任一步骤均可：
 - 在 `OpenCore.efi` 编译过程中，在 [`OpenCoreVault.c`](https://github.com/acidanthera/OpenCorePkg/blob/master/Platform/OpenCore/OpenCoreVault.c) 文件中提供公钥。
-- 用二进制补丁的方式将 `OpenCore.efi` 中 `=BEGIN OC VAULT=` 和 `==END OC VAULT==` ASCII 码之间的 0 替换为公钥。
+- 用二进制补丁的方式将 `OpenCore.efi` 中 `=BEGIN OC VAULT=` 和 `==END OC VAULT==` ASCII 码之间的 `0` 替换为公钥。
 
 RSA 公钥的 520 字节格式可参阅 Chromium OS 文档。如要从 X.509 证书或 PEM 文件中转换公钥，请使用 [RsaTool](https://github.com/acidanthera/OpenCorePkg/tree/master/Utilities/CreateVault)。
 
@@ -729,7 +729,7 @@ rm vault.pub
 **Failsafe**: `0xF0103`
 **Description**: 定义操作系统检测策略。
 
-通过设置该值来根据所选 flag 的位掩码（总和）防止从非信任源扫描（和启动）。由于不可能可靠地检测到每一个文件类型或设备类型，因此在开放环境中不能完全依赖此功能，需要采取额外的措施。
+通过设置该值来根据所选 `flag` 的位掩码（总和）防止从非信任源扫描（和启动）。由于不可能可靠地检测到每一个文件类型或设备类型，因此在开放环境中不能完全依赖此功能，需要采取额外的措施。
 
 第三方驱动程序可能会根据提供的扫描策略引入额外的安全（和性能）措施。扫描策略暴露在 `4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102` GUID的 `scan-policy` 变量中，仅适用于 UEFI 启动服务。
 - `0x00000001` (bit `0`) --- `OC_SCAN_FILE_SYSTEM_LOCK`，将扫描限制于仅扫描此策略定义的已知文件系统。文件系统驱动可能感知不到这个策略，为了避免挂载不必要的文件系统，最好不要加载它的驱动程序。此 bit 不影响 dmg 挂载，因为它可能有各种文件系统。已知文件系统的前缀为 `OC_SCAN_ALLOW_FS_`。
@@ -849,7 +849,7 @@ Apple 安全启动最初出现于搭载 T2 芯片的机型上的 macOS 10.13。�
 **Failsafe**: `1843200`
 **Description**: 设置串口的时钟速率。
 
-这个选项将覆盖 [MdeModulePkg.dec](https://github.com/acidanthera/audk/blob/master/MdeModulePkg/MdeModulePkg.dec) 中定义的 gEfiMdeModulePkgTokenSpaceGuid.PcdSerialClockRate 的值。
+这个选项将覆盖 [MdeModulePkg.dec](https://github.com/acidanthera/audk/blob/master/MdeModulePkg/MdeModulePkg.dec) 中定义的 `gEfiMdeModulePkgTokenSpaceGuid.PcdSerialClockRate` 的值。
    
 ### 3. `DetectCable`
 
@@ -857,7 +857,7 @@ Apple 安全启动最初出现于搭载 T2 芯片的机型上的 macOS 10.13。�
 **Failsafe**: `false`
 **Description**: 启用串行端口电缆检测。
 
-这个选项将覆盖 [MdeModulePkg.dec](https://github.com/acidanthera/audk/blob/master/MdeModulePkg/MdeModulePkg.dec) 中定义的 gEfiMdeModulePkgTokenSpaceGuid.PcdSerialDetectCable 的值。
+这个选项将覆盖 [MdeModulePkg.dec](https://github.com/acidanthera/audk/blob/master/MdeModulePkg/MdeModulePkg.dec) 中定义的 `gEfiMdeModulePkgTokenSpaceGuid.PcdSerialDetectCable` 的值。
    
 ### 4. `ExtendedTxFifoSize`
 
@@ -865,7 +865,7 @@ Apple 安全启动最初出现于搭载 T2 芯片的机型上的 macOS 10.13。�
 **Failsafe**: `64`
 **Description**: 设置串口的扩展发送 FIFO 大小。
 
-这个选项将覆盖 [MdeModulePkg.dec](https://github.com/acidanthera/audk/blob/master/MdeModulePkg/MdeModulePkg.dec) 中定义的 gEfiMdeModulePkgTokenSpaceGuid.PcdSerialExtendedTxFifoSize 的值。
+这个选项将覆盖 [MdeModulePkg.dec](https://github.com/acidanthera/audk/blob/master/MdeModulePkg/MdeModulePkg.dec) 中定义的 `gEfiMdeModulePkgTokenSpaceGuid.PcdSerialExtendedTxFifoSize` 的值。
    
 ### 5. `FifoControl`
 
@@ -873,7 +873,7 @@ Apple 安全启动最初出现于搭载 T2 芯片的机型上的 macOS 10.13。�
 **Failsafe**: `0x07`
 **Description**: 配置串口 FIFO 控制设置。
 
-这个选项将覆盖 [MdeModulePkg.dec](https://github.com/acidanthera/audk/blob/master/MdeModulePkg/MdeModulePkg.dec) 中定义的  gEfiMdeModulePkgTokenSpaceGuid.PcdSerialFifoControl 的值。
+这个选项将覆盖 [MdeModulePkg.dec](https://github.com/acidanthera/audk/blob/master/MdeModulePkg/MdeModulePkg.dec) 中定义的  `gEfiMdeModulePkgTokenSpaceGuid.PcdSerialFifoControl` 的值。
    
 ### 6. `LineControl`
 
@@ -881,7 +881,7 @@ Apple 安全启动最初出现于搭载 T2 芯片的机型上的 macOS 10.13。�
 **Failsafe**: `0x07`
 **Description**: 配置串口线路控制设置。
 
-这个选项将覆盖 [MdeModulePkg.dec](https://github.com/acidanthera/audk/blob/master/MdeModulePkg/MdeModulePkg.dec) 中定义的  gEfiMdeModulePkgTokenSpaceGuid.PcdSerialLineControl 的值。
+这个选项将覆盖 [MdeModulePkg.dec](https://github.com/acidanthera/audk/blob/master/MdeModulePkg/MdeModulePkg.dec) 中定义的  `gEfiMdeModulePkgTokenSpaceGuid.PcdSerialLineControl` 的值。
    
 ### 7. `PciDeviceInfo`
 
@@ -966,22 +966,22 @@ Apple 安全启动最初出现于搭载 T2 芯片的机型上的 macOS 10.13。�
 
 **Type**: `plist string`
 **Failsafe**: Auto
-**Description**: 为该启动项指定 flavour，详情请参阅文档中的 `OC_ATTR_USE_FLAVOUR_ICON` 标识。
+**Description**: 为该启动项指定 `flavour`，详情请参阅文档中的 `OC_ATTR_USE_FLAVOUR_ICON` 标识。
    
 ### 6. `Name`
 
 **Type**: `plist string`
-**Failsafe**: Empty string
+**Failsafe**: Empty
 **Description**: 引导条目在开机引导菜单中显示的名字。
 
 ### 7. `Path`
 
 **Type**: `plist string`
-**Failsafe**: Empty string
+**Failsafe**: Empty
 **Description**: 引导入口。
 
 - `Entries` 用于指定外部启动选项，因此会在 `Path` 中取设备路径。这些值不会被检查，所以要非常小心。例如：`PciRoot(0x0)/Pci(0x1,0x1)/.../\EFI\COOL.EFI`。
-- `Tools` 用于指定内部引导选项，这些选项隶属于 bootloader vault，因此会取相对于 `OC/Tools` 目录的文件路径。例如：`OpenShell.efi`。
+- `Tools` 用于指定内部引导选项，这些选项隶属于 `bootloader vault`，因此会取相对于 `OC/Tools` 目录的文件路径。例如：`OpenShell.efi`。
 
 ### 8. `RealPath`
 
@@ -999,4 +999,4 @@ Apple 安全启动最初出现于搭载 T2 芯片的机型上的 macOS 10.13。�
 **Failsafe**: `false`
 **Description**: 以文本模式而非图形模式运行条目。
 
-某些需要文本输出的旧工具需要用到此项。默认情况下所有工具都以图形模式启动。更多关于文本模式的内容，请参阅 [Output 属性](11-uefi.html#11-10-Output-属性)。
+某些需要文本输出的旧工具需要用到此项。默认情况下所有工具都以图形模式启动。更多关于文本模式的内容，请参阅 [Output 属性](11-uefi.html#11-10-Output-属性) 部分。
