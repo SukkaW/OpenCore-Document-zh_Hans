@@ -469,7 +469,7 @@ APFS 驱动版本将 APFS 驱动与 macOS 版本联系起来。苹果公司最�
 
 **Type**: `plist boolean`
 **Failsafe**: `false` 
-**Description**: 在使用 Apple Event 协议的 OpenCore 重新实现时，启用自定义按键的间隔时间。在使用 OEM 苹果实现时没有影响（见 AppleEvent 设置）。
+**Description**: 在使用 Apple Event 协议的 OpenCore 重新实现时，启用自定义的按键间隔时间。在使用 OEM 苹果实现时没有影响（见 AppleEvent 设置）。
 
 - true --- 使用 `KeyInitialDelay` 和 `KeySubsequentDelay` 的值。
 - false --- 使用 Apple 的默认值 500ms(50) 和 50ms(5)。
@@ -478,21 +478,23 @@ APFS 驱动版本将 APFS 驱动与 macOS 版本联系起来。苹果公司最�
 
 **Type**: `plist integer`
 **Failsafe**: `50` (第一个键重复前 `500ms`)
-**Description**: 在 OpenCore 对 Apple Event 协议的重新实现中，配置键盘按键的间隔时间，单位为 `10ms`。Apple 事件协议的 OpenCore 再实现中，配置键盘按键的间隔时间，单位为 `10ms`。
+**Description**: 在 OpenCore 对 Apple Event 协议的重新实现中，配置键盘按键重复之前的初始延迟，单位为 `10ms`。
 
 苹果 OEM 的默认值是 50（500ms）。
 
-*注 1*：在不使用 `KeySupport` 的系统上，此设置可自由用于配置按键的间隔时间。
+*注 1*：在不使用 `KeySupport` 的系统上，此设置可自由用于配置按键重复行为。
 
-*注 2*：在使用 `KeySupport` 的系统上，但不显示 `two long delays` 行为（见 `*注 3*`）或总是显示一个坚实的 `set default` 指标（见 `KeyForgetThreshold`），那么这个设置也可以自由地用于配置按键的间隔时间，只是它永远不应该被设置为小于 `KeyForgetThreshold`，以避免不受控制的按键的间隔时间。
+*注 2*：在使用 `KeySupport` 的系统上，但不显示 `two long delays` 行为（见 `*注 3*`）或总是显示一个坚实的 `set default` 指标（见 `KeyForgetThreshold`），那么这个设置也可以自由地用于配置按键的重复初始延迟行为，只是它永远不应该被设置为小于 `KeyForgetThreshold`，以避免不受控制的按键重复。
 
 *注 3*：在一些使用 KeySupport 的系统上，你可能会发现在按住一个键时，在正常速度的按键响应之前，你会看到一个额外的慢速响应。如果是这样，你可能希望根据 `KeySubsequentDelay` 的 `*注 3*` 来配置 `KeyInitialDelay` 和 `KeySubsequentDelay`。
+
+> 译者注：两次按键之间必然会有间隔时间，不稳定的间隔时间，会导致按键错误，所以 `KeySubsequentDelay` 用于配置按键间隔。为了准确的计算间隔时间，需要一个延迟来保证按键已经结束，而不是按键时间稍长则被认为按了两次。`KeyInitialDelay` 就是用于此。
 
 ### 4. `KeySubsequentDelay`
 
 **Type**: `plist integer`
 **Failsafe**: `5` (随后的按键重复间隔 `50ms`)
-**Description**: 在 OpenCore 对 Apple Event 协议的重新实现中，配置键盘按键的重复间隔，单位为 `10ms`。
+**Description**: 在 OpenCore 对 Apple Event 协议的重新实现中，配置键盘按键重复之间的间隔，单位为 `10ms`。
 
 Apple OEM 的默认值是 5（50ms）。`0` 是这个选项的无效值（将发出调试日志警告，使用 `1` 代替）。
 
