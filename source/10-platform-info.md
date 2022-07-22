@@ -73,7 +73,7 @@ last_updated: 2022-07-20
 - `TryOverwrite` --- 如果新的数据大小 小于等于 按页对齐的原始数据，且对解锁 legacy region 没有影响，则选择 `Overwrite` 方式；否则选择 `Create` 方式。在某些硬件上可能会有问题。
 - `Create` --- 在 AllocateMaxAddress 将表替换为新分配的 EfiReservedMemoryType，没有回退机制。
 - `Overwrite` --- 如果数据大小合适则覆盖现有的 gEfiSmbiosTableGuid 和 gEfiSmbiosTable3Guid，否则将以不明状态中止。
-- `Custom` --- 把第一个 SMBIOS 表（`gEfiSmbios(3)TableGuid`）写入 `gOcCustomSmbios(3)TableGuid`，以此来解决固件在 ExitBootServices 覆盖 SMBIOS 内容的问题；否则等同于 `Create`。需要 AppleSmbios.kext 和 AppleACPIPlatform.kext 打补丁来读取另一个 GUID: `"EB9D2D31"` - `"EB9D2D35"` (in ASCII)， 这一步由 `CustomSMBIOSGuid` Quirk 自动完成。
+- `Custom` --- 把第一个 SMBIOS 表（`gEfiSmbios(3)TableGuid`）写入 `gOcCustomSmbios(3)TableGuid`，以此来解决固件在 ExitBootServices 覆盖 SMBIOS 内容的问题；否则等同于 `Create`。需要对 AppleSmbios.kext 和 AppleACPIPlatform.kext 打补丁来读取另一个 GUID: `"EB9D2D31"` - `"EB9D2D35"` (in ASCII)， 这一步由 `CustomSMBIOSGuid` Quirk 自动完成。
 
 *注*： 使用 `Custom` 有一个副作用（译者注：我怎么感觉是好事）使得 SMBIOS 设置只对 macOS 生效，避免了与现有的 Windows 激活和依赖机型的 OEM 设置的相关问题。不过，苹果在 Windows 下的特定工具（译者注：如 BootCamp for Windows）可能会受到影响。
 
