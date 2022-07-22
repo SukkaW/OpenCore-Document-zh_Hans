@@ -552,7 +552,7 @@ Apple OEM 的默认值是 5（50ms）。`0` 是这个选项的无效值（将发
 
 *注*： OEM Apple 的实现使用 2ms 的轮询率。
 
-### 8. `PointerPollMax`
+### 8. `PointerPollMask`
 
 **Type**: `plist integer，32 bit`
 **Failsafe**: `-1` 
