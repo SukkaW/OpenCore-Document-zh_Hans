@@ -486,9 +486,9 @@ APFS 驱动版本将 APFS 驱动与 macOS 版本联系起来。苹果公司最�
 
 *注 2*：在使用 `KeySupport` 的系统上，但不显示 `two long delays` 行为（见 `*注 3*`）或总是显示一个坚实的 `set default` 指标（见 `KeyForgetThreshold`），那么这个设置也可以自由地用于配置按键的重复初始延迟行为，只是它永远不应该被设置为小于 `KeyForgetThreshold`，以避免不受控制的按键重复。
 
-*注 3*：在一些使用 KeySupport 的系统上，你可能会发现在按住一个键时，在正常速度的按键响应之前，你会看到一个额外的慢速响应。如果是这样，你可能希望根据 `KeySubsequentDelay` 的 `*注 3*` 来配置 `KeyInitialDelay` 和 `KeySubsequentDelay`。
+*注 3*：在一些使用 KeySupport 的系统上，你可能会发现在正常速度键重复开始之前，在正常速度的按键响应之前，你会看到一个额外的慢速响应。如果是这样，你可能希望根据 `KeySubsequentDelay` 的 `*注 3*` 来配置 `KeyInitialDelay` 和 `KeySubsequentDelay`。
 
-> 译者注：两次按键之间必然会有间隔时间，不稳定的间隔时间，会导致按键错误，所以 `KeySubsequentDelay` 用于配置按键间隔。为了准确的计算间隔时间，需要一个延迟来保证按键已经结束，而不是按键时间稍长则被认为按了两次。`KeyInitialDelay` 就是用于此。
+> 译者注：两次按键之间必然会有间隔时间，不稳定的间隔时间，会导致按键错误，所以 `KeySubsequentDelay` 用于配置按键重复间隔。为了准确的计算间隔时间，需要一个延迟来保证按键已经结束，而不是按键时间稍长则被认为按了两次。`KeyInitialDelay` 就是用于此。
 
 ### 4. `KeySubsequentDelay`
 
