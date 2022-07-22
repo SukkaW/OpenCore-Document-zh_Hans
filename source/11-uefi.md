@@ -879,7 +879,7 @@ UEFI 固件一般用两种渲染模式来支持 `ConsoleControl`：`Graphics` �
 
 **Type**: `plist string`
 **Failsafe**: Empty （保持当前的控制台模式）
-**Description**: 按照 `WxH`（例如 `80x24`）格式的字符串所指定的方式设置控制台的输出模式。
+**Description**: 按照 `WxH`（例如：`80x24`）格式的字符串所指定的方式设置控制台的输出模式。
 
 设置为 `Max` 则会尝试最大的可用控制台模式。目前 `Builtin` 文本渲染器只支持一种控制台模式，所以该选项可以忽略。
 
@@ -989,7 +989,7 @@ macOS bootloader 要求控制台句柄上必须有 GOP 或 UGA（适用于 10.4 
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
-**Description**: 有些固件在使用较大的显示器（如 2K 或 4K）时，清除屏幕内容会导致屏幕分辨率重置为 `failsafe` 值（如 `1024x768`）。这个选项为这种情况提供了一个变通方法。
+**Description**: 有些固件在使用较大的显示器（例如：2K 或 4K）时，清除屏幕内容会导致屏幕分辨率重置为 `failsafe` 值（例如：`1024x768`）。这个选项为这种情况提供了一个变通方法。
 
 *注*：这一选项只会在 `System` 渲染器上生效。在所有已知的受影响的系统中，`ConsoleMode` 必须设置为空字符串才能正常工作。
 
@@ -1015,7 +1015,7 @@ macOS bootloader 要求控制台句柄上必须有 GOP 或 UGA（适用于 10.4 
 **Failsafe**: `false`
 **Description**: 在 GOP 协议的顶部提供 UGA 协议实例。
 
-有些固件不会去实现老旧的 UGA 协议，但是有些更老的 EFI 应用程序（如 10.4 的 EfiBoot）可能需要用它来进行屏幕输出。
+有些固件不会去实现老旧的 UGA 协议，但是有些更老的 EFI 应用程序（ 例如 10.4 的 EfiBoot）可能需要用它来进行屏幕输出。
 
 ## 11.16 ProtocolOverrides 属性
 
@@ -1051,7 +1051,7 @@ Apple 音频协议允许 macOS bootloader 和 OpenCore 播放声音和信号，�
 **Failsafe**: `false`
 **Description**: 用内置的版本替换 `Apple EFI Graphics 2` 协议。
 
-*注 1*：该协议允许更新的 `EfiBoot` 版本（至少10.15）向 macOS 公开屏幕旋转。有关如何设置屏幕旋转角度，请参阅 `ForceDisplayRotationInfo` 变量说明。
+*注 1*：该协议允许更新的 `EfiBoot` 版本（至少 10.15）向 macOS 公开屏幕旋转。有关如何设置屏幕旋转角度，请参阅 `ForceDisplayRotationInfo` 变量说明。
 
 *注 2*：在没有 `ForceDisplayRotationInEFI` 原生支持的系统上，必须设置 `DirectGopRendering=true`。  
   
@@ -1059,7 +1059,7 @@ Apple 音频协议允许 macOS bootloader 和 OpenCore 播放声音和信号，�
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
-**Description**: 重新安装内置的 Apple Framebuffer Info 协议。这样可以覆盖虚拟机或者旧款 Mac 上的缓冲帧信息，从而提高与旧版 EfiBoot（如 macOS 10.4 中的 `EfiBoot`）的兼容性。
+**Description**: 重新安装内置的 Apple Framebuffer Info 协议。这样可以覆盖虚拟机或者旧款 Mac 上的缓冲帧信息，从而提高与旧版 EfiBoot（例如 macOS 10.4 中的 `EfiBoot`）的兼容性。
 
 *注*：这个属性的当前实现导致它只有在 GOP 可用时才是有效的（否则它总是相当于false）。
   
@@ -1215,7 +1215,7 @@ Apple 音频协议允许 macOS bootloader 和 OpenCore 播放声音和信号，�
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
-**Description**: 某些类型的固件（如APTIO IV）可能在 `MSR_FLEX_RATIO（0x194）MSR` 寄存器中包含无效的值。这些值可能导致英特尔平台上的 macOS 启动失败。  
+**Description**: 某些类型的固件（例如：APTIO IV）可能在 `MSR_FLEX_RATIO（0x194）MSR` 寄存器中包含无效的值。这些值可能导致英特尔平台上的 macOS 启动失败。  
 
 注意：虽然该选项预计不会损害未受影响的固件，但只有在特别需要时才建议使用该选项。  
   
