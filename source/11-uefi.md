@@ -1013,7 +1013,7 @@ macOS bootloader 要求控制台句柄上必须有 GOP 或 UGA（适用于 10.4 
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
-**Description**: 在 GOP 协议实例之上提供 UGA 协议实例。
+**Description**: 在 GOP 协议实例的基础上提供 UGA 协议实例。
 
 有些固件不会去实现老旧的 UGA 协议，但是有些更老的 EFI 应用程序（ 例如 10.4 的 EfiBoot）可能需要用它来进行屏幕输出。
 
