@@ -165,7 +165,7 @@ OpenCore 在生成修改过的 DMI 表时，总是设置最新的 SMBIOS 版本�
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
-**Description**: 将 `BIOSVersion` 设置为 `9999.999.999.999.999`，建议使用 `Automatic` 选项的旧款 Mac 这样设置, 在运行非官方支持的 macOS 版本时可避免 BIOS 升级。
+**Description**: 将 `BIOSVersion` 设置为 `9999.999.999.999.999`，在使用 Automatic PlatformInfo 时推荐用于旧版的 Mac，以避免在非官方支持的 macOS 版本中进行 BIOS 更新。
 
 ### 4. `SystemMemoryStatus`
 
