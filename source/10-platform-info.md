@@ -315,7 +315,7 @@ OpenCore 在生成修改过的 DMI 表时，总是设置最新的 SMBIOS 版本�
 
 **Type**: `plist integer`，32-bit
 **Failsafe**: `0`（Not installed）
-**Description**: 在 `gEfiMiscSubClassGuid` 中设置 `DevicePathsSupported`。必须设置为 1 才能确保 AppleACPIPlatform.kext 将 SATA 设备路径添加到 `Boot####` 和 `efi-boot-device-data` 变量。所有新款 Mac 都设置为 1。
+**Description**: 在 `gEfiMiscSubClassGuid` 中设置 `DevicePathsSupported`。必须设置为 `1` 才能确保 AppleACPIPlatform.kext 将 SATA 设备路径添加到 `Boot####` 和 `efi-boot-device-data` 变量。所有新款 Mac 都设置为 `1`。
 
 ### 12. `SmcRevision`
 
