@@ -1165,9 +1165,7 @@ Apple 音频协议允许 macOS bootloader 和 OpenCore 播放声音和信号，�
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
-**Description**: 启用 `SHA-512` 和 `SHA-384` 哈希算法的 `AVX` 矢量加速。
-  
-像 ICH6 这样的旧板子在固件首选项中可能并不总是有 HPET 设置，这个选项试图强制启用它。    
+**Description**: 启用 `SHA-512` 和 `SHA-384` 哈希算法的 `AVX` 矢量加速。    
   
 *注*：这个选项可能会在某些笔记本电脑的固件上引起问题，包括联想。  
   
