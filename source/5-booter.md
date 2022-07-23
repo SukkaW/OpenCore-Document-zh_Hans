@@ -303,7 +303,7 @@ GRUB-shim 对各种 UEFI image services 进行了类似的即时更改，这些�
 **Failsafe**: `false`
 **Description**: 为低内存设备提供自定义 KASLR slide 值。
 
-开启这个选项后，将会对固件进行内存映射分析，检查所有 slide（从 1 到 255）中是否有可用的。由于 `boot.efi` 私用 rdrand 或伪随机 rdtsc 随机生成此值，因此有可能出现冲突的 slide 值被使用并导致引导失败。如果出现潜在的冲突，这个选项将会强制为 macOS 选择一个伪随机值。这同时确保了 `slide=` 参数不会被传递给操作系统（出于安全原因）。
+开启这个选项后，将会对固件进行内存映射分析，检查所有 slide（从 `1` 到 `255`）中是否有可用的。由于 `boot.efi` 私用 rdrand 或伪随机 rdtsc 随机生成此值，因此有可能出现冲突的 slide 值被使用并导致引导失败。如果出现潜在的冲突，这个选项将会强制为 macOS 选择一个伪随机值。这同时确保了 `slide=` 参数不会被传递给操作系统（出于安全原因）。
 
 *注*：OpenCore 会自动检查是否需要启用这一选项。如果 OpenCore 的调试日志中出现 `OCABC: Only N/256 slide values are usable!` 则请启用这一选项。
 
