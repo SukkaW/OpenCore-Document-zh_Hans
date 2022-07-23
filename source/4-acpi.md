@@ -165,7 +165,7 @@ OpenCore、WhateverGreen、VirtualSmc、VoodooPS2 的 GitHub 仓库中都包含�
 **Failsafe**: Empty
 **Description**: 需要寻找的 Data，如果设置，长度必须和 `Replace` 相等。
 
-注意：可以是空的，当指定 `Base` 时，在这种情况下，`Base` 查询后会立即发生替换。
+注意：可以留空；当指定 `Base` 时，在这种情况下，`Base` 查询后会立即发生替换。
 
 ### 7. `Limit`
 
