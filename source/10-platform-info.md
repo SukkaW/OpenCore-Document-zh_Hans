@@ -342,7 +342,7 @@ OpenCore 在生成修改过的 DMI 表时，总是设置最新的 SMBIOS 版本�
 **Type**: `plist integer`，16-bit
 **Failsafe**: `0xFFFF` (unknown)
 **SMBIOS**: Memory Device (Type 17) — Data Width
-**Description**: 指定内存的数据宽度，以位为单位。`DataWidth` 为 0 且 `TotalWidth` 为 8 时，表示改设备仅用于提供 8 个纠错位。
+**Description**: 指定内存的数据宽度，以位为单位。`DataWidth` 为 `0` 且 `TotalWidth` 为 8 时，表示改设备仅用于提供 `8` 个纠错位。
 
 ### 2. `Devices`
 
