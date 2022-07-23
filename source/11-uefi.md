@@ -1191,7 +1191,7 @@ Apple 音频协议允许 macOS bootloader 和 OpenCore 播放声音和信号，�
 **Failsafe**: `0`
 **Description**: 在 `EXIT_BOOT_SERVICES` 事件后添加延迟，单位为毫秒。
 
-这是一个非常粗略的 Quirk，用于修复 `Still waiting for root device` 提示信息。在使用 FileVault 2 时，特别是华硕 Z87-Pro 等 APTIO IV 固件这种错误经常发生。似乎因为某种原因，FileVault 与 `EXIT_BOOT_SERVICES` 同时执行、导致 macOS 无法访问 SATA 控制器。未来应该会找到一个更好的方法。如果需要启用这一选项，设置 3-5 秒的延时就可以了。
+这是一个非常粗略的解决办法，可以规避某些 APTIO IV 固件（ASUS Z87-Pro）上的 `Still waiting for root device` 提示信息。特别是在使用 FileVault 2 时。似乎因为某种原因，FileVault 与 `EXIT_BOOT_SERVICES` 同时执行、导致 macOS 无法访问 SATA 控制器。需要一个更好的方法，Acidanthera 愿意接受建议。如果需要启用这一选项，设置 3-5 秒的延时就可以了。
 
 ### 6. `ForceOcWriteFlash`
 
