@@ -313,7 +313,7 @@ GRUB-shim 对各种 UEFI image services 进行了类似的即时更改，这些�
 **Failsafe**: `0`
 **Description**: 当更大的 KASLR slide 值不可用时，手动提供最大 KASLR slide 值。
 
-当 `ProvideCustomSlide` 启用时，该选项通过用户指定的 1 到 254（含）之间的值来覆盖上限为 255 的最大 slide 值。较新的固件会从上到下分配内存池中的内存，导致扫描 slide 时的空闲内存被当作内核加载时的临时内存来使用。如果这些内存不可用，启用这个选项则不会继续评估更高的 slide 值。
+当 `ProvideCustomSlide` 启用时，该选项通过用户指定的 `1` 到 `254`（含）之间的值来覆盖上限为 255 的最大 slide 值。较新的固件会从上到下分配内存池中的内存，导致扫描 slide 时的空闲内存被当作内核加载时的临时内存来使用。如果这些内存不可用，启用这个选项则不会继续评估更高的 slide 值。
 
 *注*：当 `ProvideCustomSlide` 启用、并且随机化的 slide 落入不可用的范围时，如果出现随机的启动失败，则有必要开启这个 Quirk。开启 `AppleDebug` 时，调试日志通常会包含 `AAPL: [EB|‘LD:LKC] } Err(0x9)` 这样的信息。如果要找到最合适的值，请手动将 `slide=X` 追加到 `boot-args` 里，并用日志记录下不会导致启动失败的最大值。
 
