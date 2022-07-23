@@ -309,7 +309,7 @@ OpenCore 在生成修改过的 DMI 表时，总是设置最新的 SMBIOS 版本�
 
 此值包含 CPU ART 频率，即晶体时钟频率。为 Skylake 或更新的平台独有，以 Hz 为单位。Client Intel segment 通常为 24 MHz，Server Intel segment 通常为 25 MHz，Intel Atom CPUs 通常为 19.2 MHz。macOS 10.15 及以下均默认为 24 MHz。
 
-*注*：由于 Intel Skylake X 平台特有 EMI-reduction 电路，其 ART 频率可能会比 24 或 25MHz 有所损失（大约 0.25%）。参考 [Acidanthera Bugtracker](https://github.com/acidanthera/bugtracker/issues/448#issuecomment-524914166)。
+*注*：由于 Intel Skylake X 平台特有 EMI-reduction 电路，其 ART 频率可能会比 24 或 25 MHz 有所损失（大约 0.25%）。参考 [Acidanthera Bugtracker](https://github.com/acidanthera/bugtracker/issues/448#issuecomment-524914166)。
 
 ### 11. `DevicePathsSupported`
 
