@@ -192,10 +192,10 @@
             
             
                 
-                    <p><small>由 Sukka 整理，由 Sukka、derbalkon 翻译</small></p>
+                    <p><small>由 Sukka、cike-567 整理，由 Sukka、derbalkon、cike-567 翻译</small></p>
                 
                 
-                    <p><small>本页面最后更新于 2020 年 08 月 30 日</small></p>
+                    <p><small>本页面最后更新于 2022 年 07 月 20 日</small></p>
                 
                 <br>
             
@@ -219,11 +219,11 @@
 <blockquote>
 <p>译者注：以上术语的相关描述仅限于本文档所指的 OC Config。</p>
 </blockquote>
-<h2 id="2-2-配置处理"><a href="#2-2-配置处理" class="headerlink" title="2.2 配置处理"></a>2.2 配置处理</h2><p>如果 OpenCore 发现了 OC Config，则至少会读取并处理一次。根据 OpenCore 的引导机制的不同，如果存在多个 OC Config 文件，OpenCore 可能会读取其中任何一个或数个。如果硬盘中没有 OC Config，OpenCore 将会使用可选值和无效值的规则。</p>
-<p>OC Config 有大小、嵌套和键值数量的限制。OC Config 的大小不得超过 16 MB，嵌套层数不得超过 8 层，每个 <code>plist object</code> 中最多有 16384 个节点（一个 <code>plist dictionary</code> 将被计为一对节点）。不符合上述规则的 OC Config 文件将可能导致未定义、非预期的行为。常见的 OC Config 错误格式包括：</p>
+<h2 id="2-2-配置处理"><a href="#2-2-配置处理" class="headerlink" title="2.2 配置处理"></a>2.2 配置处理</h2><p>如果 OpenCore 发现了 OC Config，则至少会读取并处理一次。根据 OpenCore 的引导机制，如果存在多个 OC Config 文件，OpenCore 可能会读取其中任何一个。如果硬盘中没有 OC Config并且引导没有中止，则OpenCore 将会遵循无效值和可选值的规则。</p>
+<p>OC Config 有大小、嵌套和键值数量的限制。OC Config 的大小不得超过 32 MB，嵌套层数不得超过 32 层，每个 <code>plist object</code> 中最多有 32768 个节点（一个 <code>plist dictionary</code> 将被计为一对节点）。不符合上述规则的 OC Config 文件将可能导致未定义、非预期的行为。常见的 OC Config 错误包括：</p>
 <ul>
-<li>不符合 <code>plist</code> DTD</li>
-<li>存在本文档中没有记载的 <code>plist object</code></li>
+<li>OC Config 不符合 <code>plist</code> DTD 1.0</li>
+<li>存在本文档中不支持的或不合法的 <code>plist object</code></li>
 <li>违反文件大小、嵌套层级和键值数量的限制</li>
 </ul>
 <p>我们建议（但非强制）遇到格式错误的 OC Config 时中止、当作 OC Config 不存在的情况来处理。为了能够向前兼容，我们建议（但非强制）对采用无效值的行为进行警告。采用无效值的建议做法是在使用的情况下遵守以下规则：</p>
@@ -260,7 +260,7 @@
 <li>Add：为数据提供 添加 操作支持。已经存在的值不会被覆盖，必要时请使用 Delete。</li>
 <li>Delete：为数据提供 删除 操作支持。</li>
 <li>Patch：为数据提供 补丁 操作支持。</li>
-<li>Quirks：提供特定的黑科技支持。</li>
+<li>Quirks：提供特定的变通方法支持。</li>
 </ul>
 <p>配置文件分为以下几个独立部分：</p>
 <ul>
@@ -276,8 +276,8 @@
 <blockquote>
 <p>译者注：对上述部分的介绍位于文档的第 4 至 11 章节。可以在本网站左侧边栏中的目录中找到这些章节的入口。</p>
 </blockquote>
-<p>你可以使用 <code>ocvalidate</code> 实用工具校验配置文件是否存在语法错误。请注意，<code>ocvalidate</code> 的版本必须和 OpenCore 的版本一致，而且不一定能够检测出所有的错误。</p>
-<p><em>注</em>：为了保险起见，目前大多数属性都有默认值（译者注：后续文档中以 <code>FailSafe</code> 字段呈现）。如果在配置项中未指定任何值，默认值将会生效。不要依赖默认值，务必在配置中正确指定所有字段。</p>
+<p>你可以使用 <code>ocvalidate</code> 工具对配置文件进行基本验证。请注意，<code>ocvalidate</code> 的版本必须和 OpenCore 的版本一致。<code>ocvalidate</code> 不一定能够检测出所有的错误。</p>
+<p><em>注</em>：为了保持系统的完整性，目前大多数属性都有默认值（译者注：后续文档中以 <code>FailSafe</code> 字段呈现）。如果在配置项中未指定任何值，默认值将会生效。不要依赖默认值，务必在配置中正确指定所有字段。</p>
 
             </div>
 

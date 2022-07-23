@@ -192,10 +192,10 @@
             
             
                 
-                    <p><small>由 xMuu、Sukka 整理，由 Sukka、derbalkon 翻译</small></p>
+                    <p><small>由 xMuu、Sukka、cike-567 整理，由 Sukka、derbalkon、cike-567 翻译</small></p>
                 
                 
-                    <p><small>本页面最后更新于 2021 年 01 月 13 日</small></p>
+                    <p><small>本页面最后更新于 2022 年 07 月 20 日</small></p>
                 
                 <br>
             
@@ -207,19 +207,18 @@
     <div class="columns">
         <div class="column is-9-tablet doku-document-wrapper">
             <div class="content">
-                <h2 id="9-1-简介"><a href="#9-1-简介" class="headerlink" title="9.1 简介"></a>9.1 简介</h2><p>设置易失性 UEFI 变量（通常被称作 NVRAM 变量），数据类型为 <code>plist dict</code>。使用 <code>man nvram</code> 获取详细信息。macOS 广泛使用 NVRAM 变量使 操作系统、BootLoader、固件 之间互通，因此需要提供多个 NVRAM 变量才能正常运行 macOS。</p>
+                <h2 id="9-1-简介"><a href="#9-1-简介" class="headerlink" title="9.1 简介"></a>9.1 简介</h2><p>设置易失性 UEFI 变量（通常被称作 NVRAM 变量）。使用 <code>man nvram</code> 获取详细信息。macOS 广泛使用 NVRAM 变量使 操作系统、BootLoader、固件 之间互通，因此需要提供多个 NVRAM 变量才能正常运行 macOS。</p>
 <p>每个 NVRAM 变量均由其名称、值、属性（参考 UEFI 规范）以及 <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Universally_unique_identifier">GUID</a> 组成，表示 NVRAM 变量属于哪一区域。macOS 使用如下（包括但不限于）几种 GUID：</p>
 <ul>
 <li><code>4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14</code> (<code>APPLE_VENDOR_VARIABLE_GUID</code>)</li>
 <li><code>7C436110-AB2A-4BBB-A880-FE41995C9F82</code> (<code>APPLE_BOOT_VARIABLE_GUID</code>)</li>
+<li><code>5EDDA193-A070-416A-85EB-2A1181F45B18</code> (<code>Apple Hardware Configuration Storage for MacPro7,1</code>)</li>
 <li><code>8BE4DF61-93CA-11D2-AA0D-00E098032B8C</code> (<code>EFI_GLOBAL_VARIABLE_GUID</code>)</li>
 <li><code>4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102</code> (<code>OC_VENDOR_VARIABLE_GUID</code>)</li>
 </ul>
-<p><em>注</em>：某些变量可以通过 <code>PlatformNVRAM</code> 或 <code>PlatformInfo</code> 节的 <code>Generic</code> 子节添加。请确保本节中的变量不会与它们发生冲突，否则可能导致未定义的行为。</p>
+<p><em>注</em>：某些变量可以通过 <code>PlatformNVRAM</code> 或 <code>PlatformInfo</code> 章节的 <code>Generic</code> 子节添加。请确保本节中的变量不会与它们发生冲突，否则可能导致未定义的行为。</p>
 <p>为了使 macOS 正常运行，通常需要使用 <code>OC_FIRMWARE_RUNTIME</code> 协议。该协议的实现目前是 <code>OpenRuntime</code>（原名 <code>FwRuntimeServices.efi</code>）驱动程序的一部分。虽然可能带来一些好处，但根据用途不同也会存在某些限制。</p>
-<ul>
-<li>并非所有工具都可能知道受保护的名称空间。当使用 <code>RequestBootVarRouting</code> 时，在独立的命名空间中会限制对 <code>Boot</code> 前缀的变量访问。要访问原始变量，工具必须了解 <code>OC_FIRMWARE_RUNTIME</code> 协议的工作原理。</li>
-</ul>
+<p>并非所有工具都可能知道受保护的名称空间。当使用 <code>RequestBootVarRouting</code> 时，在独立的命名空间中会限制对 <code>Boot</code> 前缀的变量访问。要访问原始变量，工具必须了解 <code>OC_FIRMWARE_RUNTIME</code> 协议的工作原理。</p>
 <h2 id="9-2-属性列表"><a href="#9-2-属性列表" class="headerlink" title="9.2 属性列表"></a>9.2 属性列表</h2><h3 id="1-Add"><a href="#1-Add" class="headerlink" title="1. Add"></a>1. <code>Add</code></h3><p><strong>Type</strong>: <code>plist dict</code><br><strong>Description</strong>: 从一组 GUID 映射（<code>plist dict</code>）中读取格式为 <code>plist metadata</code> 的变量映射，并将其添加到 NVRAM 中。GUID 必须以 Canonical String 格式提供，大写或小写均可（如 <code>8BE4DF61-93CA-11D2-AA0D-00E098032B8C</code>）。</p>
 <p>创建的变量会设置 <code>EFI_VARIABLE_BOOTSERVICE_ACCESS</code> 和 <code>EFI_VARIABLE_RUNTIME_ACCESS</code> 的属性。变量只有在不存在且未被屏蔽的情况下才会被设置，也就是说，如果想要覆盖一个现有的变量值，请将该变量的名称添加到 <code>Delete</code> 部分，这种方法能够提供一个默认的值，直到操作系统接手为止。</p>
 <p><em>注</em>：如果 <code>plist key</code> 不符合 GUID 格式，则可能出现一些未定义的行为。</p>
@@ -227,10 +226,11 @@
 <h3 id="3-LegacyEnable"><a href="#3-LegacyEnable" class="headerlink" title="3. LegacyEnable"></a>3. <code>LegacyEnable</code></h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: <code>false</code><br><strong>Description</strong>: 允许从 ESP 分区的根目录中的 <code>nvram.plist</code> 文件读取 NVRAM 变量。</p>
 <p>该文件必须以 <code>plist dictionary</code> 为文件根格式，并包含以下两个字段：</p>
 <ul>
-<li><code>Version</code> — <code>plist integer</code>，文件版本，必须设定为 1。</li>
+<li><code>Version</code> — <code>plist integer</code>，文件版本，必须设定为 <code>1</code>。</li>
 <li><code>Add</code> — <code>plist dictionary</code>，等同于 <code>config.plist</code> 中的 <code>Add</code>。</li>
 </ul>
-<p>变量加载优先于 <code>Delete</code>（以及 <code>Add</code>）阶段。除非启用了 <code>LegacyOverwrite</code>，否则不会覆盖现有的任何变量。允许设置的变量必须指定于 <code>LegacySchema</code> 中。第三方脚本可以用来创建 <code>nvram.plist</code> 文件，脚本示例可参照 <code>Utilities</code>。使用第三方脚本可能要将 <code>ExposeSensitiveData</code> 设置为 <code>0x3</code> 来为 <code>boot-path</code> 变量提供 OpenCore EFI 分区的 UUID。</p>
+<p>变量加载优先于 <code>Delete</code>（以及 <code>Add</code>）阶段。除非启用了 <code>LegacyOverwrite</code>，否则不会覆盖现有的任何变量。允许设置的变量必须指定于 <code>LegacySchema</code> 中。</p>
+<p>第三方脚本可以用来创建 <code>nvram.plist</code> 文件，脚本示例可参照 <a target="_blank" rel="noopener" href="https://github.com/acidanthera/OpenCorePkg/tree/master/Utilities/LogoutHook">Utilities/LogoutHook</a>。使用第三方脚本可能要将 <code>ExposeSensitiveData</code> 设置为 <code>0x3</code> 来为 <code>boot-path</code> 变量提供 OpenCore EFI 分区的 UUID。</p>
 <blockquote class="message doku-blockquote is-danger"><div class="message-header">警告</div><div class="message-body"><p>这一功能非常危险，因为会将不受保护的数据传递给固件中的变量服务。只有在你的硬件不提供硬件 NVRAM 或与之不兼容时才使用。</p>
 </div></blockquote>
 
@@ -242,10 +242,10 @@
 </div></blockquote>
 
 <h3 id="6-WriteFlash"><a href="#6-WriteFlash" class="headerlink" title="6. WriteFlash"></a>6. <code>WriteFlash</code></h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: <code>false</code><br><strong>Description</strong>: 允许将所有添加的变量写入闪存。</p>
-<p><em>注</em>：这个 Quirk 本应该在大多数固件上启用，但是由于可能存在 NVRAM 变量存储 GC 或类似的问题的固件，所以我们将这个 Quirk 设计为可配置的。</p>
+<p><em>注</em>：这个 Quirk 本应该在大多数固件上启用，但是由于可能存在 NVRAM 变量存储 garbage collection 或类似的问题的固件，所以我们将这个 Quirk 设计为可配置的。</p>
 <p>要从 macOS 中读取 NVRAM 变量的值，可以使用 <code>nvram</code>，并将变量 GUID 和名称用 <code>:</code> 符号隔开，形如 <code>nvram 7C436110-AB2A-4BBB-A880-FE41995C9F82:boot-args</code>。</p>
-<p>变量列表可参照相关文档（持续更新）：<a target="_blank" rel="noopener" href="https://docs.google.com/spreadsheets/d/1HTCBwfOBkXsHiK7os3b2CUc6k68axdJYdGl-TyXqLu0">NVRAM Variables</a>。</p>
-<h2 id="9-3-必需变量"><a href="#9-3-必需变量" class="headerlink" title="9.3 必需变量"></a>9.3 必需变量</h2><blockquote class="message doku-blockquote is-danger"><div class="message-header">警告</div><div class="message-body"><p>这些变量可通过 PlatformNVRAM 或 PlatformInfo 的 Generic 部分添加。推荐使用 <code>PlatformInfo</code> 来设置这些变量。</p>
+<p>变量列表可参照相关文档（持续更新）：<a target="_blank" rel="noopener" href="https://docs.google.com/spreadsheets/d/1HTCBwfOBkXsHiK7os3b2CUc6k68axdJYdGl-TyXqLu0/edit#gid=0">NVRAM Variables</a>。</p>
+<h2 id="9-3-强制变量"><a href="#9-3-强制变量" class="headerlink" title="9.3 强制变量"></a>9.3 强制变量</h2><blockquote class="message doku-blockquote is-danger"><div class="message-header">警告</div><div class="message-body"><p>这些变量可通过 PlatformNVRAM 或 PlatformInfo 的 Generic 部分添加。推荐使用 <code>PlatformInfo</code> 来设置这些变量。</p>
 </div></blockquote>
 
 <p>以下变量为 macOS 运行必需：</p>
@@ -255,8 +255,9 @@
 <li><code>4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14:MLB</code><br><code>BoardSerialNumber</code>。存在于较新的 Mac 上（至少 2013 年以后），用来避免额外解析 SMBIOS 表，尤其是在 <code>boot.efi</code> 中。</li>
 <li><code>4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14:ROM</code><br>主要的网络适配器的 MAC 地址或替换值。存在于较新的 Mac（至少 2013 年以后）上，用来避免访问特殊内存区域，尤其是在 <code>boot.efi</code> 中。</li>
 </ul>
-<h2 id="9-4-建议变量"><a href="#9-4-建议变量" class="headerlink" title="9.4 建议变量"></a>9.4 建议变量</h2><p>建议使用以下变量来加快启动速度或改善其他表现：</p>
+<h2 id="9-4-推荐变量"><a href="#9-4-推荐变量" class="headerlink" title="9.4 推荐变量"></a>9.4 推荐变量</h2><p>建议使用以下变量来加快启动速度或改善其他表现：</p>
 <ul>
+<li><code>4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14:BridgeOSHardwareModel</code><br><code>Bridge OS</code> 的硬件模型变量，用于通过 EfiBoot 传播到 <code>IODT</code> 桥接模型。由 <code>hw.target sysctl</code> 读取，由 <code>SoftwareUpdateCoreSupport</code> 使用。</li>
 <li><code>7C436110-AB2A-4BBB-A880-FE41995C9F82:csr-active-config</code><br>系统完整性保护的位掩码（32-bit），声明于 XNU 源码 <a target="_blank" rel="noopener" href="https://opensource.apple.com/source/xnu/xnu-4570.71.2/bsd/sys/csr.h.auto.html">csr.h</a>。</li>
 <li><code>4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14:ExtendedFirmwareFeatures</code><br>结合 <code>FirmwareFeatures</code> 和 <code>ExtendedFirmwareFeatures</code>。存在于较新的 Mac 上，用来避免额外解析 SMBIOS 表。</li>
 <li><code>4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14:ExtendedFirmwareFeaturesMask</code><br>结合 <code>FirmwareFeaturesMask</code> 和 <code>ExtendedFirmwareFeaturesMask</code>。存在于较新的 Mac 上，用来避免额外解析 SMBIOS 表。</li>
@@ -266,6 +267,7 @@
 <li><code>7C436110-AB2A-4BBB-A880-FE41995C9F82:prev-lang:kbd</code><br>定义默认键盘布局的 ASCII 字符串。格式为 <code>lang-COUNTRY:keyboard</code>，例如 <code>ru-RU:252</code> 代表俄语和 ABC 键盘。也接受简短形式：<code>ru:252</code> 或 <code>ru:0</code>（美国键盘，兼容 10.9）。完整的键盘列表解码来自 <code>AppleKeyboardLayouts-L.dat</code>，可前往<a target="_blank" rel="noopener" href="https://github.com/acidanthera/OpenCorePkg/tree/master/Utilities/AppleKeyboardLayouts">这里</a>查看。与之前或之后的 macOS 版本不同，在 10.14 上，使用非拉丁语键盘将无法启用 ABC 键盘，因此假如你需要使用 10.14 版本则不建议你使用这一变量。</li>
 <li><code>7C436110-AB2A-4BBB-A880-FE41995C9F82:security-mode</code><br>定义 FireWire 安全模式的 ASCII 字符串。这一变量旧版本才有，可在 <a target="_blank" rel="noopener" href="https://opensource.apple.com/source/IOFireWireFamily/IOFireWireFamily-473/IOFireWireFamily.kmodproj/IOFireWireController.cpp.auto.html">IOFireWireController.cpp</a> 中的 IOFireWireFamily 源码里找到。建议不要设置这个变量，这样可能会加快启动速度。设置为 <code>full</code> 等同于不设置该变量，设置为 <code>none</code> 将禁用 FireWire 安全性。</li>
 <li><code>4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14:UIScale</code><br>定义 <code>boot.efi</code> 用户界面缩放比例的一字节数据。普通屏幕应为 <strong>01</strong>，HiDPI 屏幕应为 <strong>02</strong>。</li>
+<li><code>7C436110-AB2A-4BBB-A880-FE41995C9F82:ForceDisplayRotationInEFI</code><br>32-bit 整数，定义显示旋转。可以是 <strong>0</strong> 表示没有旋转，也可以是 <strong>90</strong>、<strong>180</strong>、<strong>270</strong> 中的任何一个表示匹配的旋转度数。</li>
 <li><code>4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14:DefaultBackgroundColor</code><br>定义 <code>boot.efi</code> 用户界面背景色的四字节 <code>BGRA</code> 数据。标准色包括 <strong>BF BF BF 00</strong>（浅灰）和 <strong>00 00 00 00</strong>（西拉黑）。其他颜色可根据用户喜好设置。</li>
 </ul>
 <h2 id="9-5-其他变量"><a href="#9-5-其他变量" class="headerlink" title="9.5 其他变量"></a>9.5 其他变量</h2><p>以下变量对于某些特定的配置或进行故障排除可能会很有用：</p>
@@ -286,10 +288,18 @@
 <li><code>nvram-log=1</code> — 启用 AppleEFINVRAM 日志</li>
 <li><code>nv_disable=1</code> — 禁用 NVIDIA GPU 加速</li>
 <li><code>nvda_drv=1</code> — 启用 NVIDIA web driver 的传统方法，这一参数在 macOS 10.12 中被去除</li>
-<li><code>npci=0x2000</code> — <a target="_blank" rel="noopener" href="https://www.insanelymac.com/forum/topic/260539-1068-officially-released/?do=findComment&comment=1707972">旧方法</a> 禁用 <code>kIOPCIConfiguratorPFM64</code></li>
+<li><code>npci=0x2000</code> — <a target="_blank" rel="noopener" href="https://www.insanelymac.com/forum/topic/260539-1068-officially-released/page/11/#comment-1707972">旧方法</a> 禁用 <code>kIOPCIConfiguratorPFM64</code></li>
 <li><code>lapic_dont_panic=1</code> — 禁用 AP 内核的 LAPIC Panic 伪中断行为</li>
 <li><code>panic_on_display_hang=1</code> — 显示设备挂起时触发 Panic</li>
 <li><code>panic_on_gpu_hang=1</code> — GPU 挂起时触发 Panic</li>
+<li><code>serial=VALUE(配置串行记录模式)</code> — 以下是 XNU 使用的 bits。<ul>
+<li><code>0x01 (SERIALMODE_OUTPUT, bit 0)</code> — 启用串行输出。</li>
+<li><code>0x02 (SERIALMODE_INPUT, bit 1)</code> — 启用串行输入。</li>
+<li><code>0x04 (SERIALMODE_SYNCDRAIN, bit 2)</code> — 启用串口同步。</li>
+<li><code>0x08 (SERIALMODE_BASE_TTY, bit 3)</code> — Load Base/恢复/VUnlock TTY。</li>
+<li><code>0x10 (SERIALMODE_NO_IOLOG, bit 4)</code> — 防止 IOLogs 写入串行。</li>
+</ul>
+</li>
 <li><code>slide=VALUE</code> — 手动设置 KASLR 偏移值</li>
 <li><code>smcdebug=VALUE</code> — <code>AppleSMC</code> 调试掩码</li>
 <li><code>spin_wait_for_gpu=1</code> — 减少 GPU 高负载情况下的超时时间</li>
@@ -386,9 +396,11 @@
 </ul>
 <p><em>注</em>：如要查看现代 macOS 版本上的 <code>boot.efi</code> verbose 输出，请启用 <code>AppleDebug</code> 选项。这样会把日志保存到通用 OpenCore 日志中。对于 10.15.4 之前的版本，将 <code>bootercfg</code> 设置为 <code>log=1</code>，可以将 verbose 输出打印在屏幕上。</p>
 </li>
-<li><p><code>7C436110-AB2A-4BBB-A880-FE41995C9F82:efiboot-perf-record</code><br>启用 <code>boot.efi</code> 中的性能日志保存功能。性能日志会被保存到物理内存中，并通过 <code>efiboot-perf-record-data</code> 和 <code>efiboot-perf-record-size</code> 变量进行指向。从 10.15.4 开始，它也可以通过 <code>AppleDebug</code> 选项保存到 OpenCore 日志中。</p>
-</li>
 <li><p><code>7C436110-AB2A-4BBB-A880-FE41995C9F82:bootercfg-once</code><br>在首次启动后删除 Booter 参数覆盖，否则等同于 <code>bootercfg</code>。</p>
+</li>
+<li><p><code>7C436110-AB2A-4BBB-A880-FE41995C9F82:csr-data</code><br>指定将被批准的 KEXT 的来源，无论 SIP CSR_ALLOW_UNAPPROVED_KEXTS 值如何。示例如下：<br><dict><key>kext-allowed-teams</key><array><string>{DEVELOPER-TEAM-ID}</string></array></dict>%00</p>
+</li>
+<li><p><code>7C436110-AB2A-4BBB-A880-FE41995C9F82:efiboot-perf-record</code><br>启用 <code>boot.efi</code> 中的性能日志保存功能。性能日志会被保存到物理内存中，并通过 <code>efiboot-perf-record-data</code> 和 <code>efiboot-perf-record-size</code> 变量进行指向。从 10.15.4 开始，它也可以通过 <code>AppleDebug</code> 选项保存到 OpenCore 日志中。</p>
 </li>
 <li><p><code>7C436110-AB2A-4BBB-A880-FE41995C9F82:fmm-computer-name</code><br>当前保存的主机名称，格式为 ASCII 字符串。</p>
 </li>
@@ -396,9 +408,20 @@
 </li>
 <li><p><code>7C436110-AB2A-4BBB-A880-FE41995C9F82:run-efi-updater</code><br>覆盖 macOS 中对 EFI 固件更新（MultiUpdater、ThorUtil）等的支持。将此值设置为 <code>No</code> 或其他可以转换为布尔类型的值将能够禁用 10.10 起的 macOS 固件更新。</p>
 </li>
-<li><p><code>7C436110-AB2A-4BBB-A880-FE41995C9F82:StartupMute</code><br>开机时禁用固件引导提示音。8 进制整数。<code>0x00</code> 指代不静音、其他任何值（或缺少该值）表示静音。</p>
+<li><p><code>7C436110-AB2A-4BBB-A880-FE41995C9F82:StartupMute</code><br>开机时禁用固件引导提示音。8 进制整数。<code>0x00</code> 表示不静音、其他任何值（或缺少该值）表示静音。</p>
 </li>
-<li><p><code>7C436110-AB2A-4BBB-A880-FE41995C9F82:SystemAudioVolume</code><br>固件音频支持的系统音频音量等级。8 进制整数。<code>0x80</code> 指代静音。低位用于编码安装的音频编码解码器的音量范围。该值以 <code>MaximumBootBeepVolume</code> AppleHDA layout 值为上限，以避免固件中的音频播放声音过大。</p>
+<li><p><code>7C436110-AB2A-4BBB-A880-FE41995C9F82:SystemAudioVolume</code><br>用于固件音频支持的系统音频音量水平。8 位无符号整数。<code>0x80</code> 表示静音。其余的位用于编码原始的放大器增益设置，以应用于使用中的音频放大器。这个值的确切含义取决于编解码器（也可能取决于编解码器内的特定放大器）。该值以 <code>MaximumBootBeepVolume</code> AppleHDA layout 值为上限，以避免固件中的音频播放声音过大。</p>
+</li>
+<li><p><code>7C436110-AB2A-4BBB-A880-FE41995C9F82:SystemAudioVolumeDB</code><br>当前的系统音频音量水平，单位是分贝（dB）。8 位有符号整数。该值表示相对于放大器参考值 0dB 的音频偏移（如果是正值，则为增益，如果是负值，则为衰减），单位为 dB。0dB 所代表的确切音量取决于编解码器（也可能取决于编解码器中的特定放大器），但它通常是在或接近最大的可用放大器音量。这个变量的典型值从大约 -60 （具体数值取决于音频硬件）到精确的 0。<br>注意：与SystemAudioVolume不同，这个值没有上限。</p>
+</li>
+<li><p><code>5EDDA193-A070-416A-85EB-2A1181F45B18:PEXConf</code><br><code>MacPro7,1</code> 用户 PCI 扩展插槽配置。8 个字节的序列描述了默认的 PCI 插槽配置。每个字节指的是一个专用 PCI 插槽的配置。</p>
+<ul>
+<li>插槽 <code>1</code> 位于 <code>IOService:/AppleACPIPlatformExpert/PC01@0/AppleACPIPCI/BR1A@0</code>，其路径为硬编码。此插槽不在 muxer 后面。</li>
+<li>插槽 <code>3</code> 位于 <code>IOService:/AppleACPIPlatformExpert/PC03@0/AppleACPIPCI/BR3A@0</code>，其路径为硬编码。此插槽不在 muxer 后面。</li>
+<li>槽位 2 和 4 到 8 是动态的，根据 <code>AAPL,slot-name</code> 属性与 <code>Slot-N</code> 值进行匹配，其中 <code>N</code> 是槽位编号。此插槽不在 muxer 后面。<br>关于 <code>MacPro7,1</code> 插槽如何配置的更多细节，请参考<a target="_blank" rel="noopener" href="https://support.apple.com/zh-cn/HT210104">支持页面</a>。</li>
+</ul>
+</li>
+<li><p><code>5EDDA193-A070-416A-85EB-2A1181F45B18:SlotUtilPEXConf</code><br><code>MacPro7,1</code> 用户 PCI 扩展插槽配置。8 个字节的序列描述了默认的 PCI 插槽配置</p>
 </li>
 </ul>
 
@@ -423,7 +446,7 @@
             <aside class="doku-document-toc" id="doku-document-toc">
                 <div class="doku-document-toc-content">
                     <p class="doku-document-toc-title">目录</p>
-                    <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#9-1-%E7%AE%80%E4%BB%8B"><span class="post-toc-text">9.1 简介</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#9-2-%E5%B1%9E%E6%80%A7%E5%88%97%E8%A1%A8"><span class="post-toc-text">9.2 属性列表</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#1-Add"><span class="post-toc-text">1. Add</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#2-Delete"><span class="post-toc-text">2. Delete</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#3-LegacyEnable"><span class="post-toc-text">3. LegacyEnable</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#4-LegacyOverwrite"><span class="post-toc-text">4. LegacyOverwrite</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#5-LegacySchema"><span class="post-toc-text">5. LegacySchema</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#6-WriteFlash"><span class="post-toc-text">6. WriteFlash</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#9-3-%E5%BF%85%E9%9C%80%E5%8F%98%E9%87%8F"><span class="post-toc-text">9.3 必需变量</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#9-4-%E5%BB%BA%E8%AE%AE%E5%8F%98%E9%87%8F"><span class="post-toc-text">9.4 建议变量</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#9-5-%E5%85%B6%E4%BB%96%E5%8F%98%E9%87%8F"><span class="post-toc-text">9.5 其他变量</span></a></li></ol>
+                    <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#9-1-%E7%AE%80%E4%BB%8B"><span class="post-toc-text">9.1 简介</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#9-2-%E5%B1%9E%E6%80%A7%E5%88%97%E8%A1%A8"><span class="post-toc-text">9.2 属性列表</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#1-Add"><span class="post-toc-text">1. Add</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#2-Delete"><span class="post-toc-text">2. Delete</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#3-LegacyEnable"><span class="post-toc-text">3. LegacyEnable</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#4-LegacyOverwrite"><span class="post-toc-text">4. LegacyOverwrite</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#5-LegacySchema"><span class="post-toc-text">5. LegacySchema</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#6-WriteFlash"><span class="post-toc-text">6. WriteFlash</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#9-3-%E5%BC%BA%E5%88%B6%E5%8F%98%E9%87%8F"><span class="post-toc-text">9.3 强制变量</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#9-4-%E6%8E%A8%E8%8D%90%E5%8F%98%E9%87%8F"><span class="post-toc-text">9.4 推荐变量</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#9-5-%E5%85%B6%E4%BB%96%E5%8F%98%E9%87%8F"><span class="post-toc-text">9.5 其他变量</span></a></li></ol>
                 </div>
             </aside>
         </div>

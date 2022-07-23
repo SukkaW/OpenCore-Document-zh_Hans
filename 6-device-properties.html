@@ -192,10 +192,10 @@
             
             
                 
-                    <p><small>由 Sukka、derbalkon 整理、由 Sukka、derbalkon 翻译。</small></p>
+                    <p><small>由 Sukka、derbalkon、cike-567 整理、由 Sukka、derbalkon、cike-567 翻译。</small></p>
                 
                 
-                    <p><small>本页面最后更新于 2020 年 08 月 21 日</small></p>
+                    <p><small>本页面最后更新于 2022 年 07 月 20 日</small></p>
                 
                 <br>
             
@@ -218,14 +218,16 @@
 <li>在 IOService 注册（<code>IOServices::registerService</code>）回调过程中，作为 <code>AppleACPIPlatformExpert::platformAdjustService</code> 函数和它私有的、针对 PCI 设备的 Worker Method <code>AppleACPIPlatformExpert::platformAdjustPCIDevice</code> 的一部分。</li>
 </ol>
 <p>各阶段的应用取决于 ACPI 表中存在的设备。第一阶段适用于很早、但只适用于存在于 ACPI 表中的设备。第二阶段适用于所有晚于 PCI 配置的设备，如果设备没有出现在 ACPI 中，则会重复第一阶段。</p>
-<p>所有的内核驱动可以在不探测设备的情况下检查 <code>IODeviceTree</code> 层面（例如 Lilu 和它的插件 <code>WhateverGreen</code> 等），因此确保 ACPI 表中的设备存在是尤其重要的。如果不这样做，则可能会因为注入的设备属性被忽略而导致<strong>各种不稳定的行为</strong>，原因是它们没有在第一阶段被构建出来。参见 <code>SSDT-IMEI.dsl</code> 和 <code>SSDT-BRG0.dsl</code> 的例子。</p>
-<h2 id="6-2-属性列表"><a href="#6-2-属性列表" class="headerlink" title="6.2 属性列表"></a>6.2 属性列表</h2><h3 id="1-Add"><a href="#1-Add" class="headerlink" title="1. Add"></a>1. <code>Add</code></h3><p><strong>Type</strong>: <code>plist dict</code><br><strong>Description</strong>: 将设备属性从设备路径的映射（<code>plist dict</code>）设置为变量名称和值的映射（<code>plist dict</code>），其中变量名称和值的格式为 <code>plist metadata</code>。设备路径必须以规范化字符串格式（Canonical String Format）提供，例如： <code>PciRoot(0x0)/Pci(0x1,0x0)/Pci(0x0,0x0)</code>。添加的属性只有在不存在且未被屏蔽的情况下才会被设置。</p>
-<p><em>注</em>：目前，属性只能通过原始驱动程序添加。因此除非安装了单独的驱动程序，否则没有理由 Delete 变量。</p>
+<p>所有的内核驱动可以在不探测设备的情况下检查 <code>IODeviceTree</code> 层面，例如 Lilu 和它的插件以及 WhateverGreen，因此确保 ACPI 表中的设备存在是尤其重要的。如果不这样做，则可能会因为注入的设备属性被忽略而导致<strong>各种不稳定的行为</strong>，原因是它们没有在第一阶段被构建出来。参见 <code>SSDT-IMEI.dsl</code> 和 <code>SSDT-BRG0.dsl</code> 的例子。</p>
+<h2 id="6-2-属性列表"><a href="#6-2-属性列表" class="headerlink" title="6.2 属性列表"></a>6.2 属性列表</h2><h3 id="1-Add"><a href="#1-Add" class="headerlink" title="1. Add"></a>1. <code>Add</code></h3><p><strong>Type</strong>: <code>plist dict</code><br><strong>Description</strong>: 将设备属性从设备路径的映射（<code>plist dict</code>）设置为变量名称和值的映射（<code>plist dict</code>），其中变量名称和值的格式为 <code>plist metadata</code>。</p>
+<p><em>注 1</em>：设备路径必须以规范化字符串格式（Canonical String Format）提供，例如： <code>PciRoot(0x0)/Pci(0x1,0x0)/Pci(0x0,0x0</code>。</p>
+<p><em>注 2</em>：现有的属性不会被改变，除非在 <code>DeviceProperties</code> 部分删除。</p>
 <h3 id="2-Delete"><a href="#2-Delete" class="headerlink" title="2. Delete"></a>2. <code>Delete</code></h3><p><strong>Type</strong>: <code>plist dict</code><br><strong>Description</strong>: 从设备路径的映射（<code>plist dict</code>）到 <code>plist string</code> 格式的变量名数组（数据类型 <code>plist array</code>）中删除设备属性。</p>
+<p><em>注</em>：目前，现有的属性可能只存在于具有 <code>DeviceProperties</code> 驱动程序的固件上（例如：Apple）。因此，除非安装了新的驱动程序，否则通常没有理由删除变量。</p>
 <blockquote>
 <p>译者注：这里的设置等同于 Clover 里的 ACPI 重命名 <code>_DSM → XDSM =&gt; TgtBridge</code></p>
 </blockquote>
-<h2 id="6-3-常见属性"><a href="#6-3-常见属性" class="headerlink" title="6.3 常见属性"></a>6.3 常见属性</h2><p>一些常见的属性包括：</p>
+<h2 id="6-3-常见属性"><a href="#6-3-常见属性" class="headerlink" title="6.3 常见属性"></a>6.3 常见属性</h2><p>一些已知的属性包括：</p>
 <ul>
 <li><code>device-id</code><br>用户指定的设备标识符，用于 I/O 套件匹配。数据类型为 4 byte data。</li>
 <li><code>vendor-id</code><br>用户指定的供应商标识符，用于 I/O 套件匹配。数据类型为 4 byte data。</li>
