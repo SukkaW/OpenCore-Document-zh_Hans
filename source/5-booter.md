@@ -282,7 +282,7 @@ Description: 搜索的最大字节数。
 
 尝试从操作系统写入 `db`、`dbx`、`PK` 和 `KEK` 时生成报告。
 
-*注*：这个 Quirk 主要试图避免碎片整理导致的 NVRAM 相关问题，例如 Insyde 或 `MacPro5,1`。
+*注*：这个 Quirk 主要试图避免碎片整理导致的 NVRAM 相关问题，例如：Insyde 或 `MacPro5,1`。
 
 ### 13. `ProtectUefiServices`
 
