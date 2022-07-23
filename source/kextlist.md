@@ -3,7 +3,7 @@ title: 附录 1. OpenCore 兼容 Kext 列表
 description: OpenCore 支持的内核驱动 (Kext) 及其用途
 type: docs
 author_info: 由 Sukka、derbalkon 整理，感谢黑果小兵的博客提供的资料。
-last_updated: 2020-10-31
+last_updated: 2022-07-17
 ---
 
 ## 有线网卡
@@ -30,6 +30,8 @@ last_updated: 2020-10-31
 | [ATH9KFixup.kext](https://github.com/chunnann/ATH9KFixup) | 高通 Atheros AR9xxx 无线网卡修复 | — | — |
 | [BrcmPatchRAM.kext](https://github.com/acidanthera/BrcmPatchRAM) | 博通网卡蓝牙固件 | 14.0.0 (10.10) | — |
 | [IntelBluetoothFirmware](https://github.com/zxystd/IntelBluetoothFirmware) | Intel 蓝牙固件驱动 | — | — |
+| [AirportItlwm](https://github.com/OpenIntelWireless/itlwm) | Intel WIFI固件驱动 | — | — |
+| [itlwm](https://github.com/OpenIntelWireless/itlwm) | Intel WIFI固件驱动 | — | — |
 | [MT7610](https://d86o2zu8ugzlg.cloudfront.net/mediatek-craft/drivers/MT7612_7610U_D5.0.1.25_SDK1.0.2.18_UI5.0.0.27_20151209.zip) | 联发科 MT7610 官方驱动 | — | — |
 | [RT5370](https://d86o2zu8ugzlg.cloudfront.net/mediatek-craft/drivers/RTUSB_D2870-4.2.9.2_UI-4.0.9.6_2013_11_29.zip) | 联发科 RT5370 官方驱动 | — | — |
 | [RTL8192CU](https://drive.google.com/file/d/1ZtdMqlvKBbHULJhl1u9omuLOy6j0vx48/view?usp=sharing) | Realtek RTL8192CU 驱动 | — | — |
@@ -92,6 +94,8 @@ last_updated: 2020-10-31
 | [SMCBatteryManager.kext](https://github.com/acidanthera/VirtualSMC) | VirtualSMC 插件，提供电池相关的传感器支持 | 10.0.0 (10.6) Not tested | — |
 | [SMCProcessor.kext](https://github.com/acidanthera/VirtualSMC) | VirtualSMC 插件，提供 CPU 温度传感器支持 | 11.0.0 (10.7) Not tested | — |
 | [SMCDellSensor.kext](https://github.com/acidanthera/VirtualSMC) | VirtualSMC 插件，为戴尔电脑提供温度和风扇传感器支持 | 11.0.0 (10.7) Not tested | — |
+| [AMDRyzenCPUPowerManagement.kext](https://github.com/trulyspinach/SMCAMDProcessor) | XNU 内核扩展，用于 AMD 处理器的电源管理和监控。 | 11.0.0 (10.7) Not tested | — |
+| [SMCAMDProcessor.kext](https://github.com/trulyspinach/SMCAMDProcessor) | 收集传感器数据，并发送到 VirtualSMC，以使 macOS 应用程序能够显示传感器数据，该 kext 依赖 AMDRyzenCPUPowerManagement.kext | 11.0.0 (10.7) Not tested | — |
 
 ## USB 和其他端口
 
@@ -118,6 +122,7 @@ last_updated: 2020-10-31
 | [NightShiftEnabler.kext](https://github.com/cdf/NightShiftEnabler) | 解锁 Night Shift | 16.0.0 (10.12) | — |
 | [WebCamera.kext](https://www.applelife.ru/threads/asus-x550vc-i-asus-x550cc.41752/page-130#post-593586) | 某些旧设备的摄像头驱动 | — | — |
 | [TOSMotionSensor.kext](https://github.com/jslegendre/TOSMotionSensor) | 东芝设备的加速度传感器驱动 | — | — |
+| [NVMeFix.kext](https://github.com/acidanthera/NVMeFix) | NVMeFix 是 Apple NVMe 存储驱动程序 IONVMeFamily 的一组补丁。其目标是提高与非 Apple SSD 的兼容性。它可以在苹果和非苹果计算机上使用 | — | — |
 
 > 更完整的列表（包含旧版）托管在 [这里](https://docs.google.com/spreadsheets/d/15S-ocrkm_VTUJpKxNII-YUyQFd5VYdjbe0DHlZVCQyM)。完整的 Lilu 插件列表（包含旧版）托管在 [这里](https://github.com/acidanthera/Lilu/blob/master/KnownPlugins.md)。仅供开发者使用。
 >
