@@ -216,7 +216,8 @@ Description: 搜索的最大字节数。
 
 这一选项强制 XNU 内核忽略新提供的内存映射，并假定它在从休眠状态唤醒后没有改变。这种行为是 [Windows](https://docs.microsoft.com/windows-hardware/design/device-experiences/oem-uefi#hibernation-state-s4-transition-requirements) 要求的。 因为 Windows 强制要求 `S4` 唤醒后保留运行内存的大小和位置。
 
-*注*：这可能用于解决较旧较罕见的硬件上的错误内存映射。例如：Insyde 固件的 Ivy Bridge 笔记本电脑（Acer V3-571G）。除非您完全了解这一选项可能导致的后果，否则请勿使用此功能。
+*注*：这可能用于解决较旧较罕见的硬件上的错误内存映射。例如 Insyde 固件的 Ivy Bridge 笔记本电脑，比如 Acer V3-571G。除非您完全了解这一选项可能导致的后果，否则请勿使用此功能。
+
 
 ### 7. `EnableSafeModeSlide`
 
