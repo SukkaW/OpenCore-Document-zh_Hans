@@ -1175,7 +1175,7 @@ Apple 音频协议允许 macOS bootloader 和 OpenCore 播放声音和信号，�
 **Failsafe**: `false`
 **Description**: 启用英特尔虚拟机扩展。
   
-*注*：需要允许在某些 Mac 硬件上的 Windows 中进行虚拟化。在大多数固件上 OpenCore 启动之前，VMX 被 BIOS 启用或禁用并锁定。在可能的情况下，使用 BIOS 来启用虚拟化。  
+*注*：需要在某些 Mac 硬件上允许 Windows 中进行虚拟化。在大多数固件上 OpenCore 启动之前，VMX 被 BIOS 启用或禁用并锁定。在可能的情况下，使用 BIOS 来启用虚拟化。  
  
 ### 4. `DisableSecurityPolicy`
 
