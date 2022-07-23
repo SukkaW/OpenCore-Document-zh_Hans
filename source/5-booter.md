@@ -327,7 +327,7 @@ GRUB-shim 对各种 UEFI image services 进行了类似的即时更改，这些�
 Apple 内核在解析 UEFI 内存映射时有几个限制：
 - 内存映射的大小不能超过 4096 字节，因为 Apple 内核将其映射为一个 `4KiB` 页面。由于某些固件的内存映射大小非常大（大约超过 100 个条目），Apple 内核会在启动时崩溃。
 - 内存属性表会被忽略。`EfiRuntimeServicesCode` 内存静态获得 `RX` 权限，其他内存类型则获得 `RW` 权限。某些固件驱动会在运行时把数据写到全局变量中，因此 Apple 内核在调用 UEFI Runtime Services 时会崩溃，除非驱动的 `.data` 部分有 `EfiRuntimeServicesData` 类型。
-为了解决这些限制，这个 Quirk 将内存属性表的权限应用到传递给 Apple 内核的内存映射中，如果生成的内存映射超过 4KiB，则可选择尝试统一类似类型的连续插槽。
+为了解决这些限制，这个 Quirk 将内存属性表的权限应用到传递给 Apple 内核的内存映射中，如果生成的内存映射超过 `4KiB`，则可选择尝试统一类似类型的连续插槽。
 
 *注 1*：由于许多固件自带的内存保护不正确，所以这个 Quirk 一般要和 `SyncRuntimePermissions` 一起启用。
 
@@ -346,7 +346,9 @@ Apple 内核在解析 UEFI 内存映射时有几个限制：
 - BAR1 支持从 2MB 到 256MB 的大小。它的值是 256MB。
 
 *例 1*：将 ResizeAppleGpuBars 设置为 1GB，将 BAR0 改为 1GB，BAR1 保持不变。
+
 *例 2*: 将 ResizeAppleGpuBars 设置为 1MB 将改变 BAR0 为 256MB，BAR0 为 2MB。
+
 *例 3*：将 ResizeAppleGpuBars 设置为 16GB，将不做任何改变。
 
 *注*：请参阅 `ResizeGpuBars` quirk 了解 GPU PCI BAR size 配置和有关该技术的更多详细信息。
