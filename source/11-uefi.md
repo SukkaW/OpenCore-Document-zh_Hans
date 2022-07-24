@@ -435,7 +435,7 @@ APFS 驱动的 verbose 信息有助于 debug。
 
 APFS 驱动日期将 APFS 驱动与发布日期联系起来。苹果公司最终会放弃对旧的 macOS 版本的支持，这些版本的 APFS 驱动程序可能含有漏洞，如果在支持结束后使用这些驱动程序，就会被用来破坏计算机。这个选项允许将 APFS 驱动程序限制在当前的macOS版本。
 
-- `0` ---  需要 OpenCore 中 APFS 的默认支持发布日期。默认的发布日期会随着时间的推移而增加，因此建议采用这种设置。目前设置为 2021/01/01。
+- `0` ---  需要 OpenCore 中 APFS 的默认支持发布日期。默认的发布日期会随着时间的推移而增加，因此建议采用这种设置。目前设置为 `2021/01/01`。
 - `-1` --- 允许加载任何发布日期（强烈不推荐）。
 - 其他数值 --- 使用自定义的最小 APFS 发布日期，例如：`2020/04/01的20200401`。你可以从 OpenCore 的启动日志和 [OcApfsLib](https://github.com/acidanthera/OpenCorePkg/blob/master/Include/Acidanthera/Library/OcApfsLib.h) 中找到 APFS 发布日期。
 
@@ -447,7 +447,7 @@ APFS 驱动日期将 APFS 驱动与发布日期联系起来。苹果公司最终
 
 APFS 驱动版本将 APFS 驱动与 macOS 版本联系起来。苹果公司最终会放弃对旧的 macOS 版本的支持，而这些版本的 APFS 驱动可能含有漏洞，如果在支持结束后使用这些驱动，就会被用来破坏计算机。 这个选项允许将 APFS 驱动程序限制在当前的 macOS 版本。
 
-- `0` --- 需要 OpenCore 中 APFS 的默认支持版本。默认版本会随着时间的推移而增加，因此推荐使用这一设置。目前设置为允许 macOS Big Sur 和更新的版本（1600000000000000）。
+- `0` --- 需要 OpenCore 中 APFS 的默认支持版本。默认版本会随着时间的推移而增加，因此推荐使用这一设置。目前设置为允许 macOS Big Sur 和更新的版本（`1600000000000000`）。
 - `-1` --- 允许加载任何版本（强烈不推荐）。
 - 其他数值 --- 使用自定义的最小APFS版本，例如：macOS Catalina 10.15.4 的 `1412101001000000`。你可以从 OpenCore 的启动日志和 [OcApfsLib](https://github.com/acidanthera/OpenCorePkg/blob/master/Include/Acidanthera/Library/OcApfsLib.h) 中找到 APFS 驱动的版本号。
 
@@ -484,9 +484,9 @@ APFS 驱动版本将 APFS 驱动与 macOS 版本联系起来。苹果公司最�
 
 *注 1*：在不使用 `KeySupport` 的系统上，此设置可自由用于配置按键重复行为。
 
-*注 2*：在使用 `KeySupport` 的系统上，但不显示 `two long delays` 行为（见 `*注 3*`）或总是显示一个坚实的 `set default` 指标（见 `KeyForgetThreshold`），那么这个设置也可以自由地用于配置按键的重复初始延迟行为，只是它永远不应该被设置为小于 `KeyForgetThreshold`，以避免不受控制的按键重复。
+*注 2*：在使用 `KeySupport` 的系统上，但不显示 `two long delays` 行为（见*注 3*）或总是显示一个坚实的 `set default` 指标（见 `KeyForgetThreshold`），那么这个设置也可以自由地用于配置按键的重复初始延迟行为，只是它永远不应该被设置为小于 `KeyForgetThreshold`，以避免不受控制的按键重复。
 
-*注 3*：在一些使用 KeySupport 的系统上，你可能会发现在正常速度键重复开始之前，在正常速度的按键响应之前，你会看到一个额外的慢速响应。如果是这样，你可能希望根据 `KeySubsequentDelay` 的 `*注 3*` 来配置 `KeyInitialDelay` 和 `KeySubsequentDelay`。
+*注 3*：在一些使用 KeySupport 的系统上，你可能会发现在正常速度键重复开始之前，在正常速度的按键响应之前，你会看到一个额外的慢速响应。如果是这样，你可能希望根据 `KeySubsequentDelay` 的*注 3*来配置 `KeyInitialDelay` 和 `KeySubsequentDelay`。
 
 > 译者注：两次按键之间必然会有间隔时间，不稳定的间隔时间，会导致按键错误，所以 `KeySubsequentDelay` 用于配置按键重复间隔。为了准确的计算间隔时间，需要一个延迟来保证按键已经结束，而不是按键时间稍长则被认为按了两次。`KeyInitialDelay` 就是用于此。
 
@@ -594,7 +594,7 @@ Apple OEM 的默认值是 5（50ms）。`0` 是这个选项的无效值（将发
 **Failsafe**: `0`
 **Description**: 特定音频控制器上的编解码器地址，用于音频支持。
 
-一般来说，这里包含了内置模拟音频控制器（`HDEF`）上的第一个音频编解码器地址。音频编解码器地址（例：`2`）可以在调试日志中找到（已用粗斜体标出）：
+一般来说，这里包含了内置模拟音频控制器（`HDEF`）上的第一个音频编解码器地址。音频编解码器地址（例如：`2`）可以在调试日志中找到（已用粗斜体标出）：
 
 <code>OCAU: 1/3 PciRoot(0x0)/Pci(0x1,0x0)/Pci(0x0,0x1)/VenMsg(&lt;redacted&gt;,<strong><em>00000000</em></strong>) (4 outputs)</code>
 <code>OCAU: 2/3 PciRoot(0x0)/Pci(0x3,0x0)/VenMsg(&lt;redacted&gt;,<strong><em>00000000</em></strong>) (1 outputs)</code>
@@ -608,7 +608,7 @@ Apple OEM 的默认值是 5（50ms）。`0` 是这个选项的无效值（将发
 **Failsafe**: empty
 **Description**: 特定音频控制器的设备路径，用于音频支持。
 
-一般来说，这里包含了内置模拟音频控制器（`HDEF`）的设备路径，比如 `PciRoot(0x0)/Pci(0x1b,0x0)`。认可的音频控制器列表可以在调试日志中找到（已用粗斜体标出）：
+一般来说，这里包含了内置模拟音频控制器（`HDEF`）的设备路径，例如：`PciRoot(0x0)/Pci(0x1b,0x0)`。认可的音频控制器列表可以在调试日志中找到（已用粗斜体标出）：
 
 <code>OCAU: 1/3 <strong><em>PciRoot(0x0)/Pci(0x1,0x0)/Pci(0x0,0x1)</em></strong>/VenMsg(&lt;redacted&gt;,00000000) (4 outputs)</code>
 <code>OCAU: 2/3 <strong><em>PciRoot(0x0)/Pci(0x3,0x0)</em></strong>/VenMsg(&lt;redacted&gt;,00000000) (1 outputs)</code>
@@ -665,7 +665,7 @@ Apple OEM 的默认值是 5（50ms）。`0` 是这个选项的无效值（将发
 **Failsafe**: `false`
 **Description**: 在加载驱动程序之前，断开 HDA 控制器的连接。
 
-在某些系统上可能需要（例如苹果硬件、 VMware Fusion guest），以允许 UEFI 声音驱动（例如 AudioDxe）控制音频硬件。
+在某些系统上可能需要（例如苹果硬件、 VMware Fusion guest），以允许 UEFI 声音驱动（例如：AudioDxe）控制音频硬件。
 
 *注*：除了这个选项外，大多数苹果硬件还需要 `--gpio-setup` 驱动参数， 这在 AudioDxe 部分有涉及。
 
@@ -673,7 +673,7 @@ Apple OEM 的默认值是 5（50ms）。`0` 是这个选项的无效值（将发
 
 **Type**: `plist integer`
 **Failsafe**: `-15`
-**Description**: 用于 UEFI 音频的最大增益，以分贝（dB）为单位，相对于放大器的参考电平 `0dB`（见注1）。
+**Description**: 用于 UEFI 音频的最大增益，以分贝（dB）为单位，相对于放大器的参考电平 `0dB`（见*注 1*）。
   
 当从 `SystemAudioVolumeDB NVRAM` 变量中读取的系统放大器增益高于此值时，所有的 UEFI 音频将使用此增益设置。 这是为了避免在系统音量设置得很高，或者 `SystemAudioVolumeDB NVRAM` 的值被错误地配置时，UEFI 音频过于响亮。
   
@@ -848,7 +848,7 @@ Apple OEM 的默认值是 5（50ms）。`0` 是这个选项的无效值（将发
 
 这个选项允许用 `100` 纳秒为单位的指定值来更新固件架构的定时器周期。设置一个较低的值通常可以提高接口和输入处理的性能和响应性。  
   
-建议值为 `50000`（即 5 毫秒）或稍高一些。选择 ASUS Z87 主板时，请使用 `60000`，苹果主板请使用 `100000`。你也可以将此值设置为 0，不改变固件始终刷新的频率。
+建议值为 `50000`（即 5 毫秒）或稍高一些。选择 ASUS Z87 主板时，请使用 `60000`，苹果主板请使用 `100000`。你也可以将此值设置为 `0`，不改变固件始终刷新的频率。
 
 ## 11.15 Output 属性
 
