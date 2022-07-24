@@ -196,14 +196,14 @@ OpenCore 启动选择器中的启动选项的显示顺序和启动过程，是�
 有效值有：
 - `Disabled` --- 什么都不做。
 - `Full` --- 在 bootloader 启动时，在 UEFI 变量存储中创建或更新最高优先级的启动项。要使用这个选项，必须同时开启 `RequestBootVarRouting`。
-- `Short` --- 创建一个短的、非完整的启动项。此值对于某些固件很有用，比如 Insyde，或者其他无法处理完整设备路径的固件。
+- `Short` --- 创建一个短的、非完整的启动项。此值对于某些固件很有用，例如：Insyde，或者其他无法处理完整设备路径的固件。
 - `System` --- 不创建启动项，而是认为该项是 blessed 的。这种 variant 在依赖 `ForceBooterSignature` 属性和 OpenCore 启动器路径时非常有用。管理是通过 bless 工具进行的，不涉及 OpenCore。
 
 在安装和升级第三方操作系统时 `\EFI\BOOT\BOOTx64.efi` 文件可能会被覆盖掉，该选项则保证了出现覆盖情况时 bootloader 的一致性。创建一个自定义启动项后，`\EFI\BOOT\BOOTx64.efi` 这个文件路径将不再用于引导 OpenCore。自定义的引导路径在 `LauncherPath` 选项中指定。
 
 *注 1*：某些固件的 NVRAM 本身存在问题，可能会出现无启动项支持，或者其他各种不兼容的情况。虽然可能性不大，但使用此选项可能会导致启动失败。请在已知兼容的主板上使用，风险自行考虑。请查看 [acidanthera/bugtracker#1222](https://github.com/acidanthera/bugtracker/issues/1222) 来了解与 Haswell 及其他一些主板相关的已知问题。
 
-*注 2*：虽然从 OpenCore 执行的 NVRAM 重置不会清除在 Bootstrap 模式中创建的启动选项，但在加载 OpenCore 之前重置 NVRAM 则会同时清除。在进行某些涉及重要实现的更新时（如 OpenCore 0.6.4），须确保在禁用 Bootstrap 的情况下执行一次 NVRAM 重置，然后再重新启用。
+*注 2*：虽然从 OpenCore 执行的 NVRAM 重置不会清除在 Bootstrap 模式中创建的启动选项，但在加载 OpenCore 之前重置 NVRAM 则会同时清除。在进行某些涉及重要实现的更新时（例如：OpenCore 0.6.4），须确保在禁用 Bootstrap 的情况下执行一次 NVRAM 重置，然后再重新启用。
 
 *注 3*：英特尔 Visual BIOS 的某些版本（例如：英特尔 NUC）有一个不幸的错误，即如果添加了提及 USB 驱动器路径的任何启动选项，那么从那时起，当插入任何 USB 驱动器时，这将是唯一的启动选项。如果在该固件上从 USB 驱动器启动 OpenCore，并将 LauncherOption 设置为 `Full` 或 `Short`，那么这一点就适用，之后在插入任何其他 USB 时，只能看到 OpenCore 的启动项（这种高度非标准的 BIOS 行为也会影响其他软件）。避免这种情况的最佳方法是在任何版本的 OpenCore 上将LauncherOption 设置为 `Disabled` 或 `System`，该固件将从 USB 驱动器启动。
 
@@ -211,8 +211,8 @@ OpenCore 启动选择器中的启动选项的显示顺序和启动过程，是�
 - 在 Intel Visual BIOS 中启用 system  UEFI Shell
 - 在关闭电源的情况下，插入 OpenCore USB
 - 开机并选择 system  UEFI Shell
-- - 由于 system Shell 不包括 bcfg，因此使用 system Shell 来启动 OpenCore 的 OpenShell（例如输入`FS2:\EFI\OC\Tools\OpenShell.efi` 命令，但你需要弄清楚 OpenCore 在哪个驱动器上，并相应地修改驱动器编号FS#:）。
-- 在 OpenShell 中，使用 bcfg boot dump 显示 NVRAM 启动选项，然后使用 bcfg boot rm #（其中#是OpenCore启动条目的编号）来删除 OpenCore 条目。
+- 由于 system Shell 不包括 bcfg，因此使用 system Shell 来启动 OpenCore 的 OpenShell（例如输入`FS2:\EFI\OC\Tools\OpenShell.efi` 命令，但你需要弄清楚 OpenCore 在哪个驱动器上，并相应地修改驱动器编号FS#:）。
+- 在 OpenShell 中，使用 `bcfg boot dump` 显示 NVRAM 启动选项，然后使用 `bcfg boot rm #`（其中#是OpenCore启动条目的编号）来删除 OpenCore 条目。
 
 如果你有一个为系统配置的 OpenCore，也可以直接从 OpenCore 启动菜单中启动 OpenShell。在这种情况下，如果 OpenCore 启用了 `RequestBootVarRouting`，就有必要在使用 bcfg 之前运行命令 `\EFI\OC\Tools\OpenControl.efi disable` （在禁用 OpenControl 之后，有必要在启动操作系统之前重启或运行 `OpenControl restore`）。如果你的机器上有一个工作版本的Linux，也可以在 Linux 中使用 efibootmgr 来删除违规的条目。Linux 必须不通过 OpenCore 启动，或者通过禁用 `RequestBootVarRouting` 的 OpenCore 启动，这样才能发挥作用。
 
@@ -230,7 +230,7 @@ OpenCore 启动选择器中的启动选项的显示顺序和启动过程，是�
 **Failsafe**: `0`
 **Description**: 设置开机引导菜单的属性。
 
-可以用属性掩码来设置引导菜单的不同属性，其中掩码包含 OpenCore 的预留值（`BIT0`~`BIT15`）和 OEM 特定值（`BIT16`~`BIT31`）。
+可以用属性掩码来设置引导菜单的不同属性，其中掩码包含 OpenCore 的预留值（`BIT0` 到 `BIT15`）和 OEM 特定值（`BIT16` 到 `BIT31`）。
 
 目前 OpenCore 的预留值有：
 - `0x0001` — `OC_ATTR_USE_VOLUME_ICON`，为启动项提供自定义图标：
@@ -257,15 +257,15 @@ OpenCore 启动选择器中的启动选项的显示顺序和启动过程，是�
 - 对于一个自定义项目，如果其 `Flavour` 为 `Auto`，则从 bootloader 同目录下的 `.contentFlavour` 文件中读取，否则由 `Flavour` 指定
 - 如果读取到的 `Flavour` 项目为 `Auto` 或 `.contentFlavour` 文件不存在，则根据启动项类型来选择图标（例如：Windows 将会被自动设置为 Windows 图标）
 
-`Flavour` 的值是一个由 `:` 分隔的名字，必须是可打印的 7-bit ASCII，最长限制在64字符内。此项目大约能填写五个名字，最前面的名字有最高的优先级，最后面的名字由最低的优先级。这样的结构允许用一个更具体的方式来描述一个启动项，根据音频-图标集的支持情况，灵活选择图标。如果找不到音频或图标文件，则启动器会自动尝试下一个 `flavour`，而如果所有的 `flavour` 都找不到文件，则启动器会根据启动项类型来自动选择图标。以下是一个 `flavour` 的例子：`BigSur:Apple, Windows10:Windows. OpenShell:UEFIShell:Shell.`
+`Flavour` 的值是一个由 `:` 分隔的名字，必须是可打印的 `7-bit ASCII`，最长限制在 64 字符内。此项目大约能填写五个名字，最前面的名字有最高的优先级，最后面的名字由最低的优先级。这样的结构允许用一个更具体的方式来描述一个启动项，根据音频-图标集的支持情况，灵活选择图标。如果找不到音频或图标文件，则启动器会自动尝试下一个 `flavour`，而如果所有的 `flavour` 都找不到文件，则启动器会根据启动项类型来自动选择图标。以下是一个 `flavour` 的例子：`BigSur:Apple, Windows10:Windows. OpenShell:UEFIShell:Shell.`
    
 使用 `flavour` 意味着你可以容易地在图标集之中选择自己想要的图标，在图标集所有的图标中选择一个最合适的图标。比如，指定一个 `flavour` 图标 `Debian:Linux` 则将会尝试使用 `Debian.icns` 这个图标，如果没找到的话则尝试 `Linux.icns`，如果还没找到的话则会回退到 OS 的默认图标，也就是 `HardDrive.icns`。
    
 一些需要注意的事情：
-- 为了安全考虑，Ext<Flavour>.icns 和 <Flavour>.icns 都会被支持，并且当启动项是外接硬盘时仅有 Ext<Flavour>.icns 会被使用（就像默认的 ExtHardDrive.icns 那样）。
+- 为了安全考虑，`Ext<Flavour>.icns` 和 `<Flavour>.icns` 都会被支持，并且当启动项是外接硬盘时仅有 `Ext<Flavour>.icns` 会被使用（就像默认的 ExtHardDrive.icns 那样）。
 - 当 `.VolumeIcon.icns` 和 `.contentFlavour` 都存在时，以 `.VolumeIcon.icns` 为准。
-- 为了使 tools 的图标和屏幕朗读工作正常（例如 UEFI Shell），在 `Flavour` 设置中指定的系统的默认启动项图标（见 Docs/Flavours.md）将仍然被应用，即使 `Flavour` 是禁用状态。在这个情况下非系统的图标将会被忽略。此外，UEFIShell 和 NVRAMReset 的 `flavours` 将会被特殊处理，以辨识它们的正确的屏幕朗读器、默认 builtin 标签等。
-- 一个推荐的 `falvour`s 列表在 `Docs/Flavours.md` 中
+- 为了使 tools 的图标和屏幕朗读工作正常（例如：UEFI Shell），在 `Flavour` 设置中指定的系统的默认启动项图标（见 Docs/Flavours.md）将仍然被应用，即使 `Flavour` 是禁用状态。在这个情况下非系统的图标将会被忽略。此外，UEFIShell 和 NVRAMReset 的 `flavours` 将会被特殊处理，以辨识它们的正确的屏幕朗读器、默认 builtin 标签等。
+- 一个推荐的 `falvours` 列表在 `Docs/Flavours.md` 中
 
 ### 7. `PickerAudioAssist`
 
@@ -466,7 +466,7 @@ Data Hub 日志中不包括 Kernel 和 Kext 的日志。要获取 Data Hub 日�
 ioreg -lw0 -p IODeviceTree | grep boot-log | sort | sed 's/.*<\(.*\)>.*/\1/' | xxd -r -p
 ```
 
-UEFI 变量日志中不包含某些信息，也没有性能数据。为了保持系统的完整性，日志大小被限制在 32 KB。有些固件可能会提前截断它，或者在没有内存的情况下完全放弃。使用非易失性 `flag` 将会在每打印一行后把日志写入 NVRAM 闪存。如要获取 UEFI 变量日志，请在 macOS 中使用以下命令：
+UEFI 变量日志中不包含某些信息，也没有性能数据。为了保持系统的完整性，日志大小被限制在 32KB。有些固件可能会提前截断它，或者在没有内存的情况下完全放弃。使用非易失性 `flag` 将会在每打印一行后把日志写入 NVRAM 闪存。如要获取 UEFI 变量日志，请在 macOS 中使用以下命令：
 
 要获取 UEFI 变量日志，请在 macOS 中使用以下命令：
 
@@ -603,7 +603,7 @@ VirtualSMC 通过将磁盘加密密钥拆分保存在 NVRAM 和 RTC 中来执行
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
-**Description**: 忽略某些用于更新 Apple 外设固件的启动项（如 `MultiUpdater.efi`）。
+**Description**: 忽略某些用于更新 Apple 外围固件的启动项（例如：`MultiUpdater.efi`）。
 
 *注*：由于某些操作系统（如 macOS Big Sur）[无法利用](https://github.com/acidanthera/bugtracker/issues/1255) NVRAM 变量 `run-efi-updater` 禁用固件更新。
 
@@ -947,8 +947,9 @@ Apple 安全启动最初出现于搭载 T2 芯片的机型上的 macOS 10.13。�
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
-**Description**: 当 `HideAuxiliary` 被的值设置为 `true` 的引导条目将不会显示在开机引导菜单中。按空格键
-进入 `扩展模式` 之后，才会显示隐藏的引导条目。
+**Description**: 设置为 `true` 时，当 `HideAuxiliary` 设置为 `true`，则该引导条目将不会显示在开机引导菜单中。按空格键进入 `扩展模式` 之后，才会显示隐藏的引导条目。
+
+> 译者注：简单来说就是设置此启动项是否是辅助条目。
 
 ### 3. `Comment`
 
@@ -989,7 +990,7 @@ Apple 安全启动最初出现于搭载 T2 芯片的机型上的 macOS 10.13。�
 **Failsafe**: `false`
 **Description**: 启动时将完整的路径传递给工具。
 
-这通常应该禁用，因为传递目录可能会使工具在没有检查文件完整性的情况下就意外地访问了文件，降低了安全性。需要启用该项的情况有：工具需要外部文件来正常工作；工具需要外部文件来更好地实现某些功能（如 `memtest86` 的记录和配置功能，Shell 自动执行脚本的功能）。
+这通常应该禁用，因为传递目录可能会使工具在没有检查文件完整性的情况下就意外地访问了文件，降低了安全性。需要启用该项的情况可能是工具需要外部文件来正常工作或者工具需要外部文件来更好地实现某些功能（例如 `memtest86` 的记录和配置功能，Shell 自动执行脚本的功能）。
 
 *注*：此属性仅对 `Tools` 有效。对于 `Entries` 该属性始终为 `true`。
 
