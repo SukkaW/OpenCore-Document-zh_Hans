@@ -624,7 +624,7 @@ VirtualSMC 通过将磁盘加密密钥拆分保存在 NVRAM 和 RTC 中来执行
 **Failsafe**: `false`
 **Description**: 为敏感操作启用密码保护。
 
-启动非默认操作系统（如 macOS Recovery 或工具）、启动到非默认模式（如详细模式或安全模式）或重置 NVRAM 等，以上这些行为属于敏感操作，密码保护可以很好地保证这些操作都是由本人或授权人操作。目前，密码和盐（Salt）用 5000000 次 SHA-512 迭代来进行哈希运算。
+启动非默认操作系统（例如：macOS Recovery 或工具）、启动到非默认模式（例：详细模式或安全模式）或重置 NVRAM 等，以上这些行为属于敏感操作，密码保护可以很好地保证这些操作都是由本人或授权人操作。目前，密码和盐（Salt）用 5000000 次 SHA-512 迭代来进行哈希运算。
 
 *注*：此功能尚在开发阶段，不推荐日常使用。
 
@@ -650,7 +650,7 @@ u=$(nvram 4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102:boot-path | sed 's/.*GPT,\([^,]*\
   if [ "$u" != "" ]; then sudo diskutil mount $u ; fi
 ```
 
-如要获取 OpenCore 版本信息，请在 macOS 中使用以下命令：
+如果要获取 OpenCore 版本信息，请在 macOS 中使用以下命令：
 ```bash
 nvram 4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102:opencore-version
 ```
