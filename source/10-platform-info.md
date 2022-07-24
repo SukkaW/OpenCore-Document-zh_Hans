@@ -157,9 +157,9 @@ OpenCore 在生成修改过的 DMI 表时，总是设置最新的 SMBIOS 版本�
 - `FW_FEATURE_SUPPORTS_CSM_LEGACY_MODE` (`0x1`) - 如果没有此 bit，且 EFI 分区不是硬盘中的第一个分区，那么则无法重新启动到硬盘里的 Windows 系统。
 - `FW_FEATURE_SUPPORTS_UEFI_WINDOWS_BOOT` (`0x20000000`) - 如果没有此 bit，且 EFI 分区是硬盘中的第一个分区，那么则无法重新启动到硬盘里的 Windows 系统。
 - `FW_FEATURE_SUPPORTS_APFS` (`0x00080000`) - 如果没有此 bit，就不可能在 APFS 磁盘上安装 macOS。
-- `FW_FEATURE_SUPPORTS_LARGE_BASESYSTEM` (`0x800000000`) - 如果没有此 bit，就无法安装large BaseSystem 镜像的 macOS，例如 macOS 12。
+- `FW_FEATURE_SUPPORTS_LARGE_BASESYSTEM` (`0x800000000`) - 如果没有此 bit，就无法安装large BaseSystem 镜像的 macOS，例如：macOS 12。
 
-*注*：在大多数较新的固件上，这些 bit 已经设置好，当 "升级" 新固件时，可能需要该选项。
+*注*：在大多数较新的固件上，这些 bit 已经设置好，当使用新功能 "升级" 固件时，可能需要该选项。
 
 ### 3. `MaxBIOSVersion`
 
