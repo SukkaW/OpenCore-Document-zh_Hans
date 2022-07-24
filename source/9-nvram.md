@@ -18,7 +18,7 @@ last_updated: 2022-07-20
 - `8BE4DF61-93CA-11D2-AA0D-00E098032B8C` (`EFI_GLOBAL_VARIABLE_GUID`)
 - `4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102` (`OC_VENDOR_VARIABLE_GUID`)
 
-*注*：某些变量可以通过 `PlatformNVRAM` 或 `PlatformInfo` 章节的 `Generic` 子节添加。请确保本节中的变量不会与它们发生冲突，否则可能导致未定义的行为。
+*注*：某些变量可以通过 `PlatformNVRAM` 或 `PlatformInfo` 部分的 `Generic` 子节添加。请确保本节中的变量不会与它们发生冲突，否则可能导致未定义的行为。
 
 为了使 macOS 正常运行，通常需要使用 `OC_FIRMWARE_RUNTIME` 协议。该协议的实现目前是 `OpenRuntime`（原名 `FwRuntimeServices.efi`）驱动程序的一部分。虽然可能带来一些好处，但根据用途不同也会存在某些限制。
 
@@ -180,10 +180,10 @@ last_updated: 2022-07-20
 - `7C436110-AB2A-4BBB-A880-FE41995C9F82:bootercfg`
   Booter 参数，类似于 `boot-args`，但用于 `boot.efi` 。接受参数为一组十六进制的 64 位值，带或不带 `0x`。在不同阶段，`boot.efi` 会请求不同的调试（日志）模式（例如，在 `ExitBootServices` 之后它只会打印到串行调试接口）。有些 Booter 参数会控制这些请求是否成功。下面是已知请求的列表：
   - `0x00` – `INIT`
-  - `0x01` – `VERBOSE` （如 `-v`，强制控制台记录日志）
+  - `0x01` – `VERBOSE` （例如：`-v`，强制控制台记录日志）
   - `0x02` – `EXIT`
   - `0x03` – `RESET:OK`
-  - `0x04` – `RESET:FAIL` （如未知的 `board-id`，休眠错配，Panic 循环，等等）
+  - `0x04` – `RESET:FAIL` （例如未知的 `board-id`，休眠错配，Panic 循环，等等）
   - `0x05` – `RESET:RECOVERY`
   - `0x06` – `RECOVERY`
   - `0x07` – `REAN:START`
