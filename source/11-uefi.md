@@ -30,7 +30,7 @@ last_updated: 2022-8-4
 - [`OpenNtfsDxe`](https://github.com/acidanthera/OpenCorePkg)* --- New Technologies File System (NTFS) read-only 驱动程序。`NTFS` 是基于 `Windows NT` 的 `Microsoft Windows` 版本的主要文件系统。
 - [`OpenUsbKbDxe`](https://github.com/acidanthera/OpenCorePkg)* --- USB 键盘驱动，在自定义 USB 键盘驱动程序的基础上新增了对 `AppleKeyMapAggregator` 协议的支持。这是内置的 `KeySupport` 的等效替代方案。根据固件不同，效果可能会更好或者更糟。
 - [`OpenPartitionDxe`](https://github.com/acidanthera/OpenCorePkg)* --- 支持 Apple 分区方案的分区管理驱动程序。此驱动程序可用于支持加载较旧的 DMG 恢复，例如使用 Apple 分区方案的 macOS 10.9，或用于加载使用 Apple 分区方案创建的其他 macOS 安装程序（使用 GPT 创建 macOS 安装程序可以避免这样做）。OpenDuet 已经包含了这个驱动程序。
-- [`OpenVariableRuntimeDxe`](https://github.com/acidanthera/OpenCorePkg)* --- OpenCore 插件（11.9 OpenVariableRuntimeDxe）提供模拟 NVRAM 支持。OpenDuet 已经包含了这个驱动程序。
+- [`OpenVariableRuntimeDxe`](https://github.com/acidanthera/OpenCorePkg)* --- OpenCore 插件（11.9 节的  OpenVariableRuntimeDxe）提供模拟 NVRAM 支持。`OpenDuet` 已经包含了这个驱动程序。
 - [`Ps2KeyboardDxe`](https://github.com/acidanthera/audk)* --- 从 `MdeModulePkg` 提取出来的 PS/2 键盘驱动。OpenDuetPkg 和一些固件可能不包括这个驱动，但对于 PS/2 键盘来说该驱动是必须的。注意，和 `OpenUsbKbDxe` 不同，该驱动不提供对 `AppleKeyMapAggregator` 的支持、因此需要启用 `KeySupport` 这个 Quirk。
 - [`Ps2MouseDxe`](https://github.com/acidanthera/audk)* --- 从 `MdeModulePkg` 提取出来的 PS/2 鼠标驱动。一些非常老旧的笔记本的固件中可能不包含该驱动，但是这些笔记本需要依赖该驱动才能在引导界面使用触控板。
 - [`OpenHfsPlus`](https://github.com/acidanthera/OpenCorePkg)* --- 支持 Bles s的 HFS 文件系统驱动。这个驱动是闭源的 HfsPlus 驱动的替代品，该驱动通常在苹果固件中发现。虽然功能完善，但是启动速度比 `HFSPlus` 慢三倍，并且尚未经过安全审核。
@@ -321,7 +321,7 @@ UEFI固件中的高清晰度音频（HDA）支持驱动程序，适用于大多�
 - `--gpio-pins`，默认：`0`，自动检测。
   指定哪些 GPIO 引脚应该由 `--gpio-setup` 来操作。 这是一个位掩码，可能的值从 `0x0` 到 `0xFF`。可用的最大值取决于正在使用的编解码器的音频输出功能组上的可用引脚数量，例如，如果有两个 GPIO 引脚，它就是 `0x3`（最低的两个位），如果有三个引脚，就是 `0x7` ，等等。
 
-  当 `--gpio-setup` 被启用时（即非零），那么 `0` 是 `--gpio-pins` 的特殊值，意味着引脚掩码将根据指定编解码器上报告的 GPIO 引脚数量自动生成（见 AudioCodec）。例如，如果编解码器的音频输出功能组报告了 `4` 个 GPIO 引脚，将使用 `0xF` 的掩码。
+  当 `--gpio-setup` 被启用时（即非零），那么 `0` 是 `--gpio-pins` 的特殊值，意味着引脚掩码将根据指定编解码器上报告的 GPIO 引脚数量自动生成（参见 AudioCodec）。例如，如果编解码器的音频输出功能组报告了 `4` 个 GPIO 引脚，将使用 `0xF` 的掩码。
 
   使用中的值可以在调试日志中看到，比如一行：`HDA: GPIO setup on pins 0x0F - Success`。
 
@@ -352,10 +352,10 @@ UEFI固件中的高清晰度音频（HDA）支持驱动程序，适用于大多�
 
 *注 1*：此驱动程序需要固件中的 FAT 写入支持，以及 OpenCore EFI 分区上有足够的可用空间，最多可保存三个 NVRAM 文件。
 
-*注 2*：`nvram.plist` （和 `nvram.fallback` ，如果存在）文件必须具有 root plist 字典类型并包含两个字段：
+*注 2*：`nvram.plist` （和 `nvram.fallback` ，如果存在）文件必须具有 root plist dictionary 类型并包含两个字段：
 
-- Version — plist 整数，文件版本，必须设置为 `1`。
-- Add — plist 字典，相当于 `Add from config.plist`。
+- Version — plist integer，文件版本，必须设置为 `1`。
+- Add — plist dictionary，相当于 `Add from config.plist`。
 
 *注 3*：在设置 `legacy NVRAM` 时，可以方便地将 `<string>*</string>` 设置为 `LegacySchema` 中以下三个 GUID 键的值：
 
@@ -581,8 +581,8 @@ Apple OEM 的默认值是 5（50ms）。`0` 是这个选项的无效值（将发
 
 *注 3*：在一些使用 `KeySupport` 的系统上，特别是在非 `AMI` 模式下的 `KeySupport`，你可能会发现，在配置了 `KeyForgetThreshold` 后，当按住一个按键时，在开始正常速度的按键响应之前，你会得到一个额外的慢速按键响应。在出现这种情况的系统上， 这是使用 `KeySupport` 来模拟原始键盘数据的一个不可避免的缺陷， `UEFI` 没有提供这种数据。 虽然这个 `two long delays` 的问题对整体可用性的影响很小，但你可能希望解决这个问题，可以通过以下方法来解决：
 
-- 将 `CustomDelays` 设置为 `true`
-- 将按键初始延迟设置为 `0`
+- 将 `CustomDelays` 设置为 `true`。
+- 将按键初始延迟设置为 `0`。
 - 将 `KeySubsequentDelay` 设置为至少是你的 `KeyForgetThreshold` 设置的值。
 
 上述程序的工作原理如下。
