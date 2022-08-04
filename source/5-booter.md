@@ -10,6 +10,11 @@ last_updated: 2022-07-21
 
 本部分允许在 Apple BootLoader（`boot.efi`）上应用不同种类的 UEFI 修改。目前，这些修改为不同的固件提供了各种补丁和环境更改。其中一些功能最初是作为 [AptioMemoryFix.efi](https://github.com/acidanthera/AptioFixPkg) 的一部分，如今 `AptioMemoryFix.efi` 已经不再维护。如果你还在使用，请参考 [技巧和窍门](12-troubleshooting.html#12-5-技巧和窍门) 章节提供的迁移步骤。
 
+对 Booter 的修补按照如下顺序执行：
+
+- Quirks
+- Patch
+
 如果您是第一次在自定义固件上使用此功能，则首先需要执行一系列检查。开始之前，请确保您符合以下条件：
 
 - 具有最新版本的 UEFI 固件（去主板厂家的官网上看看）。
