@@ -331,7 +331,7 @@ UEFI固件中的高清晰度音频（HDA）支持驱动程序，适用于大多�
   AudioDxe 清除了 `Intel HDA No Snoop Enable（NSNPEN）bit`。在某些系统上，这个改变必须在退出时被逆转，以避免在Windows 或 Linux 中破坏声音。如果是这样， 这个标志应该被添加到 AudioDxe 驱动参数中。 默认情况下不启用，因为恢复这个 `flag` 会使声音在其他一些系统的 macOS 中无法工作。
 
 ## 11.9 OpenVariableRuntimeDxe
-提供内存中模拟的 NVRAM 实现。这对于脆弱的系统（例如：`MacPro5,1`，请参阅此论坛帖子中链接的[讨论](https://forums.macrumors.com/posts/30945127)）或不兼容的 NVRAM 实现非常有用。此驱动程序默认包含在 `OpenDuet` 中。
+提供内存中模拟的 NVRAM 实现。这对于脆弱的设备（例如：`MacPro5,1`，请参阅此论坛帖子中链接的[讨论](https://forums.macrumors.com/posts/30945127)）或不存在兼容的 NVRAM 实现时非常有用。此驱动程序默认包含在 `OpenDuet` 中。
 
 除了安装模拟 NVRAM 之外，此驱动程序还安装了 OpenCore compatible 协议，可实现以下功能：
 
