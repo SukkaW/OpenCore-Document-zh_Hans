@@ -476,7 +476,7 @@ nvram 4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102:boot-log |
   awk '{gsub(/%0d%0a%00/,"");gsub(/%0d%0a/,"\n")}1'
 ```
 
-{% note danger 警告 1%}
+{% note danger 警告 1 %}
 某些固件似乎有 NVRAM 垃圾收集的缺陷。因此，它们可能无法在变量删除后始终释放空间。除非特别需要，否则不要在这类设备上启用非易失性 NVRAM 记录。
 {% endnote %}
    
