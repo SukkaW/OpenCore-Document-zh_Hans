@@ -13,12 +13,12 @@ ACPI（Advanced Configuration and Power Interface，高级配置和电源接口�
 
 要反汇编和编译 ACPI 表，可以使用由 [ACPICA](https://www.acpica.org) 开发的 [iASL compiler](https://github.com/acpica/acpica)。你可以从 [Acidanthera/MaciASL](https://github.com/acidanthera/MaciASL/releases) 下载 iASL 的图形界面程序。
 
-对 ACPI 的修补按照如下顺序执行：
+ACPI 更改适用于全局（适用于每个操作系统），对 ACPI 的修补按照如下顺序执行：
 
-- Patch
 - Delete
-- Add
 - Quirks
+- Patch
+- Add
 
 为了解决操作系统检测的问题，所有对 ACPI 的更改会在所有操作系统上生效。但是在某些场景下（ACPI 编写不规范、操作系统链式引导启动、ACPI 调试）会出现问题。因此在修补 ACPI 时，需要使用 `\_OSI` 方法。
 
