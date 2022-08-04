@@ -10,6 +10,13 @@ last_updated: 2022-07-21
 
 本章节介绍了如何在 Apple Kernel（[XNU](https://opensource.apple.com/source/xnu)）上应用各种不同的内核空间修改，包括内核驱动程序（Kext）注入、修补以及屏蔽。
 
+对 Kernel 和 Kext 的修补按照如下顺序执行：
+
+- Block
+- Emulate 和 Quirks
+- Patch
+- Add 和 Force
+
 ## 7.2 属性列表
 
 ### 1. Add
@@ -492,8 +499,7 @@ last_updated: 2022-07-21
 
 *注 1*：默认情况下，串行日志是禁用的。 启动参数 `serial=3`，启用串行输入和输出，使 XNU 将日志打印到串行端口。
 
-*注 2*：除此修补程序外，应防止 kext `Apple16X50PCI0` 连接，以使 kprintf 方法正常工作。这可以通过在 DeviceProperties 部分将 PCI 串行端口设备的 class code 属性设置（即删除，然后添加）为 `FFFFFF` 来实现。
- 作为一个替代解决方案，也可以使用一个无代码的 kext `PCIeSerialDisable.kext`，该 kext 在 [acidanthera/bugtracker#1954](https://github.com/acidanthera/bugtracker/issues/1954) 的 spoiler PCIeSerialDisable.kext/Contents/Info.plist 中。此外，对于某些雷电卡，IOKit personality IOPCITunnelCompatible 也需要设置为 `true`，这可以由 [Acidantarea/bugtracker#2003](https://github.com/acidanthera/bugtracker/issues/2003#issuecomment-1116761087) 上附带的 PCIeSerialThunderboltEnable.kext 完成。
+*注 2*：除此修补程序外，应防止 kext `Apple16X50PCI0` 连接，以使 kprintf 方法正常工作。这可以通过使用 [PCIeSerialDisable](https://github.com/joevt/PCIeSerialDisable) 实现。此外，对于某些雷电卡，IOKit personality IOPCITunnelCompatible 也需要设置为 `true`，这可以由 [Acidantarea/bugtracker#2003](https://github.com/acidanthera/bugtracker/issues/2003#issuecomment-1116761087) 上附带的 PCIeSerialThunderboltEnable.kext 完成。
  
 *注 3*：要正确应用这个补丁，必须启用 Override，并在 Custom 中正确设置所有的选项。在 Misc->Serial 部分。
 
@@ -570,7 +576,7 @@ last_updated: 2022-07-21
 
 *注 2*：虽然此补丁应支持所有 Aquantia AQtion 系列的以太网卡，但它仅在基于 AQC-107s 的 10GbE 网卡上进行了测试。
 
-*注 3*：为了解决 AppleVTD 在应用这个 Quirk 后的不兼容问题，`DMAR` ACPI表中相应设备的保留内存区域部分可能被删除。这个表应该被拆解和编辑，然后用 iASL 工具重新编译成 AML。为了添加修补后的 `DMAR` 表，应该删除原来的表。更多细节可以在commit [2441455](https://github.com/acidanthera/OpenCorePkg/commit/24414555f2c07e06a3674ec7a2aa1ce4860bbcc7#commitcomment-70530145) 中找到。
+*注 3*：为了解决 AppleVTD 在应用这个 Quirk 后的不兼容问题，`DMAR` ACPI表中相应设备的保留内存区域部分可能被删除。这个表应该被拆解和编辑，然后用 iASL 工具重新编译成 AML。为了添加修补后的 `DMAR` 表，应该删除原来的表。更多细节可以在 commit [2441455](https://github.com/acidanthera/OpenCorePkg/commit/24414555f2c07e06a3674ec7a2aa1ce4860bbcc7#commitcomment-70530145) 中找到。
 
 ### 13. `ForceSecureBootScheme`
 
@@ -630,13 +636,13 @@ macOS Catalina 新增了一项额外的安全措施，导致在电源切换超�
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
-**Requirement**: 10.8 (10.14)
+**Requirement**: 10.4 (10.14)
 **Description**: 向内核提供当前的 CPU 信息。
 
 这个 Quirk 的工作方式因 CPU 不同而不同：
 - 对于微软的 Hyper-V，它向内核提供正确的 TSC 和 FSB 值，以及禁用 CPU 拓扑验证（10.8以上）。
 - 对于 KVM 和其他管理程序，它提供预计算的 MSR 35h 值，解决内核在 `-cpu host` 下的 kernel panic。
-- 对于英特尔 CPU 来说，它通过将核心数与线程数打补丁的方式，增加了对非对称 SMP 系统（例如英特尔Alder Lake）的支持，同时还补充了所需的补充修改（10.14以上）。
+- 对于英特尔 CPU 来说，它通过将核心数与线程数打补丁的方式，增加了对非对称 SMP 系统（例如：Intel Alder Lake）的支持，同时还补充了所需的补充修改（10.14以上）。当使用 10.4 时，还提供了缓存大小和缓存行大小的值，因为 Intel Penryn 和更新的产品可能只有 CPUID leaf 0x4 中的缓存信息，而 10.4 是不支持的。
 
 ### 20. `SetApfsTrimTimeout`
 
