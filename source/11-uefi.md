@@ -370,7 +370,7 @@ UEFI固件中的高清晰度音频（HDA）支持驱动程序，适用于大多�
 {% endnote %}
 
 ### 11.9.1 使用模拟 NVRAM 时管理 macOS 更新
-如果 OpenCore 与 OpenVariableRuntimeDxe 结合使用，则仅使用给定的已保存 `nvram.plist` 文件一次，如果它用于启动 macOS 安装程序启动条目。之后，使用的设置将移至 `nvram.used` 并使用 `nvram.fallback` 中的回退设置（如果有）。每次它保存新设置时，`Launchd.command`本身总是将以前的 NVRAM 设置复制到 `fallback`。
+OpenCore 与 OpenVariableRuntimeDxe 相结合，如果该文件被用于启动 macOS Installer 启动项，则只使用一次已保存的 `nvram.plist` 文件。之后，已使用的设置将被移至 `nvram.used`，而来自 `nvram.fallback` 的 `fallback` 设置（如果有的话）将被使用。`Launchd.command` 总是将之前的 NVRAM 设置复制到 `fallback` 中，每次它都会保存新的设置。
 
 此策略用于解决 `Launchd.command` 脚本未运行的限制，因此无法在 macOS 安装程序的第二次和后续重新启动期间保存 NVRAM 更改（特别是默认启动条目更改）。
 
