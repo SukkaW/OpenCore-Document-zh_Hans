@@ -40,25 +40,7 @@ last_updated: 2022-07-20
 **Type**: `plist dict`
 **Description**: 从一组 GUID 映射（`plist dict`）读取一组包含 `plist string` 的数组（`plist array`），这些将会被从 NVRAM 变量中被删除。
 
-### 3. `LegacyEnable`
-
-**Type**: `plist boolean`
-**Failsafe**: `false`
-**Description**: 允许从 ESP 分区的根目录中的 `nvram.plist` 文件读取 NVRAM 变量。
-
-该文件必须以 `plist dictionary` 为文件根格式，并包含以下两个字段：
-- `Version` --- `plist integer`，文件版本，必须设定为 `1`。
-- `Add` --- `plist dictionary`，等同于 `config.plist` 中的 `Add`。
-
-变量加载优先于 `Delete`（以及 `Add`）阶段。除非启用了 `LegacyOverwrite`，否则不会覆盖现有的任何变量。允许设置的变量必须指定于 `LegacySchema` 中。
-
-第三方脚本可以用来创建 `nvram.plist` 文件，脚本示例可参照 [Utilities/LogoutHook](https://github.com/acidanthera/OpenCorePkg/tree/master/Utilities/LogoutHook)。使用第三方脚本可能要将 `ExposeSensitiveData` 设置为 `0x3` 来为 `boot-path` 变量提供 OpenCore EFI 分区的 UUID。
-
-{% note danger 警告 %}
-这一功能非常危险，因为会将不受保护的数据传递给固件中的变量服务。只有在你的硬件不提供硬件 NVRAM 或与之不兼容时才使用。
-{% endnote %}
-
-### 4. `LegacyOverwrite`
+### 3. `LegacyOverwrite`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
@@ -66,7 +48,7 @@ last_updated: 2022-07-20
 
 *注*：只有操作系统访问的到的变量会被覆盖。
 
-### 5. `LegacySchema`
+### 4. `LegacySchema`
 
 **Type**: `plist dict`
 **Description**: 允许从 GUID 映射（`plist dict`）中选择 NVRAM 变量设置到一个变量名称数组（`plist array`），格式为 `plist string`。
@@ -77,7 +59,7 @@ last_updated: 2022-07-20
 选择变量要非常慎重，因为 nvram.plist 不会被存储。比如，不要把 `boot-args` 或 `csr-active-config` 放进去，因为会绕过 SIP。
 {% endnote %}
 
-### 6. `WriteFlash`
+### 5. `WriteFlash`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
