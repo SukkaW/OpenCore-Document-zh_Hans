@@ -457,6 +457,7 @@ cat Kernel.panic | grep macOSProcessedStackshotData |
 - `0x10` (bit `4`) --- 启用 UEFI 变量记录
 - `0x20` (bit `5`) --- 启用非易失性 UEFI 变量记录
 - `0x40` (bit `6`) --- 启用在 ESP 分区生成日志文件
+- `0x80` (bit `7`) --- 与 `0x40` 结合使用，使在 ESP 分区生成日志文件更快，但不安全（请参阅下面的警告 2）。
 
 控制台日志会比其他日志少，根据 build 类型（`RELEASE`、`DEBUG` 或 `NOOPT`）的不同，读取到的日志量也会不同（从最少到最多）。
 
@@ -475,13 +476,17 @@ nvram 4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102:boot-log |
   awk '{gsub(/%0d%0a%00/,"");gsub(/%0d%0a/,"\n")}1'
 ```
 
-{% note danger 警告 %}
+{% note danger 警告 1%}
 某些固件似乎有 NVRAM 垃圾收集的缺陷。因此，它们可能无法在变量删除后始终释放空间。除非特别需要，否则不要在这类设备上启用非易失性 NVRAM 记录。
 {% endnote %}
    
 虽然 OpenCore 的引导日志已经包含了基本的版本信息（包括 build 类型和日期），但即使在禁用引导日志的情况下，这些数据也可以在 NVRAM 中的 `opencore-version` 变量中找到。
 
 文件记录会在 EFI 卷宗的根目录下创建一个名为 `opencore-YYYY-MM-DD-HHMMSS.txt` 的文件，其中包含了日志的内容（大写字母部分会被替换为固件中的日期和时间）请注意，固件中的一些文件系统驱动程序不可靠，并且可能会通过 UEFI 写入文件时损坏数据。因此，OpenCore 会尝试用最安全同时也是最慢的方式来写入日志。当你在使用慢速存储驱动器时，请确保已将 `DisableWatchDog` 设置为 `true`。如果你在使用 SSD，应该尽量避免使用这一选项，大量的 I/O 操作会加速消耗 SSD 的寿命。
+
+{% note danger 警告 2%}
+可以启用快速文件记录，这需要完全兼容的固件 FAT32 驱动程序。在具有不正确 FAT32 写入支持的驱动程序（例如：APTIO IV，可能还有其他）上，此设置可能会导致损坏，甚至无法使用 ESP 文件系统，因此如果测试此选项，请准备重新创建 ESP 分区及其所有内容。此选项可以在某些合适的固件上显着提高记录速度，但在其他一些固件上可能几乎没有速度差异。
+{% endnote %}
 
 在解释日志时，请注意这些行的前缀是描述日志行的相关位置（模块）的标签，从而确定该行日志的归属。
 
@@ -544,6 +549,7 @@ nvram 4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102:boot-log |
 - `OCTPL` — OcTemplateLib
 - `OCUC` — OcUnicodeCollationLib
 - `OCUT` — OcAppleUserInterfaceThemeLib
+- `OCVAR` — OcVariableLib
 - `OCXML` — OcXmlLib
 
 ## 8.5 Security 属性
