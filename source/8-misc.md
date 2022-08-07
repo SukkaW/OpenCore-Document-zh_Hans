@@ -196,7 +196,7 @@ OpenCore 启动选择器中的启动选项的显示顺序和启动过程，是�
 有效值有：
 - `Disabled` --- 什么都不做。
 - `Full` --- 在 bootloader 启动时，在 UEFI 变量存储中创建或更新最高优先级的启动项。要使用这个选项，必须同时开启 `RequestBootVarRouting`。
-- `Short` --- 创建一个短的、非完整的启动项。此值对于某些固件很有用，例如：Insyde，或者其他无法处理完整设备路径的固件。
+- `Short` --- 创建一个短的、非完整的启动项。此值对于某些固件很有用（例如：Insyde），或者其他无法处理完整设备路径的固件。
 - `System` --- 不创建启动项，而是认为该项是 blessed 的。这种 variant 在依赖 `ForceBooterSignature` 属性和 OpenCore 启动器路径时非常有用。管理是通过 bless 工具进行的，不涉及 OpenCore。
 
 在安装和升级第三方操作系统时 `\EFI\BOOT\BOOTx64.efi` 文件可能会被覆盖掉，该选项则保证了出现覆盖情况时 bootloader 的一致性。创建一个自定义启动项后，`\EFI\BOOT\BOOTx64.efi` 这个文件路径将不再用于引导 OpenCore。自定义的引导路径在 `LauncherPath` 选项中指定。
