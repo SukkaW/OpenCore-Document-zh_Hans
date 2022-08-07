@@ -351,9 +351,7 @@ Apple 内核在解析 UEFI 内存映射时有几个限制：
 - BAR1 支持从 2MB 到 256MB 的大小。它的值是 256MB。
 
 *例 1*：将 ResizeAppleGpuBars 设置为 1GB，将 BAR0 改为 1GB，BAR1 保持不变。
-
 *例 2*: 将 ResizeAppleGpuBars 设置为 1MB 将改变 BAR0 为 256MB，BAR0 为 2MB。
-
 *例 3*：将 ResizeAppleGpuBars 设置为 16GB，将不做任何改变。
 
 *注*：请参阅 `ResizeGpuBars` quirk 了解 GPU PCI BAR size 配置和有关该技术的更多详细信息。
