@@ -195,7 +195,7 @@
                     <p><small>由 Sukka、derbalkon、cike-567 整理，由 Sukka、derbalkon、cike-567 翻译。</small></p>
                 
                 
-                    <p><small>本页面最后更新于 2022 年 07 月 21 日</small></p>
+                    <p><small>本页面最后更新于 2022 年 08 月 04 日</small></p>
                 
                 <br>
             
@@ -208,6 +208,11 @@
         <div class="column is-9-tablet doku-document-wrapper">
             <div class="content">
                 <h2 id="5-1-简介"><a href="#5-1-简介" class="headerlink" title="5.1 简介"></a>5.1 简介</h2><p>本部分允许在 Apple BootLoader（<code>boot.efi</code>）上应用不同种类的 UEFI 修改。目前，这些修改为不同的固件提供了各种补丁和环境更改。其中一些功能最初是作为 <a target="_blank" rel="noopener" href="https://github.com/acidanthera/AptioFixPkg">AptioMemoryFix.efi</a> 的一部分，如今 <code>AptioMemoryFix.efi</code> 已经不再维护。如果你还在使用，请参考 <a href="12-troubleshooting.html#12-5-技巧和窍门">技巧和窍门</a> 章节提供的迁移步骤。</p>
+<p>对 Booter 的修补按照如下顺序执行：</p>
+<ul>
+<li>Quirks</li>
+<li>Patch</li>
+</ul>
 <p>如果您是第一次在自定义固件上使用此功能，则首先需要执行一系列检查。开始之前，请确保您符合以下条件：</p>
 <ul>
 <li>具有最新版本的 UEFI 固件（去主板厂家的官网上看看）。</li>
@@ -276,7 +281,7 @@
 </blockquote>
 <h3 id="6-DiscardHibernateMap"><a href="#6-DiscardHibernateMap" class="headerlink" title="6. DiscardHibernateMap"></a>6. <code>DiscardHibernateMap</code></h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: <code>false</code><br><strong>Description</strong>: 复用原始的休眠内存映射。</p>
 <p>这一选项强制 XNU 内核忽略新提供的内存映射，并假定它在从休眠状态唤醒后没有改变。这种行为是 <a target="_blank" rel="noopener" href="https://docs.microsoft.com/windows-hardware/design/device-experiences/oem-uefi#hibernation-state-s4-transition-requirements">Windows</a> 要求的。 因为 Windows 强制要求 <code>S4</code> 唤醒后保留运行内存的大小和位置。</p>
-<p><em>注</em>：这可能用于解决较旧较罕见的硬件上的错误内存映射。例如 Insyde 固件的 Ivy Bridge 笔记本电脑，比如 Acer V3-571G。除非您完全了解这一选项可能导致的后果，否则请勿使用此功能。</p>
+<p><em>注</em>：这可能用于解决较旧较罕见的硬件上的错误内存映射。例如：Insyde 固件的 Ivy Bridge 笔记本电脑（Acer V3-571G）。除非您完全了解这一选项可能导致的后果，否则请勿使用此功能。</p>
 <h3 id="7-EnableSafeModeSlide"><a href="#7-EnableSafeModeSlide" class="headerlink" title="7. EnableSafeModeSlide"></a>7. <code>EnableSafeModeSlide</code></h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: <code>false</code><br><strong>Description</strong>: 修补引导加载程序以在安全模式下启用 KASLR。</p>
 <p>这个选项与启动到安全模式（启动时按住 Shift 或使用 <code>-x</code> 启动参数）有关。默认情况下，安全模式会使用 <code>slide=0</code>，就像系统在启动时使用 <code>slide=0</code> 启动参数一样。这个 Quirk 会试图给 <code>boot.efi</code> 打上补丁，解除这一限制，并允许使用其他值(从 1 到 255)。这个 Quirks 需要启用 <code>ProvideCustomSlide</code> 。</p>
 <p><em>注</em>：除非启动到安全模式失败，否则不需要启用此选项。</p>
@@ -299,7 +304,7 @@
 <p><em>注</em>：是否启用这一 Quirk 取决于你是否遇到了休眠、睡眠无法唤醒、启动失败或其他问题。一般来说，只有古董固件才需要启用。</p>
 <h3 id="12-ProtectSecureBoot"><a href="#12-ProtectSecureBoot" class="headerlink" title="12. ProtectSecureBoot"></a>12. <code>ProtectSecureBoot</code></h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: <code>false</code><br><strong>Description</strong>: 保护 UEFI 安全启动变量不被写入。</p>
 <p>尝试从操作系统写入 <code>db</code>、<code>dbx</code>、<code>PK</code> 和 <code>KEK</code> 时生成报告。</p>
-<p><em>注</em>：这个 Quirk 主要试图避免碎片整理导致的 NVRAM 相关问题，例如 Insyde 或 <code>MacPro5,1</code>。</p>
+<p><em>注</em>：这个 Quirk 主要试图避免碎片整理导致的 NVRAM 相关问题，例如：Insyde 或 <code>MacPro5,1</code>。</p>
 <h3 id="13-ProtectUefiServices"><a href="#13-ProtectUefiServices" class="headerlink" title="13. ProtectUefiServices"></a>13. <code>ProtectUefiServices</code></h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: <code>false</code><br><strong>Description</strong>: 保护 UEFI 服务不被固件覆盖。</p>
 <p>一些现代的固件，包括 VMware 等虚拟机上的固件，可能会在加载驱动及相关操作的过程中，更新 UEFI 服务的指针。这一行为会直接破坏其他影响内存管理的 Quirk，例如 <code>DevirtualiseMmio</code>、<code>ProtectMemoryRegions</code> 或 <code>RebuildAppleMemoryMap</code>。也可能会破坏其他 Quirk，具体取决于 Quirk 的作用。</p>
 <p>GRUB-shim 对各种 UEFI image services 进行了类似的即时更改，这些服务也受到这个 Quirk 的保护。</p>
@@ -315,7 +320,7 @@
 <p>Apple 内核在解析 UEFI 内存映射时有几个限制：</p>
 <ul>
 <li>内存映射的大小不能超过 4096 字节，因为 Apple 内核将其映射为一个 <code>4KiB</code> 页面。由于某些固件的内存映射大小非常大（大约超过 100 个条目），Apple 内核会在启动时崩溃。</li>
-<li>内存属性表会被忽略。<code>EfiRuntimeServicesCode</code> 内存静态获得 <code>RX</code> 权限，其他内存类型则获得 <code>RW</code> 权限。某些固件驱动会在运行时把数据写到全局变量中，因此 Apple 内核在调用 UEFI Runtime Services 时会崩溃，除非驱动的 <code>.data</code> 部分有 <code>EfiRuntimeServicesData</code> 类型。<br>为了解决这些限制，这个 Quirk 将内存属性表的权限应用到传递给 Apple 内核的内存映射中，如果生成的内存映射超过 4KiB，则可选择尝试统一类似类型的连续插槽。</li>
+<li>内存属性表会被忽略。<code>EfiRuntimeServicesCode</code> 内存静态获得 <code>RX</code> 权限，其他内存类型则获得 <code>RW</code> 权限。某些固件驱动会在运行时把数据写到全局变量中，因此 Apple 内核在调用 UEFI Runtime Services 时会崩溃，除非驱动的 <code>.data</code> 部分有 <code>EfiRuntimeServicesData</code> 类型。<br>为了解决这些限制，这个 Quirk 将内存属性表的权限应用到传递给 Apple 内核的内存映射中，如果生成的内存映射超过 <code>4KiB</code>，则可选择尝试统一类似类型的连续插槽。</li>
 </ul>
 <p><em>注 1</em>：由于许多固件自带的内存保护不正确，所以这个 Quirk 一般要和 <code>SyncRuntimePermissions</code> 一起启用。</p>
 <p><em>注 2</em>：根据是否遇到第一阶段启动失败再决定是否启用这一 Quirk。在支持内存属性表 (MAT) 的平台上，这一 Quirk 是 <code>EnableWriteUnprotector</code> 更好的替代。在使用 <code>OpenDuetPkg</code> 时一般是不需要启用这个 Quirk 的，但如果要启动 macOS 10.6 或更早的版本则可能需要启用，原因暂不明确。</p>

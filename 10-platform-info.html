@@ -271,9 +271,9 @@
 <li><code>FW_FEATURE_SUPPORTS_CSM_LEGACY_MODE</code> (<code>0x1</code>) - 如果没有此 bit，且 EFI 分区不是硬盘中的第一个分区，那么则无法重新启动到硬盘里的 Windows 系统。</li>
 <li><code>FW_FEATURE_SUPPORTS_UEFI_WINDOWS_BOOT</code> (<code>0x20000000</code>) - 如果没有此 bit，且 EFI 分区是硬盘中的第一个分区，那么则无法重新启动到硬盘里的 Windows 系统。</li>
 <li><code>FW_FEATURE_SUPPORTS_APFS</code> (<code>0x00080000</code>) - 如果没有此 bit，就不可能在 APFS 磁盘上安装 macOS。</li>
-<li><code>FW_FEATURE_SUPPORTS_LARGE_BASESYSTEM</code> (<code>0x800000000</code>) - 如果没有此 bit，就无法安装large BaseSystem 镜像的 macOS，例如 macOS 12。</li>
+<li><code>FW_FEATURE_SUPPORTS_LARGE_BASESYSTEM</code> (<code>0x800000000</code>) - 如果没有此 bit，就无法安装large BaseSystem 镜像的 macOS，例如：macOS 12。</li>
 </ul>
-<p><em>注</em>：在大多数较新的固件上，这些 bit 已经设置好，当 “升级” 新固件时，可能需要该选项。</p>
+<p><em>注</em>：在大多数较新的固件上，这些 bit 已经设置好，当使用新功能 “升级” 固件时，可能需要该选项。</p>
 <h3 id="3-MaxBIOSVersion"><a href="#3-MaxBIOSVersion" class="headerlink" title="3. MaxBIOSVersion"></a>3. <code>MaxBIOSVersion</code></h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: <code>false</code><br><strong>Description</strong>: 将 <code>BIOSVersion</code> 设置为 <code>9999.999.999.999.999</code>，在使用 Automatic PlatformInfo 时推荐用于旧版的 Mac，以避免在非官方支持的 macOS 版本中进行 BIOS 更新。</p>
 <h3 id="4-SystemMemoryStatus"><a href="#4-SystemMemoryStatus" class="headerlink" title="4. SystemMemoryStatus"></a>4. <code>SystemMemoryStatus</code></h3><p><strong>Type</strong>: <code>plist string</code><br><strong>Failsafe</strong>: <code>Auto</code><br><strong>Description</strong>: 用来表示内存是否可以更换和升级，此值也控制着「关于本机」中「内存」选项卡的可见性。</p>
 <p>有效值如下：</p>

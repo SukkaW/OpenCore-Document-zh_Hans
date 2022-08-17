@@ -195,7 +195,7 @@
                     <p><small>由 xMuu、Sukka、cike-567 整理，由 Sukka、derbalkon、cike-567 翻译</small></p>
                 
                 
-                    <p><small>本页面最后更新于 2022 年 07 月 20 日</small></p>
+                    <p><small>本页面最后更新于 2022 年 08 月 04 日</small></p>
                 
                 <br>
             
@@ -216,32 +216,21 @@
 <li><code>8BE4DF61-93CA-11D2-AA0D-00E098032B8C</code> (<code>EFI_GLOBAL_VARIABLE_GUID</code>)</li>
 <li><code>4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102</code> (<code>OC_VENDOR_VARIABLE_GUID</code>)</li>
 </ul>
-<p><em>注</em>：某些变量可以通过 <code>PlatformNVRAM</code> 或 <code>PlatformInfo</code> 章节的 <code>Generic</code> 子节添加。请确保本节中的变量不会与它们发生冲突，否则可能导致未定义的行为。</p>
+<p><em>注</em>：某些变量可以通过 <code>PlatformNVRAM</code> 或 <code>PlatformInfo</code> 部分的 <code>Generic</code> 子节添加。请确保本节中的变量不会与它们发生冲突，否则可能导致未定义的行为。</p>
 <p>为了使 macOS 正常运行，通常需要使用 <code>OC_FIRMWARE_RUNTIME</code> 协议。该协议的实现目前是 <code>OpenRuntime</code>（原名 <code>FwRuntimeServices.efi</code>）驱动程序的一部分。虽然可能带来一些好处，但根据用途不同也会存在某些限制。</p>
 <p>并非所有工具都可能知道受保护的名称空间。当使用 <code>RequestBootVarRouting</code> 时，在独立的命名空间中会限制对 <code>Boot</code> 前缀的变量访问。要访问原始变量，工具必须了解 <code>OC_FIRMWARE_RUNTIME</code> 协议的工作原理。</p>
 <h2 id="9-2-属性列表"><a href="#9-2-属性列表" class="headerlink" title="9.2 属性列表"></a>9.2 属性列表</h2><h3 id="1-Add"><a href="#1-Add" class="headerlink" title="1. Add"></a>1. <code>Add</code></h3><p><strong>Type</strong>: <code>plist dict</code><br><strong>Description</strong>: 从一组 GUID 映射（<code>plist dict</code>）中读取格式为 <code>plist metadata</code> 的变量映射，并将其添加到 NVRAM 中。GUID 必须以 Canonical String 格式提供，大写或小写均可（如 <code>8BE4DF61-93CA-11D2-AA0D-00E098032B8C</code>）。</p>
 <p>创建的变量会设置 <code>EFI_VARIABLE_BOOTSERVICE_ACCESS</code> 和 <code>EFI_VARIABLE_RUNTIME_ACCESS</code> 的属性。变量只有在不存在且未被屏蔽的情况下才会被设置，也就是说，如果想要覆盖一个现有的变量值，请将该变量的名称添加到 <code>Delete</code> 部分，这种方法能够提供一个默认的值，直到操作系统接手为止。</p>
 <p><em>注</em>：如果 <code>plist key</code> 不符合 GUID 格式，则可能出现一些未定义的行为。</p>
 <h3 id="2-Delete"><a href="#2-Delete" class="headerlink" title="2. Delete"></a>2. <code>Delete</code></h3><p><strong>Type</strong>: <code>plist dict</code><br><strong>Description</strong>: 从一组 GUID 映射（<code>plist dict</code>）读取一组包含 <code>plist string</code> 的数组（<code>plist array</code>），这些将会被从 NVRAM 变量中被删除。</p>
-<h3 id="3-LegacyEnable"><a href="#3-LegacyEnable" class="headerlink" title="3. LegacyEnable"></a>3. <code>LegacyEnable</code></h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: <code>false</code><br><strong>Description</strong>: 允许从 ESP 分区的根目录中的 <code>nvram.plist</code> 文件读取 NVRAM 变量。</p>
-<p>该文件必须以 <code>plist dictionary</code> 为文件根格式，并包含以下两个字段：</p>
-<ul>
-<li><code>Version</code> — <code>plist integer</code>，文件版本，必须设定为 <code>1</code>。</li>
-<li><code>Add</code> — <code>plist dictionary</code>，等同于 <code>config.plist</code> 中的 <code>Add</code>。</li>
-</ul>
-<p>变量加载优先于 <code>Delete</code>（以及 <code>Add</code>）阶段。除非启用了 <code>LegacyOverwrite</code>，否则不会覆盖现有的任何变量。允许设置的变量必须指定于 <code>LegacySchema</code> 中。</p>
-<p>第三方脚本可以用来创建 <code>nvram.plist</code> 文件，脚本示例可参照 <a target="_blank" rel="noopener" href="https://github.com/acidanthera/OpenCorePkg/tree/master/Utilities/LogoutHook">Utilities/LogoutHook</a>。使用第三方脚本可能要将 <code>ExposeSensitiveData</code> 设置为 <code>0x3</code> 来为 <code>boot-path</code> 变量提供 OpenCore EFI 分区的 UUID。</p>
-<blockquote class="message doku-blockquote is-danger"><div class="message-header">警告</div><div class="message-body"><p>这一功能非常危险，因为会将不受保护的数据传递给固件中的变量服务。只有在你的硬件不提供硬件 NVRAM 或与之不兼容时才使用。</p>
-</div></blockquote>
-
-<h3 id="4-LegacyOverwrite"><a href="#4-LegacyOverwrite" class="headerlink" title="4. LegacyOverwrite"></a>4. <code>LegacyOverwrite</code></h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: <code>false</code><br><strong>Description</strong>: 允许用 <code>nvram.plist</code> 文件中的变量覆盖现有 NVRAM 中的变量。</p>
+<h3 id="3-LegacyOverwrite"><a href="#3-LegacyOverwrite" class="headerlink" title="3. LegacyOverwrite"></a>3. <code>LegacyOverwrite</code></h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: <code>false</code><br><strong>Description</strong>: 允许用 <code>nvram.plist</code> 文件中的变量覆盖现有 NVRAM 中的变量。</p>
 <p><em>注</em>：只有操作系统访问的到的变量会被覆盖。</p>
-<h3 id="5-LegacySchema"><a href="#5-LegacySchema" class="headerlink" title="5. LegacySchema"></a>5. <code>LegacySchema</code></h3><p><strong>Type</strong>: <code>plist dict</code><br><strong>Description</strong>: 允许从 GUID 映射（<code>plist dict</code>）中选择 NVRAM 变量设置到一个变量名称数组（<code>plist array</code>），格式为 <code>plist string</code>。</p>
+<h3 id="4-LegacySchema"><a href="#4-LegacySchema" class="headerlink" title="4. LegacySchema"></a>4. <code>LegacySchema</code></h3><p><strong>Type</strong>: <code>plist dict</code><br><strong>Description</strong>: 允许从 GUID 映射（<code>plist dict</code>）中选择 NVRAM 变量设置到一个变量名称数组（<code>plist array</code>），格式为 <code>plist string</code>。</p>
 <p>可用 <code>*</code> 值来接受所有用来选择 GUID 的变量。</p>
 <blockquote class="message doku-blockquote is-danger"><div class="message-header">警告</div><div class="message-body"><p>选择变量要非常慎重，因为 nvram.plist 不会被存储。比如，不要把 <code>boot-args</code> 或 <code>csr-active-config</code> 放进去，因为会绕过 SIP。</p>
 </div></blockquote>
 
-<h3 id="6-WriteFlash"><a href="#6-WriteFlash" class="headerlink" title="6. WriteFlash"></a>6. <code>WriteFlash</code></h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: <code>false</code><br><strong>Description</strong>: 允许将所有添加的变量写入闪存。</p>
+<h3 id="5-WriteFlash"><a href="#5-WriteFlash" class="headerlink" title="5. WriteFlash"></a>5. <code>WriteFlash</code></h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: <code>false</code><br><strong>Description</strong>: 允许将所有添加的变量写入闪存。</p>
 <p><em>注</em>：这个 Quirk 本应该在大多数固件上启用，但是由于可能存在 NVRAM 变量存储 garbage collection 或类似的问题的固件，所以我们将这个 Quirk 设计为可配置的。</p>
 <p>要从 macOS 中读取 NVRAM 变量的值，可以使用 <code>nvram</code>，并将变量 GUID 和名称用 <code>:</code> 符号隔开，形如 <code>nvram 7C436110-AB2A-4BBB-A880-FE41995C9F82:boot-args</code>。</p>
 <p>变量列表可参照相关文档（持续更新）：<a target="_blank" rel="noopener" href="https://docs.google.com/spreadsheets/d/1HTCBwfOBkXsHiK7os3b2CUc6k68axdJYdGl-TyXqLu0/edit#gid=0">NVRAM Variables</a>。</p>
@@ -315,10 +304,10 @@
 <li><p><code>7C436110-AB2A-4BBB-A880-FE41995C9F82:bootercfg</code><br>Booter 参数，类似于 <code>boot-args</code>，但用于 <code>boot.efi</code> 。接受参数为一组十六进制的 64 位值，带或不带 <code>0x</code>。在不同阶段，<code>boot.efi</code> 会请求不同的调试（日志）模式（例如，在 <code>ExitBootServices</code> 之后它只会打印到串行调试接口）。有些 Booter 参数会控制这些请求是否成功。下面是已知请求的列表：</p>
 <ul>
 <li><code>0x00</code> – <code>INIT</code></li>
-<li><code>0x01</code> – <code>VERBOSE</code> （如 <code>-v</code>，强制控制台记录日志）</li>
+<li><code>0x01</code> – <code>VERBOSE</code> （例如：<code>-v</code>，强制控制台记录日志）</li>
 <li><code>0x02</code> – <code>EXIT</code></li>
 <li><code>0x03</code> – <code>RESET:OK</code></li>
-<li><code>0x04</code> – <code>RESET:FAIL</code> （如未知的 <code>board-id</code>，休眠错配，Panic 循环，等等）</li>
+<li><code>0x04</code> – <code>RESET:FAIL</code> （例如未知的 <code>board-id</code>，休眠错配，Panic 循环，等等）</li>
 <li><code>0x05</code> – <code>RESET:RECOVERY</code></li>
 <li><code>0x06</code> – <code>RECOVERY</code></li>
 <li><code>0x07</code> – <code>REAN:START</code></li>
@@ -446,7 +435,7 @@
             <aside class="doku-document-toc" id="doku-document-toc">
                 <div class="doku-document-toc-content">
                     <p class="doku-document-toc-title">目录</p>
-                    <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#9-1-%E7%AE%80%E4%BB%8B"><span class="post-toc-text">9.1 简介</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#9-2-%E5%B1%9E%E6%80%A7%E5%88%97%E8%A1%A8"><span class="post-toc-text">9.2 属性列表</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#1-Add"><span class="post-toc-text">1. Add</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#2-Delete"><span class="post-toc-text">2. Delete</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#3-LegacyEnable"><span class="post-toc-text">3. LegacyEnable</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#4-LegacyOverwrite"><span class="post-toc-text">4. LegacyOverwrite</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#5-LegacySchema"><span class="post-toc-text">5. LegacySchema</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#6-WriteFlash"><span class="post-toc-text">6. WriteFlash</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#9-3-%E5%BC%BA%E5%88%B6%E5%8F%98%E9%87%8F"><span class="post-toc-text">9.3 强制变量</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#9-4-%E6%8E%A8%E8%8D%90%E5%8F%98%E9%87%8F"><span class="post-toc-text">9.4 推荐变量</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#9-5-%E5%85%B6%E4%BB%96%E5%8F%98%E9%87%8F"><span class="post-toc-text">9.5 其他变量</span></a></li></ol>
+                    <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#9-1-%E7%AE%80%E4%BB%8B"><span class="post-toc-text">9.1 简介</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#9-2-%E5%B1%9E%E6%80%A7%E5%88%97%E8%A1%A8"><span class="post-toc-text">9.2 属性列表</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#1-Add"><span class="post-toc-text">1. Add</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#2-Delete"><span class="post-toc-text">2. Delete</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#3-LegacyOverwrite"><span class="post-toc-text">3. LegacyOverwrite</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#4-LegacySchema"><span class="post-toc-text">4. LegacySchema</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#5-WriteFlash"><span class="post-toc-text">5. WriteFlash</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#9-3-%E5%BC%BA%E5%88%B6%E5%8F%98%E9%87%8F"><span class="post-toc-text">9.3 强制变量</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#9-4-%E6%8E%A8%E8%8D%90%E5%8F%98%E9%87%8F"><span class="post-toc-text">9.4 推荐变量</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#9-5-%E5%85%B6%E4%BB%96%E5%8F%98%E9%87%8F"><span class="post-toc-text">9.5 其他变量</span></a></li></ol>
                 </div>
             </aside>
         </div>

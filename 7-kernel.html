@@ -195,7 +195,7 @@
                     <p><small>由 Sukka、derbalkon、cike-567 整理，由 Sukka、derbalkon、cike-567 翻译。</small></p>
                 
                 
-                    <p><small>本页面最后更新于 2022 年 07 月 21 日</small></p>
+                    <p><small>本页面最后更新于 2022 年 08 月 04 日</small></p>
                 
                 <br>
             
@@ -208,6 +208,13 @@
         <div class="column is-9-tablet doku-document-wrapper">
             <div class="content">
                 <h2 id="7-1-简介"><a href="#7-1-简介" class="headerlink" title="7.1 简介"></a>7.1 简介</h2><p>本章节介绍了如何在 Apple Kernel（<a target="_blank" rel="noopener" href="https://opensource.apple.com/source/xnu">XNU</a>）上应用各种不同的内核空间修改，包括内核驱动程序（Kext）注入、修补以及屏蔽。</p>
+<p>对 Kernel 和 Kext 的修补按照如下顺序执行：</p>
+<ul>
+<li>Block</li>
+<li>Emulate 和 Quirks</li>
+<li>Patch</li>
+<li>Add 和 Force</li>
+</ul>
 <h2 id="7-2-属性列表"><a href="#7-2-属性列表" class="headerlink" title="7.2 属性列表"></a>7.2 属性列表</h2><h3 id="1-Add"><a href="#1-Add" class="headerlink" title="1. Add"></a>1. Add</h3><p><strong>Type</strong>: <code>plist array</code><br><strong>Failsafe</strong>: Empty<br><strong>Description</strong>: 从 <code>OC/Kexts</code> 目录加载选定的 Kext 驱动。</p>
 <p>设计为使用 <code>plist dict</code> 数据填充以描述每个驱动程序。请参阅下述 Add 属性章节。</p>
 <p><em>注 1</em>：Kext 驱动程序加载的顺序遵照数组中项目的顺序，因此如 Lilu 这种其他驱动程序的依赖驱动应该位于前面。</p>
@@ -351,7 +358,7 @@
 <h3 id="5-CustomPciSerialDevice"><a href="#5-CustomPciSerialDevice" class="headerlink" title="5. CustomPciSerialDevice"></a>5. <code>CustomPciSerialDevice</code></h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: <code>false</code><br><strong>Requirement</strong>: 10.7<br><strong>Description</strong>:  在一个定制的 PCI 串行设备上修改 PMIO 寄存器的基本地址。</p>
 <p>该补丁改变了 XNU 内核用于串行输入和输出的 PMIO 寄存器基址，从默认的内置COM1串行端口 <code>0x3F8</code>，改为存储在指定 PCI 设备的第一个 IO BAR 中的基址，或者是一个特定的基址（例如 <code>0x2F8</code> 用于 COM2）。</p>
 <p><em>注 1</em>：默认情况下，串行日志是禁用的。 启动参数 <code>serial=3</code>，启用串行输入和输出，使 XNU 将日志打印到串行端口。</p>
-<p><em>注 2</em>：除此修补程序外，应防止 kext <code>Apple16X50PCI0</code> 连接，以使 kprintf 方法正常工作。这可以通过在 DeviceProperties 部分将 PCI 串行端口设备的 class code 属性设置（即删除，然后添加）为 <code>FFFFFF</code> 来实现。<br> 作为一个替代解决方案，也可以使用一个无代码的 kext <code>PCIeSerialDisable.kext</code>，该 kext 在 <a target="_blank" rel="noopener" href="https://github.com/acidanthera/bugtracker/issues/1954">acidanthera/bugtracker#1954</a> 的 spoiler PCIeSerialDisable.kext/Contents/Info.plist 中。此外，对于某些雷电卡，IOKit personality IOPCITunnelCompatible 也需要设置为 <code>true</code>，这可以由 <a target="_blank" rel="noopener" href="https://github.com/acidanthera/bugtracker/issues/2003#issuecomment-1116761087">Acidantarea/bugtracker#2003</a> 上附带的 PCIeSerialThunderboltEnable.kext 完成。</p>
+<p><em>注 2</em>：除此修补程序外，应防止 kext <code>Apple16X50PCI0</code> 连接，以使 kprintf 方法正常工作。这可以通过使用 <a target="_blank" rel="noopener" href="https://github.com/joevt/PCIeSerialDisable">PCIeSerialDisable</a> 实现。此外，对于某些雷电卡，IOKit personality IOPCITunnelCompatible 也需要设置为 <code>true</code>，这可以由 <a target="_blank" rel="noopener" href="https://github.com/acidanthera/bugtracker/issues/2003#issuecomment-1116761087">Acidantarea/bugtracker#2003</a> 上附带的 PCIeSerialThunderboltEnable.kext 完成。</p>
 <p><em>注 3</em>：要正确应用这个补丁，必须启用 Override，并在 Custom 中正确设置所有的选项。在 Misc-&gt;Serial 部分。</p>
 <p><em>注 4</em>：这个补丁是为了支持 PMIO，因此如果 Misc-&gt;Serial-&gt;Custom 部分的 <code>UseMmio</code> 为 <code>false</code>，则不适用。对于 MMIO，有启动参数 <code>pcie_mmio_uart=ADDRESS</code>  和 <code>mmio_uart=ADDRESS</code>，允许内核使用 MMIO 来访问串行端口。</p>
 <p><em>注 5</em>：串行波特率必须在 Misc-&gt;Serial-&gt;Custom 部分的 <code>BaudRate</code> 和通过启动参数 <code>serialbaud=VALUE</code> 正确设置。这两个参数应该相互匹配。默认的波特率是 115200。</p>
@@ -372,7 +379,7 @@
 <p>这个选项可以使基于 Aquantia AQtion 的 10GbE 网卡得到支持，在macOS 10.15.4之前，这些网卡是原生支持的。</p>
 <p><em>注 1</em>：为了使 Aquantia 卡正常工作，必须禁用 <code>DisableIoMapper</code>，不得丢弃 <code>DMAR</code> ACPI 表，并且必须在 BIOS 中启用 VT-d。</p>
 <p><em>注 2</em>：虽然此补丁应支持所有 Aquantia AQtion 系列的以太网卡，但它仅在基于 AQC-107s 的 10GbE 网卡上进行了测试。</p>
-<p><em>注 3</em>：为了解决 AppleVTD 在应用这个 Quirk 后的不兼容问题，<code>DMAR</code> ACPI表中相应设备的保留内存区域部分可能被删除。这个表应该被拆解和编辑，然后用 iASL 工具重新编译成 AML。为了添加修补后的 <code>DMAR</code> 表，应该删除原来的表。更多细节可以在commit <a target="_blank" rel="noopener" href="https://github.com/acidanthera/OpenCorePkg/commit/24414555f2c07e06a3674ec7a2aa1ce4860bbcc7#commitcomment-70530145">2441455</a> 中找到。</p>
+<p><em>注 3</em>：为了解决 AppleVTD 在应用这个 Quirk 后的不兼容问题，<code>DMAR</code> ACPI表中相应设备的保留内存区域部分可能被删除。这个表应该被拆解和编辑，然后用 iASL 工具重新编译成 AML。为了添加修补后的 <code>DMAR</code> 表，应该删除原来的表。更多细节可以在 commit <a target="_blank" rel="noopener" href="https://github.com/acidanthera/OpenCorePkg/commit/24414555f2c07e06a3674ec7a2aa1ce4860bbcc7#commitcomment-70530145">2441455</a> 中找到。</p>
 <h3 id="13-ForceSecureBootScheme"><a href="#13-ForceSecureBootScheme" class="headerlink" title="13. ForceSecureBootScheme"></a>13. <code>ForceSecureBootScheme</code></h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: <code>false</code><br><strong>Requirement</strong>: 11<br><strong>Description</strong>: 强制采用 x86 方案进行 IMG4 核查。</p>
 <p><em>注</em>：在虚拟机上使用 <code>x86legacy</code> 以外的 <code>SecureBootModel</code> 时需要开启此选项。</p>
 <h3 id="14-IncreasePciBarSize"><a href="#14-IncreasePciBarSize" class="headerlink" title="14. IncreasePciBarSize"></a>14. <code>IncreasePciBarSize</code></h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: <code>false</code><br><strong>Requirement</strong>: 10.10<br><strong>Description</strong>: 允许 IOPCIFamily 用 2GB PCI BAR 启动</p>
@@ -389,12 +396,12 @@
 <h3 id="17-PanicNoKextDump"><a href="#17-PanicNoKextDump" class="headerlink" title="17. PanicNoKextDump"></a>17. <code>PanicNoKextDump</code></h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: <code>false</code><br><strong>Requirement</strong>: 10.13 (not required for older)<br><strong>Description</strong>: 在发生内核崩溃时阻止输出 Kext 列表，提供可供排错参考的崩溃日志。该 Quirk 在 10.13 及以上起作用。</p>
 <h3 id="18-PowerTimeoutKernelPanic"><a href="#18-PowerTimeoutKernelPanic" class="headerlink" title="18. PowerTimeoutKernelPanic"></a>18. <code>PowerTimeoutKernelPanic</code></h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: <code>false</code><br><strong>Requirement</strong>: 10.15 (not required for older)<br><strong>Description</strong>: 修复 macOS Catalina 中由于设备电源状态变化超时而导致的内核崩溃。</p>
 <p>macOS Catalina 新增了一项额外的安全措施，导致在电源切换超时的时候会出现 Kernel Panic。配置错误的硬件可能会因此出现问题，特别是数字音频、有的时候会导致睡眠唤醒的问题。这一 Quirk 和引导参数 <code>setpowerstate_panic=0</code> 功能大部分一致，但是后者只应该用于调试用途。</p>
-<h3 id="19-ProvideCurrentCpuInfo"><a href="#19-ProvideCurrentCpuInfo" class="headerlink" title="19. ProvideCurrentCpuInfo"></a>19. <code>ProvideCurrentCpuInfo</code></h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: <code>false</code><br><strong>Requirement</strong>: 10.8 (10.14)<br><strong>Description</strong>: 向内核提供当前的 CPU 信息。</p>
+<h3 id="19-ProvideCurrentCpuInfo"><a href="#19-ProvideCurrentCpuInfo" class="headerlink" title="19. ProvideCurrentCpuInfo"></a>19. <code>ProvideCurrentCpuInfo</code></h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: <code>false</code><br><strong>Requirement</strong>: 10.4 (10.14)<br><strong>Description</strong>: 向内核提供当前的 CPU 信息。</p>
 <p>这个 Quirk 的工作方式因 CPU 不同而不同：</p>
 <ul>
 <li>对于微软的 Hyper-V，它向内核提供正确的 TSC 和 FSB 值，以及禁用 CPU 拓扑验证（10.8以上）。</li>
 <li>对于 KVM 和其他管理程序，它提供预计算的 MSR 35h 值，解决内核在 <code>-cpu host</code> 下的 kernel panic。</li>
-<li>对于英特尔 CPU 来说，它通过将核心数与线程数打补丁的方式，增加了对非对称 SMP 系统（例如英特尔Alder Lake）的支持，同时还补充了所需的补充修改（10.14以上）。</li>
+<li>对于英特尔 CPU 来说，它通过将核心数与线程数打补丁的方式，增加了对非对称 SMP 系统（例如：Intel Alder Lake）的支持，同时还补充了所需的补充修改（10.14以上）。当使用 10.4 时，还提供了缓存大小和缓存行大小的值，因为 Intel Penryn 和更新的产品可能只有 CPUID leaf 0x4 中的缓存信息，而 10.4 是不支持的。</li>
 </ul>
 <h3 id="20-SetApfsTrimTimeout"><a href="#20-SetApfsTrimTimeout" class="headerlink" title="20. SetApfsTrimTimeout"></a>20. <code>SetApfsTrimTimeout</code></h3><p><strong>Type</strong>: <code>plist integer</code><br><strong>Failsafe</strong>: <code>-1</code><br><strong>Requirement</strong>: 10.14 (not required for older)<br><strong>Description</strong>: 为 SSD 上的 APFS 文件系统设置微秒级的 trim 超时时间。</p>
 <p>APFS 文件系统的设计方式是，空间由 Spaceman (The Space Manager) 结构控制，要么为已使用，要么为空闲。而其他文件系统，则可以被标记为 已使用、空闲 或 <em>未映射</em>。macOS 启动时，所有空闲的空间都会被 trim 处理。由于 <code>DSM</code> 命令的特性，每个命令最多拥有 256 个范围，因此 NVMe 驱动器的 trim 过程发生在 LBA 范围内。硬盘上存储的内容越分散，就需要越多的命令对所有空闲空间进行 trim。</p>
