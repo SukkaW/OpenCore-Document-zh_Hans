@@ -3,7 +3,7 @@ title: 3. Setup
 description: Setup
 type: docs
 author_info: 由 Sukka、derbalkon、cike-567 整理、由 Sukka、derbalkon、cike-567 翻译。
-last_updated: 2022-07-20
+last_updated: 2022-08-04
 ---
 
 ## 3.1 目录结构
@@ -63,6 +63,8 @@ ESP
 - **vault.sig** --- `vault.plist` 的签名文件。
 - **SysReport** --- 存放 `SysReport` 功能产生的系统错误报告。
 - **nvram.plist** --- OpenCore 变量导入文件。
+- **nvram.fbllback** --- OpenCore 变量导入后备文件。
+- **nvram.used** --- 切换到备用文件后重命名以前的 OpenCore 变量导入文件。
 - **opencore-YYYY-MM-DD-HHMMSS.txt** --- OpenCore 日志文件。
 - **panic-YYYY-MM-DD-HHMMSS.txt** --- Kernal Panic 日志文件。
 

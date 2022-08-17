@@ -3,12 +3,17 @@ title: 5. Booter
 description: 配置 OpenRuntime.efi（Slide 值计算、KASLR）
 type: docs
 author_info: 由 Sukka、derbalkon、cike-567 整理，由 Sukka、derbalkon、cike-567 翻译。
-last_updated: 2022-07-21
+last_updated: 2022-08-04
 ---
 
 ## 5.1 简介
 
 本部分允许在 Apple BootLoader（`boot.efi`）上应用不同种类的 UEFI 修改。目前，这些修改为不同的固件提供了各种补丁和环境更改。其中一些功能最初是作为 [AptioMemoryFix.efi](https://github.com/acidanthera/AptioFixPkg) 的一部分，如今 `AptioMemoryFix.efi` 已经不再维护。如果你还在使用，请参考 [技巧和窍门](12-troubleshooting.html#12-5-技巧和窍门) 章节提供的迁移步骤。
+
+对 Booter 的修补按照如下顺序执行：
+
+- Quirks
+- Patch
 
 如果您是第一次在自定义固件上使用此功能，则首先需要执行一系列检查。开始之前，请确保您符合以下条件：
 
@@ -216,7 +221,8 @@ Description: 搜索的最大字节数。
 
 这一选项强制 XNU 内核忽略新提供的内存映射，并假定它在从休眠状态唤醒后没有改变。这种行为是 [Windows](https://docs.microsoft.com/windows-hardware/design/device-experiences/oem-uefi#hibernation-state-s4-transition-requirements) 要求的。 因为 Windows 强制要求 `S4` 唤醒后保留运行内存的大小和位置。
 
-*注*：这可能用于解决较旧较罕见的硬件上的错误内存映射。例如 Insyde 固件的 Ivy Bridge 笔记本电脑，比如 Acer V3-571G。除非您完全了解这一选项可能导致的后果，否则请勿使用此功能。
+*注*：这可能用于解决较旧较罕见的硬件上的错误内存映射。例如：Insyde 固件的 Ivy Bridge 笔记本电脑（Acer V3-571G）。除非您完全了解这一选项可能导致的后果，否则请勿使用此功能。
+
 
 ### 7. `EnableSafeModeSlide`
 
@@ -281,7 +287,7 @@ Description: 搜索的最大字节数。
 
 尝试从操作系统写入 `db`、`dbx`、`PK` 和 `KEK` 时生成报告。
 
-*注*：这个 Quirk 主要试图避免碎片整理导致的 NVRAM 相关问题，例如 Insyde 或 `MacPro5,1`。
+*注*：这个 Quirk 主要试图避免碎片整理导致的 NVRAM 相关问题，例如：Insyde 或 `MacPro5,1`。
 
 ### 13. `ProtectUefiServices`
 
@@ -326,7 +332,7 @@ GRUB-shim 对各种 UEFI image services 进行了类似的即时更改，这些�
 Apple 内核在解析 UEFI 内存映射时有几个限制：
 - 内存映射的大小不能超过 4096 字节，因为 Apple 内核将其映射为一个 `4KiB` 页面。由于某些固件的内存映射大小非常大（大约超过 100 个条目），Apple 内核会在启动时崩溃。
 - 内存属性表会被忽略。`EfiRuntimeServicesCode` 内存静态获得 `RX` 权限，其他内存类型则获得 `RW` 权限。某些固件驱动会在运行时把数据写到全局变量中，因此 Apple 内核在调用 UEFI Runtime Services 时会崩溃，除非驱动的 `.data` 部分有 `EfiRuntimeServicesData` 类型。
-为了解决这些限制，这个 Quirk 将内存属性表的权限应用到传递给 Apple 内核的内存映射中，如果生成的内存映射超过 4KiB，则可选择尝试统一类似类型的连续插槽。
+为了解决这些限制，这个 Quirk 将内存属性表的权限应用到传递给 Apple 内核的内存映射中，如果生成的内存映射超过 `4KiB`，则可选择尝试统一类似类型的连续插槽。
 
 *注 1*：由于许多固件自带的内存保护不正确，所以这个 Quirk 一般要和 `SyncRuntimePermissions` 一起启用。
 

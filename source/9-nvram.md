@@ -3,7 +3,7 @@ title: 9. NVRAM
 description: NVRAM 注入（如引导标识符和 SIP）
 type: docs
 author_info: 由 xMuu、Sukka、cike-567 整理，由 Sukka、derbalkon、cike-567 翻译
-last_updated: 2022-07-20
+last_updated: 2022-08-04
 ---
 
 ## 9.1 简介
@@ -18,7 +18,7 @@ last_updated: 2022-07-20
 - `8BE4DF61-93CA-11D2-AA0D-00E098032B8C` (`EFI_GLOBAL_VARIABLE_GUID`)
 - `4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102` (`OC_VENDOR_VARIABLE_GUID`)
 
-*注*：某些变量可以通过 `PlatformNVRAM` 或 `PlatformInfo` 章节的 `Generic` 子节添加。请确保本节中的变量不会与它们发生冲突，否则可能导致未定义的行为。
+*注*：某些变量可以通过 `PlatformNVRAM` 或 `PlatformInfo` 部分的 `Generic` 子节添加。请确保本节中的变量不会与它们发生冲突，否则可能导致未定义的行为。
 
 为了使 macOS 正常运行，通常需要使用 `OC_FIRMWARE_RUNTIME` 协议。该协议的实现目前是 `OpenRuntime`（原名 `FwRuntimeServices.efi`）驱动程序的一部分。虽然可能带来一些好处，但根据用途不同也会存在某些限制。
 
@@ -40,25 +40,7 @@ last_updated: 2022-07-20
 **Type**: `plist dict`
 **Description**: 从一组 GUID 映射（`plist dict`）读取一组包含 `plist string` 的数组（`plist array`），这些将会被从 NVRAM 变量中被删除。
 
-### 3. `LegacyEnable`
-
-**Type**: `plist boolean`
-**Failsafe**: `false`
-**Description**: 允许从 ESP 分区的根目录中的 `nvram.plist` 文件读取 NVRAM 变量。
-
-该文件必须以 `plist dictionary` 为文件根格式，并包含以下两个字段：
-- `Version` --- `plist integer`，文件版本，必须设定为 `1`。
-- `Add` --- `plist dictionary`，等同于 `config.plist` 中的 `Add`。
-
-变量加载优先于 `Delete`（以及 `Add`）阶段。除非启用了 `LegacyOverwrite`，否则不会覆盖现有的任何变量。允许设置的变量必须指定于 `LegacySchema` 中。
-
-第三方脚本可以用来创建 `nvram.plist` 文件，脚本示例可参照 [Utilities/LogoutHook](https://github.com/acidanthera/OpenCorePkg/tree/master/Utilities/LogoutHook)。使用第三方脚本可能要将 `ExposeSensitiveData` 设置为 `0x3` 来为 `boot-path` 变量提供 OpenCore EFI 分区的 UUID。
-
-{% note danger 警告 %}
-这一功能非常危险，因为会将不受保护的数据传递给固件中的变量服务。只有在你的硬件不提供硬件 NVRAM 或与之不兼容时才使用。
-{% endnote %}
-
-### 4. `LegacyOverwrite`
+### 3. `LegacyOverwrite`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
@@ -66,7 +48,7 @@ last_updated: 2022-07-20
 
 *注*：只有操作系统访问的到的变量会被覆盖。
 
-### 5. `LegacySchema`
+### 4. `LegacySchema`
 
 **Type**: `plist dict`
 **Description**: 允许从 GUID 映射（`plist dict`）中选择 NVRAM 变量设置到一个变量名称数组（`plist array`），格式为 `plist string`。
@@ -77,7 +59,7 @@ last_updated: 2022-07-20
 选择变量要非常慎重，因为 nvram.plist 不会被存储。比如，不要把 `boot-args` 或 `csr-active-config` 放进去，因为会绕过 SIP。
 {% endnote %}
 
-### 6. `WriteFlash`
+### 5. `WriteFlash`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
@@ -180,10 +162,10 @@ last_updated: 2022-07-20
 - `7C436110-AB2A-4BBB-A880-FE41995C9F82:bootercfg`
   Booter 参数，类似于 `boot-args`，但用于 `boot.efi` 。接受参数为一组十六进制的 64 位值，带或不带 `0x`。在不同阶段，`boot.efi` 会请求不同的调试（日志）模式（例如，在 `ExitBootServices` 之后它只会打印到串行调试接口）。有些 Booter 参数会控制这些请求是否成功。下面是已知请求的列表：
   - `0x00` – `INIT`
-  - `0x01` – `VERBOSE` （如 `-v`，强制控制台记录日志）
+  - `0x01` – `VERBOSE` （例如：`-v`，强制控制台记录日志）
   - `0x02` – `EXIT`
   - `0x03` – `RESET:OK`
-  - `0x04` – `RESET:FAIL` （如未知的 `board-id`，休眠错配，Panic 循环，等等）
+  - `0x04` – `RESET:FAIL` （例如未知的 `board-id`，休眠错配，Panic 循环，等等）
   - `0x05` – `RESET:RECOVERY`
   - `0x06` – `RECOVERY`
   - `0x07` – `REAN:START`

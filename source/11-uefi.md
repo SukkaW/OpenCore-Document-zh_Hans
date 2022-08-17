@@ -3,7 +3,7 @@ title: 11. UEFI
 description: UEFI 驱动以及加载顺序
 type: docs
 author_info: 由 xMuu、Sukka、derbalkon、cike-567 整理，由 Sukka、derbalkon、cike-567 翻译
-last_updated: 2022-7-21
+last_updated: 2022-08-04
 ---
 
 ## 11.1 简介
@@ -29,7 +29,8 @@ last_updated: 2022-7-21
 - [`OpenLinuxBoot`](https://github.com/acidanthera/OpenCorePkg)* --- 实现 `OC_BOOT_ENTRY_PROTOCOL` 的 OpenCore 插件，允许直接检测和从 OpenCore 启动 Linux 发行版，无需通过 GRUB 进行链式加载。
 - [`OpenNtfsDxe`](https://github.com/acidanthera/OpenCorePkg)* --- New Technologies File System (NTFS) read-only 驱动程序。`NTFS` 是基于 `Windows NT` 的 `Microsoft Windows` 版本的主要文件系统。
 - [`OpenUsbKbDxe`](https://github.com/acidanthera/OpenCorePkg)* --- USB 键盘驱动，在自定义 USB 键盘驱动程序的基础上新增了对 `AppleKeyMapAggregator` 协议的支持。这是内置的 `KeySupport` 的等效替代方案。根据固件不同，效果可能会更好或者更糟。
-- [`PartitionDxe`](https://github.com/acidanthera/OcBinaryData) --- 支持 Apple 分区方案的分区管理驱动程序。此驱动程序可用于支持加载较旧的 DMG 恢复，例如使用 Apple 分区方案的 macOS 10.9。OpenDuet 已经包含了这个驱动程序。
+- [`OpenPartitionDxe`](https://github.com/acidanthera/OpenCorePkg)* --- 支持 Apple 分区方案的分区管理驱动程序。此驱动程序可用于支持加载较旧的 DMG 恢复，例如使用 Apple 分区方案的 macOS 10.9，或用于加载使用 Apple 分区方案创建的其他 macOS 安装程序（使用 GPT 创建 macOS 安装程序可以避免这样做）。OpenDuet 已经包含了这个驱动程序。
+- [`OpenVariableRuntimeDxe`](https://github.com/acidanthera/OpenCorePkg)* --- OpenCore 插件（11.9 节的  OpenVariableRuntimeDxe）提供模拟 NVRAM 支持。`OpenDuet` 已经包含了这个驱动程序。
 - [`Ps2KeyboardDxe`](https://github.com/acidanthera/audk)* --- 从 `MdeModulePkg` 提取出来的 PS/2 键盘驱动。OpenDuetPkg 和一些固件可能不包括这个驱动，但对于 PS/2 键盘来说该驱动是必须的。注意，和 `OpenUsbKbDxe` 不同，该驱动不提供对 `AppleKeyMapAggregator` 的支持、因此需要启用 `KeySupport` 这个 Quirk。
 - [`Ps2MouseDxe`](https://github.com/acidanthera/audk)* --- 从 `MdeModulePkg` 提取出来的 PS/2 鼠标驱动。一些非常老旧的笔记本的固件中可能不包含该驱动，但是这些笔记本需要依赖该驱动才能在引导界面使用触控板。
 - [`OpenHfsPlus`](https://github.com/acidanthera/OpenCorePkg)* --- 支持 Bles s的 HFS 文件系统驱动。这个驱动是闭源的 HfsPlus 驱动的替代品，该驱动通常在苹果固件中发现。虽然功能完善，但是启动速度比 `HFSPlus` 慢三倍，并且尚未经过安全审核。
@@ -270,11 +271,20 @@ BootLoaderSpecByDefault（但不是纯粹的 Boot Loader Specification）可以�
 
 当 macOS 运行时，SIP 涉及多个配置的软件保护系统，然而所有关于启用这些保护系统的信息都存储在单一的 Apple NVRAM 变量 `csr-active-config` 中。只要这个变量在 macOS 启动前被设置，SIP 就会被完全配置好，所以使用这个启动选项（或以任何其他方式，在 macOS 启动前）设置这个变量，其最终结果与在 macOS Recovery 中使用 `csrutil` 命令配置 SIP 完全相同。
 
-`csr-active-config` 将在 `0` 和用户指定的或默认的禁用值之间切换，表示启用。默认值是 `0x27F`（见下文）。任何其他所
-需的值都可以在该驱动的 `Arguments` 部分中指定一个数字。 这可以指定为十六进制，以 `0x` 开头，也可以指定为十进制。
+`csr-active-config` 将在 `0` 和用户指定的或默认的禁用值之间切换。
 
-注1：建议不要在禁用 SIP 的情况下运行 macOS。使用这个启动选项可以在真正需要的时候更容易快速禁用 SIP 保护，之后应该重新启用。
-注2：用这个启动项禁用 SIP 的默认值是 `0x27F`。作为比较，`csrutil disable` 在 macOS Big Sur 和 Monterey 上没有其他参数，它设置了 `0x7F`，在 Catalina 上设置了 `0x77`。 OpenCore 的默认值 `0x27F` 是 Big Sur 和 Monterey 值的一个变体， 选择方法如下：
+驱动程序的选项应该在 `Driver entry` 的 `Arguments` 部分指定为纯文本值，用空格隔开。可用的选项有：
+
+- `--show-csr` --- Boolean flag，如果存在则启用。
+
+  如果启用，在启动项名称中显示当前 `csr-active-config` 的十六进制值。当与 `PickerAttributes` 中的 `OC_ATTR_USE_GENERIC_LABEL_IMAGE` 结合使用时，这个选项在 `OpenCanopy` 中不起作用。
+
+- `数值` ---默认值为 `0x27F`。
+
+  指定用于禁用 `SIP` 的 `csr-active-config` 值。可以指定为十六进制，以 `0x` 开头，也可以指定为十进制。更多信息参见下面的 *注 2*。
+
+*注 1*：建议不要在禁用 SIP 的情况下运行 macOS。使用这个启动选项可以在真正需要的时候更容易快速禁用 SIP 保护，之后应该重新启用。
+*注 2*：用这个启动项禁用 SIP 的默认值是 `0x27F`。作为比较，`csrutil disable` 在 macOS Big Sur 和 Monterey 上没有其他参数，它设置了 `0x7F`，在 Catalina 上设置了 `0x77`。 OpenCore 的默认值 `0x27F` 是 Big Sur 和 Monterey 值的一个变体， 选择方法如下：
 
 - `CSR_ALLOW_UNAPPROVED_KEXTS（0x200）` 被包含在默认值中，因为在你需要禁用 SIP 的情况下，它通常是有用的，能够在系统偏好中安装无符号的 `kexts` 而无需手动批准。
 - `CSR_ALLOW_UNAUTHENTICATED_ROOT（0x800）` 不包括在默认值中，因为使用它时很容易无意中破坏操作系统的密封性，阻止增量的 OTA 更新。
@@ -287,7 +297,15 @@ UEFI固件中的高清晰度音频（HDA）支持驱动程序，适用于大多�
 
 ### 11.8.1 Configuration
 
-大多数 UEFI 音频配置是通过 UEFI 音频属性部分处理的，但除此之外，还有一些为了让 `AudioDxe` 正确驱动某些设备，可能需要以下配置选项。所有的选项都被指定为文本字符串，如果需要一个以上的选项，用空格隔开，在 UEFI 驱动的 `Arguments` 属性中。
+大多数 UEFI 音频配置是通过 UEFI 音频属性部分处理的，但此外可能需要以下一些配置选项，以允许 `AudioDxe` 正确驱动某些设备。在 `UEFI/Drivers` 部分的驱动程序的 `Arguments` 属性中，所有的选项都被指定为文本字符串，如果需要一个以上的选项，则用空格分隔。
+
+- `--codec-setup-delay`，整数值，默认为 `0`。
+  等待所有组件完全打开的时间，以毫秒为单位，在驱动连接阶段应用于每个编解码器。在大多数系统中，这应该是不需要的，如果需要任何音频设置延迟，使用 `Audio` 部分的 `SetupDelay` 可以实现更快的启动。如果需要，可能需要一秒钟的值。
+  
+- `--force-device`，字符串值，无默认值。
+  当这个选项存在并且有一个值（例如：`--force-device=PciRoot(0x0)/Pci(0x1f,0x3)`），它强制 AudioDxe 连接到指定的 PCI 设备，即使该设备不报告自己是一个 HDA 音频控制器。
+  在驱动连接过程中，AudioDxe 自动提供所有可用的 HDA 控制器的所有支持的编解码器的音频服务。然而，如果相关的控制器错误地报告了它的身份（通常，它将报告自己是一个传统的音频设备，而不是一个 HDA 控制器），那么可能需要这个参数。
+  如果音频设备可以在 macOS 中工作，但没有显示出被 AudioDxe 检测到的迹象（例如，当在 DisplayLevel 中包含 DEBUG_INFO 并使用 AudioDxe 的 DEBUG 构建时，在 OpenCore 日志的 Connecting drivers... 阶段没有显示控制器和编解码器布局信息）。
 
 - `--gpio-setup`，如果没有提供参数，默认值为 `0`（禁用 GPIO 设置）或者默认值为 `7`（启用所有 GPIO 设置阶段）。
 
@@ -303,7 +321,7 @@ UEFI固件中的高清晰度音频（HDA）支持驱动程序，适用于大多�
 - `--gpio-pins`，默认：`0`，自动检测。
   指定哪些 GPIO 引脚应该由 `--gpio-setup` 来操作。 这是一个位掩码，可能的值从 `0x0` 到 `0xFF`。可用的最大值取决于正在使用的编解码器的音频输出功能组上的可用引脚数量，例如，如果有两个 GPIO 引脚，它就是 `0x3`（最低的两个位），如果有三个引脚，就是 `0x7` ，等等。
 
-  当 `--gpio-setup` 被启用时（即非零），那么 `0` 是 `--gpio-pins` 的特殊值，意味着引脚掩码将根据指定编解码器上报告的 GPIO 引脚数量自动生成（见 AudioCodec）。例如，如果编解码器的音频输出功能组报告了 `4` 个 GPIO 引脚，将使用 `0xF` 的掩码。
+  当 `--gpio-setup` 被启用时（即非零），那么 `0` 是 `--gpio-pins` 的特殊值，意味着引脚掩码将根据指定编解码器上报告的 GPIO 引脚数量自动生成（参见 AudioCodec）。例如，如果编解码器的音频输出功能组报告了 `4` 个 GPIO 引脚，将使用 `0xF` 的掩码。
 
   使用中的值可以在调试日志中看到，比如一行：`HDA: GPIO setup on pins 0x0F - Success`。
 
@@ -312,7 +330,66 @@ UEFI固件中的高清晰度音频（HDA）支持驱动程序，适用于大多�
 - `--restore-nosnoop`，Boolean flag，如果存在则启用。
   AudioDxe 清除了 `Intel HDA No Snoop Enable（NSNPEN）bit`。在某些系统上，这个改变必须在退出时被逆转，以避免在Windows 或 Linux 中破坏声音。如果是这样， 这个标志应该被添加到 AudioDxe 驱动参数中。 默认情况下不启用，因为恢复这个 `flag` 会使声音在其他一些系统的 macOS 中无法工作。
 
-## 11.9 属性列表
+## 11.9 OpenVariableRuntimeDxe
+提供内存中模拟的 NVRAM 实现。这对于脆弱的设备（例如：`MacPro5,1`，请参阅此论坛帖子中链接的[讨论](https://forums.macrumors.com/posts/30945127)）或不存在兼容的 NVRAM 实现时非常有用。此驱动程序默认包含在 `OpenDuet` 中。
+
+除了安装模拟 NVRAM 之外，此驱动程序还安装了 OpenCore compatible 协议，可实现以下功能：
+
+- NVRAM 的值在启动时从 `NVRAM/nvram.plist` （或者从 `NVRAM/nvram.fallback`（如果它存在并且 `NVRAM/nvram.plist` 缺失））加载。
+- ResetNvramEntry 驱动程序添加的 Reset NVRAM 选项会删除上述文件，而不影响底层 NVRAM。
+- `CTRL+Enter` 在 `OpenCore bootpicker` 更新或创建 `NVRAM/nvram.plist`。
+
+此驱动程序的推荐设置：
+
+- 使用 `LoadEarly=true` 加载的 `OpenVariableRuntimeDxe.efi` （`OpenDuet` 不需要驱动程序）。
+- 在 `OpenVariableRuntimeDxe.efi` 之后指定的 `OpenRuntime.efi` （如果适用），也使用 `LoadEarly=true` 加载以正确操作 `RequestBootVarRouting`。
+- 已填充 `LegacySchema`。
+- `ExposeSensitiveData` 至少设置为 `0x1` 位，以使包含 OpenCore EFI 分区 `UUID` 的引导路径变量可用于 `Launchd.command` 脚本。
+
+变量加载发生在 NVRAM 删除（和添加）阶段之前。除非启用 `LegacyOverwrite` ，否则它不会覆盖任何现有变量。必须在 `LegacySchema` 中指定允许使用 `CTRL+Enter` 加载和保存的变量。
+
+为了允许在 macOS 中捕获和保存对 NVRAM 的更改，必须安装一个附加脚本。可以在 [`Utilities/LogoutHook/Launchd.command`](https://github.com/acidanthera/OpenCorePkg/blob/master/Utilities/LogoutHook/Launchd.command) 中找到此类脚本的示例。
+
+*注 1*：此驱动程序需要固件中的 FAT 写入支持，以及 OpenCore EFI 分区上有足够的可用空间，最多可保存三个 NVRAM 文件。
+
+*注 2*：`nvram.plist` （和 `nvram.fallback` ，如果存在）文件必须具有 root plist dictionary 类型并包含两个字段：
+
+- Version — plist integer，文件版本，必须设置为 `1`。
+- Add — plist dictionary，相当于 `Add from config.plist`。
+
+*注 3*：在设置 `legacy NVRAM` 时，可以方便地将 `<string>*</string>` 设置为 `LegacySchema` 中以下三个 GUID 键的值：
+
+- 36C28AB5-6566-4C50-9EBD-CBB920F83843
+- 7C436110-AB2A-4BBB-A880-FE41995C9F82
+- 8BE4DF61-93CA-11D2-AA0D-00E098032B8C
+
+这使得 `Launchd.command` 保存的所有变量都可以保存到 nvram.plist，因此它允许保存所有任意用户测试变量（例如，由 `sudo nvram foo=bar` 设置）。使用此许可策略还可以防止未来需要从 macOS 更新设置传递到 macOS 安装程序阶段以使其成功的变量的任何更改。然而，一旦设置了模拟 NVRAM，只允许已知的严格要求的变量（例如 OpenCore 的示例 `.plist` 文件中所示）会更加安全。另请参阅以下有关从非保管文件加载 NVRAM 变量的整体安全性的警告。
+
+{% note danger 警告 %}
+从磁盘上的文件加载 NVRAM 可能很危险，因为它将未受保护的数据传递给固件变量服务。仅在固件未提供硬件 NVRAM 实现或固件中可用的 NVRAM 实现不兼容或危险脆弱（例如，在过度使用可能导致硬件变砖的状态下）时使用。
+{% endnote %}
+
+### 11.9.1 使用模拟 NVRAM 时管理 macOS 更新
+OpenCore 与 OpenVariableRuntimeDxe 相结合，如果该文件被用于启动 macOS Installer 启动项，则只使用一次已保存的 `nvram.plist` 文件。之后，已使用的设置将被移至 `nvram.used`，而来自 `nvram.fallback` 的 `fallback` 设置（如果有的话）将被使用。`Launchd.command` 总是将之前的 NVRAM 设置复制到 `fallback` 中，每次它都会保存新的设置。
+
+此策略用于解决 `Launchd.command` 脚本未运行的限制，因此无法在 macOS 安装程序的第二次和后续重新启动期间保存 NVRAM 更改（特别是默认启动条目更改）。
+
+简而言之，这种回退策略允许从现有 macOS（安装了 `Launchd.command` 脚本）中启动的最新 macOS 的完整或增量 OTA 更新，无需人工干预即可继续进行。
+
+但是，对于完全安装，可以有不止一次完全重新启动回到 macOS 安装程序条目。在这种情况下，后备策略将从第二次重新启动开始失去对正确启动项（即 macOS 安装程序）的跟踪。同样，如果安装到当前默认引导分区以外的驱动器，安装程序完成后将不会自动选择它，就像使用非模拟 NVRAM 时一样。（这种行为仍然比没有回退策略更可取，在这种情况下，macOS 安装程序条目将在选择器菜单中不断重新创建，即使它不再存在）。
+
+在上述两种情况下，建议使用以下设置，以便在安装程序过程中轻松手动控制选择哪个引导项：
+
+- 设置 `ShowPicker=true`。
+- 设置 `Timeout=0`。
+- 设置 `DisableWatchdog=true`。
+- 如果可能，请从启动菜单中没有其他挂起的 macOS 安装程序条目的情况开始（以避免可能混淆哪些是相关的）。
+
+第一次重新启动应正确选择 macOS 安装程序。对于第二次和后续重新启动，如果 macOS 安装程序条目仍然存在，则应手动选择它（仅使用 `Enter`，而不是 `CTRL+Enter`）。一旦不再存在 macOS 安装程序条目，如果它是以前的引导默认值，则仍将自动选择新操作系统的条目。如果没有，则应手动选择它（此时，`CTRL+Enter` 是一个好主意，因为任何最终剩余的安装重新启动都将指向该条目）。
+
+注意：当使用模拟 NVRAM 但不是从现有已安装的 macOS 中安装时（即从 macOS 恢复中或从安装 USB 安装时），请参阅此论坛 [帖子](https://applelife.ru/threads/ustanovka-macos-big-sur-11-na-intel-pc.2945052/page-393#post-916248)（俄语）以获取其他选项。
+
+## 11.10 属性列表
 
 ### 1. `APFS`
 
@@ -324,7 +401,7 @@ UEFI固件中的高清晰度音频（HDA）支持驱动程序，适用于大多�
 
 **Type**: `plist dict`
 **Failsafe**: None
-**Description**: 配置以下 AppleInput 属性部分中描述的 Apple 事件协议的重新实现。
+**Description**: 配置 Apple 事件协议的重新实现，在下面的 AppleInput 属性部分中描述。
 
 ### 3. `Audio`
 
@@ -393,7 +470,7 @@ macOS 引导程序和 OpenCore 的音频本地化是分开的。macOS 引导程�
 **Type**: `plist array`
 **Description**: 设计为用 `plist dict` 值填充，用于描述对特定固件和硬件功能要求很高的内存区域，这些区域不应该被操作系统使用。比如被 Intel HD 3000 破坏的第二个 256MB 区域，或是一个有错误的 RAM 的区域。详情请参考下面的 ReservedMemory Properties 部分。
 
-## 11.10 APFS 属性
+## 11.11 APFS 属性
 
 ### 1. `EnableJumpstart`
 
@@ -435,7 +512,7 @@ APFS 驱动的 verbose 信息有助于 debug。
 
 APFS 驱动日期将 APFS 驱动与发布日期联系起来。苹果公司最终会放弃对旧的 macOS 版本的支持，这些版本的 APFS 驱动程序可能含有漏洞，如果在支持结束后使用这些驱动程序，就会被用来破坏计算机。这个选项允许将 APFS 驱动程序限制在当前的macOS版本。
 
-- `0` ---  需要 OpenCore 中 APFS 的默认支持发布日期。默认的发布日期会随着时间的推移而增加，因此建议采用这种设置。目前设置为 2021/01/01。
+- `0` ---  需要 OpenCore 中 APFS 的默认支持发布日期。默认的发布日期会随着时间的推移而增加，因此建议采用这种设置。目前设置为 `2021/01/01`。
 - `-1` --- 允许加载任何发布日期（强烈不推荐）。
 - 其他数值 --- 使用自定义的最小 APFS 发布日期，例如：`2020/04/01的20200401`。你可以从 OpenCore 的启动日志和 [OcApfsLib](https://github.com/acidanthera/OpenCorePkg/blob/master/Include/Acidanthera/Library/OcApfsLib.h) 中找到 APFS 发布日期。
 
@@ -447,11 +524,11 @@ APFS 驱动日期将 APFS 驱动与发布日期联系起来。苹果公司最终
 
 APFS 驱动版本将 APFS 驱动与 macOS 版本联系起来。苹果公司最终会放弃对旧的 macOS 版本的支持，而这些版本的 APFS 驱动可能含有漏洞，如果在支持结束后使用这些驱动，就会被用来破坏计算机。 这个选项允许将 APFS 驱动程序限制在当前的 macOS 版本。
 
-- `0` --- 需要 OpenCore 中 APFS 的默认支持版本。默认版本会随着时间的推移而增加，因此推荐使用这一设置。目前设置为允许 macOS Big Sur 和更新的版本（1600000000000000）。
+- `0` --- 需要 OpenCore 中 APFS 的默认支持版本。默认版本会随着时间的推移而增加，因此推荐使用这一设置。目前设置为允许 macOS Big Sur 和更新的版本（`1600000000000000`）。
 - `-1` --- 允许加载任何版本（强烈不推荐）。
 - 其他数值 --- 使用自定义的最小APFS版本，例如：macOS Catalina 10.15.4 的 `1412101001000000`。你可以从 OpenCore 的启动日志和 [OcApfsLib](https://github.com/acidanthera/OpenCorePkg/blob/master/Include/Acidanthera/Library/OcApfsLib.h) 中找到 APFS 驱动的版本号。
 
-## 11.11 AppleInput 属性
+## 11.12 AppleInput 属性
 
 ### 1. `AppleEvent`
 
@@ -484,9 +561,9 @@ APFS 驱动版本将 APFS 驱动与 macOS 版本联系起来。苹果公司最�
 
 *注 1*：在不使用 `KeySupport` 的系统上，此设置可自由用于配置按键重复行为。
 
-*注 2*：在使用 `KeySupport` 的系统上，但不显示 `two long delays` 行为（见 `*注 3*`）或总是显示一个坚实的 `set default` 指标（见 `KeyForgetThreshold`），那么这个设置也可以自由地用于配置按键的重复初始延迟行为，只是它永远不应该被设置为小于 `KeyForgetThreshold`，以避免不受控制的按键重复。
+*注 2*：在使用 `KeySupport` 的系统上，但不显示 `two long delays` 行为（见*注 3*）或总是显示一个坚实的 `set default` 指标（见 `KeyForgetThreshold`），那么这个设置也可以自由地用于配置按键的重复初始延迟行为，只是它永远不应该被设置为小于 `KeyForgetThreshold`，以避免不受控制的按键重复。
 
-*注 3*：在一些使用 KeySupport 的系统上，你可能会发现在正常速度键重复开始之前，在正常速度的按键响应之前，你会看到一个额外的慢速响应。如果是这样，你可能希望根据 `KeySubsequentDelay` 的 `*注 3*` 来配置 `KeyInitialDelay` 和 `KeySubsequentDelay`。
+*注 3*：在一些使用 KeySupport 的系统上，你可能会发现在正常速度键重复开始之前，在正常速度的按键响应之前，你会看到一个额外的慢速响应。如果是这样，你可能希望根据 `KeySubsequentDelay` 的*注 3*来配置 `KeyInitialDelay` 和 `KeySubsequentDelay`。
 
 > 译者注：两次按键之间必然会有间隔时间，不稳定的间隔时间，会导致按键错误，所以 `KeySubsequentDelay` 用于配置按键重复间隔。为了准确的计算间隔时间，需要一个延迟来保证按键已经结束，而不是按键时间稍长则被认为按了两次。`KeyInitialDelay` 就是用于此。
 
@@ -504,8 +581,8 @@ Apple OEM 的默认值是 5（50ms）。`0` 是这个选项的无效值（将发
 
 *注 3*：在一些使用 `KeySupport` 的系统上，特别是在非 `AMI` 模式下的 `KeySupport`，你可能会发现，在配置了 `KeyForgetThreshold` 后，当按住一个按键时，在开始正常速度的按键响应之前，你会得到一个额外的慢速按键响应。在出现这种情况的系统上， 这是使用 `KeySupport` 来模拟原始键盘数据的一个不可避免的缺陷， `UEFI` 没有提供这种数据。 虽然这个 `two long delays` 的问题对整体可用性的影响很小，但你可能希望解决这个问题，可以通过以下方法来解决：
 
-- 将 `CustomDelays` 设置为 `true`
-- 将按键初始延迟设置为 `0`
+- 将 `CustomDelays` 设置为 `true`。
+- 将按键初始延迟设置为 `0`。
 - 将 `KeySubsequentDelay` 设置为至少是你的 `KeyForgetThreshold` 设置的值。
 
 上述程序的工作原理如下。
@@ -586,7 +663,7 @@ Apple OEM 的默认值是 5（50ms）。`0` 是这个选项的无效值（将发
 
 *注*：这个选项的推荐值是 `1`， 这个选项的推荐值是 `1`。这个值可以根据用户的偏好，结合 `PointerSpeedDiv` 进行修改，以实现自定义的鼠标移动比例。
 
-## 11.12 Audio 属性
+## 11.13 Audio 属性
 
 ### 1. `AudioCodec`
 
@@ -594,7 +671,7 @@ Apple OEM 的默认值是 5（50ms）。`0` 是这个选项的无效值（将发
 **Failsafe**: `0`
 **Description**: 特定音频控制器上的编解码器地址，用于音频支持。
 
-一般来说，这里包含了内置模拟音频控制器（`HDEF`）上的第一个音频编解码器地址。音频编解码器地址（例：`2`）可以在调试日志中找到（已用粗斜体标出）：
+一般来说，这里包含了内置模拟音频控制器（`HDEF`）上的第一个音频编解码器地址。音频编解码器地址（例如：`2`）可以在调试日志中找到（已用粗斜体标出）：
 
 <code>OCAU: 1/3 PciRoot(0x0)/Pci(0x1,0x0)/Pci(0x0,0x1)/VenMsg(&lt;redacted&gt;,<strong><em>00000000</em></strong>) (4 outputs)</code>
 <code>OCAU: 2/3 PciRoot(0x0)/Pci(0x3,0x0)/VenMsg(&lt;redacted&gt;,<strong><em>00000000</em></strong>) (1 outputs)</code>
@@ -608,7 +685,7 @@ Apple OEM 的默认值是 5（50ms）。`0` 是这个选项的无效值（将发
 **Failsafe**: empty
 **Description**: 特定音频控制器的设备路径，用于音频支持。
 
-一般来说，这里包含了内置模拟音频控制器（`HDEF`）的设备路径，比如 `PciRoot(0x0)/Pci(0x1b,0x0)`。认可的音频控制器列表可以在调试日志中找到（已用粗斜体标出）：
+一般来说，这里包含了内置模拟音频控制器（`HDEF`）的设备路径，例如：`PciRoot(0x0)/Pci(0x1b,0x0)`。认可的音频控制器列表可以在调试日志中找到（已用粗斜体标出）：
 
 <code>OCAU: 1/3 <strong><em>PciRoot(0x0)/Pci(0x1,0x0)/Pci(0x0,0x1)</em></strong>/VenMsg(&lt;redacted&gt;,00000000) (4 outputs)</code>
 <code>OCAU: 2/3 <strong><em>PciRoot(0x0)/Pci(0x3,0x0)</em></strong>/VenMsg(&lt;redacted&gt;,00000000) (1 outputs)</code>
@@ -665,7 +742,7 @@ Apple OEM 的默认值是 5（50ms）。`0` 是这个选项的无效值（将发
 **Failsafe**: `false`
 **Description**: 在加载驱动程序之前，断开 HDA 控制器的连接。
 
-在某些系统上可能需要（例如苹果硬件、 VMware Fusion guest），以允许 UEFI 声音驱动（例如 AudioDxe）控制音频硬件。
+在某些系统上可能需要（例如苹果硬件、 VMware Fusion guest），以允许 UEFI 声音驱动（例如：AudioDxe）控制音频硬件。
 
 *注*：除了这个选项外，大多数苹果硬件还需要 `--gpio-setup` 驱动参数， 这在 AudioDxe 部分有涉及。
 
@@ -673,7 +750,7 @@ Apple OEM 的默认值是 5（50ms）。`0` 是这个选项的无效值（将发
 
 **Type**: `plist integer`
 **Failsafe**: `-15`
-**Description**: 用于 UEFI 音频的最大增益，以分贝（dB）为单位，相对于放大器的参考电平 `0dB`（见注1）。
+**Description**: 用于 UEFI 音频的最大增益，以分贝（dB）为单位，相对于放大器的参考电平 `0dB`（见*注 1*）。
   
 当从 `SystemAudioVolumeDB NVRAM` 变量中读取的系统放大器增益高于此值时，所有的 UEFI 音频将使用此增益设置。 这是为了避免在系统音量设置得很高，或者 `SystemAudioVolumeDB NVRAM` 的值被错误地配置时，UEFI 音频过于响亮。
   
@@ -731,37 +808,45 @@ Apple OEM 的默认值是 5（50ms）。`0` 是这个选项的无效值（将发
 
 只有当 TCSEL 寄存器配置为 `use TC0 traffic class` 时，AppleHDA.kext 才能正常工作。有关此寄存器的更多详细信息，请参阅 Intel I/O Controller Hub 9（ICH9）Family Datasheet（或任何其他 ICH Datasheet）。
 
-*注*：此选项独立于 `AudioSupport`。如果使用 AppleALC，则首选使用 `AppleALC alctsel` 属性。  
+*注*：此选项独立于 `AudioSupport`。如果使用 AppleALC，则首选使用 `AppleALC alctcsel` 属性。  
   
 ### 11. `SetupDelay`
 
 **Type**: `plist integer`
 **Failsafe**: `0`
-**Description**: 音频编解码器重新配置的延迟，单位为微秒。
+**Description**: 音频编解码器重新配置的延迟，以毫秒为单位。
 
 某些编解码器在重新配置后需要特定延迟（由供应商提供，例如音量设置），此选项可对其进行配置。一般来说，必要的延迟时间可能长达 0.5 秒。
 
-## 11.13 Drivers 属性
+## 11.14 Drivers 属性
   
 ### 1. `Comment`
 
-**Type**: `plist integer`
+**Type**: `plist string`
 **Failsafe**: Empty
 **Description**: 用于为条目提供人类可读参考的任意 ASCII 字符串（译者注：即注释）。 
   
-### 2. `Path`
+### 2. `Enabled`
 
-**Type**: `plist integer`
-**Failsafe**: Empty
-**Description**: 从 `OC/Drivers` 目录中作为 UEFI 驱动加载的文件的路径。
+**Type**: `plist boolean`
+**Failsafe**: `false`
+**Description**: 如果设置为 `false` 的，这个驱动条目将被忽略（译者注：即不启用这个驱动）。
   
 ### 3. `Path`
 
-**Type**: `plist integer`
+**Type**: `plist string`
+**Failsafe**: Empty
+**Description**:  从 `OC/Drivers` 目录中作为 UEFI 驱动加载的文件的路径。
+
+### 4. `LoadEarly`
+
+**Type**: `plist boolean`
 **Failsafe**: `false`
-**Description**:  如果设置为 `false` 的，这个驱动条目将被忽略（译者注：即不启用这个驱动）。
+**Description**:  在 OpenCore 启动过程的早期加载驱动程序，在 NVRAM 设置之前。
+
+*注*：请勿启用此选项，除非针对给定的驱动程序和目的特别推荐这样做。
   
-### 4. `Arguments`
+### 5. `Arguments`
 
 **Type**: `plist integer`
 **Failsafe**: Empty
@@ -848,7 +933,7 @@ Apple OEM 的默认值是 5（50ms）。`0` 是这个选项的无效值（将发
 
 这个选项允许用 `100` 纳秒为单位的指定值来更新固件架构的定时器周期。设置一个较低的值通常可以提高接口和输入处理的性能和响应性。  
   
-建议值为 `50000`（即 5 毫秒）或稍高一些。选择 ASUS Z87 主板时，请使用 `60000`，苹果主板请使用 `100000`。你也可以将此值设置为 0，不改变固件始终刷新的频率。
+建议值为 `50000`（即 5 毫秒）或稍高一些。选择 ASUS Z87 主板时，请使用 `60000`，苹果主板请使用 `100000`。你也可以将此值设置为 `0`，不改变固件始终刷新的频率。
 
 ## 11.15 Output 属性
 
