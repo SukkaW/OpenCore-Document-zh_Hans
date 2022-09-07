@@ -3,7 +3,7 @@ title: 8. Misc
 description: 关于 OpenCore 行为的其他配置
 type: docs
 author_info: 由 xMuu、Sukka、derbalkon、EricKwok、cike-567 整理、由 Sukka、derbalkon、EricKwok、cike-567 翻译。
-last_updated: 2022-08-04
+last_updated: 2022-09-07
 ---
 
 ## 8.1 简介
@@ -974,14 +974,24 @@ Apple 安全启动最初出现于搭载 T2 芯片的机型上的 macOS 10.13。�
 **Type**: `plist string`
 **Failsafe**: Auto
 **Description**: 为该启动项指定 `flavour`，详情请参阅文档中的 `OC_ATTR_USE_FLAVOUR_ICON` 标识。
-   
-### 6. `Name`
+
+### 6. `FullNvramAccess`
+
+**Type**: `plist boolean`
+**Failsafe**: false
+**Description**:  在使用 `Tools` 的过程中禁用 OpenRuntime NVRAM 保护。
+
+在 `Tools` 使用期间，这将禁用 `OpenRuntime.efi` 提供的所有 NVRAM 保护措施。通常情况下，应该避免这样做，但是如果一个 `Tools` 需要直接访问 NVRAM 而不需要 `RequestBootVarRouting` 的重定向，则可能需要这样做。
+
+*注*：此选项仅对 `Tools` 有效，对于 `Entries` 该属性始终为 `false`。
+
+### 7. `Name`
 
 **Type**: `plist string`
 **Failsafe**: Empty
 **Description**: 引导条目在开机引导菜单中显示的名字。
 
-### 7. `Path`
+### 8. `Path`
 
 **Type**: `plist string`
 **Failsafe**: Empty
@@ -990,7 +1000,7 @@ Apple 安全启动最初出现于搭载 T2 芯片的机型上的 macOS 10.13。�
 - `Entries` 用于指定外部启动选项，因此会在 `Path` 中取设备路径。这些值不会被检查，所以要非常小心。例如：`PciRoot(0x0)/Pci(0x1,0x1)/.../\EFI\COOL.EFI`。
 - `Tools` 用于指定内部引导选项，这些选项隶属于 `bootloader vault`，因此会取相对于 `OC/Tools` 目录的文件路径。例如：`OpenShell.efi`。
 
-### 8. `RealPath`
+### 9. `RealPath`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
@@ -998,9 +1008,9 @@ Apple 安全启动最初出现于搭载 T2 芯片的机型上的 macOS 10.13。�
 
 这通常应该禁用，因为传递目录可能会使工具在没有检查文件完整性的情况下就意外地访问了文件，降低了安全性。需要启用该项的情况可能是工具需要外部文件来正常工作或者工具需要外部文件来更好地实现某些功能（例如 `memtest86` 的记录和配置功能，Shell 自动执行脚本的功能）。
 
-*注*：此属性仅对 `Tools` 有效。对于 `Entries` 该属性始终为 `true`。
+*注*：此选项仅对 `Tools` 有效。对于 `Entries` 该属性始终为 `true`。
 
-### 9. TextMode
+### 10. TextMode
 
 **Type**: `plist boolean`
 **Failsafe**: `false`

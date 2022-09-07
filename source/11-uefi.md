@@ -3,7 +3,7 @@ title: 11. UEFI
 description: UEFI 驱动以及加载顺序
 type: docs
 author_info: 由 xMuu、Sukka、derbalkon、cike-567 整理，由 Sukka、derbalkon、cike-567 翻译
-last_updated: 2022-08-04
+last_updated: 2022-09-07
 ---
 
 ## 11.1 简介
@@ -394,19 +394,16 @@ OpenCore 与 OpenVariableRuntimeDxe 相结合，如果该文件被用于启动 m
 ### 1. `APFS`
 
 **Type**: `plist dict`
-**Failsafe**: None
 **Description**: 配置 APFS 分区驱动，具体配置内容参见下文 APFS 属性部分。
 
 ### 2. `AppleInput`
 
 **Type**: `plist dict`
-**Failsafe**: None
 **Description**: 配置 Apple 事件协议的重新实现，在下面的 AppleInput 属性部分中描述。
 
 ### 3. `Audio`
 
 **Type**: `plist dict`
-**Failsafe**: None
 **Description**: 配置音频后端支持，具体配置如下文所述。
 
 除非另有说明（例如 ResetTrafficClass），否则本节中的设置仅用于 UEFI 音频支持（例如 OpenCore 生成的引导蜂鸣音和音频辅助），与操作系统音频支持所需的任何配置（例如 AppleALC ）无关。
@@ -442,19 +439,16 @@ macOS 引导程序和 OpenCore 的音频本地化是分开的。macOS 引导程�
 ### 6. `Input`
 
 **Type**: `plist dict`
-**Failsafe**: None
 **Description**: 从下面的 Input 属性部分，应用为输入（键盘和鼠标）而设计的个性化设置。
 
 ### 7. `Output`
 
 **Type**: `plist dict`
-**Failsafe**: None
 **Description**: 从下面的 Output 属性部分，应用为输出（文本和图形）而设计的个性化设置。
 
 ### 8. `ProtocolOverrides`
 
 **Type**: `plist dict`
-**Failsafe**: None
 **Description**: 强制执行从下面的 ProtocolOverrides 属性部分所选协议的内置版本。
 
 *注*：所有协议实例的安装都优先于驱动程序的加载。
@@ -462,7 +456,6 @@ macOS 引导程序和 OpenCore 的音频本地化是分开的。macOS 引导程�
 ### 9. `Quirks`
 
 **Type**: `plist dict`
-**Failsafe**: None
 **Description**: 从下面的 Quirks 属性部分，应用个性化的固件 Quirks。
 
 ### 10. `ReservedMemory`
