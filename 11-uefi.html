@@ -195,7 +195,7 @@
                     <p><small>由 xMuu、Sukka、derbalkon、cike-567 整理，由 Sukka、derbalkon、cike-567 翻译</small></p>
                 
                 
-                    <p><small>本页面最后更新于 2022 年 08 月 04 日</small></p>
+                    <p><small>本页面最后更新于 2022 年 09 月 07 日</small></p>
                 
                 <br>
             
@@ -481,9 +481,9 @@
 </ul>
 <p>第一次重新启动应正确选择 macOS 安装程序。对于第二次和后续重新启动，如果 macOS 安装程序条目仍然存在，则应手动选择它（仅使用 <code>Enter</code>，而不是 <code>CTRL+Enter</code>）。一旦不再存在 macOS 安装程序条目，如果它是以前的引导默认值，则仍将自动选择新操作系统的条目。如果没有，则应手动选择它（此时，<code>CTRL+Enter</code> 是一个好主意，因为任何最终剩余的安装重新启动都将指向该条目）。</p>
 <p>注意：当使用模拟 NVRAM 但不是从现有已安装的 macOS 中安装时（即从 macOS 恢复中或从安装 USB 安装时），请参阅此论坛 <a target="_blank" rel="noopener" href="https://applelife.ru/threads/ustanovka-macos-big-sur-11-na-intel-pc.2945052/page-393#post-916248">帖子</a>（俄语）以获取其他选项。</p>
-<h2 id="11-10-属性列表"><a href="#11-10-属性列表" class="headerlink" title="11.10 属性列表"></a>11.10 属性列表</h2><h3 id="1-APFS"><a href="#1-APFS" class="headerlink" title="1. APFS"></a>1. <code>APFS</code></h3><p><strong>Type</strong>: <code>plist dict</code><br><strong>Failsafe</strong>: None<br><strong>Description</strong>: 配置 APFS 分区驱动，具体配置内容参见下文 APFS 属性部分。</p>
-<h3 id="2-AppleInput"><a href="#2-AppleInput" class="headerlink" title="2. AppleInput"></a>2. <code>AppleInput</code></h3><p><strong>Type</strong>: <code>plist dict</code><br><strong>Failsafe</strong>: None<br><strong>Description</strong>: 配置 Apple 事件协议的重新实现，在下面的 AppleInput 属性部分中描述。</p>
-<h3 id="3-Audio"><a href="#3-Audio" class="headerlink" title="3. Audio"></a>3. <code>Audio</code></h3><p><strong>Type</strong>: <code>plist dict</code><br><strong>Failsafe</strong>: None<br><strong>Description</strong>: 配置音频后端支持，具体配置如下文所述。</p>
+<h2 id="11-10-属性列表"><a href="#11-10-属性列表" class="headerlink" title="11.10 属性列表"></a>11.10 属性列表</h2><h3 id="1-APFS"><a href="#1-APFS" class="headerlink" title="1. APFS"></a>1. <code>APFS</code></h3><p><strong>Type</strong>: <code>plist dict</code><br><strong>Description</strong>: 配置 APFS 分区驱动，具体配置内容参见下文 APFS 属性部分。</p>
+<h3 id="2-AppleInput"><a href="#2-AppleInput" class="headerlink" title="2. AppleInput"></a>2. <code>AppleInput</code></h3><p><strong>Type</strong>: <code>plist dict</code><br><strong>Description</strong>: 配置 Apple 事件协议的重新实现，在下面的 AppleInput 属性部分中描述。</p>
+<h3 id="3-Audio"><a href="#3-Audio" class="headerlink" title="3. Audio"></a>3. <code>Audio</code></h3><p><strong>Type</strong>: <code>plist dict</code><br><strong>Description</strong>: 配置音频后端支持，具体配置如下文所述。</p>
 <p>除非另有说明（例如 ResetTrafficClass），否则本节中的设置仅用于 UEFI 音频支持（例如 OpenCore 生成的引导蜂鸣音和音频辅助），与操作系统音频支持所需的任何配置（例如 AppleALC ）无关。</p>
 <p>音频支持为上游协议提供了一种与所选硬件和音频资源交互的方式。所有音频资源应该保存在 <code>\EFI\OC\Resources\Audio</code> 目录。目前支持的音频文件格式为 <code>MP3</code> 和 <code>WAVE PCM</code>。虽然支持哪种音频流格式取决于驱动程序，但大多数常见的音频卡都支持 4410 或 48000H 的 16 位立体声。</p>
 <p>音频文件的路径是由音频的类型、本地化语言和路径决定的。每个文件名看起来都类似于：<code>[audio type]_[audio localisation]_[audio path].[audio ext]</code>。对于没有本地化的文件，其文件名不包含语言代码，看起来类似于：<code>[audio type]_[audio path].[audio ext]</code>。其中音频扩展名为 <code>mp3</code> 或 <code>wav</code>。</p>
@@ -498,11 +498,11 @@
 <p><em>注</em>：某些固件（特别是 Apple 的）仅连接包含操作系统的驱动器以加快启动过程。启用此选项可以在拥有多个驱动器时查看所有引导选项。</p>
 <h3 id="5-Drivers"><a href="#5-Drivers" class="headerlink" title="5. Drivers"></a>5. <code>Drivers</code></h3><p><strong>Type</strong>: <code>plist array</code><br><strong>Failsafe</strong>: Empty<br><strong>Description</strong>: 从 <code>OC/Drivers</code> 目录下加载选择的驱动。设计为填充 UEFI 驱动程序加载的文件名。</p>
 <p>要用 plist dict 值来填充，描述每个驱动程序。请参阅下面的 Drivers Properties 部分。</p>
-<h3 id="6-Input"><a href="#6-Input" class="headerlink" title="6. Input"></a>6. <code>Input</code></h3><p><strong>Type</strong>: <code>plist dict</code><br><strong>Failsafe</strong>: None<br><strong>Description</strong>: 从下面的 Input 属性部分，应用为输入（键盘和鼠标）而设计的个性化设置。</p>
-<h3 id="7-Output"><a href="#7-Output" class="headerlink" title="7. Output"></a>7. <code>Output</code></h3><p><strong>Type</strong>: <code>plist dict</code><br><strong>Failsafe</strong>: None<br><strong>Description</strong>: 从下面的 Output 属性部分，应用为输出（文本和图形）而设计的个性化设置。</p>
-<h3 id="8-ProtocolOverrides"><a href="#8-ProtocolOverrides" class="headerlink" title="8. ProtocolOverrides"></a>8. <code>ProtocolOverrides</code></h3><p><strong>Type</strong>: <code>plist dict</code><br><strong>Failsafe</strong>: None<br><strong>Description</strong>: 强制执行从下面的 ProtocolOverrides 属性部分所选协议的内置版本。</p>
+<h3 id="6-Input"><a href="#6-Input" class="headerlink" title="6. Input"></a>6. <code>Input</code></h3><p><strong>Type</strong>: <code>plist dict</code><br><strong>Description</strong>: 从下面的 Input 属性部分，应用为输入（键盘和鼠标）而设计的个性化设置。</p>
+<h3 id="7-Output"><a href="#7-Output" class="headerlink" title="7. Output"></a>7. <code>Output</code></h3><p><strong>Type</strong>: <code>plist dict</code><br><strong>Description</strong>: 从下面的 Output 属性部分，应用为输出（文本和图形）而设计的个性化设置。</p>
+<h3 id="8-ProtocolOverrides"><a href="#8-ProtocolOverrides" class="headerlink" title="8. ProtocolOverrides"></a>8. <code>ProtocolOverrides</code></h3><p><strong>Type</strong>: <code>plist dict</code><br><strong>Description</strong>: 强制执行从下面的 ProtocolOverrides 属性部分所选协议的内置版本。</p>
 <p><em>注</em>：所有协议实例的安装都优先于驱动程序的加载。</p>
-<h3 id="9-Quirks"><a href="#9-Quirks" class="headerlink" title="9. Quirks"></a>9. <code>Quirks</code></h3><p><strong>Type</strong>: <code>plist dict</code><br><strong>Failsafe</strong>: None<br><strong>Description</strong>: 从下面的 Quirks 属性部分，应用个性化的固件 Quirks。</p>
+<h3 id="9-Quirks"><a href="#9-Quirks" class="headerlink" title="9. Quirks"></a>9. <code>Quirks</code></h3><p><strong>Type</strong>: <code>plist dict</code><br><strong>Description</strong>: 从下面的 Quirks 属性部分，应用个性化的固件 Quirks。</p>
 <h3 id="10-ReservedMemory"><a href="#10-ReservedMemory" class="headerlink" title="10. ReservedMemory"></a>10. <code>ReservedMemory</code></h3><p><strong>Type</strong>: <code>plist array</code><br><strong>Description</strong>: 设计为用 <code>plist dict</code> 值填充，用于描述对特定固件和硬件功能要求很高的内存区域，这些区域不应该被操作系统使用。比如被 Intel HD 3000 破坏的第二个 256MB 区域，或是一个有错误的 RAM 的区域。详情请参考下面的 ReservedMemory Properties 部分。</p>
 <h2 id="11-11-APFS-属性"><a href="#11-11-APFS-属性" class="headerlink" title="11.11 APFS 属性"></a>11.11 APFS 属性</h2><h3 id="1-EnableJumpstart"><a href="#1-EnableJumpstart" class="headerlink" title="1. EnableJumpstart"></a>1. <code>EnableJumpstart</code></h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: <code>False</code><br><strong>Description</strong>: 从一个 APFS 容器中加载 APFS 驱动。</p>
 <p>APFS 的 EFI 驱动内置在所有可以作为系统启动盘的 APFS 容器之中。这一选项将会根据基于 <code>ScanPolicy</code> 找到的 APFS 容器，从中加载 APFS 驱动。更多详情请查看 <a target="_blank" rel="noopener" href="https://developer.apple.com/support/apple-file-system/Apple-File-System-Reference.pdf">苹果 APFS 文件系统参考手册</a> 中的 <code>EFI Jummpstart</code> 部分。</p>
