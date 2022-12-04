@@ -3,7 +3,7 @@ title: 8. Misc
 description: 关于 OpenCore 行为的其他配置
 type: docs
 author_info: 由 xMuu、Sukka、derbalkon、EricKwok、cike-567 整理、由 Sukka、derbalkon、EricKwok、cike-567 翻译。
-last_updated: 2022-09-07
+last_updated: 2022-12-04
 ---
 
 ## 8.1 简介
@@ -675,6 +675,10 @@ nvram 4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102:oem-board # SMBIOS Type2 ProductName
 **Type**: `plist integer`, 64 bit
 **Failsafe**: `0x80000000` (`DEBUG_ERROR`)
 **Description**: EDK II 调试级别的位掩码（总和），使 CPU 在获得 `HaltLevel` 消息后中止（停止执行）。可能的值与 `DisplayLevel` 值相匹配。
+
+*注 1*：只有当 Misc->Debug 部分下的 Target 的 bit 0（即启用日志）被设置时，才会发生停顿。
+
+*注 2*：只有在加载配置和配置了日志后才会发生停顿。如果有任何日志信息发生在早期日志的指定停顿级别（即在这之前），一旦配置好，它们被刷入日志时将会引起停顿。
 
 ### 9. `PasswordHash`
 
