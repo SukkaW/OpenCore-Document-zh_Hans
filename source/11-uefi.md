@@ -18,7 +18,6 @@ last_updated: 2022-09-07
 - [`btrfs_x64`](https://github.com/acidanthera/OcBinaryData) --- 开源 BTRFS 文件系统驱动程序，需要从一个文件系统启动 OpenLinuxBoot，该文件系统在 Linux 非常常用。
 - [`BiosVideo`](https://github.com/acidanthera/OpenCorePkg)* --- 基于 VESA 和传统 BIOS 接口实现图形输出协议的 CSM 视频驱动程序。用于支持脆弱 GOP 的 UEFI 固件（例如，低分辨率）。需要重新连接图形连接。包含在 OpenDuet 中，开箱即用。
 - [`CrScreenshotDxe`](https://github.com/acidanthera/OpenCorePkg)* --- 截图驱动。启用后，按下 <kbd>F10</kbd> 将能够截图并保存在 EFI 分区根目录下。该驱动基于 [Nikolaj Schlej](https://github.com/NikolajSchlej) 修改的 LongSoft 开发的 [`CrScreenshotDxe`](https://github.com/LongSoft/CrScreenshotDxe)。
-- [`ExFatDxe`](https://github.com/acidanthera/OcBinaryData) --- 用于 Bootcamp 支持的专有 ExFAT 文件系统驱动程序，通常可以在 Apple 固件中找到。 对于 `Sandy Bridge` 和更早的 CPU，由于缺少 `RDRAND` 指令支持，应使用 `ExFatDxeLegacy` 驱动程序。
 - [`ext4_x64`](https://github.com/acidanthera/OcBinaryData) --- 开源 EXT4 文件系统驱动程序，需要用 OpenLinuxBoot 从 Linux 最常用的文件系统启动。
 - [`HfsPlus`](https://github.com/acidanthera/OcBinaryData) --- Apple 固件中常见的具有 Bless 支持的专有 HFS 文件系统驱动程序。对于 `Sandy Bridge` 和更早的 CPU，由于这些 CPU 缺少 `RDRAND` 指令支持，应使用 `HfsPlusLegacy` 驱动程序。
 - [`HiiDatabase`](https://github.com/acidanthera/audk)* --- 来自 `MdeModulePkg` 的 HII 服务驱动。Ivy Bridge 及其以后的大多数固件中都已内置此驱动程序。某些带有 GUI 的应用程序（例如 UEFI Shell）可能需要此驱动程序才能正常工作。
@@ -341,9 +340,14 @@ UEFI固件中的高清晰度音频（HDA）支持驱动程序，适用于大多�
 
 此驱动程序的推荐设置：
 
-- 使用 `LoadEarly=true` 加载的 `OpenVariableRuntimeDxe.efi` （`OpenDuet` 不需要驱动程序）。
+- 使用 `LoadEarly=true` 加载的 `OpenVariableRuntimeDxe.efi`。`OpenDuet` 用户不应该加载这个驱动程序，因为它已经包含在 `OpenDuet` 中。
 - 在 `OpenVariableRuntimeDxe.efi` 之后指定的 `OpenRuntime.efi` （如果适用），也使用 `LoadEarly=true` 加载以正确操作 `RequestBootVarRouting`。
+  - `RequestBootVarRouting` 在使用模拟的 NVRAM 时从来都不需要，但在一个需要在真实和模拟的 NVRAM 之间切换的系统上保留它可能会很方便。
+  - `RequestBootVarRouting` 在 `OpenDuet` 系统上从来不需要，因为没有 BIOS 管理的启动项需要保护，因此在 `OpenDuet` 上推荐的设置是 `OpenRuntime.efi` 的 `LoadEarly=false` 和 `RequestBootVarRouting=false`。
 - 已填充 `LegacySchema`。
+  - 对于更简单的测试（允许任意测试变量），以及为了防止 macOS 更新所要求的变量发生变化，请使用 <string>*</string> 设置，如下面的注释所述。
+  - 为了提高安全性，如 OpenCore 的 `sample .plist` 文件所示，只用已知的必要键来填充部分。
+
 - `ExposeSensitiveData` 至少设置为 `0x1` 位，以使包含 OpenCore EFI 分区 `UUID` 的引导路径变量可用于 `Launchd.command` 脚本。
 
 变量加载发生在 NVRAM 删除（和添加）阶段之前。除非启用 `LegacyOverwrite` ，否则它不会覆盖任何现有变量。必须在 `LegacySchema` 中指定允许使用 `CTRL+Enter` 加载和保存的变量。
@@ -655,6 +659,30 @@ Apple OEM 的默认值是 5（50ms）。`0` 是这个选项的无效值（将发
 配置指针移动的乘数。 OEM Apple 的默认值是 `1`。
 
 *注*：这个选项的推荐值是 `1`， 这个选项的推荐值是 `1`。这个值可以根据用户的偏好，结合 `PointerSpeedDiv` 进行修改，以实现自定义的鼠标移动比例。
+
+### 11. `PointerDwellClickTimeout`
+
+**Type**: `plist integer`
+**Failsafe**: `0` 
+**Description**: 在 OpenCore 对 Apple Event 协议的重新实现中，以毫秒为单位配置指针停留点击单一左键的超时时间。在使用 OEM Apple 实现时没有影响（见 AppleEvent 设置）。
+
+当超时过后，在当前位置发出一次左键点击。0表示超时被禁用。
+
+### 12. `PointerDwellDoubleClickTimeout`
+
+**Type**: `plist integer`
+**Failsafe**: `0` 
+**Description**: 在 OpenCore 对 Apple Event 协议的重新实现中，以毫秒为单位配置指针停留点击单左双击的超时。在使用 OEM Apple 实现时没有影响（见 AppleEvent 设置）。
+
+当超时过后，在当前位置发出一次左键双击。0表示超时被禁用。
+
+### 13. `PointerDwellRadius`
+
+**Type**: `plist integer`
+**Failsafe**: `0` 
+**Description**: 在 OpenCore 对 Apple Event 协议的重新实现中，以像素为单位配置指针停留点击的容忍半径。在使用 OEM Apple实现时没有影响（见 AppleEvent 设置）。
+
+半径由 UIScale 进行缩放。当指针离开这个半径时，PointerDwellClickTimeout 和 PointerDwellDoubleClickTimeout 的超时被重置，新的位置是新的停留点击公差半径的中心。
 
 ## 11.13 Audio 属性
 
