@@ -195,7 +195,7 @@
                     <p><small>由 xMuu、Sukka、derbalkon、EricKwok、cike-567 整理、由 Sukka、derbalkon、EricKwok、cike-567 翻译。</small></p>
                 
                 
-                    <p><small>本页面最后更新于 2022 年 09 月 07 日</small></p>
+                    <p><small>本页面最后更新于 2022 年 12 月 04 日</small></p>
                 
                 <br>
             
@@ -620,6 +620,8 @@
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs bash">nvram 4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102:oem-product <span class="hljs-comment"># SMBIOS Type1 ProductName</span><br>nvram 4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102:oem-vendor <span class="hljs-comment"># SMBIOS Type2 Manufacturer</span><br>nvram 4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102:oem-board <span class="hljs-comment"># SMBIOS Type2 ProductName</span><br></code></pre></td></tr></table></figure>
 
 <h3 id="8-HaltLevel"><a href="#8-HaltLevel" class="headerlink" title="8. HaltLevel"></a>8. <code>HaltLevel</code></h3><p><strong>Type</strong>: <code>plist integer</code>, 64 bit<br><strong>Failsafe</strong>: <code>0x80000000</code> (<code>DEBUG_ERROR</code>)<br><strong>Description</strong>: EDK II 调试级别的位掩码（总和），使 CPU 在获得 <code>HaltLevel</code> 消息后中止（停止执行）。可能的值与 <code>DisplayLevel</code> 值相匹配。</p>
+<p><em>注 1</em>：只有当 Misc-&gt;Debug 部分下的 Target 的 bit 0（即启用日志）被设置时，才会发生停顿。</p>
+<p><em>注 2</em>：只有在加载配置和配置了日志后才会发生停顿。如果有任何日志信息发生在早期日志的指定停顿级别（即在这之前），一旦配置好，它们被刷入日志时将会引起停顿。</p>
 <h3 id="9-PasswordHash"><a href="#9-PasswordHash" class="headerlink" title="9. PasswordHash"></a>9. <code>PasswordHash</code></h3><p><strong>Type</strong>: <code>plist data</code> 64 bytes<br><strong>Failsafe</strong>: all zero<br><strong>Description</strong>: 密码使用的哈希值（Hash）。</p>
 <h3 id="10-PasswordSalt"><a href="#10-PasswordSalt" class="headerlink" title="10. PasswordSalt"></a>10. <code>PasswordSalt</code></h3><p><strong>Type</strong>: <code>plist data</code><br><strong>Failsafe</strong>: empty<br><strong>Description</strong>: 密码使用的盐值（Salt）。</p>
 <h3 id="11-Vault"><a href="#11-Vault" class="headerlink" title="11. Vault"></a>11. <code>Vault</code></h3><p><strong>Type</strong>: <code>plist string</code><br><strong>Failsafe</strong>: <code>Secure</code><br><strong>Description</strong>: 启用 OpenCore 的 Vault 机制。</p>
