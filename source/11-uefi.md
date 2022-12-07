@@ -342,8 +342,8 @@ UEFI固件中的高清晰度音频（HDA）支持驱动程序，适用于大多�
 
 - 使用 `LoadEarly=true` 加载的 `OpenVariableRuntimeDxe.efi`。`OpenDuet` 用户不应该加载这个驱动程序，因为它已经包含在 `OpenDuet` 中。
 - 在 `OpenVariableRuntimeDxe.efi` 之后指定的 `OpenRuntime.efi` （如果适用），也使用 `LoadEarly=true` 加载以正确操作 `RequestBootVarRouting`。
-  - `RequestBootVarRouting` 在使用模拟的 NVRAM 时从来都不需要，但在一个需要在真实和模拟的 NVRAM 之间切换的系统上保留它可能会很方便。
-  - `RequestBootVarRouting` 在 `OpenDuet` 系统上从来不需要，因为没有 BIOS 管理的启动项需要保护，因此在 `OpenDuet` 上推荐的设置是 `OpenRuntime.efi` 的 `LoadEarly=false` 和 `RequestBootVarRouting=false`。
+  - 模拟 NVRAM 时无需 `RequestBootVarRouting`。但是如果你需要在真实和模拟的 NVRAM 之间切换，保留它可能会很方便。
+  - 在 `OpenDuet` 系统上无需 `RequestBootVarRouting`，因为没有 BIOS 管理的启动项需要保护，因此在 `OpenDuet` 上推荐的设置是 `OpenRuntime.efi` 的 `LoadEarly=false` 和 `RequestBootVarRouting=false`。
 - 已填充 `LegacySchema`。
   - 对于更简单的测试（允许任意测试变量），以及为了防止 macOS 更新所要求的变量发生变化，请使用 <string>*</string> 设置，如下面的注释所述。
   - 为了提高安全性，如 OpenCore 的 `sample .plist` 文件所示，只用已知的必要键来填充部分。
