@@ -666,7 +666,7 @@ Apple OEM 的默认值是 5（50ms）。`0` 是这个选项的无效值（将发
 **Failsafe**: `0` 
 **Description**: 在 OpenCore 对 Apple Event 协议的重新实现中，以毫秒为单位配置指针停留点击单一左键的超时时间。在使用 OEM Apple 实现时没有影响（见 AppleEvent 设置）。
 
-当超时过后，在当前位置发出一次左键点击。0表示超时被禁用。
+当超时过后，在当前位置发出一次左键点击。0 表示超时被禁用。
 
 ### 12. `PointerDwellDoubleClickTimeout`
 
@@ -674,7 +674,7 @@ Apple OEM 的默认值是 5（50ms）。`0` 是这个选项的无效值（将发
 **Failsafe**: `0` 
 **Description**: 在 OpenCore 对 Apple Event 协议的重新实现中，以毫秒为单位配置指针停留点击单左双击的超时。在使用 OEM Apple 实现时没有影响（见 AppleEvent 设置）。
 
-当超时过后，在当前位置发出一次左键双击。0表示超时被禁用。
+当超时过后，在当前位置发出一次左键双击。0 表示超时被禁用。
 
 ### 13. `PointerDwellRadius`
 
