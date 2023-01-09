@@ -3,7 +3,7 @@ title: 8. Misc
 description: 关于 OpenCore 行为的其他配置
 type: docs
 author_info: 由 xMuu、Sukka、derbalkon、EricKwok、cike-567 整理、由 Sukka、derbalkon、EricKwok、cike-567 翻译。
-last_updated: 2022-12-04
+last_updated: 2023-01-09
 ---
 
 ## 8.1 简介
@@ -33,9 +33,9 @@ OpenCore 大体上遵循 `bless` 模式，即 `Apple Boot Policy`。`bless` 模�
    - 在分区句柄列表中找到设备句柄（缺失时忽略）。
    - 对磁盘设备路径（不指定引导程序）执行 `bless`（可能返回不止一个条目）。
    - 对文件设备路径直接检查其文件系统。
-   - 在 OpenCore 启动分区中，通过 Header Check 排除所有 OpenCore Bootstrap 文件。
+   - 如果在 `bootloader` 附近或 `boot` 目录内有一个 `.contentVisibility` 文件，并有禁用的内容（ASCII），则排除该条目。
    - 如果有分区句柄列表，则在列表中将设备句柄标记为 *used*。
-   - 将生成的条目注册为主选项，并确定他们的类型。某些类型的选项作为辅助选项（如 Apple HFS Recovery）。
+   - 将生成的条目注册为主选项，并确定他们的类型。某些类型的选项作为辅助选项（如 Apple HFS Recovery）。对于某些类型（例如 Apple HFS recovery）或其 `.contentVisibility` 文件包含 `Auxiliary` 时，该选项将成为辅助性的。
 4. 对于每个分区句柄：
    - 如果分区句柄被标记为 *unused*，则执行 `bless` 主选项列表检索。如果设置了 `BlessOverride` 列表，那么不仅能找到标准的 `bless` 路径，还能找到自定义的路径。
    - 在 OpenCore 启动分区中，通过 Header Check 排除所有 OpenCore Bootstrap 文件。
