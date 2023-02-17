@@ -3,7 +3,7 @@ title: 8. Misc
 description: 关于 OpenCore 行为的其他配置
 type: docs
 author_info: 由 xMuu、Sukka、derbalkon、EricKwok、cike-567 整理、由 Sukka、derbalkon、EricKwok、cike-567 翻译。
-last_updated: 2022-12-04
+last_updated: 2023-02-18
 ---
 
 ## 8.1 简介
@@ -33,9 +33,9 @@ OpenCore 大体上遵循 `bless` 模式，即 `Apple Boot Policy`。`bless` 模�
    - 在分区句柄列表中找到设备句柄（缺失时忽略）。
    - 对磁盘设备路径（不指定引导程序）执行 `bless`（可能返回不止一个条目）。
    - 对文件设备路径直接检查其文件系统。
-   - 在 OpenCore 启动分区中，通过 Header Check 排除所有 OpenCore Bootstrap 文件。
+   - 如果在 `bootloader` 附近或 `boot` 目录内有一个 `.contentVisibility` 文件，并有禁用的内容（ASCII），则排除该条目。
    - 如果有分区句柄列表，则在列表中将设备句柄标记为 *used*。
-   - 将生成的条目注册为主选项，并确定他们的类型。某些类型的选项作为辅助选项（如 Apple HFS Recovery）。
+   - 将生成的条目注册为主选项，并确定他们的类型。某些类型的选项作为辅助选项（如 Apple HFS Recovery）。对于某些类型（例如 Apple HFS recovery）或其 `.contentVisibility` 文件包含 `Auxiliary` 时，该选项将成为辅助性的。
 4. 对于每个分区句柄：
    - 如果分区句柄被标记为 *unused*，则执行 `bless` 主选项列表检索。如果设置了 `BlessOverride` 列表，那么不仅能找到标准的 `bless` 路径，还能找到自定义的路径。
    - 在 OpenCore 启动分区中，通过 Header Check 排除所有 OpenCore Bootstrap 文件。
@@ -345,7 +345,7 @@ OpenCore 内置的启动选择器包含了一系列在启动过程中选择的�
 
 *注 2*：除了 `OPT` 之外，OpenCore 还支持在 ShowPicker 被禁用时使用 `Escape` 和 `Zero` 键进入 OpenCore 启动选择器。`Escape` 的存在是为了支持与 Apple 启动选择器共存（包括 OpenCore Apple 启动选择器模式），并支持未能报告持有 `OPT` 键的固件，如某些 PS/2 键盘上。此外，提供 `Zero` 是为了支持 `Escape` 已经被分配给一些其他预启动固件功能的系统。在不需要 KeySupport 的系统中，从开机后按住这些键中的一个，直到选择器出现，应该总是能成功。如果为系统正确配置了 KeySupport 模式，即有足够长的 KeyForgetThreshold，那么在使用 KeySupport 模式时也应该适用。如果按住键不能成功地进入挑选器，可以尝试多次重复按键来代替。
 
-*注 3*：有些 Mac 的 GOP 很棘手，可能很难进入 Apple 启动选择器。还有一些 Mac，`BootKicker` 不能从 OpenCore 运行。可以通过直接 bless `BootKicker` 实用工具来解决这个问题，不需要加载 OpenCore。在某些Mac上， bless `BootKicker` 实用工具不能从 OpenCore 运行。
+*注 3*：有些 Mac 的 GOP 很棘手，如果 OpenCore 的 `re-bless` 状态丢失，可能很难重新 `re-bless`。如果在 OpenCore 中添加 `BootKicker` 工具并启用 `FullNvramAccess`，那么 `BootKicker` 实用工具可以解决这个问题。它将启动 Apple 启动选择器，允许选择下一个（用Enter键）启动的项目，或下一个，从那时起直到下一个。
 
 ### 13. `PickerVariant`
 
