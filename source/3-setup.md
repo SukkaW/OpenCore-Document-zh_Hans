@@ -3,7 +3,7 @@ title: 3. Setup
 description: Setup
 type: docs
 author_info: 由 Sukka、derbalkon、cike-567 整理、由 Sukka、derbalkon、cike-567 翻译。
-last_updated: 2022-08-04
+last_updated: 2023-02-18
 ---
 
 ## 3.1 目录结构
@@ -101,6 +101,7 @@ OpenCore 可以作为一个标准的 [EDK II](https://github.com/tianocore/tiano
 git clone --depth=1 https://github.com/acidanthera/audk UDK
 cd UDK
 git submodule update --init --recommend-shallow
+rm -rf OpenCorePkg
 git clone --depth=1 https://github.com/acidanthera/OpenCorePkg
 . ./edksetup.sh
 make -C BaseTools
