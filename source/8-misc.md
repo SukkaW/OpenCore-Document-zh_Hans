@@ -345,7 +345,7 @@ OpenCore 内置的启动选择器包含了一系列在启动过程中选择的�
 
 *注 2*：除了 `OPT` 之外，OpenCore 还支持在 ShowPicker 被禁用时使用 `Escape` 和 `Zero` 键进入 OpenCore 启动选择器。`Escape` 的存在是为了支持与 Apple 启动选择器共存（包括 OpenCore Apple 启动选择器模式），并支持未能报告持有 `OPT` 键的固件，如某些 PS/2 键盘上。此外，提供 `Zero` 是为了支持 `Escape` 已经被分配给一些其他预启动固件功能的系统。在不需要 KeySupport 的系统中，从开机后按住这些键中的一个，直到选择器出现，应该总是能成功。如果为系统正确配置了 KeySupport 模式，即有足够长的 KeyForgetThreshold，那么在使用 KeySupport 模式时也应该适用。如果按住键不能成功地进入挑选器，可以尝试多次重复按键来代替。
 
-*注 3*：有些 Mac 的 GOP 很棘手，如果 OpenCore 的 `re-bless` 状态丢失，可能很难重新 `re-bless`。如果在 OpenCore 中添加 `BootKicker` 工具并启用 `FullNvramAccess`，那么 `BootKicker` 实用工具可以解决这个问题。它将启动 Apple 启动选择器，允许选择下一个（用Enter键）启动的项目，或下一个，从那时起直到下一个。
+*注 3*：对于 GOP 有问题的 Mac，如果 OpenCore 的 bless 状态丢失，可能很难重新设置。如果设置为 OpenCore 的工具，并启用 FullNvramAccess，可以使用 BootKicker 实用程序解决此问题。它会启动 Apple picker，允许选择下一个要启动的项目（使用 Enter 键），或者一直选择下一个项目，直到下一次更改。
 
 ### 13. `PickerVariant`
 
