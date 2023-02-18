@@ -12,12 +12,13 @@ last_updated: 2022-09-07
 
 ## 11.2 驱动列表
 
-根据固件不同、可能需要不同的驱动程序。加载不兼容的驱动程序可能会导致无法启动系统，甚至导致固件永久性损坏。OpenCore 目前对以下 UEFI 驱动提供支持。OpenCore 可能兼容其他 UEFI 驱动，但不能确定。
+根据固件不同、可能需要不同的驱动程序。加载不兼容的驱动程序可能会导致无法启动系统，甚至导致固件永久性损坏。OpenCore 目前对以下 UEFI 驱动提供支持。
 
 - [`AudioDxe`](https://github.com/acidanthera/OpenCorePkg)* --- UEFI 固件中的 HDA 音频驱动程序，适用于大多数 Intel 和其他一些模拟音频控制器。参考 [acidanthera/bugtracker#740](https://github.com/acidanthera/bugtracker/issues/740) 来了解 AudioDxe 的已知问题。
 - [`btrfs_x64`](https://github.com/acidanthera/OcBinaryData) --- 开源 BTRFS 文件系统驱动程序，需要从一个文件系统启动 OpenLinuxBoot，该文件系统在 Linux 非常常用。
 - [`BiosVideo`](https://github.com/acidanthera/OpenCorePkg)* --- 基于 VESA 和传统 BIOS 接口实现图形输出协议的 CSM 视频驱动程序。用于支持脆弱 GOP 的 UEFI 固件（例如，低分辨率）。需要重新连接图形连接。包含在 OpenDuet 中，开箱即用。
 - [`CrScreenshotDxe`](https://github.com/acidanthera/OpenCorePkg)* --- 截图驱动。启用后，按下 <kbd>F10</kbd> 将能够截图并保存在 EFI 分区根目录下。该驱动基于 [Nikolaj Schlej](https://github.com/NikolajSchlej) 修改的 LongSoft 开发的 [`CrScreenshotDxe`](https://github.com/LongSoft/CrScreenshotDxe)。
+- [`EnableGop{Direct}`](https://github.com/acidanthera/OpenCorePkg)* --- 早期测试版的固件嵌入驱动程序在 `MacPro5,1` 上提供预开放核心非原生 GPU 支持。安装说明可在 OpenCore 发布的压缩文件的 [Utilities/EnableGop](https://github.com/acidanthera/OpenCorePkg/blob/master/Staging/EnableGop/README.md)目录中找到--请谨慎操作。
 - [`ext4_x64`](https://github.com/acidanthera/OcBinaryData) --- 开源 EXT4 文件系统驱动程序，需要用 OpenLinuxBoot 从 Linux 最常用的文件系统启动。
 - [`HfsPlus`](https://github.com/acidanthera/OcBinaryData) --- Apple 固件中常见的具有 Bless 支持的专有 HFS 文件系统驱动程序。对于 `Sandy Bridge` 和更早的 CPU，由于这些 CPU 缺少 `RDRAND` 指令支持，应使用 `HfsPlusLegacy` 驱动程序。
 - [`HiiDatabase`](https://github.com/acidanthera/audk)* --- 来自 `MdeModulePkg` 的 HII 服务驱动。Ivy Bridge 及其以后的大多数固件中都已内置此驱动程序。某些带有 GUI 的应用程序（例如 UEFI Shell）可能需要此驱动程序才能正常工作。
@@ -1351,7 +1352,21 @@ Apple 音频协议允许 macOS bootloader 和 OpenCore 播放声音和信号，�
 - 如遇到中途需要通过 OpenCore 来重启的情况，操作系统不会搞乱 OpenCore 的引导优先级，保证了系统更新和休眠唤醒的流畅性。
 - macOS 等潜在的不兼容的启动项，现在不会被意外删除或损坏了。
 
-### 12. `ResizeGpuBars`
+### 12. `ResizeUsePciRbIo`
+
+**Type**: `plist boolean`
+**Failsafe**: `false`
+**Description**: 使用 `PciRootBridgeIo` 来调整 `GpuBars` 和 `ResizeAppleGpuBar`。
+
+这个 Quirk 使得 `ResizeGpuBars` 和 `ResizeAppleGpuBars` 使用 `PciRootBridgeIo` 而不是 `PciIo`。 这是 `Capability I/O` 错误。一般来说，在已使用 [`ReBarUEFI`](https://github.com/xCuri0/ReBarUEFI)  修改的旧系统上是必需的。
+
+借助 `RequestBootVarRouting` 将 `Boot` 前缀变量重定向至单独的 GUID 命名空间，可实现以下效果：
+
+- 囚禁操作系统，使其只受 OpenCore 引导环境的控制，从而提高了安全性。
+- 如遇到中途需要通过 OpenCore 来重启的情况，操作系统不会搞乱 OpenCore 的引导优先级，保证了系统更新和休眠唤醒的流畅性。
+- macOS 等潜在的不兼容的启动项，现在不会被意外删除或损坏了。
+
+### 13. `ResizeGpuBars`
 
 **Type**: `plist integer`
 **Failsafe**: `-1`
@@ -1377,9 +1392,9 @@ Resizable BAR 技术允许通过将可配置的内存区域 BAR 映射到 CPU �
 
 *注 1*：这个 Quirk 不应该被用来解决 macOS 对超过 1GB 的 BAR 的限制。应该使用 ResizeAppleGpuBars 来代替。
 
-*注 2*：虽然这个 Quirk 可以增加 GPU PCI BAR 的大小，但这在大多数固件上是行不通的，因为这个 Quirk 不会重新定位内存中的 BAR，而且它们可能会重叠。我们欢迎大家为改进这一功能做出贡献。  
+*注 2*：虽然这个 Quirk 可以增加 GPU PCI BAR 的大小，但这在大多数固件上是行不通的，因为这个 Quirk 不会重新定位内存中的 BAR，而且它们可能会重叠。在大多数情况下，最好将固件更新到最新版本或使用专门的驱动程序对其进行自定义，例如 [ReBarUEFI](https://github.com/xCuri0/ReBarUEFI)。
   
-### 13. `TscSyncTimeout`
+### 14. `TscSyncTimeout`
 
 **Type**: `plist integer`
 **Failsafe**: `0`
@@ -1391,7 +1406,7 @@ Resizable BAR 技术允许通过将可配置的内存区域 BAR 映射到 CPU �
 
 *注*：这个 Quirk 不能取代内核驱动的原因是它不能在 ACPI `S3` 模式（睡眠唤醒）下运行，而且 UEFI 固件提供的多核心支持非常有限，无法精确地更新 `MSR` 寄存器。
 
-### 14. `UnblockFsConnect`
+### 15. `UnblockFsConnect`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
@@ -1407,7 +1422,7 @@ Resizable BAR 技术允许通过将可配置的内存区域 BAR 映射到 CPU �
 **Failsafe**: `0`
 **Description**: 保留内存区域的起始地址，该区域应被分配为保留区，有效地将此类型的内存标记标记为操作系统不可访问。
 
-这里写的地址必须是内存映射的一部分，具有 `EfiConventionalMemory` 类型，并且按页对齐（`4KB`）。
+这里写的地址必须是内存映射的一部分，具有 `EfiConventionalMemory` 类型，并且按页对齐（`4KBs`）。
 
 *注*：禁用 CSM 后，某些固件可能不会为 `S3`（睡眠）和 `S4`（休眠）分配内存区域，因此导致唤醒失败。你可以分别比较禁用和启用 CSM 的内存映射，从低层内存中找到这些区域，并保留该区域来修复这个问题。详见 `Sample.plist`。
 
