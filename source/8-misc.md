@@ -184,8 +184,6 @@ OpenCore 启动选择器中的启动选项的显示顺序和启动过程，是�
 - 强烈建议将该选项与 `PollAppleHotKeys` 搭配使用，允许在休眠唤醒出现问题时进入启动选择程序。
 - 休眠唤醒的视觉指示目前超出范围。
 
-*注*：如果固件自身能处理休眠（大多数 Mac 的 EFI 固件都可以），你应该在此处设置为 `None` 来让固件处理休眠状态并传递给 OpenCore。
-
 ### 4. `HideAuxiliary`
 
 **Type**: `plist boolean`
