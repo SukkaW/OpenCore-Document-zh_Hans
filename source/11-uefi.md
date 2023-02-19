@@ -1314,7 +1314,7 @@ Apple 音频协议允许 macOS bootloader 和 OpenCore 播放声音和信号，�
 **Failsafe**: `false`
 **Description**: 在 `EFI 1.x` 固件上提供部分 `UEFI 2.x` 支持。
 
-*注*：此设置允许在带有旧 `EFI 1.x` 固件（例如：MacPro5,1）的硬件上运行为 `UEFI 2.x` 固件（如NVIDIA GOP Option ROM）编写的一些软件。
+*注*：此设置允许在带有旧版 `EFI 1.x` 固件（例如：MacPro5,1）的硬件上运行为 `UEFI 2.x` 固件（例如：NVIDIA GOP Option ROM）编写的一些软件。
 
 ### 8. `IgnoreInvalidFlexRatio`
 
