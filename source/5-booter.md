@@ -201,6 +201,8 @@ Description: 搜索的最大字节数。
 
 这个选项可以禁用 `CMD+S` 热键和 `-s` 启动参数来限制单用户模式。启用这一 Quirk 后预期行为应和 T2 的机型行为类似。请参考 Apple 的 [这篇文章](https://web.archive.org/web/20200517125051/https://support.apple.com/zh-cn/HT201573)（译者注：原文章已被关闭，此为网站时光机的存档副本）以了解如何在启用这一 Quirk 后继续使用单用户模式。
 
+*注*：注意：当 `Apple Secure Boot` 被启用时，单用户模式总是被禁用的。
+
 ### 5. `DisableVariableWrite`
 
 **Type**: `plist boolean`
