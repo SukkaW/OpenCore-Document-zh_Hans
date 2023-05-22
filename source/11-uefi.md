@@ -223,7 +223,7 @@ OpenLinuxBoot 通常需要固件中没有的文件系统驱动，比如 `EXT4` �
 - autoopts[+]="{options}" - Default: 没有指定。
 
 允许手动指定在自动检测模式下使用的内核选项。另一种格式 `autoopts:{PARTUUID}` 更适用于有多个发行版的情况，但不需要 `PARTUUID` 的 `autoopts` 可能对只有一个发行版更方便。如果用 `+=` 指定，那么这些选项将在自动检测的选项之外使用，如果用 `=` 指定，它们将被替代使用。只用于自动检测的 Linux（这里指定的值永远不会用于从 `/loader/entries/*.conf` 文件创建的条目）。
-作为使用范例，可以在 Ubuntu 和相关发行版上使用 `+=` 格式添加 `vt.handoff` 选项，比如 `autopts+="vt.handoff=7"`  或 `autopts+="vt.handoff=3"`（通过发行版的默认引导程序启动时检查 `cat /proc/cmdline` ），以便在自动检测的 GRUB 默认值中添加 `vt.handoff` 选项，并避免在发行版闪屏前显示闪光的文本。
+作为使用范例，可以在 Ubuntu 和相关发行版上使用 `+=` 格式添加 `vt.handoff` 选项，比如 `autoopts+="vt.handoff=7"`  或 `autoopts+="vt.handoff=3"`（通过发行版的默认引导程序启动时检查 `cat /proc/cmdline` ），以便在自动检测的 GRUB 默认值中添加 `vt.handoff` 选项，并避免在发行版闪屏前显示闪光的文本。
 
 ### 11.6.2 其他信息
 
@@ -1031,7 +1031,19 @@ UEFI 固件一般用两种渲染模式来支持 `ConsoleControl`：`Graphics` �
 
 这个渲染器完全支持 `AppleEg2Info` 协议，将为所有 EFI 应用程序提供屏幕旋转。为了提供与 `EfiBoot` 的无缝旋转兼容性，还应该使用内置的 `AppleFramebufferInfo`，也就是说，在 Mac EFI 上可能需要覆盖它。  
 
-### 7. `GopPassThrough`
+### 7. `GopBurstMode`
+
+**Type**: `plist boolean`
+**Failsafe**: `false`
+**Description**: 如果系统固件尚未启用，启用 `write-combining (WC) caching for GOP  memory`。
+
+一些较旧的固件（例如 EFI 时代的 Mac）无法设置 `write-combining (WC) caching for GOP  memory`（也称为 burst mode），尽管 CPU 支持该功能。
+
+设置这个可以大大加快 GOP 操作的速度，特别是在需要 `DirectGopRendering` 的系统上。
+
+*注*：无论是否设置了 `DirectGopRendering`，这都是有效的，即使 `DirectGopRendering` 未启用，也可能给 GOP 操作带来一些加速。
+
+### 8. `GopPassThrough`
 
 **Type**: `plist string`
 **Failsafe**: `Disabled`
@@ -1046,7 +1058,7 @@ UEFI 固件一般用两种渲染模式来支持 `ConsoleControl`：`Graphics` �
   
 *注*：该选项需要启用 `ProvideConsoleGop`。  
   
-### 8. `IgnoreTextInGraphics`
+### 9. `IgnoreTextInGraphics`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
@@ -1054,7 +1066,7 @@ UEFI 固件一般用两种渲染模式来支持 `ConsoleControl`：`Graphics` �
 
 *注*：这一选项只会在 `System` 渲染器上生效。
 
-### 9. `ReplaceTabWithSpace`
+### 10. `ReplaceTabWithSpace`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
@@ -1062,7 +1074,7 @@ UEFI 固件一般用两种渲染模式来支持 `ConsoleControl`：`Graphics` �
 
 *注*：这一选项只会在 `System` 渲染器上生效。
 
-### 10. `ProvideConsoleGop`
+### 11. `ProvideConsoleGop`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
@@ -1072,7 +1084,7 @@ macOS bootloader 要求控制台句柄上必须有 GOP 或 UGA（适用于 10.4 
 
 *注*：这个选项也会替换掉控制台句柄上损坏的 GOP 协议，在使用较新的 GPU 的 `MacPro5,1` 时可能会出现这种情况。
 
-### 11. `ReconnectGraphicsOnConnect`
+### 12. `ReconnectGraphicsOnConnect`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
@@ -1082,7 +1094,7 @@ macOS bootloader 要求控制台句柄上必须有 GOP 或 UGA（适用于 10.4 
   
 *注*：这个选项需要启用 `ConnectDrivers`。  
   
-### 12. `ReconnectOnResChange`
+### 13. `ReconnectOnResChange`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
@@ -1092,7 +1104,7 @@ macOS bootloader 要求控制台句柄上必须有 GOP 或 UGA（适用于 10.4 
 
 *注*：当 OpenCore 从 Shell 启动时，这个逻辑可能会导致某些主板黑屏，因此这个选项是非必须的。在 0.5.2 之前的版本中，这个选项是强制性的，不可配置。除非需要，否则请不要使用该选项。
 
-### 13. `SanitiseClearScreen`
+### 14. `SanitiseClearScreen`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
@@ -1100,7 +1112,7 @@ macOS bootloader 要求控制台句柄上必须有 GOP 或 UGA（适用于 10.4 
 
 *注*：这一选项只会在 `System` 渲染器上生效。在所有已知的受影响的系统中，`ConsoleMode` 必须设置为空字符串才能正常工作。
 
-### 14. `UIScale`
+### 15. `UIScale`
 
 **Type**: `plist integer，8 bit`
 **Failsafe**: `-1`
@@ -1116,7 +1128,7 @@ macOS bootloader 要求控制台句柄上必须有 GOP 或 UGA（适用于 10.4 
 
 *注 2*：当从手动指定的 NVRAM 变量切换到该首选项时，可能需要对 NVRAM 进行重置。  
   
-### 15. `UgaPassThrough`
+### 16. `UgaPassThrough`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
