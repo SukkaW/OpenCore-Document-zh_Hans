@@ -3,7 +3,7 @@ title: 12. 排错
 description: 当你遇到问题的时候应该看看这个
 type: docs
 author_info: 由 xMuu、Sukka、derbalkon、cike-567 整理，由 Sukka、derbalkon、cike-567 翻译
-last_updated: 2022-07-21
+last_updated: 2023-02-19
 ---
 
 ## 12.1 旧版 Apple 操作系统
@@ -250,7 +250,7 @@ OpenCore 使用 UEFI 首选启动项 来选择默认的启动项。这个选择�
 
 ~~可以，没有必要，但请加大力度~~
 
-OpenCore 支持包括 MacPro 5,1 和虚拟机在内的大部分较新的 Mac 型号。不过，OpenCore 有关在 Mac 硬件上使用的具体细节微乎其微。你可以在 [MacRumors.com](https://forums.macrumors.com/threads/opencore-on-the-mac-pro.2207814) 查看相关讨论。
+虚拟机和大多数相对现代的 Mac 机型，最早可以追溯到 MacPro3,1，都是完全支持的。不过，OpenCore 有关在 Mac 硬件上使用的具体细节微乎其微。你可以在 [MacRumors.com](https://forums.macrumors.com/threads/opencore-on-the-mac-pro.2207814) 查看相关讨论。
 
 ### 8. 为什么 Find 和 Replace 的补丁的长度必须相等？
 

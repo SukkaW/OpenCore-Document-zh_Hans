@@ -172,7 +172,19 @@ OpenCore 启动选择器中的启动选项的显示顺序和启动过程，是�
 
 *注*：如果固件自身能处理休眠（大多数 Mac 的 EFI 固件都可以），你应该在此处设置为 `None` 来让固件处理休眠状态并传递给 OpenCore。
 
-### 3. `HideAuxiliary`
+### 3. `HibernateSkipsPicker`
+
+**Type**: `plist boolean`
+**Failsafe**: `false`
+**Description**: 从 macOS 唤醒时不显示启动选择器。
+
+限制条件：
+- 只支持 `macOS` 的休眠唤醒，`Windows` 和 `Linux` 目前不在范围内。
+- 只应在 `macOS` 中具有可靠休眠唤醒功能的系统上使用，否则用户可能无法直观地看到可能发生的启动循环。
+- 强烈建议将该选项与 `PollAppleHotKeys` 搭配使用，允许在休眠唤醒出现问题时进入启动选择程序。
+- 休眠唤醒的视觉指示目前超出范围。
+
+### 4. `HideAuxiliary`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
@@ -187,7 +199,7 @@ OpenCore 启动选择器中的启动选项的显示顺序和启动过程，是�
 
 即使被隐藏，你仍然可以通过按空格键进入「扩展模式」查看所有条目（引导项菜单会被重新加载），隐藏辅助条目可能有助于提高多磁盘系统的引导性能，简单来说就是可能提高启动速度。
 
-### 4. `LauncherOption`
+### 5. `LauncherOption`
 
 **Type**: `plist string`
 **Failsafe**: `Disabled`
@@ -216,7 +228,7 @@ OpenCore 启动选择器中的启动选项的显示顺序和启动过程，是�
 
 如果你有一个为系统配置的 OpenCore，也可以直接从 OpenCore 启动菜单中启动 OpenShell。在这种情况下，如果 OpenCore 启用了 `RequestBootVarRouting`，就有必要在使用 bcfg 之前运行命令 `\EFI\OC\Tools\OpenControl.efi disable` （在禁用 OpenControl 之后，有必要在启动操作系统之前重启或运行 `OpenControl restore`）。如果你的机器上有一个工作版本的Linux，也可以在 Linux 中使用 efibootmgr 来删除违规的条目。Linux 必须不通过 OpenCore 启动，或者通过禁用 `RequestBootVarRouting` 的 OpenCore 启动，这样才能发挥作用。
 
-### 5. `LauncherPath`
+### 6. `LauncherPath`
 
 **Type**: `plist string`
 **Failsafe**: `Default`
@@ -224,7 +236,7 @@ OpenCore 启动选择器中的启动选项的显示顺序和启动过程，是�
 
 `Default` 用于引导 `OpenCore.efi`。其他的路径（例如：`\EFI\Launcher.efi`）可用来提供自定义加载器，用于自行加载 `OpenCore.efi`。
 
-### 6. `PickerAttributes`
+### 7. `PickerAttributes`
 
 **Type**: `plist integer`
 **Failsafe**: `0`
@@ -267,7 +279,7 @@ OpenCore 启动选择器中的启动选项的显示顺序和启动过程，是�
 - 为了使 tools 的图标和屏幕朗读工作正常（例如：UEFI Shell），在 `Flavour` 设置中指定的系统的默认启动项图标（见 Docs/Flavours.md）将仍然被应用，即使 `Flavour` 是禁用状态。在这个情况下非系统的图标将会被忽略。此外，UEFIShell 和 NVRAMReset 的 `flavours` 将会被特殊处理，以辨识它们的正确的屏幕朗读器、默认 builtin 标签等。
 - 一个推荐的 `falvours` 列表在 `Docs/Flavours.md` 中
 
-### 7. `PickerAudioAssist`
+### 8. `PickerAudioAssist`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
@@ -277,7 +289,7 @@ macOS Bootloader 屏幕朗读的偏好设置是存在 `isVOEnabled.int32` 文件
 
 *注*：屏幕朗读依赖可以正常工作的音频设备。详情请参考 UEFI Audio 属性部分。 
 
-### 8. `PollAppleHotKeys`
+### 9. `PollAppleHotKeys`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
@@ -296,13 +308,13 @@ macOS Bootloader 屏幕朗读的偏好设置是存在 `isVOEnabled.int32` 文件
 - `CMD+V` --- 启用 `-v`。
 - `Shift+Enter，Shift+Index` --- 启用安全模式，可与 `CTRL+Enter`、`CTRL+[数字]` 结合使用。
 
-### 9. `ShowPicker`
+### 10. `ShowPicker`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
 **Description**: 是否显示开机引导菜单。
 
-### 10. `TakeoffDelay`
+### 11. `TakeoffDelay`
 
 **Type**: `plist integer`, 32 bit
 **Failsafe**: `0`
@@ -312,7 +324,7 @@ macOS Bootloader 屏幕朗读的偏好设置是存在 `isVOEnabled.int32` 文件
 
 如果配置了开机报时（见音频配置选项），那么以较慢的启动速度为代价，可以使用半秒到一秒的更长的延迟（500000-1000000）来创造类似于真正的 Mac 的行为，其中报时本身可以作为热键可以被按下的一个信号。在 OpenCore 中，由于必须首先加载和连接非本地驱动程序，因此开机鸣叫在开机顺序中不可避免地比在苹果硬件上晚。配置开机鸣叫并增加这个较长的额外延迟，对于那些开机时间快或显示器信号同步慢的系统可能导致在某些开机或重启时根本不显示开机标识的情况也很有用。
 
-### 11. `Timeout`
+### 12. `Timeout`
 
 **Type**: `plist integer`，32 bit
 **Failsafe**: `0`
@@ -320,7 +332,7 @@ macOS Bootloader 屏幕朗读的偏好设置是存在 `isVOEnabled.int32` 文件
 
 > 译者注：`0` 为关闭倒计时而非跳过倒计时，相当于 Clover 的 `-1`。
 
-### 12. `PickerMode`
+### 13. `PickerMode`
 
 **Type**: `plist string`
 **Failsafe**: `Builtin`
@@ -345,9 +357,9 @@ OpenCore 内置的启动选择器包含了一系列在启动过程中选择的�
 
 *注 2*：除了 `OPT` 之外，OpenCore 还支持在 ShowPicker 被禁用时使用 `Escape` 和 `Zero` 键进入 OpenCore 启动选择器。`Escape` 的存在是为了支持与 Apple 启动选择器共存（包括 OpenCore Apple 启动选择器模式），并支持未能报告持有 `OPT` 键的固件，如某些 PS/2 键盘上。此外，提供 `Zero` 是为了支持 `Escape` 已经被分配给一些其他预启动固件功能的系统。在不需要 KeySupport 的系统中，从开机后按住这些键中的一个，直到选择器出现，应该总是能成功。如果为系统正确配置了 KeySupport 模式，即有足够长的 KeyForgetThreshold，那么在使用 KeySupport 模式时也应该适用。如果按住键不能成功地进入挑选器，可以尝试多次重复按键来代替。
 
-*注 3*：有些 Mac 的 GOP 很棘手，如果 OpenCore 的 `re-bless` 状态丢失，可能很难重新 `re-bless`。如果在 OpenCore 中添加 `BootKicker` 工具并启用 `FullNvramAccess`，那么 `BootKicker` 实用工具可以解决这个问题。它将启动 Apple 启动选择器，允许选择下一个（用Enter键）启动的项目，或下一个，从那时起直到下一个。
+*注 3*：对于 GOP 有问题的 Mac，如果 OpenCore 的 bless 状态丢失，可能很难重新设置。如果设置为 OpenCore 的工具，并启用 FullNvramAccess，可以使用 BootKicker 实用程序解决此问题。它会启动 Apple picker，允许选择下一个要启动的项目（使用 Enter 键），或者一直选择下一个项目，直到下一次更改。
 
-### 13. `PickerVariant`
+### 14. `PickerVariant`
 
 **Type**: `plist string`
 **Failsafe**: `Auto`
