@@ -959,24 +959,36 @@ Apple OEM 的默认值是 5（50ms）。`0` 是这个选项的无效值（将发
 
 ## 11.15 Output 属性
 
-### 1. `TextRenderer`
+### 1. `InitialMode`
+
+**Type**: `plist string`
+**Failsafe**: `Auto`
+**Description**: 选择 `internal ConsoleControl` 模式，`TextRenderer` 将在该模式下运行。
+
+可用值为 `Auto`、`Text` 和 `Graphics`。 `Text` 和 `Graphics` 指定了命名模式。 `Auto` 使用系统 `ConsoleControl` 协议的当前模式（如果存在），否则默认为 `Text` 模式。 
+
+UEFI 固件通常支持具有两种渲染模式（`Graphics` 和 `Text`）的 `ConsoleControl`。 某些类型的固件不提供本机 `ConsoleControl` 和渲染模式。 OpenCore 和 macOS 期望文本仅在文本模式下显示，但图形可以在任何模式下绘制，这就是 OpenCore 内置渲染器的行为方式。 由于 UEFI 规范不要求这样做，因此系统 `ConsoleControl` 协议的行为（如果存在）可能会有所不同。
+
+### 2. `TextRenderer`
 
 **Type**: `plist string`
 **Failsafe**: `BuiltinGraphics`
 **Description**: 选择通过标准控制台输出的渲染器。
 
-目前支持两种渲染器：`Builtin` 和 `System`。`System` 渲染器使用固件服务进行文本渲染。`Builtin` 渲染器则绕过固件服务，自行渲染文本。不同的渲染器支持的选项也不同。建议使用 `Builtin` 渲染器，因为它支持 HiDPI 模式，并能够使用全屏分辨率。
+目前支持两种渲染器：`Builtin` 和 `System`。`System` 渲染器使用固件服务进行文本渲染，但是提供了额外的选项来清理输出。`Builtin` 渲染器则绕过固件服务，自行渲染文本。不同的渲染器支持的选项也不同。建议使用 `Builtin` 渲染器，因为它支持 HiDPI 模式，并能够使用全屏分辨率。
 
-UEFI 固件一般用两种渲染模式来支持 `ConsoleControl`：`Graphics` 和 `Text`。有些固件不支持 `ConsoleControl` 和渲染模式。OpenCore 和 macOS 希望文本只在 `Graphics` 模式下显示，而图形可以在任何模式下绘制。由于 UEFI 规范并不要求这样做，因此具体的行为各不相同。
+每个渲染器都提供自己的 `ConsoleControl` 协议（在系统通用的情况下，如果存在系统 `ConsoleControl` 协议，则会将某些操作传递给它）。
+
+此选项的有效值是要使用的渲染器和在启动前设置在底层系统 `ConsoleControl` 协议上的 `ConsoleControl` 模式的组合。要控制启动后所提供的 `ConsoleControl` 协议的初始模式，请使用 InitialMode 选项。
 
 有效值为文本渲染器和渲染模式的组合：
-  - `BuiltinGraphics` --- 切换到 `Graphics` 模式，并使用 `Builtin` 渲染器和自定义 `ConsoleControl`。
-  - `BuiltinText` --- 切换到 `Text` 模式，并使用 `Builtin` 渲染器和自定义 `ConsoleControl`。
-  - `SystemGraphics` --- 切换到 `Graphics` 模式，并使用 `System` 渲染器和自定义 `ConsoleControl`。
-  - `SystemText` --- 切换到 `Text` 模式，并使用 `System` 渲染器和自定义 `ConsoleControl`。
-  - `SystemGeneric` --- 使用 `System` 渲染器和系统 `ConsoleControl`，前提是它们能正常工作。
+  - `BuiltinGraphics` --- 切换到 `Graphics` 模式，然后使用 `Builtin` 渲染器和自定义 `ConsoleControl`。
+  - `BuiltinText` --- 切换到 `Text` 模式，然后使用 `Builtin` 渲染器和自定义 `ConsoleControl`。
+  - `SystemGraphics` --- 切换到 `Graphics` 模式，然后使用 `System` 渲染器和自定义 `ConsoleControl`。
+  - `SystemText` --- 切换到 `Text` 模式，然后使用 `System` 渲染器和自定义 `ConsoleControl`。
+  - `SystemGeneric` --- 使用 `System` 渲染器和自定义 `ConsoleControl` 协议，该协议在存在系统 `ConsoleControl` 时将其模式设置和获取操作传递给系统 `ConsoleControl`。
 
-`BuiltinGraphics` 的用法通常是比较直接的。对于大多数平台，需要启用 `ProvideConsoleGop`，将 `Resolution` 设置为 `Max`。某些非常老旧且问题很多的笔记本只能在 `Text` 模式下绘图，对它们来说，`BuiltinText` 是 `BuiltinGraphics` 的替代选择。
+`BuiltinGraphics` 的使用很简单。对于大多数平台，需要启用 `ProvideConsoleGop`，将 `Resolution` 设置为 `Max`。某些非常老旧且问题很多的笔记本只能在 `Text` 模式下绘图，对它们来说，`BuiltinText` 是 `BuiltinGraphics` 的替代选择。
 
 `System` 协议的用法比较复杂。一般来说，首选设置 `SystemGraphics` 或 `SystemText`。启用 `ProvideConsoleGop`，将 `Resolution` 设置为 `Max`，启用 `ReplaceTabWithSpace` 几乎在所有平台上都很有用。`SanitiseClearScreen`、`IgnoreTextInGraphics` 和 `ClearScreenOnModeSwitch` 比较特殊，它们的用法取决于固件。
 
@@ -988,7 +1000,7 @@ UEFI 固件一般用两种渲染模式来支持 `ConsoleControl`：`Graphics` �
 **Failsafe**: Empty （保持当前的控制台模式）
 **Description**: 按照 `WxH`（例如：`80x24`）格式的字符串所指定的方式设置控制台的输出模式。
 
-设置为 `Max` 则会尝试最大的可用控制台模式。目前 `Builtin` 文本渲染器只支持一种控制台模式，所以该选项可以忽略。
+设置为 `Max` 则会尝试最大的可用控制台模式。
 
 *注*：在大多数固件上，这个字段最好留空。
 
