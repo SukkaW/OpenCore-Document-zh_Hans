@@ -195,7 +195,7 @@
                     <p><small>由 xMuu、Sukka、derbalkon、cike-567 整理，由 Sukka、derbalkon、cike-567 翻译</small></p>
                 
                 
-                    <p><small>本页面最后更新于 2022 年 07 月 21 日</small></p>
+                    <p><small>本页面最后更新于 2023 年 02 月 19 日</small></p>
                 
                 <br>
             
@@ -333,7 +333,7 @@
 <p>如果你需要进行离线安装，请参考 <a target="_blank" rel="noopener" href="https://support.apple.com/HT201372">如何创建可引导的 macOS 安装器</a>。除了通过 App Store 或 系统更新，你还可以使用 <a target="_blank" rel="noopener" href="https://github.com/corpnewt/gibMacOS">第三方工具</a> 下载 macOS 镜像文件。</p>
 <h3 id="6-为什么无法加载-Recovery-恢复镜像-进行在线安装？"><a href="#6-为什么无法加载-Recovery-恢复镜像-进行在线安装？" class="headerlink" title="6. 为什么无法加载 Recovery 恢复镜像 进行在线安装？"></a>6. 为什么无法加载 Recovery 恢复镜像 进行在线安装？</h3><p>可能是因为你没带 HFS+ 驱动。目前我们所知道的 Recovery 分区全都是 HFS+ 文件系统。</p>
 <h3 id="7-我可以在-Apple-的硬件、或虚拟机中使用-OpenCore-吗？"><a href="#7-我可以在-Apple-的硬件、或虚拟机中使用-OpenCore-吗？" class="headerlink" title="7. 我可以在 Apple 的硬件、或虚拟机中使用 OpenCore 吗？"></a>7. 我可以在 Apple 的硬件、或虚拟机中使用 OpenCore 吗？</h3><p><del>可以，没有必要，但请加大力度</del></p>
-<p>OpenCore 支持包括 MacPro 5,1 和虚拟机在内的大部分较新的 Mac 型号。不过，OpenCore 有关在 Mac 硬件上使用的具体细节微乎其微。你可以在 <a target="_blank" rel="noopener" href="https://forums.macrumors.com/threads/opencore-on-the-mac-pro.2207814">MacRumors.com</a> 查看相关讨论。</p>
+<p>虚拟机和大多数相对现代的 Mac 机型，最早可以追溯到 MacPro3,1，都是完全支持的。不过，OpenCore 有关在 Mac 硬件上使用的具体细节微乎其微。你可以在 <a target="_blank" rel="noopener" href="https://forums.macrumors.com/threads/opencore-on-the-mac-pro.2207814">MacRumors.com</a> 查看相关讨论。</p>
 <h3 id="8-为什么-Find-和-Replace-的补丁的长度必须相等？"><a href="#8-为什么-Find-和-Replace-的补丁的长度必须相等？" class="headerlink" title="8. 为什么 Find 和 Replace 的补丁的长度必须相等？"></a>8. 为什么 Find 和 Replace 的补丁的长度必须相等？</h3><p>对于 x86 机器码来说，<a target="_blank" rel="noopener" href="https://en.wikipedia.org/w/index.php?title=Relative_addressing">相对寻址</a> 无法进行大小不同的替换。对于 ACPI 代码来说这是有风险的，而且在技术上这与替换 ACPI 表等价，所以 OpenCore 没有实现。更多详细的解答可以在 <a target="_blank" rel="noopener" href="https://applelife.ru/posts/819790">AppleLife.ru</a> 上和本文档的 ACPI 章节找到。</p>
 <h3 id="9-我应该如何决定哪些-Booter-Quirk-需要被启用？"><a href="#9-我应该如何决定哪些-Booter-Quirk-需要被启用？" class="headerlink" title="9. 我应该如何决定哪些 Booter Quirk 需要被启用？"></a>9. 我应该如何决定哪些 <code>Booter</code> Quirk 需要被启用？</h3><p>这些 Quirk 源自 <code>AptioMemoryFix</code> 驱动，为更多的固件提供了广泛支持。如果你正在使用 <code>OpenRuntime</code>，并且想要获得和 <code>AptioMemoryFix</code> 类似的行为，请启用下述 Quirk：</p>
 <ul>

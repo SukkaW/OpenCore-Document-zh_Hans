@@ -216,6 +216,7 @@
 <li>Patch</li>
 <li>Add</li>
 </ul>
+<p><em>注</em>： <code>RebaseRegions</code> 和 <code>SyncTableIds</code> 是特殊的，在所有其他 ACPI 变化之后处理，因为它们只能应用于最终的 ACPI 配置，包括所有的补丁和添加的表。</p>
 <p>为了解决操作系统检测的问题，所有对 ACPI 的更改会在所有操作系统上生效。但是在某些场景下（ACPI 编写不规范、操作系统链式引导启动、ACPI 调试）会出现问题。因此在修补 ACPI 时，需要使用 <code>\_OSI</code> 方法。</p>
 <p>在系统引导前加载补丁使得编写「代理」补丁成为可能 —— 「代理」补丁即通过重命名的方法修补 DSDT 中的原始行为，然后通过 SSDT 注入同名的行为进行替代。</p>
 <p>OpenCore、WhateverGreen、VirtualSmc、VoodooPS2 的 GitHub 仓库中都包含了部分 SSDT 和其他 ACPI 修补的方法。在 AppleLife 的 <a target="_blank" rel="noopener" href="https://applelife.ru/forums/xakintosh.67">Laboratory</a> 版块、<a target="_blank" rel="noopener" href="https://applelife.ru/forums/dsdt.129">DSDT</a> 版块提供了不少教程和样例（例如 <a target="_blank" rel="noopener" href="https://applelife.ru/posts/498967">笔记本电池修补教程</a>）。<a target="_blank" rel="noopener" href="https://dortania.github.io">Dortania</a> 也编写了许多 <a target="_blank" rel="noopener" href="https://dortania.github.io/Getting-Started-With-ACPI">ACPI 有关的教程</a>。<a target="_blank" rel="noopener" href="https://github.com/daliansky">daliansky</a> 的 ACPI 补丁集 <a target="_blank" rel="noopener" href="https://github.com/daliansky/OC-little">OC-little</a>（<a target="_blank" rel="noopener" href="https://github.com/5T33Z0/OC-Little-Translated">5T33Z0 等人对 daliansky 的 ACPI 补丁集 OC-little 的英文翻译</a>）。请注意，来自第三方的建议解决方案可能已经过时，或者可能包含错误。</p>

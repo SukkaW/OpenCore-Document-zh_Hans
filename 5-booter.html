@@ -273,6 +273,7 @@
 </blockquote>
 <h3 id="4-DisableSingleUser"><a href="#4-DisableSingleUser" class="headerlink" title="4. DisableSingleUser"></a>4. <code>DisableSingleUser</code></h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: <code>false</code><br><strong>Description</strong>: 禁用 Apple 单用户模式。</p>
 <p>这个选项可以禁用 <code>CMD+S</code> 热键和 <code>-s</code> 启动参数来限制单用户模式。启用这一 Quirk 后预期行为应和 T2 的机型行为类似。请参考 Apple 的 <a target="_blank" rel="noopener" href="https://web.archive.org/web/20200517125051/https://support.apple.com/zh-cn/HT201573">这篇文章</a>（译者注：原文章已被关闭，此为网站时光机的存档副本）以了解如何在启用这一 Quirk 后继续使用单用户模式。</p>
+<p><em>注</em>：注意：当 <code>Apple Secure Boot</code> 被启用时，单用户模式总是被禁用的。</p>
 <h3 id="5-DisableVariableWrite"><a href="#5-DisableVariableWrite" class="headerlink" title="5. DisableVariableWrite"></a>5. <code>DisableVariableWrite</code></h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: <code>false</code><br><strong>Description</strong>: 防止 macOS 获取 NVRAM 的写入权限。</p>
 <p>这个选项可以限制 macOS 对 NVRAM 的写入。这个 Quirk 需要 <code>OpenRuntime.efi</code>（原名 <code>FwRuntimeServices.efi</code>）提供了 <code>OC_FIRMWARE_RUNTIME</code> 协议的实现。</p>
 <p><em>注</em>：这个 Quirk 也可以作为一个临时性的变通办法。避免由于无法将变量写入 NVRAM 而导致的对操作系统的破坏。</p>
