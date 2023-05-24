@@ -1049,11 +1049,15 @@ UEFI 固件通常支持具有两种渲染模式（`Graphics` 和 `Text`）的 `C
 **Failsafe**: `false`
 **Description**: 如果系统固件尚未启用，启用 `write-combining (WC) caching for GOP  memory`。
 
-一些较旧的固件（例如 EFI 时代的 Mac）无法设置 `write-combining (WC) caching for GOP  memory`（也称为 burst mode），尽管 CPU 支持该功能。
+一些较旧的固件（例如 EFI 时代的 Mac）无法设置 `write-combining (WC) caching for GOP  memory`（也称为 burst 模式），尽管 CPU 支持该功能。
 
 设置这个可以大大加快 GOP 操作的速度，特别是在需要 `DirectGopRendering` 的系统上。
 
-*注*：无论是否设置了 `DirectGopRendering`，这都是有效的，即使 `DirectGopRendering` 未启用，也可能给 GOP 操作带来一些加速。
+*注 1*：无论是否设置了 `DirectGopRendering`，此 `Quirk` 都会生效，并且在某些情况下，即使 `DirectGopRendering` 未启用，也可能会明显加快 GOP 操作的速度。
+
+*注 2*：大约是在 2013 年以后的大多数系统上，`write-combining (WC) caching` 已由固件应用于 GOP 内存，在这种情况下 `GopBurstMode` 是不必要的。 在此类系统上启用此 `Quirk` 通常应该是无害的，它会生成一个 OCC: 调试日志条目，表明 `burst` 模式已经启动。
+
+*注 3*：启用此 `Quirk` 时应谨慎，因为已观察到它会导致一些系统挂起。 由于已添加额外的防护措施以试图防止这种情况发生，如果发现此类系统，请记录错误跟踪器问题。
 
 ### 8. `GopPassThrough`
 
@@ -1074,7 +1078,7 @@ UEFI 固件通常支持具有两种渲染模式（`Graphics` 和 `Text`）的 `C
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
-**Description**: 某些类型的固件在图形和文本模式下都在屏幕上输出文本。通常不会这样做，因为随机文本可能会出现在图形图像上并导致 UI 损坏。将此选项设置为 `true` 时，会在控制台处于与 `Text` 不同的模式时，舍弃所有文本输出。
+**Description**: 某些类型的固件在图形和文本模式下都在屏幕上输出文本。这通常是意料之外的，因为随机文本可能会出现在图形图像上并导致 UI 损坏。将此选项设置为 `true` 时，将会在控制台未处于与 `Text` 模式时，舍弃所有文本输出。
 
 *注*：这一选项只会在 `System` 渲染器上生效。
 
