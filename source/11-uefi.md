@@ -3,7 +3,7 @@ title: 11. UEFI
 description: UEFI 驱动以及加载顺序
 type: docs
 author_info: 由 xMuu、Sukka、derbalkon、cike-567 整理，由 Sukka、derbalkon、cike-567 翻译
-last_updated: 2022-09-07
+last_updated: 2023-05-24
 ---
 
 ## 11.1 简介
@@ -874,7 +874,7 @@ Apple OEM 的默认值是 5（50ms）。`0` 是这个选项的无效值（将发
 **Failsafe**: Empty
 **Description**:  一些OpenCore插件接受可选的额外参数，可以在这里指定为一个字符串（译者注：即驱动参数）。
 
-## 11.14 Input 属性
+## 11.15 Input 属性
 
 ### 1. `KeyFiltering`
 
@@ -957,7 +957,7 @@ Apple OEM 的默认值是 5（50ms）。`0` 是这个选项的无效值（将发
   
 建议值为 `50000`（即 5 毫秒）或稍高一些。选择 ASUS Z87 主板时，请使用 `60000`，苹果主板请使用 `100000`。你也可以将此值设置为 `0`，不改变固件始终刷新的频率。
 
-## 11.15 Output 属性
+## 11.16 Output 属性
 
 ### 1. `InitialMode`
 
@@ -1152,7 +1152,7 @@ macOS bootloader 要求控制台句柄上必须有 GOP 或 UGA（适用于 10.4 
 
 有些固件不会去实现老旧的 UGA 协议，但是有些更老的 EFI 应用程序（ 例如 10.4 的 EfiBoot）可能需要用它来进行屏幕输出。
 
-## 11.16 ProtocolOverrides 属性
+## 11.17 ProtocolOverrides 属性
 
 ### 1. `AppleAudio`
 
@@ -1286,7 +1286,7 @@ Apple 音频协议允许 macOS bootloader 和 OpenCore 播放声音和信号，�
 **Failsafe**: `false`
 **Description**: 用内置版本替换 Unicode Collation 服务。建议启用这一选项以确保 UEFI Shell 的兼容性。一些较旧的固件破坏了 Unicode 排序规则，启用后可以修复这些系统上 UEFI Shell 的兼容性 (通常为用于 IvyBridge 或更旧的设备)
 
-## 11.17 Quirks 属性
+## 11.18 Quirks 属性
 
 ### 1. `ActivateHpetSupport`
 
@@ -1442,7 +1442,7 @@ Resizable BAR 技术允许通过将可配置的内存区域 BAR 映射到 CPU �
 
 *注*：如果惠普笔记本在 OpenCore 界面没有看到引导项，启用这一选项。
 
-## 11.13 ReservedMemory 属性
+## 11.19 ReservedMemory 属性
 
 ### 1. `Address`
 
