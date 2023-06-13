@@ -17,7 +17,7 @@ last_updated: 2023-05-24
 - [`AudioDxe`](https://github.com/acidanthera/OpenCorePkg)* --- UEFI 固件中的 HDA 音频驱动程序，适用于大多数 Intel 和其他一些模拟音频控制器。参考 [acidanthera/bugtracker#740](https://github.com/acidanthera/bugtracker/issues/740) 来了解 AudioDxe 的已知问题。
 - [`btrfs_x64`](https://github.com/acidanthera/OcBinaryData) --- 开源 BTRFS 文件系统驱动程序，需要从一个文件系统启动 OpenLinuxBoot，该文件系统在 Linux 非常常用。
 - [`BiosVideo`](https://github.com/acidanthera/OpenCorePkg)* --- 基于 VESA 和传统 BIOS 接口实现图形输出协议的 CSM 视频驱动程序。用于支持脆弱 GOP 的 UEFI 固件（例如，低分辨率）。需要重新连接图形连接。包含在 OpenDuet 中，开箱即用。
-- [`CrScreenshotDxe`](https://github.com/acidanthera/OpenCorePkg)* --- 截图驱动。启用后，按下 <kbd>F10</kbd> 将能够截图并保存在 EFI 分区根目录下。该驱动基于 [Nikolaj Schlej](https://github.com/NikolajSchlej) 修改的 LongSoft 开发的 [`CrScreenshotDxe`](https://github.com/LongSoft/CrScreenshotDxe)。
+- [`CrScreenshotDxe`](https://github.com/acidanthera/OpenCorePkg)* --- 截图驱动。启用后，按下 <kbd>F10</kbd> 将能够截图并保存在 EFI 分区根目录下。接受可选的驱动参数 `--enable-mouse-click`，以便在鼠标点击时额外地进行截图。(建议只在按键会阻止特定的屏幕截图时启用该选项，并在使用后再次禁用它)。该驱动基于 [Nikolaj Schlej](https://github.com/NikolajSchlej) 修改的 LongSoft 开发的 [`CrScreenshotDxe`](https://github.com/LongSoft/CrScreenshotDxe)。
 - [`EnableGop{Direct}`](https://github.com/acidanthera/OpenCorePkg)* --- 早期测试版的固件嵌入驱动程序在 `MacPro5,1` 上提供预开放核心非原生 GPU 支持。安装说明可在 OpenCore 发布的压缩文件的 [Utilities/EnableGop](https://github.com/acidanthera/OpenCorePkg/blob/master/Staging/EnableGop/README.md)目录中找到--请谨慎操作。
 - [`ext4_x64`](https://github.com/acidanthera/OcBinaryData) --- 开源 EXT4 文件系统驱动程序，需要用 OpenLinuxBoot 从 Linux 最常用的文件系统启动。
 - [`HfsPlus`](https://github.com/acidanthera/OcBinaryData) --- Apple 固件中常见的具有 Bless 支持的专有 HFS 文件系统驱动程序。对于 `Sandy Bridge` 和更早的 CPU，由于这些 CPU 缺少 `RDRAND` 指令支持，应使用 `HfsPlusLegacy` 驱动程序。
@@ -77,7 +77,8 @@ sudo bless --verbose --file /Volumes/VOLNAME/DIR/OpenShell.efi \
 - [`ChipTune`](https://github.com/acidanthera/OpenCorePkg)* --- 测试 BeepGen 协议，生成不同频率和长度的音频信号。
 - [`CleanNvram`](https://github.com/acidanthera/OpenCorePkg)* --- 重置 NVRAM，以一个单独的工具呈现。
 - [CsrUtil](https://github.com/acidanthera/OpenCorePkg)* --- 简单实现 Apple csrutil 的 SIP-related 相关功能。
-- [`GopStop`](https://github.com/acidanthera/OpenCorePkg)* --- 用一个 [简单的场景](https://github.com/acidanthera/OpenCorePkg/tree/master/Application/GopStop) 测试 GraphicOutput 协议。
+- [CsrUtil](https://github.com/acidanthera/OpenCorePkg)* --- 渲染内置渲染器提供的控制台字体页面。
+- [`FontTester`](https://github.com/acidanthera/OpenCorePkg)* --- 用一个 [简单的场景](https://github.com/acidanthera/OpenCorePkg/tree/master/Application/GopStop) 测试 GraphicOutput 协议。
 - [`KeyTester`](https://github.com/acidanthera/OpenCorePkg)* --- 在 `SimpleText` 模式下测试键盘输入。
 - [`MemTest86`](https://www.memtest86.com) --- 内存测试工具。
 - [`OpenControl`](https://github.com/acidanthera/OpenCorePkg)* --- 解锁和锁定 NVRAM 保护，以便其他工具在从 OpenCore 启动时能够获得完整的 NVRAM 访问权。
@@ -301,6 +302,9 @@ UEFI固件中的高清晰度音频（HDA）支持驱动程序，适用于大多�
 
 - `--codec-setup-delay`，整数值，默认为 `0`。
   等待所有组件完全打开的时间，以毫秒为单位，在驱动连接阶段应用于每个编解码器。在大多数系统中，这应该是不需要的，如果需要任何音频设置延迟，使用 `Audio` 部分的 `SetupDelay` 可以实现更快的启动。如果需要，可能需要一秒钟的值。
+
+- `--force-codec`，整数值，没有默认值。
+  强制使用一个音频编解码器，这个值应该等于音频部分的 AudioCodec。可以导致更快的启动，特别是与 `--force-device` 一起使用时。
   
 - `--force-device`，字符串值，无默认值。
   当这个选项存在并且有一个值（例如：`--force-device=PciRoot(0x0)/Pci(0x1f,0x3)`），它强制 AudioDxe 连接到指定的 PCI 设备，即使该设备不报告自己是一个 HDA 音频控制器。
@@ -327,8 +331,15 @@ UEFI固件中的高清晰度音频（HDA）支持驱动程序，适用于大多�
 
   驱动程序参数的值可以用以 `0x` 开头的十六进制或十进制来指定，例如 `--gpio-pins=0x12` 或 `--gpio-pins=18`。
 
-- `--restore-nosnoop`，Boolean flag，如果存在则启用。
+- `--restore-nosnoop`，布尔值，如果存在则启用。
   AudioDxe 清除了 `Intel HDA No Snoop Enable（NSNPEN）bit`。在某些系统上，这个改变必须在退出时被逆转，以避免在Windows 或 Linux 中破坏声音。如果是这样， 这个标志应该被添加到 AudioDxe 驱动参数中。 默认情况下不启用，因为恢复这个 `flag` 会使声音在其他一些系统的 macOS 中无法工作。
+  
+- `--use-conn-none`，布尔值，如果存在就启用。
+  在一些声卡上，启用这个选项将启用额外的可用音频通道（例如，一对扬声器的低音或高音，在没有它的情况下只能找到一个）。
+  
+  *注*：启用这个选项可能会增加可用的通道，在这种情况下，AudioOutMask 的任何自定义设置可能需要改变以匹配新的通道列表。
+
+
 
 ## 11.9 OpenVariableRuntimeDxe
 提供内存中模拟的 NVRAM 实现。这对于脆弱的设备（例如：`MacPro5,1`，请参阅此论坛帖子中链接的[讨论](https://forums.macrumors.com/posts/30945127)）或不存在兼容的 NVRAM 实现时非常有用。此驱动程序默认包含在 `OpenDuet` 中。
@@ -994,7 +1005,28 @@ UEFI 固件通常支持具有两种渲染模式（`Graphics` 和 `Text`）的 `C
 
 *注*：某些 Mac，例如 `MacPro5,1`，在使用较新的 GPU 时，可能会出现控制台不兼容输出的情况（例如：中断），因此可能只有 `BuiltinGraphics` 对它们有效。NVIDIA GPU可能需要额外的[固件升级](https://github.com/acidanthera/bugtracker/issues/1280)。
 
-### 2. `ConsoleMode`
+### 2. `ConsoleFont`
+
+**Type**: `plist string`
+**Failsafe**: Empty （使用 OpenCore 内置的控制台字体）
+**Description**: 指定用于OpenCore内置文本渲染器的控制台字体。
+
+字体文件必须位于 EFI/OC/Resources/Font/{font-name}.hex 中，并且必须是 8x16 分辨率。各种控制台字体可以在网上找到 .bdf 或 hex 格式。bdf可以用 gbdfed（可用于 Linux 或 macOS）转换为 .hex 格式。
+
+通常不需要改变控制台字体，主要用途是为那些相对罕见的支持多语言的 EFI 应用程序（例如 memtest86）提供一个扩展字符集。
+
+OcBinaryData 资源库包括：
+  - `Terminus` ：一种具有广泛的字符支持的字体，适用于诸如上述的应用程序。
+
+  - `TerminusCoreTerminus` ：字体的轻微修改版本，使一些字形（@KMRSTVWimrsw）与 XNU 和 OpenCore 中使用的免费 ISO 拉丁字体更加相似。
+
+Terminus和TerminusCore是根据《SIL O)pen字体许可证》1.1版提供的。可以在这里找到EPTO字体库中的一些额外的GPL许可字体，这些字体被转换为所需的.hex格式。
+
+*注 1*：在许多较新的系统上，系统文本渲染器已经提供了一整套国际字符，在这种情况下，可以不需要使用内置渲染器和自定义字体。
+
+*注 2*：这个选项只影响到内置文本渲染器，并且只从内置渲染器被配置的那一刻起生效。当控制台输出在这之前可见时，它使用的是系统控制台字体。
+
+### 3. `ConsoleMode`
 
 **Type**: `plist string`
 **Failsafe**: Empty （保持当前的控制台模式）
@@ -1004,7 +1036,7 @@ UEFI 固件通常支持具有两种渲染模式（`Graphics` 和 `Text`）的 `C
 
 *注*：在大多数固件上，这个字段最好留空。
 
-### 3. `Resolution`
+### 4. `Resolution`
 
 **Type**: `plist string`
 **Failsafe**: Empty （保持当前屏幕分辨率）
@@ -1017,7 +1049,7 @@ UEFI 固件通常支持具有两种渲染模式（`Graphics` 和 `Text`）的 `C
 
 *注*：当控制台句柄没有 GOP 协议时，这些设置会失败。当固件不再提供时，可以将 `ProvideConsoleGop` 设置为 `true` 添加 GOP 协议。
 
-### 4. `ForceResolution`
+### 5. `ForceResolution`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
@@ -1025,7 +1057,7 @@ UEFI 固件通常支持具有两种渲染模式（`Graphics` 和 `Text`）的 `C
 
 *注*：该选项依赖 [`OC_FORCE_RESOLUTION_PROTOCOL`](https://github.com/acidanthera/OpenCorePkg/blob/master/Include/Acidanthera/Protocol/OcForceResolution.h) 协议。目前只有 `OpenDuetPkg` 支持该协议，而 `OpenDuetPkg` 的实现目前仅支持 Intel iGPU。
 
-### 5. `ClearScreenOnModeSwitch`
+### 6. `ClearScreenOnModeSwitch`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
@@ -1033,7 +1065,7 @@ UEFI 固件通常支持具有两种渲染模式（`Graphics` 和 `Text`）的 `C
 
 *注*：这一选项只会在 `System` 渲染器上生效。
 
-### 6. `DirectGopRendering`
+### 7. `DirectGopRendering`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
@@ -1043,7 +1075,7 @@ UEFI 固件通常支持具有两种渲染模式（`Graphics` 和 `Text`）的 `C
 
 这个渲染器完全支持 `AppleEg2Info` 协议，将为所有 EFI 应用程序提供屏幕旋转。为了提供与 `EfiBoot` 的无缝旋转兼容性，还应该使用内置的 `AppleFramebufferInfo`，也就是说，在 Mac EFI 上可能需要覆盖它。  
 
-### 7. `GopBurstMode`
+### 8. `GopBurstMode`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
@@ -1059,7 +1091,7 @@ UEFI 固件通常支持具有两种渲染模式（`Graphics` 和 `Text`）的 `C
 
 *注 3*：启用此 `Quirk` 时应谨慎，因为已观察到它会导致一些系统挂起。 由于已添加额外的防护措施以试图防止这种情况发生，如果发现此类系统，请记录错误跟踪器问题。
 
-### 8. `GopPassThrough`
+### 9. `GopPassThrough`
 
 **Type**: `plist string`
 **Failsafe**: `Disabled`
@@ -1074,7 +1106,7 @@ UEFI 固件通常支持具有两种渲染模式（`Graphics` 和 `Text`）的 `C
   
 *注*：该选项需要启用 `ProvideConsoleGop`。  
   
-### 9. `IgnoreTextInGraphics`
+### 10. `IgnoreTextInGraphics`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
@@ -1082,7 +1114,7 @@ UEFI 固件通常支持具有两种渲染模式（`Graphics` 和 `Text`）的 `C
 
 *注*：这一选项只会在 `System` 渲染器上生效。
 
-### 10. `ReplaceTabWithSpace`
+### 11. `ReplaceTabWithSpace`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
@@ -1090,7 +1122,7 @@ UEFI 固件通常支持具有两种渲染模式（`Graphics` 和 `Text`）的 `C
 
 *注*：这一选项只会在 `System` 渲染器上生效。
 
-### 11. `ProvideConsoleGop`
+### 12. `ProvideConsoleGop`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
@@ -1100,7 +1132,7 @@ macOS bootloader 要求控制台句柄上必须有 GOP 或 UGA（适用于 10.4 
 
 *注*：这个选项也会替换掉控制台句柄上损坏的 GOP 协议，在使用较新的 GPU 的 `MacPro5,1` 时可能会出现这种情况。
 
-### 12. `ReconnectGraphicsOnConnect`
+### 13. `ReconnectGraphicsOnConnect`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
@@ -1110,7 +1142,7 @@ macOS bootloader 要求控制台句柄上必须有 GOP 或 UGA（适用于 10.4 
   
 *注*：这个选项需要启用 `ConnectDrivers`。  
   
-### 13. `ReconnectOnResChange`
+### 14. `ReconnectOnResChange`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
@@ -1120,7 +1152,7 @@ macOS bootloader 要求控制台句柄上必须有 GOP 或 UGA（适用于 10.4 
 
 *注*：当 OpenCore 从 Shell 启动时，这个逻辑可能会导致某些主板黑屏，因此这个选项是非必须的。在 0.5.2 之前的版本中，这个选项是强制性的，不可配置。除非需要，否则请不要使用该选项。
 
-### 14. `SanitiseClearScreen`
+### 15. `SanitiseClearScreen`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
@@ -1128,7 +1160,7 @@ macOS bootloader 要求控制台句柄上必须有 GOP 或 UGA（适用于 10.4 
 
 *注*：这一选项只会在 `System` 渲染器上生效。在所有已知的受影响的系统中，`ConsoleMode` 必须设置为空字符串才能正常工作。
 
-### 15. `UIScale`
+### 16. `UIScale`
 
 **Type**: `plist integer，8 bit`
 **Failsafe**: `-1`
@@ -1144,7 +1176,7 @@ macOS bootloader 要求控制台句柄上必须有 GOP 或 UGA（适用于 10.4 
 
 *注 2*：当从手动指定的 NVRAM 变量切换到该首选项时，可能需要对 NVRAM 进行重置。  
   
-### 16. `UgaPassThrough`
+### 17. `UgaPassThrough`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
@@ -1280,7 +1312,13 @@ Apple 音频协议允许 macOS bootloader 和 OpenCore 播放声音和信号，�
 **Failsafe**: `false`
 **Description**: 用内置版本替换 OS Info 协议。该协议通常用于通过固件或其他应用程序从 macOS 引导加载程序接收通知。
 
-### 18. `UnicodeCollation`
+### 18. `Pcilo`
+
+**Type**: `plist boolean`
+**Failsafe**: `false`
+**Description**: 用 64 位 MMIO 兼容的函数替换 Cpulo 和 PciRootBridgelo 中的函数，以修复使用 4G 解码时的无效参数。这影响到 UEFI 驱动，如访问 64 位 MMIO 设备的 AudioDxe。早于 APTIO V 的平台（Haswell 和更早）通常受到影响。
+
+### 19. `UnicodeCollation`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
