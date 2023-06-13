@@ -1047,7 +1047,7 @@ UEFI 固件通常支持具有两种渲染模式（`Graphics` 和 `Text`）的 `C
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
-**Description**: 如果系统固件尚未启用，启用 `write-combining (WC) caching for GOP  memory`。
+**Description**: 如果系统固件尚未启用 `write-combining (WC) caching for GOP  memory`，则启用 `write-combining (WC) caching for GOP  memory`。
 
 一些较旧的固件（例如 EFI 时代的 Mac）无法设置 `write-combining (WC) caching for GOP  memory`（也称为 burst 模式），尽管 CPU 支持该功能。
 
