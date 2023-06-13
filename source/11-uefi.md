@@ -979,7 +979,7 @@ UEFI 固件通常支持具有两种渲染模式（`Graphics` 和 `Text`）的 `C
 
 每个渲染器都提供自己的 `ConsoleControl` 协议（在系统通用的情况下，如果存在系统 `ConsoleControl` 协议，则会将某些操作传递给它）。
 
-此选项的有效值是要使用的渲染器和在启动前设置在底层系统 `ConsoleControl` 协议上的 `ConsoleControl` 模式的组合。要控制启动后所提供的 `ConsoleControl` 协议的初始模式，请使用 InitialMode 选项。
+此选项的有效值是要使用的渲染器和在启动前设置在底层系统 `ConsoleControl` 协议上的 `ConsoleControl` 模式的组合。要控制启动后所提供的 `ConsoleControl` 协议的初始模式，请使用 `InitialMode` 选项。
 
 有效值为文本渲染器和渲染模式的组合：
   - `BuiltinGraphics` --- 切换到 `Graphics` 模式，然后使用 `Builtin` 渲染器和自定义 `ConsoleControl`。
