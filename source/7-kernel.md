@@ -534,9 +534,9 @@ last_updated: 2022-08-04
 **Requirement**:  13.3(not required for older)
 **Description**: 在 IOMMU(VT-d) 中禁止映射 PCI 桥接设备内存。
 
-*注 1*：当在本机的 `DMAR` 表中包含一个或多个保留内存区域且启用 iGPU 并且安装了超过 16 GB 内存的系统上启用 AppleVTD 时，此选项解决了与 Wi-Fi、以太网和 Thunderbolt 设备的兼容性问题。
+这个选项解决了在原生 `DMAR` 表包含一个或多个保留内存区域且安装了超过 16 GB 内存的系统上启用 AppleVTD 时与 Wi-Fi、以太网和 Thunderbolt 设备的兼容性问题。在某些系统上，只有在启用 iGPU 时才需要这个 Quirk。
 
-*注 2*：在 AMD 系统上不需要这个选项。
+*注 1*：在 AMD 系统上不需要这个选项。
 
 ### 9. `DisableLinkeditJettison`
 
