@@ -33,7 +33,7 @@ OpenCore 大体上遵循 `bless` 模式，即 `Apple Boot Policy`。`bless` 模�
    - 在分区句柄列表中找到设备句柄（缺失时忽略）。
    - 对磁盘设备路径（不指定引导程序）执行 `bless`（可能返回不止一个条目）。
    - 对文件设备路径直接检查其文件系统。
-   - 如果在 `bootloader` 附近或 `boot` 目录内有一个 `.contentVisibility` 文件，并有禁用的内容（ASCII），则排除该条目。
+   - 如果在 `bootloader` 附近或 `boot` 目录内有一个 `.contentVisibility` 文件，并且该文件包含 ASCII 编码的 `Disabled` 内容（> 译者注：就是 `.contentVisibility` 文件记录的内容是 ASCII 编码的 `Disabled` 字符），则排除该条目。
    - 如果有分区句柄列表，则在列表中将设备句柄标记为 *used*。
    - 将生成的条目注册为主选项，并确定他们的类型。某些类型的选项作为辅助选项（如 Apple HFS Recovery）。对于某些类型（例如 Apple HFS recovery）或其 `.contentVisibility` 文件包含 `Auxiliary` 时，该选项将成为辅助性的。
 4. 对于每个分区句柄：
