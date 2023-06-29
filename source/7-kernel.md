@@ -437,7 +437,7 @@ last_updated: 2023-06-13
 **Requirement**: 10.4
 **Description**: 禁用 `AppleIntelCPUPowerManagement.kext` 中的 `PKG_CST_CONFIG_CONTROL` (`0xE2`) 修改，从而避免早期 Kernel Panic。
 
-*注*：`AppleIntelCPUPowerManagement.kext` 自 macOS 13 起，已被删除。但是，可以注入旧版本 macOS 并使用此 `quirk` 进行修补。
+*注*：`AppleIntelCPUPowerManagement.kext` 自 macOS 13 起，已被删除。但是，可以注入旧版本 `AppleIntelCPUPowerManagement.kext` 并使用此 `quirk` 进行修补。
 
 某些固件会锁定 `PKG_CST_CONFIG_CONTROL MSR` 寄存器。可以使用附带的 `ControlMsrE2` 工具检查其状态。请注意，某些类型的固件仅将此寄存器锁定在某些内核上。由于现代固件已经提供了 `CFG Lock` 相关设置、从而可以配置 `PKG_CST_CONFIG_CONTROL` 寄存器锁定，此选项应该尽可能避免。
 
