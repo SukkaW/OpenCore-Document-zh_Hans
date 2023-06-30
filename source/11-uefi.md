@@ -978,7 +978,7 @@ Apple OEM 的默认值是 5（50ms）。`0` 是这个选项的无效值（将发
 
 可用值为 `Auto`、`Text` 和 `Graphics`。 `Text` 和 `Graphics` 指定了命名模式。 `Auto` 使用系统 `ConsoleControl` 协议的当前模式（如果存在），否则默认为 `Text` 模式。 
 
-UEFI 固件通常支持具有两种渲染模式（`Graphics` 和 `Text`）的 `ConsoleControl`。 某些类型的固件不提供本机 `ConsoleControl` 和渲染模式。 OpenCore 和 macOS 期望文本仅在文本模式下显示，但图形可以在任何模式下绘制，这就是 OpenCore 内置渲染器的行为方式。 由于 UEFI 规范不要求这样做，因此系统 `ConsoleControl` 协议的行为（如果存在）可能会有所不同。
+UEFI 固件通常支持具有两种渲染模式（`Graphics` 和 `Text`）的 `ConsoleControl`。 某些类型的固件不提供本机的 `ConsoleControl` 和渲染模式。 OpenCore 和 macOS 期望文本仅在文本模式下显示，但图形可以在任何模式下绘制，这就是 OpenCore 内置渲染器的行为方式。 由于 UEFI 规范不要求这样做，因此系统 `ConsoleControl` 协议的行为（如果存在）可能会有所不同。
 
 ### 2. `TextRenderer`
 
