@@ -1011,7 +1011,7 @@ UEFI 固件通常支持具有两种渲染模式（`Graphics` 和 `Text`）的 `C
 **Failsafe**: Empty （使用 OpenCore 内置的控制台字体）
 **Description**: 指定用于OpenCore内置文本渲染器的控制台字体。
 
-字体文件必须位于 EFI/OC/Resources/Font/{font-name}.hex 中，并且必须是 8x16 分辨率。各种控制台字体可以在网上找到 .bdf 或 hex 格式。bdf可以用 gbdfed（可用于 Linux 或 macOS）转换为 .hex 格式。
+字体文件必须位于 `EFI/OC/Resources/Font/{font-name}.hex` 中，并且必须是 8x16 分辨率。各种控制台字体可以在网上找到 .bdf 或 hex 格式。bdf可以用 gbdfed（可用于 Linux 或 macOS）转换为 .hex 格式。
 
 通常不需要改变控制台字体，主要用途是为那些相对罕见的支持多语言的 EFI 应用程序（例如 memtest86）提供一个扩展字符集。
 
