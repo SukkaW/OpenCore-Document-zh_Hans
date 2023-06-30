@@ -1001,7 +1001,7 @@ UEFI 固件通常支持具有两种渲染模式（`Graphics` 和 `Text`）的 `C
 
 `BuiltinGraphics` 的使用很简单。对于大多数平台，需要启用 `ProvideConsoleGop`，将 `Resolution` 设置为 `Max`。某些非常老旧且问题很多的笔记本只能在 `Text` 模式下绘图，对它们来说，`BuiltinText` 是 `BuiltinGraphics` 的替代选择。
 
-`System` 协议的用法比较复杂。一般来说，首选设置 `SystemGraphics` 或 `SystemText`。启用 `ProvideConsoleGop`，将 `Resolution` 设置为 `Max`，启用 `ReplaceTabWithSpace` 几乎在所有平台上都很有用。`SanitiseClearScreen`、`IgnoreTextInGraphics` 和 `ClearScreenOnModeSwitch` 比较特殊，它们的用法取决于固件。
+`System` 协议的用法比较复杂。一般来说，首选设置 `SystemGraphics` 或 `SystemText`。需要启用 `ProvideConsoleGop`，将 `Resolution` 设置为 `Max`，启用 `ReplaceTabWithSpace` 几乎在所有平台上都很有用。`SanitiseClearScreen`、`IgnoreTextInGraphics` 和 `ClearScreenOnModeSwitch` 比较特殊，它们的用法取决于固件。
 
 *注*：某些 Mac，例如 `MacPro5,1`，在使用较新的 GPU 时，可能会出现控制台不兼容输出的情况（例如：中断），因此可能只有 `BuiltinGraphics` 对它们有效。NVIDIA GPU可能需要额外的[固件升级](https://github.com/acidanthera/bugtracker/issues/1280)。
 
