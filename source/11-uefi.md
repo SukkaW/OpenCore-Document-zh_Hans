@@ -8,7 +8,7 @@ last_updated: 2023-06-13
 
 ## 11.1 简介
 
-[UEFI](https://uefi.org/specifications)（统一可扩展固件接口）是一种规范，用于定义操作系统和平台固件之间的软件接口。本部分允许加载其他 UEFI 模块 和/或 对板载固件进行调整。要检查固件内容，应用修改并执行升级，可以使用 [UEFITool](https://github.com/LongSoft/UEFITool/releases) 和其他实用程序。
+[UEFI](https://uefi.org/specifications)（统一可扩展固件接口）是一种规范，它定义了操作系统和平台固件之间的软件接口。本部分允许加载其他 UEFI 模块，以及对板载固件进行修改。为了检查固件的内容，应用修改和执行升级，可以使用 [UEFITool](https://github.com/LongSoft/UEFITool/releases) 和其他实用工具。
 
 ## 11.2 驱动列表
 
