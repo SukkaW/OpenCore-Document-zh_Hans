@@ -1426,12 +1426,6 @@ Apple 音频协议允许 macOS bootloader 和 OpenCore 播放声音和信号，�
 
 这个 Quirk 使得 `ResizeGpuBars` 和 `ResizeAppleGpuBars` 使用 `PciRootBridgeIo` 而不是 `PciIo`。 这是 `Capability I/O` 错误。一般来说，在已使用 [`ReBarUEFI`](https://github.com/xCuri0/ReBarUEFI)  修改的旧系统上是必需的。
 
-借助 `RequestBootVarRouting` 将 `Boot` 前缀变量重定向至单独的 GUID 命名空间，可实现以下效果：
-
-- 囚禁操作系统，使其只受 OpenCore 引导环境的控制，从而提高了安全性。
-- 如遇到中途需要通过 OpenCore 来重启的情况，操作系统不会搞乱 OpenCore 的引导优先级，保证了系统更新和休眠唤醒的流畅性。
-- macOS 等潜在的不兼容的启动项，现在不会被意外删除或损坏了。
-
 ### 13. `ResizeGpuBars`
 
 **Type**: `plist integer`
