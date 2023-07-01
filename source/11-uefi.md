@@ -1424,7 +1424,7 @@ Apple 音频协议允许 macOS bootloader 和 OpenCore 播放声音和信号，�
 **Failsafe**: `false`
 **Description**: 使用 `PciRootBridgeIo` 来调整 `GpuBars` 和 `ResizeAppleGpuBar`。
 
-这个 Quirk 使得 `ResizeGpuBars` 和 `ResizeAppleGpuBars` 使用 `PciRootBridgeIo` 而不是 `PciIo`。 这在具有错误的 `PciIo``Capability I/O` 实现的系统上是必须的，在这些系统上尝试配置 Resizable BAR 会导致 `Capability I/O` 错误。通常在已使用 [`ReBarUEFI`](https://github.com/xCuri0/ReBarUEFI)  修改的旧系统上是必需的。
+这个 Quirk 使得 `ResizeGpuBars` 和 `ResizeAppleGpuBars` 使用 `PciRootBridgeIo` 而不是 `PciIo`。 这在具有错误的 `PciIo` 实现的系统上是必须的，在这些系统上尝试配置 Resizable BAR 会导致 `Capability I/O` 错误。通常在已使用 [`ReBarUEFI`](https://github.com/xCuri0/ReBarUEFI)  修改的旧系统上是必需的。
 
 ### 13. `ResizeGpuBars`
 
