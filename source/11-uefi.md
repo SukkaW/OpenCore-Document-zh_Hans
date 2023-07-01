@@ -1446,7 +1446,7 @@ Resizable BAR 技术允许通过将可配置的内存区域 BAR 映射到 CPU �
   
 *例 1*：将 ResizeGpuBars 设置为 1GB 将改变 BAR0 为 1GB，BAR1 保持不变。
 
-*例 2*: 将 ResizeGpuBars 设置为 1MB 将改变 BAR0 为 256MB，BAR0 为 2MB。
+*例 2*：将 ResizeGpuBars 设置为 1MB 将改变 BAR0 为 256MB，BAR0 为 2MB。
 
 *例 3*：将 ResizeGpuBars 设置为 16GB 将改变 BAR0 为 8GB，BAR1 保持不变。 
 
