@@ -21,6 +21,8 @@ OpenCore 大体上遵循 `bless` 模式，即 `Apple Boot Policy`。`bless` 模�
 - 每个主选项和备用选项都可以作为辅助选项（Auxiliary Option），也可以不作为辅助选项。
   - 具体细节参考下面的 `HideAuxiliary` 章节。
 
+### 8.1.1 引导算法
+
 用来确定启动选项的算法如下：
 
 1. 通过 `Scan policy`（和驱动可用性）过滤，获取所有可用的分区句柄。
@@ -33,9 +35,9 @@ OpenCore 大体上遵循 `bless` 模式，即 `Apple Boot Policy`。`bless` 模�
    - 在分区句柄列表中找到设备句柄（缺失时忽略）。
    - 对磁盘设备路径（不指定引导程序）执行 `bless`（可能返回不止一个条目）。
    - 对文件设备路径直接检查其文件系统。
-   - 如果在 `bootloader` 附近或 `boot` 目录内有一个 `.contentVisibility` 文件，并且该文件包含 ASCII 编码的 `Disabled` 内容（> 译者注：就是 `.contentVisibility` 文件记录的内容是 ASCII 编码的 `Disabled` 字符，建议是直接使用 OpenCore 自带的 `.contentVisibility` 文件，或者通过命令行生成。），则排除该条目。
+   - 如果在 `bootloader` 附近或相关位置（见下文）内有一个 `.contentVisibility` 文件，并且该文件包含 ASCII 编码的 `Disabled` 内容（> 译者注：就是 `.contentVisibility` 文件记录的内容是 ASCII 编码的 `Disabled` 字符，建议是直接使用 OpenCore 自带的 `.contentVisibility` 文件，或者通过命令行生成。），则排除该条目（并且如果当前的 InstanceIentifier 与存在的 Instance-List 匹配，请见下文。）。
    - 如果有分区句柄列表，则在列表中将设备句柄标记为 *used*。
-   - 将生成的条目注册为主选项，并确定他们的类型。某些类型的选项作为辅助选项（如 Apple HFS Recovery）。对于某些类型（例如 Apple HFS recovery）或其 `.contentVisibility` 文件包含 `Auxiliary` 时，该选项将成为辅助性的。
+   - 将生成的条目注册为主选项，并确定他们的类型。某些类型的选项作为辅助选项（如 Apple HFS Recovery）。对于某些类型（例如 Apple HFS recovery）或其 `.contentVisibility` 文件包含 `Auxiliary` 时（并且如果当前的 InstanceIentifier 与存在的 Instance-List 匹配，请见下文。），该选项将成为辅助性的。
 4. 对于每个分区句柄：
    - 如果分区句柄被标记为 *unused*，则执行 `bless` 主选项列表检索。如果设置了 `BlessOverride` 列表，那么不仅能找到标准的 `bless` 路径，还能找到自定义的路径。
    - 在 OpenCore 启动分区中，通过 Header Check 排除所有 OpenCore Bootstrap 文件。
@@ -45,6 +47,26 @@ OpenCore 大体上遵循 `bless` 模式，即 `Apple Boot Policy`。`bless` 模�
    - 将生成的条目注册为备用辅助选项，并确定它们的类型。
 5. 把自定义条目和工具添加为主选项（以前预先构造的除外），不做有关 `Auxiliary` 的任何检查。
 6. 把系统条目（如 `Reset NVRAM`）添加为主要的辅助选项。
+
+ `.contentVisibility` 文件可以放置在 `bootloader` 附近（例如：boot.efi），或者放置在引导文件夹中（对于基于 DMG 文件夹的引导项）。从 macOS 内部看到的示例位置是：
+
+    - /System/Volumes/Preboot/{GUID}/System/Library/CoreServices/.contentVisibility
+    - /Volumes/{ESP}/EFI/BOOT/.contentVisibility
+此外，`.contentVisibility` 文件可以放置在特定于实例（对于 macOS）或与启动项相关的绝对根文件夹中，例如：
+
+    - /System/Volumes/Preboot/{GUID}/.contentVisibility
+    - /System/Volumes/Preboot/.contentVisibility
+    - /Volumes/{ESP}/.contentVisibility（不推荐）
+    
+这些根文件夹位置专门针对 macOS 支持，因为 Apple 引导加载程序旁边的非 Apple 文件会被 macOS 更新删除。支持但不建议将 `.contentVisibility` 文件放置在非 macOS 根位置（例如上面显示的最后一个位置），因为它会隐藏驱动器上的所有条目。
+
+`.contentVisibility` 文件（如果存在）可以选择仅针对 OpenCore 的特定实例。其内容为 [ {Instance-List}: ] (Disabled|Auxiliary)。如果存在冒号 (:)，则前面的 Instance-List 是逗号分隔的 InstanceIdentifier 值列表（例如：OCA,OCB:Disabled）。当此列表存在时，仅当当前 OpenCore 实例的 InstanceIdentifier 存在于列表中时才应用指定的可见性。当列表不存在时，指定的可见性将应用于 OpenCore 的所有实例。
+
+*注 1*：对于任何没有 InstanceIdentifier 值的 OpenCore 实例，带有 Instance-List 的 `.contentVisibility` 文件中指定的可见性将永远不会应用。
+
+*注 2*：在 OpenCore 的早期版本中，具有可见性列表的可见性将被视为无效，因此会被忽略 - 这在比较旧版本和新版本的行为时可能很有用。
+
+*注 3*：避免 `.contentVisibility` 文件中出现无关空格：这些空格不会被视为空格，而是作为相邻标记的一部分。
 
 OpenCore 启动选择器中的启动选项的显示顺序和启动过程，是通过扫描算法分别来确定的。
 
@@ -199,10 +221,18 @@ OpenCore 启动选择器中的启动选项的显示顺序和启动过程，是�
 
 即使被隐藏，你仍然可以通过按空格键进入「扩展模式」查看所有条目（引导项菜单会被重新加载），隐藏辅助条目可能有助于提高多磁盘系统的引导性能，简单来说就是可能提高启动速度。
 
-### 5. `LauncherOption`
+### 5. `InstanceIdentifier`
 
 **Type**: `plist string`
-**Failsafe**: `Disabled`
+**Failsafe**: `false`
+**Description**: OpenCore 当前实例的可选标识符。
+
+这通常应该是一个短的字母数字字符串。当前该值的用途是选择性地将 `.contentVisibility` 文件定位到 OpenCore 的特定实例，如[引导算法](https://oc.skk.moe/8-misc.html#8-1-1-引导算法)部分中所述。
+
+### 6. `LauncherOption`
+
+**Type**: `plist string`
+**Failsafe**: `Empty`
 **Description**: 在固件偏好设置中注册启动器选项，以保证 bootloader 的持久与一致性。
 
 有效值有：
