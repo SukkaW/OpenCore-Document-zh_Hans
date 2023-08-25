@@ -195,7 +195,7 @@
                     <p><small>由 Sukka、derbalkon、cike-567 整理，由 Sukka、derbalkon、cike-567 翻译。</small></p>
                 
                 
-                    <p><small>本页面最后更新于 2022 年 08 月 04 日</small></p>
+                    <p><small>本页面最后更新于 2023 年 06 月 13 日</small></p>
                 
                 <br>
             
@@ -331,7 +331,7 @@
 <h3 id="13-ReplaceMask"><a href="#13-ReplaceMask" class="headerlink" title="13. ReplaceMask"></a>13. <code>ReplaceMask</code></h3><p><strong>Type</strong>: <code>plist data</code><br><strong>Failsafe</strong>: Empty data<br><strong>Description</strong>: 替换时使用的数据位掩码。允许通过更新掩码（设置为非 <code>0</code>）来进行模糊替换。若留空则代表忽略，否则其大小必须等于 <code>Replace</code>。</p>
 <h3 id="14-Skip"><a href="#14-Skip" class="headerlink" title="14. Skip"></a>14. <code>Skip</code></h3><p><strong>Type</strong>: <code>plist integer</code><br><strong>Failsafe</strong>: <code>0</code> （不跳过任何事件）<br><strong>Description</strong>: 在替换前要跳过的发现事件数。</p>
 <h2 id="7-8-Quirks-属性"><a href="#7-8-Quirks-属性" class="headerlink" title="7.8 Quirks 属性"></a>7.8 Quirks 属性</h2><h3 id="1-AppleCpuPmCfgLock"><a href="#1-AppleCpuPmCfgLock" class="headerlink" title="1. AppleCpuPmCfgLock"></a>1. <code>AppleCpuPmCfgLock</code></h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: <code>false</code><br><strong>Requirement</strong>: 10.4<br><strong>Description</strong>: 禁用 <code>AppleIntelCPUPowerManagement.kext</code> 中的 <code>PKG_CST_CONFIG_CONTROL</code> (<code>0xE2</code>) 修改，从而避免早期 Kernel Panic。</p>
-<p><em>注</em>：<code>AppleIntelCPUPowerManagement.kext</code> 自 macOS 13 起，已被删除。但是，可以注入旧版本 macOS 并使用此 <code>quirk</code> 进行修补。</p>
+<p><em>注</em>：<code>AppleIntelCPUPowerManagement.kext</code> 自 macOS 13 起，已被删除。但是，可以注入旧版本 <code>AppleIntelCPUPowerManagement.kext</code> 并使用此 <code>quirk</code> 进行修补。</p>
 <p>某些固件会锁定 <code>PKG_CST_CONFIG_CONTROL MSR</code> 寄存器。可以使用附带的 <code>ControlMsrE2</code> 工具检查其状态。请注意，某些类型的固件仅将此寄存器锁定在某些内核上。由于现代固件已经提供了 <code>CFG Lock</code> 相关设置、从而可以配置 <code>PKG_CST_CONFIG_CONTROL</code> 寄存器锁定，此选项应该尽可能避免。</p>
 <p>对于一些不显示 <code>CFG Lock</code> 配置的固件，可以按照下述配置进行修改：</p>
 <ol>
@@ -368,8 +368,8 @@
 <p><em>注 1</em>：该选项是直接在 ACPI 表中删除 <code>DMAR</code> 和在固件首选项中禁用 VT-d 的首选替代方案。不会妨碍其他操作系统中的 VT-d 支持。</p>
 <p><em>注 2</em>：固件中错误配置的 IOMMU 可能导致设备损坏，如以太网或 Wi-Fi 适配器。例如，以太网适配器可能会无限在连接-断开中循环，Wi-Fi 适配器可能无法发现网络。技嘉是出现这些问题的最常见的 OEM 厂商之一。</p>
 <h3 id="8-DisableIoMapperMapping"><a href="#8-DisableIoMapperMapping" class="headerlink" title="8. DisableIoMapperMapping"></a>8. <code>DisableIoMapperMapping</code></h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: <code>false</code><br><strong>Requirement</strong>:  13.3(not required for older)<br><strong>Description</strong>: 在 IOMMU(VT-d) 中禁止映射 PCI 桥接设备内存。</p>
-<p><em>注 1</em>：当在本机的 <code>DMAR</code> 表中包含一个或多个保留内存区域且启用iGPU并且安装了超过16 GB内存的系统上启用 AppleVTD 时，此选项解决了与 Wi-Fi、以太网和 Thunderbolt 设备的兼容性问题。</p>
-<p><em>注 2</em>：在 AMD 系统上不需要这个选项。</p>
+<p>这个选项解决了在原生 <code>DMAR</code> 表包含一个或多个保留内存区域且安装了超过 16 GB 内存的系统上启用 AppleVTD 时与 Wi-Fi、以太网和 Thunderbolt 设备的兼容性问题。在某些系统上，只有在启用 iGPU 时才需要这个 Quirk。</p>
+<p><em>注 1</em>：在 AMD 系统上不需要这个选项。</p>
 <h3 id="9-DisableLinkeditJettison"><a href="#9-DisableLinkeditJettison" class="headerlink" title="9. DisableLinkeditJettison"></a>9. <code>DisableLinkeditJettison</code></h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: <code>false</code><br><strong>Requirement</strong>: 11<br><strong>Description</strong>: 禁止丢弃 <code>__LINKEDIT</code>。</p>
 <p>这个选项能让 <code>Lilu.kext</code> 和其他一些可能的 kext 在 macOS Big Sur 中以最佳性能运行，而不需要 <code>keepsyms=1</code> 启动参数。</p>
 <h3 id="9-DisableRtcChecksum"><a href="#9-DisableRtcChecksum" class="headerlink" title="9. DisableRtcChecksum"></a>9. <code>DisableRtcChecksum</code></h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: <code>false</code><br><strong>Requirement</strong>: 10.4<br><strong>Description</strong>: 禁用 AppleRTC 初始校验和（<code>0x58</code>-<code>0x59</code>）写入。</p>
