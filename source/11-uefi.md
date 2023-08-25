@@ -3,12 +3,12 @@ title: 11. UEFI
 description: UEFI 驱动以及加载顺序
 type: docs
 author_info: 由 xMuu、Sukka、derbalkon、cike-567 整理，由 Sukka、derbalkon、cike-567 翻译
-last_updated: 2022-09-07
+last_updated: 2023-06-13
 ---
 
 ## 11.1 简介
 
-[UEFI](https://uefi.org/specifications)（统一可扩展固件接口）是一种规范，用于定义操作系统和平台固件之间的软件接口。本部分允许加载其他 UEFI 模块 和/或 对板载固件进行调整。要检查固件内容，应用修改并执行升级，可以使用 [UEFITool](https://github.com/LongSoft/UEFITool/releases) 和其他实用程序。
+[UEFI](https://uefi.org/specifications)（统一可扩展固件接口）是一种规范，它定义了操作系统和平台固件之间的软件接口。本部分允许加载其他 UEFI 模块，以及对板载固件进行修改。为了检查固件的内容，应用修改和执行升级，可以使用 [UEFITool](https://github.com/LongSoft/UEFITool/releases) 和其他实用工具。
 
 ## 11.2 驱动列表
 
@@ -17,7 +17,7 @@ last_updated: 2022-09-07
 - [`AudioDxe`](https://github.com/acidanthera/OpenCorePkg)* --- UEFI 固件中的 HDA 音频驱动程序，适用于大多数 Intel 和其他一些模拟音频控制器。参考 [acidanthera/bugtracker#740](https://github.com/acidanthera/bugtracker/issues/740) 来了解 AudioDxe 的已知问题。
 - [`btrfs_x64`](https://github.com/acidanthera/OcBinaryData) --- 开源 BTRFS 文件系统驱动程序，需要从一个文件系统启动 OpenLinuxBoot，该文件系统在 Linux 非常常用。
 - [`BiosVideo`](https://github.com/acidanthera/OpenCorePkg)* --- 基于 VESA 和传统 BIOS 接口实现图形输出协议的 CSM 视频驱动程序。用于支持脆弱 GOP 的 UEFI 固件（例如，低分辨率）。需要重新连接图形连接。包含在 OpenDuet 中，开箱即用。
-- [`CrScreenshotDxe`](https://github.com/acidanthera/OpenCorePkg)* --- 截图驱动。启用后，按下 <kbd>F10</kbd> 将能够截图并保存在 EFI 分区根目录下。该驱动基于 [Nikolaj Schlej](https://github.com/NikolajSchlej) 修改的 LongSoft 开发的 [`CrScreenshotDxe`](https://github.com/LongSoft/CrScreenshotDxe)。
+- [`CrScreenshotDxe`](https://github.com/acidanthera/OpenCorePkg)* --- 截图驱动。启用后，按下 <kbd>F10</kbd> 将能够截图并保存在 EFI 分区根目录下。接受可选的驱动参数 `--enable-mouse-click`，以便在鼠标点击时额外地进行截图。(建议只在按键会阻止特定的屏幕截图时启用该选项，并在使用后再次禁用它)。该驱动基于 [Nikolaj Schlej](https://github.com/NikolajSchlej) 修改的 LongSoft 开发的 [`CrScreenshotDxe`](https://github.com/LongSoft/CrScreenshotDxe)。
 - [`EnableGop{Direct}`](https://github.com/acidanthera/OpenCorePkg)* --- 早期测试版的固件嵌入驱动程序在 `MacPro5,1` 上提供预开放核心非原生 GPU 支持。安装说明可在 OpenCore 发布的压缩文件的 [Utilities/EnableGop](https://github.com/acidanthera/OpenCorePkg/blob/master/Staging/EnableGop/README.md)目录中找到--请谨慎操作。
 - [`ext4_x64`](https://github.com/acidanthera/OcBinaryData) --- 开源 EXT4 文件系统驱动程序，需要用 OpenLinuxBoot 从 Linux 最常用的文件系统启动。
 - [`HfsPlus`](https://github.com/acidanthera/OcBinaryData) --- Apple 固件中常见的具有 Bless 支持的专有 HFS 文件系统驱动程序。对于 `Sandy Bridge` 和更早的 CPU，由于这些 CPU 缺少 `RDRAND` 指令支持，应使用 `HfsPlusLegacy` 驱动程序。
@@ -77,7 +77,8 @@ sudo bless --verbose --file /Volumes/VOLNAME/DIR/OpenShell.efi \
 - [`ChipTune`](https://github.com/acidanthera/OpenCorePkg)* --- 测试 BeepGen 协议，生成不同频率和长度的音频信号。
 - [`CleanNvram`](https://github.com/acidanthera/OpenCorePkg)* --- 重置 NVRAM，以一个单独的工具呈现。
 - [CsrUtil](https://github.com/acidanthera/OpenCorePkg)* --- 简单实现 Apple csrutil 的 SIP-related 相关功能。
-- [`GopStop`](https://github.com/acidanthera/OpenCorePkg)* --- 用一个 [简单的场景](https://github.com/acidanthera/OpenCorePkg/tree/master/Application/GopStop) 测试 GraphicOutput 协议。
+- [CsrUtil](https://github.com/acidanthera/OpenCorePkg)* --- 渲染内置渲染器提供的控制台字体页面。
+- [`FontTester`](https://github.com/acidanthera/OpenCorePkg)* --- 用一个 [简单的场景](https://github.com/acidanthera/OpenCorePkg/tree/master/Application/GopStop) 测试 GraphicOutput 协议。
 - [`KeyTester`](https://github.com/acidanthera/OpenCorePkg)* --- 在 `SimpleText` 模式下测试键盘输入。
 - [`MemTest86`](https://www.memtest86.com) --- 内存测试工具。
 - [`OpenControl`](https://github.com/acidanthera/OpenCorePkg)* --- 解锁和锁定 NVRAM 保护，以便其他工具在从 OpenCore 启动时能够获得完整的 NVRAM 访问权。
@@ -301,6 +302,9 @@ UEFI固件中的高清晰度音频（HDA）支持驱动程序，适用于大多�
 
 - `--codec-setup-delay`，整数值，默认为 `0`。
   等待所有组件完全打开的时间，以毫秒为单位，在驱动连接阶段应用于每个编解码器。在大多数系统中，这应该是不需要的，如果需要任何音频设置延迟，使用 `Audio` 部分的 `SetupDelay` 可以实现更快的启动。如果需要，可能需要一秒钟的值。
+
+- `--force-codec`，整数值，没有默认值。
+  强制使用一个音频编解码器，这个值应该等于音频部分的 AudioCodec。可以导致更快的启动，特别是与 `--force-device` 一起使用时。
   
 - `--force-device`，字符串值，无默认值。
   当这个选项存在并且有一个值（例如：`--force-device=PciRoot(0x0)/Pci(0x1f,0x3)`），它强制 AudioDxe 连接到指定的 PCI 设备，即使该设备不报告自己是一个 HDA 音频控制器。
@@ -327,8 +331,15 @@ UEFI固件中的高清晰度音频（HDA）支持驱动程序，适用于大多�
 
   驱动程序参数的值可以用以 `0x` 开头的十六进制或十进制来指定，例如 `--gpio-pins=0x12` 或 `--gpio-pins=18`。
 
-- `--restore-nosnoop`，Boolean flag，如果存在则启用。
+- `--restore-nosnoop`，布尔值，如果存在则启用。
   AudioDxe 清除了 `Intel HDA No Snoop Enable（NSNPEN）bit`。在某些系统上，这个改变必须在退出时被逆转，以避免在Windows 或 Linux 中破坏声音。如果是这样， 这个标志应该被添加到 AudioDxe 驱动参数中。 默认情况下不启用，因为恢复这个 `flag` 会使声音在其他一些系统的 macOS 中无法工作。
+  
+- `--use-conn-none`，布尔值，如果存在就启用。
+  在一些声卡上，启用这个选项将启用额外的可用音频通道（例如，一对扬声器的低音或高音，在没有它的情况下只能找到一个）。
+  
+  *注*：启用这个选项可能会增加可用的通道，在这种情况下，AudioOutMask 的任何自定义设置可能需要改变以匹配新的通道列表。
+
+
 
 ## 11.9 OpenVariableRuntimeDxe
 提供内存中模拟的 NVRAM 实现。这对于脆弱的设备（例如：`MacPro5,1`，请参阅此论坛帖子中链接的[讨论](https://forums.macrumors.com/posts/30945127)）或不存在兼容的 NVRAM 实现时非常有用。此驱动程序默认包含在 `OpenDuet` 中。
@@ -874,7 +885,7 @@ Apple OEM 的默认值是 5（50ms）。`0` 是这个选项的无效值（将发
 **Failsafe**: Empty
 **Description**:  一些OpenCore插件接受可选的额外参数，可以在这里指定为一个字符串（译者注：即驱动参数）。
 
-## 11.14 Input 属性
+## 11.15 Input 属性
 
 ### 1. `KeyFiltering`
 
@@ -957,42 +968,75 @@ Apple OEM 的默认值是 5（50ms）。`0` 是这个选项的无效值（将发
   
 建议值为 `50000`（即 5 毫秒）或稍高一些。选择 ASUS Z87 主板时，请使用 `60000`，苹果主板请使用 `100000`。你也可以将此值设置为 `0`，不改变固件始终刷新的频率。
 
-## 11.15 Output 属性
+## 11.16 Output 属性
 
-### 1. `TextRenderer`
+### 1. `InitialMode`
+
+**Type**: `plist string`
+**Failsafe**: `Auto`
+**Description**: 选择 `internal ConsoleControl` 模式，`TextRenderer` 将在该模式下运行。
+
+可用值为 `Auto`、`Text` 和 `Graphics`。 `Text` 和 `Graphics` 指定了命名模式。 `Auto` 使用系统 `ConsoleControl` 协议的当前模式（如果存在），否则默认为 `Text` 模式。 
+
+UEFI 固件通常支持具有两种渲染模式（`Graphics` 和 `Text`）的 `ConsoleControl`。 某些类型的固件不提供本机的 `ConsoleControl` 和渲染模式。 OpenCore 和 macOS 期望文本仅在文本模式下显示，但图形可以在任何模式下绘制，这就是 OpenCore 内置渲染器的行为方式。 由于 UEFI 规范不要求这样做，因此系统 `ConsoleControl` 协议的行为（如果存在）可能会有所不同。
+
+### 2. `TextRenderer`
 
 **Type**: `plist string`
 **Failsafe**: `BuiltinGraphics`
 **Description**: 选择通过标准控制台输出的渲染器。
 
-目前支持两种渲染器：`Builtin` 和 `System`。`System` 渲染器使用固件服务进行文本渲染。`Builtin` 渲染器则绕过固件服务，自行渲染文本。不同的渲染器支持的选项也不同。建议使用 `Builtin` 渲染器，因为它支持 HiDPI 模式，并能够使用全屏分辨率。
+目前支持两种渲染器：`Builtin` 和 `System`。`System` 渲染器使用固件服务进行文本渲染，但是提供了额外的选项来清理输出。`Builtin` 渲染器则绕过固件服务，自行渲染文本。不同的渲染器支持的选项也不同。建议使用 `Builtin` 渲染器，因为它支持 HiDPI 模式，并能够使用全屏分辨率。
 
-UEFI 固件一般用两种渲染模式来支持 `ConsoleControl`：`Graphics` 和 `Text`。有些固件不支持 `ConsoleControl` 和渲染模式。OpenCore 和 macOS 希望文本只在 `Graphics` 模式下显示，而图形可以在任何模式下绘制。由于 UEFI 规范并不要求这样做，因此具体的行为各不相同。
+每个渲染器都提供自己的 `ConsoleControl` 协议（在系统通用的情况下，如果存在系统 `ConsoleControl` 协议，则会将某些操作传递给它）。
+
+此选项的有效值是要使用的渲染器和在启动前设置在底层系统 `ConsoleControl` 协议上的 `ConsoleControl` 模式的组合。要控制启动后所提供的 `ConsoleControl` 协议的初始模式，请使用 `InitialMode` 选项。
 
 有效值为文本渲染器和渲染模式的组合：
-  - `BuiltinGraphics` --- 切换到 `Graphics` 模式，并使用 `Builtin` 渲染器和自定义 `ConsoleControl`。
-  - `BuiltinText` --- 切换到 `Text` 模式，并使用 `Builtin` 渲染器和自定义 `ConsoleControl`。
-  - `SystemGraphics` --- 切换到 `Graphics` 模式，并使用 `System` 渲染器和自定义 `ConsoleControl`。
-  - `SystemText` --- 切换到 `Text` 模式，并使用 `System` 渲染器和自定义 `ConsoleControl`。
-  - `SystemGeneric` --- 使用 `System` 渲染器和系统 `ConsoleControl`，前提是它们能正常工作。
+  - `BuiltinGraphics` --- 切换到 `Graphics` 模式，然后使用 `Builtin` 渲染器和自定义 `ConsoleControl`。
+  - `BuiltinText` --- 切换到 `Text` 模式，然后使用 `Builtin` 渲染器和自定义 `ConsoleControl`。
+  - `SystemGraphics` --- 切换到 `Graphics` 模式，然后使用 `System` 渲染器和自定义 `ConsoleControl`。
+  - `SystemText` --- 切换到 `Text` 模式，然后使用 `System` 渲染器和自定义 `ConsoleControl`。
+  - `SystemGeneric` --- 使用 `System` 渲染器和自定义 `ConsoleControl` 协议，该协议在存在系统 `ConsoleControl` 时将其模式设置和获取操作传递给系统 `ConsoleControl`。
 
-`BuiltinGraphics` 的用法通常是比较直接的。对于大多数平台，需要启用 `ProvideConsoleGop`，将 `Resolution` 设置为 `Max`。某些非常老旧且问题很多的笔记本只能在 `Text` 模式下绘图，对它们来说，`BuiltinText` 是 `BuiltinGraphics` 的替代选择。
+`BuiltinGraphics` 的使用很简单。对于大多数平台，需要启用 `ProvideConsoleGop`，将 `Resolution` 设置为 `Max`。某些非常老旧且问题很多的笔记本只能在 `Text` 模式下绘图，对它们来说，`BuiltinText` 是 `BuiltinGraphics` 的替代选择。
 
-`System` 协议的用法比较复杂。一般来说，首选设置 `SystemGraphics` 或 `SystemText`。启用 `ProvideConsoleGop`，将 `Resolution` 设置为 `Max`，启用 `ReplaceTabWithSpace` 几乎在所有平台上都很有用。`SanitiseClearScreen`、`IgnoreTextInGraphics` 和 `ClearScreenOnModeSwitch` 比较特殊，它们的用法取决于固件。
+`System` 协议的用法比较复杂。一般来说，首选设置 `SystemGraphics` 或 `SystemText`。需要启用 `ProvideConsoleGop`，将 `Resolution` 设置为 `Max`，启用 `ReplaceTabWithSpace` 几乎在所有平台上都很有用。`SanitiseClearScreen`、`IgnoreTextInGraphics` 和 `ClearScreenOnModeSwitch` 比较特殊，它们的用法取决于固件。
 
 *注*：某些 Mac，例如 `MacPro5,1`，在使用较新的 GPU 时，可能会出现控制台不兼容输出的情况（例如：中断），因此可能只有 `BuiltinGraphics` 对它们有效。NVIDIA GPU可能需要额外的[固件升级](https://github.com/acidanthera/bugtracker/issues/1280)。
 
-### 2. `ConsoleMode`
+### 2. `ConsoleFont`
+
+**Type**: `plist string`
+**Failsafe**: Empty （使用 OpenCore 内置的控制台字体）
+**Description**: 指定用于OpenCore内置文本渲染器的控制台字体。
+
+字体文件必须位于 `EFI/OC/Resources/Font/{font-name}.hex` 中，并且必须是 8x16 分辨率。各种控制台字体可以在网上找到 .bdf 或 hex 格式。bdf可以用 gbdfed（可用于 Linux 或 macOS）转换为 .hex 格式。
+
+通常不需要改变控制台字体，主要用途是为那些相对罕见的支持多语言的 EFI 应用程序（例如 memtest86）提供一个扩展字符集。
+
+OcBinaryData 资源库包括：
+  - `Terminus` ：一种具有广泛的字符支持的字体，适用于诸如上述的应用程序。
+
+  - `TerminusCoreTerminus` ：字体的轻微修改版本，使一些字形（@KMRSTVWimrsw）与 XNU 和 OpenCore 中使用的免费 ISO 拉丁字体更加相似。
+
+Terminus和TerminusCore是根据《SIL O)pen字体许可证》1.1版提供的。可以在这里找到EPTO字体库中的一些额外的GPL许可字体，这些字体被转换为所需的.hex格式。
+
+*注 1*：在许多较新的系统上，系统文本渲染器已经提供了一整套国际字符，在这种情况下，可以不需要使用内置渲染器和自定义字体。
+
+*注 2*：这个选项只影响到内置文本渲染器，并且只从内置渲染器被配置的那一刻起生效。当控制台输出在这之前可见时，它使用的是系统控制台字体。
+
+### 3. `ConsoleMode`
 
 **Type**: `plist string`
 **Failsafe**: Empty （保持当前的控制台模式）
 **Description**: 按照 `WxH`（例如：`80x24`）格式的字符串所指定的方式设置控制台的输出模式。
 
-设置为 `Max` 则会尝试最大的可用控制台模式。目前 `Builtin` 文本渲染器只支持一种控制台模式，所以该选项可以忽略。
+设置为 `Max` 则会尝试最大的可用控制台模式。
 
 *注*：在大多数固件上，这个字段最好留空。
 
-### 3. `Resolution`
+### 4. `Resolution`
 
 **Type**: `plist string`
 **Failsafe**: Empty （保持当前屏幕分辨率）
@@ -1005,7 +1049,7 @@ UEFI 固件一般用两种渲染模式来支持 `ConsoleControl`：`Graphics` �
 
 *注*：当控制台句柄没有 GOP 协议时，这些设置会失败。当固件不再提供时，可以将 `ProvideConsoleGop` 设置为 `true` 添加 GOP 协议。
 
-### 4. `ForceResolution`
+### 5. `ForceResolution`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
@@ -1013,7 +1057,7 @@ UEFI 固件一般用两种渲染模式来支持 `ConsoleControl`：`Graphics` �
 
 *注*：该选项依赖 [`OC_FORCE_RESOLUTION_PROTOCOL`](https://github.com/acidanthera/OpenCorePkg/blob/master/Include/Acidanthera/Protocol/OcForceResolution.h) 协议。目前只有 `OpenDuetPkg` 支持该协议，而 `OpenDuetPkg` 的实现目前仅支持 Intel iGPU。
 
-### 5. `ClearScreenOnModeSwitch`
+### 6. `ClearScreenOnModeSwitch`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
@@ -1021,7 +1065,7 @@ UEFI 固件一般用两种渲染模式来支持 `ConsoleControl`：`Graphics` �
 
 *注*：这一选项只会在 `System` 渲染器上生效。
 
-### 6. `DirectGopRendering`
+### 7. `DirectGopRendering`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
@@ -1031,19 +1075,23 @@ UEFI 固件一般用两种渲染模式来支持 `ConsoleControl`：`Graphics` �
 
 这个渲染器完全支持 `AppleEg2Info` 协议，将为所有 EFI 应用程序提供屏幕旋转。为了提供与 `EfiBoot` 的无缝旋转兼容性，还应该使用内置的 `AppleFramebufferInfo`，也就是说，在 Mac EFI 上可能需要覆盖它。  
 
-### 7. `GopBurstMode`
+### 8. `GopBurstMode`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
-**Description**: 如果系统固件尚未启用，启用 `write-combining (WC) caching for GOP  memory`。
+**Description**: 如果系统固件尚未启用 `write-combining (WC) caching for GOP  memory`，则启用 `write-combining (WC) caching for GOP  memory`。
 
-一些较旧的固件（例如 EFI 时代的 Mac）无法设置 `write-combining (WC) caching for GOP  memory`（也称为 burst mode），尽管 CPU 支持该功能。
+一些较旧的固件（例如 EFI 时代的 Mac）无法设置 `write-combining (WC) caching for GOP  memory`（也称为 burst 模式），尽管 CPU 支持该功能。
 
 设置这个可以大大加快 GOP 操作的速度，特别是在需要 `DirectGopRendering` 的系统上。
 
-*注*：无论是否设置了 `DirectGopRendering`，这都是有效的，即使 `DirectGopRendering` 未启用，也可能给 GOP 操作带来一些加速。
+*注 1*：无论是否设置了 `DirectGopRendering`，此 `Quirk` 都会生效，并且在某些情况下，即使 `DirectGopRendering` 未启用，也可能会明显加快 GOP 操作的速度。
 
-### 8. `GopPassThrough`
+*注 2*：大约是在 2013 年以后的大多数系统上，`write-combining (WC) caching` 已由固件应用于 GOP 内存，在这种情况下 `GopBurstMode` 是不必要的。 在此类系统上启用此 `Quirk` 通常应该是无害的，它会生成一个 OCC: 调试日志条目，表明 `burst` 模式已经启动。
+
+*注 3*：启用此 `Quirk` 时应谨慎，因为已观察到它会导致一些系统挂起。 由于已添加额外的防护措施以试图防止这种情况发生，如果发现此类系统，请记录错误跟踪器问题。
+
+### 9. `GopPassThrough`
 
 **Type**: `plist string`
 **Failsafe**: `Disabled`
@@ -1058,15 +1106,15 @@ UEFI 固件一般用两种渲染模式来支持 `ConsoleControl`：`Graphics` �
   
 *注*：该选项需要启用 `ProvideConsoleGop`。  
   
-### 9. `IgnoreTextInGraphics`
+### 10. `IgnoreTextInGraphics`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
-**Description**: 某些类型的固件在图形和文本模式下都在屏幕上输出文本。通常不会这样做，因为随机文本可能会出现在图形图像上并导致 UI 损坏。将此选项设置为 `true` 时，会在控制台处于与 `Text` 不同的模式时，舍弃所有文本输出。
+**Description**: 某些类型的固件在图形和文本模式下都在屏幕上输出文本。这通常是意料之外的，因为随机文本可能会出现在图形图像上并导致 UI 损坏。将此选项设置为 `true` 时，将会在控制台未处于与 `Text` 模式时，舍弃所有文本输出。
 
 *注*：这一选项只会在 `System` 渲染器上生效。
 
-### 10. `ReplaceTabWithSpace`
+### 11. `ReplaceTabWithSpace`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
@@ -1074,7 +1122,7 @@ UEFI 固件一般用两种渲染模式来支持 `ConsoleControl`：`Graphics` �
 
 *注*：这一选项只会在 `System` 渲染器上生效。
 
-### 11. `ProvideConsoleGop`
+### 12. `ProvideConsoleGop`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
@@ -1084,7 +1132,7 @@ macOS bootloader 要求控制台句柄上必须有 GOP 或 UGA（适用于 10.4 
 
 *注*：这个选项也会替换掉控制台句柄上损坏的 GOP 协议，在使用较新的 GPU 的 `MacPro5,1` 时可能会出现这种情况。
 
-### 12. `ReconnectGraphicsOnConnect`
+### 13. `ReconnectGraphicsOnConnect`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
@@ -1094,7 +1142,7 @@ macOS bootloader 要求控制台句柄上必须有 GOP 或 UGA（适用于 10.4 
   
 *注*：这个选项需要启用 `ConnectDrivers`。  
   
-### 13. `ReconnectOnResChange`
+### 14. `ReconnectOnResChange`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
@@ -1104,7 +1152,7 @@ macOS bootloader 要求控制台句柄上必须有 GOP 或 UGA（适用于 10.4 
 
 *注*：当 OpenCore 从 Shell 启动时，这个逻辑可能会导致某些主板黑屏，因此这个选项是非必须的。在 0.5.2 之前的版本中，这个选项是强制性的，不可配置。除非需要，否则请不要使用该选项。
 
-### 14. `SanitiseClearScreen`
+### 15. `SanitiseClearScreen`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
@@ -1112,23 +1160,23 @@ macOS bootloader 要求控制台句柄上必须有 GOP 或 UGA（适用于 10.4 
 
 *注*：这一选项只会在 `System` 渲染器上生效。在所有已知的受影响的系统中，`ConsoleMode` 必须设置为空字符串才能正常工作。
 
-### 15. `UIScale`
+### 16. `UIScale`
 
 **Type**: `plist integer，8 bit`
 **Failsafe**: `-1`
 **Description**:  用户界面的缩放系数。  
   
-对应于4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14：UIScale变量。  
+对应于4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14：UIScale 变量。  
   - 1 --- 1倍缩放，对应于普通显示器。
-  - 2 --- 2x缩放，对应于HiDPI显示器。
+  - 2 --- 2x缩放，对应于 HiDPI 显示器。
   - -1 --- 保持当前变量不变。
   - 0 -- 根据当前分辨率自动选择缩放比例。
 
-*注 1*：自动比例系数检测是在总像素面积的基础上进行的，在小型 HiDPI 显示器上可能会失败，在这种情况下，可以使用NVRAM 部分手动管理该值。
+*注 1*：自动比例系数检测是在总像素面积的基础上进行的，在小型 HiDPI 显示器上可能会失败，在这种情况下，可以使用 NVRAM 部分手动管理该值。
 
 *注 2*：当从手动指定的 NVRAM 变量切换到该首选项时，可能需要对 NVRAM 进行重置。  
   
-### 16. `UgaPassThrough`
+### 17. `UgaPassThrough`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
@@ -1136,7 +1184,7 @@ macOS bootloader 要求控制台句柄上必须有 GOP 或 UGA（适用于 10.4 
 
 有些固件不会去实现老旧的 UGA 协议，但是有些更老的 EFI 应用程序（ 例如 10.4 的 EfiBoot）可能需要用它来进行屏幕输出。
 
-## 11.16 ProtocolOverrides 属性
+## 11.17 ProtocolOverrides 属性
 
 ### 1. `AppleAudio`
 
@@ -1264,13 +1312,19 @@ Apple 音频协议允许 macOS bootloader 和 OpenCore 播放声音和信号，�
 **Failsafe**: `false`
 **Description**: 用内置版本替换 OS Info 协议。该协议通常用于通过固件或其他应用程序从 macOS 引导加载程序接收通知。
 
-### 18. `UnicodeCollation`
+### 18. `Pcilo`
+
+**Type**: `plist boolean`
+**Failsafe**: `false`
+**Description**: 用 64 位 MMIO 兼容的函数替换 Cpulo 和 PciRootBridgelo 中的函数，以修复使用 4G 解码时的无效参数。这影响到 UEFI 驱动，如访问 64 位 MMIO 设备的 AudioDxe。早于 APTIO V 的平台（Haswell 和更早）通常受到影响。
+
+### 19. `UnicodeCollation`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
 **Description**: 用内置版本替换 Unicode Collation 服务。建议启用这一选项以确保 UEFI Shell 的兼容性。一些较旧的固件破坏了 Unicode 排序规则，启用后可以修复这些系统上 UEFI Shell 的兼容性 (通常为用于 IvyBridge 或更旧的设备)
 
-## 11.17 Quirks 属性
+## 11.18 Quirks 属性
 
 ### 1. `ActivateHpetSupport`
 
@@ -1370,13 +1424,7 @@ Apple 音频协议允许 macOS bootloader 和 OpenCore 播放声音和信号，�
 **Failsafe**: `false`
 **Description**: 使用 `PciRootBridgeIo` 来调整 `GpuBars` 和 `ResizeAppleGpuBar`。
 
-这个 Quirk 使得 `ResizeGpuBars` 和 `ResizeAppleGpuBars` 使用 `PciRootBridgeIo` 而不是 `PciIo`。 这是 `Capability I/O` 错误。一般来说，在已使用 [`ReBarUEFI`](https://github.com/xCuri0/ReBarUEFI)  修改的旧系统上是必需的。
-
-借助 `RequestBootVarRouting` 将 `Boot` 前缀变量重定向至单独的 GUID 命名空间，可实现以下效果：
-
-- 囚禁操作系统，使其只受 OpenCore 引导环境的控制，从而提高了安全性。
-- 如遇到中途需要通过 OpenCore 来重启的情况，操作系统不会搞乱 OpenCore 的引导优先级，保证了系统更新和休眠唤醒的流畅性。
-- macOS 等潜在的不兼容的启动项，现在不会被意外删除或损坏了。
+这个 Quirk 使得 `ResizeGpuBars` 和 `ResizeAppleGpuBars` 使用 `PciRootBridgeIo` 而不是 `PciIo`。 这在具有错误的 `PciIo` 实现的系统上是必须的，在这些系统上尝试配置 Resizable BAR 会导致 `Capability I/O` 错误。通常在已使用 [`ReBarUEFI`](https://github.com/xCuri0/ReBarUEFI)  修改的旧系统上是必需的。
 
 ### 13. `ResizeGpuBars`
 
@@ -1398,7 +1446,7 @@ Resizable BAR 技术允许通过将可配置的内存区域 BAR 映射到 CPU �
   
 *例 1*：将 ResizeGpuBars 设置为 1GB 将改变 BAR0 为 1GB，BAR1 保持不变。
 
-*例 2*: 将 ResizeGpuBars 设置为 1MB 将改变 BAR0 为 256MB，BAR0 为 2MB。
+*例 2*：将 ResizeGpuBars 设置为 1MB 将改变 BAR0 为 256MB，BAR0 为 2MB。
 
 *例 3*：将 ResizeGpuBars 设置为 16GB 将改变 BAR0 为 8GB，BAR1 保持不变。 
 
@@ -1426,7 +1474,7 @@ Resizable BAR 技术允许通过将可配置的内存区域 BAR 映射到 CPU �
 
 *注*：如果惠普笔记本在 OpenCore 界面没有看到引导项，启用这一选项。
 
-## 11.13 ReservedMemory 属性
+## 11.19 ReservedMemory 属性
 
 ### 1. `Address`
 

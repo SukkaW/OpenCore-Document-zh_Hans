@@ -3,7 +3,7 @@ title: 8. Misc
 description: 关于 OpenCore 行为的其他配置
 type: docs
 author_info: 由 xMuu、Sukka、derbalkon、EricKwok、cike-567 整理、由 Sukka、derbalkon、EricKwok、cike-567 翻译。
-last_updated: 2023-02-18
+last_updated: 2023-08-23
 ---
 
 ## 8.1 简介
@@ -21,6 +21,8 @@ OpenCore 大体上遵循 `bless` 模式，即 `Apple Boot Policy`。`bless` 模�
 - 每个主选项和备用选项都可以作为辅助选项（Auxiliary Option），也可以不作为辅助选项。
   - 具体细节参考下面的 `HideAuxiliary` 章节。
 
+### 8.1.1 引导算法
+
 用来确定启动选项的算法如下：
 
 1. 通过 `Scan policy`（和驱动可用性）过滤，获取所有可用的分区句柄。
@@ -33,9 +35,9 @@ OpenCore 大体上遵循 `bless` 模式，即 `Apple Boot Policy`。`bless` 模�
    - 在分区句柄列表中找到设备句柄（缺失时忽略）。
    - 对磁盘设备路径（不指定引导程序）执行 `bless`（可能返回不止一个条目）。
    - 对文件设备路径直接检查其文件系统。
-   - 如果在 `bootloader` 附近或 `boot` 目录内有一个 `.contentVisibility` 文件，并有禁用的内容（ASCII），则排除该条目。
+   - 如果在 `bootloader` 附近或相关位置（见下文）内有一个内容为 ASCII 编码的 `Disabled` 的 `.contentVisibility` 文件，（并且如果当前的 InstanceIentifier 与存在的 Instance-List 匹配（参见下文），则排除该条目。
    - 如果有分区句柄列表，则在列表中将设备句柄标记为 *used*。
-   - 将生成的条目注册为主选项，并确定他们的类型。某些类型的选项作为辅助选项（如 Apple HFS Recovery）。对于某些类型（例如 Apple HFS recovery）或其 `.contentVisibility` 文件包含 `Auxiliary` 时，该选项将成为辅助性的。
+   - 将生成的条目注册为主选项，并确定他们的类型。某些类型的选项作为辅助选项（如 Apple HFS Recovery）。对于某些类型（例如 Apple HFS recovery）或其 `.contentVisibility` 文件包含 `Auxiliary` 时（并且如果当前的 InstanceIentifier 与存在的 Instance-List 匹配，请见下文。），该选项将成为辅助性的。
 4. 对于每个分区句柄：
    - 如果分区句柄被标记为 *unused*，则执行 `bless` 主选项列表检索。如果设置了 `BlessOverride` 列表，那么不仅能找到标准的 `bless` 路径，还能找到自定义的路径。
    - 在 OpenCore 启动分区中，通过 Header Check 排除所有 OpenCore Bootstrap 文件。
@@ -45,6 +47,26 @@ OpenCore 大体上遵循 `bless` 模式，即 `Apple Boot Policy`。`bless` 模�
    - 将生成的条目注册为备用辅助选项，并确定它们的类型。
 5. 把自定义条目和工具添加为主选项（以前预先构造的除外），不做有关 `Auxiliary` 的任何检查。
 6. 把系统条目（如 `Reset NVRAM`）添加为主要的辅助选项。
+
+ `.contentVisibility` 文件可以放置在 `bootloader` 附近（例如：boot.efi），或者放置在引导文件夹中（对于基于 DMG 文件夹的引导项）。从 macOS 内部看到的示例位置是：
+
+    - /System/Volumes/Preboot/{GUID}/System/Library/CoreServices/.contentVisibility
+    - /Volumes/{ESP}/EFI/BOOT/.contentVisibility
+此外，`.contentVisibility` 文件可以放置在特定于实例（对于 macOS）或与启动项相关的绝对根文件夹中，例如：
+
+    - /System/Volumes/Preboot/{GUID}/.contentVisibility
+    - /System/Volumes/Preboot/.contentVisibility
+    - /Volumes/{ESP}/.contentVisibility（不推荐）
+    
+这些根文件夹位置专门针对 macOS 支持，因为 Apple 引导加载程序旁边的非 Apple 文件会被 macOS 更新删除。支持但不建议将 `.contentVisibility` 文件放置在非 macOS 根位置（例如上面显示的最后一个位置），因为它会隐藏驱动器上的所有条目。
+
+`.contentVisibility` 文件（如果存在）可以选择仅针对 OpenCore 的特定实例。其内容为 [ {Instance-List}: ] (Disabled|Auxiliary)。如果存在冒号 (:)，则前面的 Instance-List 是逗号分隔的 InstanceIdentifier 值列表（例如：OCA,OCB:Disabled）。当此列表存在时，仅当当前 OpenCore 实例的 InstanceIdentifier 存在于列表中时才应用指定的可见性。当列表不存在时，指定的可见性将应用于 OpenCore 的所有实例。
+
+*注 1*：对于任何没有 InstanceIdentifier 值的 OpenCore 实例，带有 Instance-List 的 `.contentVisibility` 文件中指定的可见性将永远不会应用。
+
+*注 2*：在 OpenCore 的早期版本中，具有可见性列表的可见性将被视为无效，因此会被忽略 - 这在比较旧版本和新版本的行为时可能很有用。
+
+*注 3*：避免 `.contentVisibility` 文件中出现无关空格：这些空格不会被视为空格，而是作为相邻标记的一部分。
 
 OpenCore 启动选择器中的启动选项的显示顺序和启动过程，是通过扫描算法分别来确定的。
 
@@ -199,10 +221,18 @@ OpenCore 启动选择器中的启动选项的显示顺序和启动过程，是�
 
 即使被隐藏，你仍然可以通过按空格键进入「扩展模式」查看所有条目（引导项菜单会被重新加载），隐藏辅助条目可能有助于提高多磁盘系统的引导性能，简单来说就是可能提高启动速度。
 
-### 5. `LauncherOption`
+### 5. `InstanceIdentifier`
 
 **Type**: `plist string`
-**Failsafe**: `Disabled`
+**Failsafe**: `false`
+**Description**: OpenCore 当前实例的可选标识符。
+
+这通常应该是一个短的字母数字字符串。当前该值的用途是选择性地将 `.contentVisibility` 文件定位到 OpenCore 的特定实例，如[引导算法](https://oc.skk.moe/8-misc.html#8-1-1-引导算法)部分中所述。
+
+### 6. `LauncherOption`
+
+**Type**: `plist string`
+**Failsafe**: `Empty`
 **Description**: 在固件偏好设置中注册启动器选项，以保证 bootloader 的持久与一致性。
 
 有效值有：
@@ -228,7 +258,7 @@ OpenCore 启动选择器中的启动选项的显示顺序和启动过程，是�
 
 如果你有一个为系统配置的 OpenCore，也可以直接从 OpenCore 启动菜单中启动 OpenShell。在这种情况下，如果 OpenCore 启用了 `RequestBootVarRouting`，就有必要在使用 bcfg 之前运行命令 `\EFI\OC\Tools\OpenControl.efi disable` （在禁用 OpenControl 之后，有必要在启动操作系统之前重启或运行 `OpenControl restore`）。如果你的机器上有一个工作版本的Linux，也可以在 Linux 中使用 efibootmgr 来删除违规的条目。Linux 必须不通过 OpenCore 启动，或者通过禁用 `RequestBootVarRouting` 的 OpenCore 启动，这样才能发挥作用。
 
-### 6. `LauncherPath`
+### 7. `LauncherPath`
 
 **Type**: `plist string`
 **Failsafe**: `Default`
@@ -236,7 +266,7 @@ OpenCore 启动选择器中的启动选项的显示顺序和启动过程，是�
 
 `Default` 用于引导 `OpenCore.efi`。其他的路径（例如：`\EFI\Launcher.efi`）可用来提供自定义加载器，用于自行加载 `OpenCore.efi`。
 
-### 7. `PickerAttributes`
+### 8. `PickerAttributes`
 
 **Type**: `plist integer`
 **Failsafe**: `0`
@@ -279,7 +309,7 @@ OpenCore 启动选择器中的启动选项的显示顺序和启动过程，是�
 - 为了使 tools 的图标和屏幕朗读工作正常（例如：UEFI Shell），在 `Flavour` 设置中指定的系统的默认启动项图标（见 Docs/Flavours.md）将仍然被应用，即使 `Flavour` 是禁用状态。在这个情况下非系统的图标将会被忽略。此外，UEFIShell 和 NVRAMReset 的 `flavours` 将会被特殊处理，以辨识它们的正确的屏幕朗读器、默认 builtin 标签等。
 - 一个推荐的 `falvours` 列表在 `Docs/Flavours.md` 中
 
-### 8. `PickerAudioAssist`
+### 9. `PickerAudioAssist`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
@@ -289,7 +319,7 @@ macOS Bootloader 屏幕朗读的偏好设置是存在 `isVOEnabled.int32` 文件
 
 *注*：屏幕朗读依赖可以正常工作的音频设备。详情请参考 UEFI Audio 属性部分。 
 
-### 9. `PollAppleHotKeys`
+### 10. `PollAppleHotKeys`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
@@ -308,13 +338,13 @@ macOS Bootloader 屏幕朗读的偏好设置是存在 `isVOEnabled.int32` 文件
 - `CMD+V` --- 启用 `-v`。
 - `Shift+Enter，Shift+Index` --- 启用安全模式，可与 `CTRL+Enter`、`CTRL+[数字]` 结合使用。
 
-### 10. `ShowPicker`
+### 11. `ShowPicker`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
 **Description**: 是否显示开机引导菜单。
 
-### 11. `TakeoffDelay`
+### 12. `TakeoffDelay`
 
 **Type**: `plist integer`, 32 bit
 **Failsafe**: `0`
@@ -324,7 +354,7 @@ macOS Bootloader 屏幕朗读的偏好设置是存在 `isVOEnabled.int32` 文件
 
 如果配置了开机报时（见音频配置选项），那么以较慢的启动速度为代价，可以使用半秒到一秒的更长的延迟（500000-1000000）来创造类似于真正的 Mac 的行为，其中报时本身可以作为热键可以被按下的一个信号。在 OpenCore 中，由于必须首先加载和连接非本地驱动程序，因此开机鸣叫在开机顺序中不可避免地比在苹果硬件上晚。配置开机鸣叫并增加这个较长的额外延迟，对于那些开机时间快或显示器信号同步慢的系统可能导致在某些开机或重启时根本不显示开机标识的情况也很有用。
 
-### 12. `Timeout`
+### 13. `Timeout`
 
 **Type**: `plist integer`，32 bit
 **Failsafe**: `0`
@@ -332,7 +362,7 @@ macOS Bootloader 屏幕朗读的偏好设置是存在 `isVOEnabled.int32` 文件
 
 > 译者注：`0` 为关闭倒计时而非跳过倒计时，相当于 Clover 的 `-1`。
 
-### 13. `PickerMode`
+### 14. `PickerMode`
 
 **Type**: `plist string`
 **Failsafe**: `Builtin`
@@ -359,7 +389,7 @@ OpenCore 内置的启动选择器包含了一系列在启动过程中选择的�
 
 *注 3*：对于 GOP 有问题的 Mac，如果 OpenCore 的 bless 状态丢失，可能很难重新设置。如果设置为 OpenCore 的工具，并启用 FullNvramAccess，可以使用 BootKicker 实用程序解决此问题。它会启动 Apple picker，允许选择下一个要启动的项目（使用 Enter 键），或者一直选择下一个项目，直到下一次更改。
 
-### 14. `PickerVariant`
+### 15. `PickerVariant`
 
 **Type**: `plist string`
 **Failsafe**: `Auto`
@@ -438,11 +468,13 @@ cat Kernel.panic | grep macOSProcessedStackshotData |
 - `+` --- Positive filtering：仅显示选定的模块。
 - `-` --- Negative filtering：排除所选模块。
 
-当选择多个模块时，应使用逗号 `，` 作为分隔符。例如：`+OCCPU，OCA，OCB` 这表示只打印 `OCCPU`、`OCA`、`OCB` 模块的日志。而 `-OCCPU，OCA，OCB` 表示这些模块被过滤掉（即不记录）。当没有指定符号时，将使用正向过滤 `+`。`*` 表示所有模块都被记录下来。
+当选择多个日志行标识时，应使用逗号 `，` 作为分隔符。例如：`+OCCPU，OCA，OCB` 这表示只打印 `OCCPU`、`OCA`、`OCB` 模块的日志。而 `-OCCPU，OCA，OCB` 表示这些模块被过滤掉（即不记录）。由于日志中可能存在没有有效前缀的行（即日志行不是由 OpenCore 的部分生成，而是由其他加载的驱动程序生成），因此特殊模块名称问号 (?) 可以包含在列表中以包含 (使用正过滤）或排除（使用负过滤）这些非标准行。当不指定 `+` 或 `-` 符号时，将使用正向过滤 (+)。`*` 表示所有模块都被记录下来。
 
 *注 1*：库的首字母缩写词可以在下面的库部分找到。
 
-*注 2*：在配置日志协议之前打印的信息不能被过滤。
+*注 2*：在配置日志协议之前打印的消息不能从早期屏幕日志中过滤，但在从早期日志缓冲区中取消缓冲后，将根据其他日志目标的要求进行过滤。
+
+*注 3*：为避免遗漏关键问题，不过滤警告和错误日志消息。
 
 ### 7. `SysReport`
 

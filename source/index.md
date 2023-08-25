@@ -27,12 +27,12 @@ OpenCore 仍处于积极的维护之中，OpenCore 参考手册 仍然在高频�
 
 > 本网站提供的翻译基于如下描述的 OpenCore 官方文档：
 >
-> - **OpenCore 文档释出日期**：2023.03.06
-> - **OpenCore 文档版本**：[`e4f0ba14ef3e6796ee3d8f4ddc35a7a326cd636e`](https://github.com/acidanthera/OpenCorePkg/commit/68a4ed501ba502a525ed9b604ecd88b2d88c3c97)
+> - **OpenCore 文档释出日期**：2023.07.25
+> - **OpenCore 文档版本**：[`d74d43bb0279e494a75546fad8834d75172eb01e`](https://github.com/acidanthera/OpenCorePkg/commit/d74d43bb0279e494a75546fad8834d75172eb01e)
 >
 > 本网站提供的翻译适用于如下描述的 OpenCore 版本：
 >
-> - **OpenCore 版本**：0.9.0
+> - **OpenCore 版本**：0.9.4
 
 本网站以及 `acidanthera` **不会对因本网站引起的任何损失负责**，包括但不限于 Kernel Panic、设备无法开机或正常使用、硬盘损坏或数据丢失、原子弹爆炸、第三次世界大战、[SCP 基金会](https://scp-wiki-cn.wikidot.com/) 无法阻止的全球 CK 级现实重构等。
 

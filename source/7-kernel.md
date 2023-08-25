@@ -3,7 +3,7 @@ title: 7. Kernel
 description: OpenCore 安全配置，Kext 加载顺序以及屏蔽
 type: docs
 author_info: 由 Sukka、derbalkon、cike-567 整理，由 Sukka、derbalkon、cike-567 翻译。
-last_updated: 2022-08-04
+last_updated: 2023-06-13
 ---
 
 ## 7.1 简介
@@ -437,7 +437,7 @@ last_updated: 2022-08-04
 **Requirement**: 10.4
 **Description**: 禁用 `AppleIntelCPUPowerManagement.kext` 中的 `PKG_CST_CONFIG_CONTROL` (`0xE2`) 修改，从而避免早期 Kernel Panic。
 
-*注*：`AppleIntelCPUPowerManagement.kext` 自 macOS 13 起，已被删除。但是，可以注入旧版本 macOS 并使用此 `quirk` 进行修补。
+*注*：`AppleIntelCPUPowerManagement.kext` 自 macOS 13 起，已被删除。但是，可以注入旧版本 `AppleIntelCPUPowerManagement.kext` 并使用此 `quirk` 进行修补。
 
 某些固件会锁定 `PKG_CST_CONFIG_CONTROL MSR` 寄存器。可以使用附带的 `ControlMsrE2` 工具检查其状态。请注意，某些类型的固件仅将此寄存器锁定在某些内核上。由于现代固件已经提供了 `CFG Lock` 相关设置、从而可以配置 `PKG_CST_CONFIG_CONTROL` 寄存器锁定，此选项应该尽可能避免。
 
@@ -534,9 +534,9 @@ last_updated: 2022-08-04
 **Requirement**:  13.3(not required for older)
 **Description**: 在 IOMMU(VT-d) 中禁止映射 PCI 桥接设备内存。
 
-*注 1*：当在本机的 `DMAR` 表中包含一个或多个保留内存区域且启用iGPU并且安装了超过16 GB内存的系统上启用 AppleVTD 时，此选项解决了与 Wi-Fi、以太网和 Thunderbolt 设备的兼容性问题。
+这个选项解决了在原生 `DMAR` 表包含一个或多个保留内存区域且安装了超过 16 GB 内存的系统上启用 AppleVTD 时与 Wi-Fi、以太网和 Thunderbolt 设备的兼容性问题。在某些系统上，只有在启用 iGPU 时才需要这个 Quirk。
 
-*注 2*：在 AMD 系统上不需要这个选项。
+*注 1*：在 AMD 系统上不需要这个选项。
 
 ### 9. `DisableLinkeditJettison`
 
