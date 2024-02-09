@@ -35,9 +35,9 @@ OpenCore 大体上遵循 `bless` 模式，即 `Apple Boot Policy`。`bless` 模�
    - 在分区句柄列表中找到设备句柄（缺失时忽略）。
    - 对磁盘设备路径（不指定引导程序）执行 `bless`（可能返回不止一个条目）。
    - 对文件设备路径直接检查其文件系统。
-   - 如果在 `bootloader` 附近或相关位置（见下文）内有一个内容为 ASCII 编码的 `Disabled` 的 `.contentVisibility` 文件，（并且如果当前的 InstanceIentifier 与存在的 Instance-List 匹配（参见下文），则排除该条目。
+   - 如果在 `bootloader` 附近或相关位置（见下文）内有一个内容为 ASCII 编码的 `Disabled` 的 `.contentVisibility` 文件，并且当前的 InstanceIentifier 匹配可能存在的 Instance-List，则排除这些条目。
    - 如果有分区句柄列表，则在列表中将设备句柄标记为 *used*。
-   - 将生成的条目注册为主选项，并确定他们的类型。某些类型的选项作为辅助选项（如 Apple HFS Recovery）。对于某些类型（例如 Apple HFS recovery）或其 `.contentVisibility` 文件包含 `Auxiliary` 时（并且如果当前的 InstanceIentifier 与存在的 Instance-List 匹配，请见下文。），该选项将成为辅助性的。
+   - 将生成的条目注册为主要选项，并确定它们的类型。对于某些类型（例如：Apple HFS recovery）或者如果其 `.contentVisibility` 文件包含 “Auxiliary”（并且当前的 InstanceIentifier 匹配可能存在的 Instance-List），该选项将成为辅助选项。
 4. 对于每个分区句柄：
    - 如果分区句柄被标记为 *unused*，则执行 `bless` 主选项列表检索。如果设置了 `BlessOverride` 列表，那么不仅能找到标准的 `bless` 路径，还能找到自定义的路径。
    - 在 OpenCore 启动分区中，通过 Header Check 排除所有 OpenCore Bootstrap 文件。
@@ -48,25 +48,25 @@ OpenCore 大体上遵循 `bless` 模式，即 `Apple Boot Policy`。`bless` 模�
 5. 把自定义条目和工具添加为主选项（以前预先构造的除外），不做有关 `Auxiliary` 的任何检查。
 6. 把系统条目（如 `Reset NVRAM`）添加为主要的辅助选项。
 
- `.contentVisibility` 文件可以放置在 `bootloader` 附近（例如：boot.efi），或者放置在引导文件夹中（对于基于 DMG 文件夹的引导项）。从 macOS 内部看到的示例位置是：
+ `.contentVisibility` 文件可以放置在 `bootloader` 附近（例如：boot.efi），或者放置在 boot 文件夹中（对于基于 DMG 文件夹的引导项）。从 macOS 内部看到的示例位置是：
 
     - /System/Volumes/Preboot/{GUID}/System/Library/CoreServices/.contentVisibility
     - /Volumes/{ESP}/EFI/BOOT/.contentVisibility
-此外，`.contentVisibility` 文件可以放置在特定于实例（对于 macOS）或与启动项相关的绝对根文件夹中，例如：
+此外，`.contentVisibility` 文件还可以放置在与引导条目相关的实例特定文件夹（或 macOS）或绝对根文件夹中，例如：
 
     - /System/Volumes/Preboot/{GUID}/.contentVisibility
     - /System/Volumes/Preboot/.contentVisibility
-    - /Volumes/{ESP}/.contentVisibility（不推荐）
+    - /Volumes/{ESP}/.contentVisibility（不建议）
     
-这些根文件夹位置专门针对 macOS 支持，因为 Apple 引导加载程序旁边的非 Apple 文件会被 macOS 更新删除。支持但不建议将 `.contentVisibility` 文件放置在非 macOS 根位置（例如上面显示的最后一个位置），因为它会隐藏驱动器上的所有条目。
+对于 macOS，专门支持这些根文件夹位置，因为非苹果文件在 macOS 更新中会被移除。将 `.contentVisibility` 文件放在非 macOS 根位置（例如上述最后一个位置）是支持的，但并不建议，因为它会隐藏驱动器上的所有条目。
 
-`.contentVisibility` 文件（如果存在）可以选择仅针对 OpenCore 的特定实例。其内容为 [ {Instance-List}: ] (Disabled|Auxiliary)。如果存在冒号 (:)，则前面的 Instance-List 是逗号分隔的 InstanceIdentifier 值列表（例如：OCA,OCB:Disabled）。当此列表存在时，仅当当前 OpenCore 实例的 InstanceIdentifier 存在于列表中时才应用指定的可见性。当列表不存在时，指定的可见性将应用于 OpenCore 的所有实例。
+当存在 `.contentVisibility` 文件时，它可以选择性地针对 OpenCore 的特定实例。其内容格式为 [(Instance-List)]:(Disabled|Auxiliary)。如果存在冒号（:），则前面的 Instance-List 是逗号分隔的 InstanceIdentifier 值列表（例如：OCA,OCB:Disabled）。当此列表存在时，指定的可见性仅应用于当前 OpenCore 实例的 InstanceIdentifier 存在于列表中的情况。当列表不存在时，指定的可见性将应用于所有 OpenCore 实例。
 
-*注 1*：对于任何没有 InstanceIdentifier 值的 OpenCore 实例，带有 Instance-List 的 `.contentVisibility` 文件中指定的可见性将永远不会应用。
+*注 1*：对于没有 InstanceIdentifier 值的任何 OpenCore 实例，来自具有 Instance-List 的 `.contentVisibility` 文件的指定可见性永远不会生效。
 
-*注 2*：在 OpenCore 的早期版本中，具有可见性列表的可见性将被视为无效，因此会被忽略 - 这在比较旧版本和新版本的行为时可能很有用。
+*注 2*：带有可见性列表的可见性将在较早版本的 OpenCore 中被视为无效，因此会被忽略，这在比较旧版和新版的行为时可能会有用。
 
-*注 3*：避免 `.contentVisibility` 文件中出现无关空格：这些空格不会被视为空格，而是作为相邻标记的一部分。
+*注 3*：避免在 `.contentVisibility` 文件中出现多余的空格：它们不会被视为空格，而是作为相邻标记的一部分。
 
 OpenCore 启动选择器中的启动选项的显示顺序和启动过程，是通过扫描算法分别来确定的。
 
