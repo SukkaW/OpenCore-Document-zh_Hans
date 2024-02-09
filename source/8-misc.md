@@ -548,6 +548,7 @@ nvram 4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102:boot-log |
 - `OCRST` — ResetSystem
 - `OCUI` — OpenCanopy
 - `OC` — OpenCore main, also OcMainLib
+- `OLB` — OpenLegacyBoot
 - `VMOPT` — VerifyMemOpt
 
 **Libraries**:
