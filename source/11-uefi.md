@@ -20,6 +20,7 @@ last_updated: 2023-06-13
 - [`CrScreenshotDxe`](https://github.com/acidanthera/OpenCorePkg)* --- 截图驱动。启用后，按下 <kbd>F10</kbd> 将能够截图并保存在 EFI 分区根目录下。接受可选的驱动参数 `--enable-mouse-click`，以便在鼠标点击时额外地进行截图。(建议只在按键会阻止特定的屏幕截图时启用该选项，并在使用后再次禁用它)。该驱动基于 [Nikolaj Schlej](https://github.com/NikolajSchlej) 修改的 LongSoft 开发的 [`CrScreenshotDxe`](https://github.com/LongSoft/CrScreenshotDxe)。
 - [`EnableGop{Direct}`](https://github.com/acidanthera/OpenCorePkg)* --- 早期测试版的固件嵌入驱动程序在 `MacPro5,1` 上提供预开放核心非原生 GPU 支持。安装说明可在 OpenCore 发布的压缩文件的 [Utilities/EnableGop](https://github.com/acidanthera/OpenCorePkg/blob/master/Staging/EnableGop/README.md)目录中找到--请谨慎操作。
 - [`ext4_x64`](https://github.com/acidanthera/OcBinaryData) --- 开源 EXT4 文件系统驱动程序，需要用 OpenLinuxBoot 从 Linux 最常用的文件系统启动。
+- [`FirmwareSettings`](https://github.com/acidanthera/OpenCorePkg)* --- OpenCore 插件实现 `OC_BOOT_ENTRY_PROTOCOL`，可向引导选择菜单添加一个条目，当固件支持时，重新启动到 UEFI 固件设置。
 - [`HfsPlus`](https://github.com/acidanthera/OcBinaryData) --- Apple 固件中常见的具有 Bless 支持的专有 HFS 文件系统驱动程序。对于 `Sandy Bridge` 和更早的 CPU，由于这些 CPU 缺少 `RDRAND` 指令支持，应使用 `HfsPlusLegacy` 驱动程序。
 - [`HiiDatabase`](https://github.com/acidanthera/audk)* --- 来自 `MdeModulePkg` 的 HII 服务驱动。Ivy Bridge 及其以后的大多数固件中都已内置此驱动程序。某些带有 GUI 的应用程序（例如 UEFI Shell）可能需要此驱动程序才能正常工作。
 - [`EnhancedFatDxe`](https://github.com/acidanthera/audk) --- 来自 `FatPkg` 的 FAT 文件系统驱动程序。这个驱动程序已经被嵌入到所有 UEFI 固件中，无法为 OpenCore 使用。众所周知，许多固件的 FAT 支持实现都有错误，导致在尝试写操作时损坏文件系统。如果在引导过程中需要写入 EFI 分区，则可能需要将此驱动程序嵌入固件中。
@@ -130,6 +131,7 @@ OpenCanopy 为 `PickerAttributes` 提供了全面的支持，并提供了一套�
 - `SIPDisabled` --- 切换 SIP 工具，禁用 SIP。
 - `SIPEnabled` --- 切换 SIP 工具，启用 SIP。
 - `Shell` --- 具有 UEFI Shell 名称的条目（如 `OpenShell`）。
+- `FirmwareSettings` --- 固件设置菜单条目。
 - `Tool` --- 其他工具。
 
 *注*：所有标签的高度必须为 12px，宽度不限。
@@ -362,8 +364,6 @@ UEFI固件中的高清晰度音频（HDA）支持驱动程序，适用于大多�
   在一些声卡上，启用这个选项将启用额外的可用音频通道（例如，一对扬声器的低音或高音，在没有它的情况下只能找到一个）。
   
   *注*：启用这个选项可能会增加可用的通道，在这种情况下，AudioOutMask 的任何自定义设置可能需要改变以匹配新的通道列表。
-
-
 
 ## 11.9 OpenVariableRuntimeDxe
 提供内存中模拟的 NVRAM 实现。这对于脆弱的设备（例如：`MacPro5,1`，请参阅此论坛帖子中链接的[讨论](https://forums.macrumors.com/posts/30945127)）或不存在兼容的 NVRAM 实现时非常有用。此驱动程序默认包含在 `OpenDuet` 中。
