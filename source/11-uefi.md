@@ -3,7 +3,7 @@ title: 11. UEFI
 description: UEFI 驱动以及加载顺序
 type: docs
 author_info: 由 xMuu、Sukka、derbalkon、cike-567 整理，由 Sukka、derbalkon、cike-567 翻译
-last_updated: 2023-06-13
+last_updated: 2024-02-9
 ---
 
 ## 11.1 简介
@@ -200,7 +200,7 @@ OpenLinuxBoot 通常需要固件中没有的文件系统驱动，比如 `EXT4` �
 
 如果在使用 OpenLinuxBoot 时启用了安全引导，用户可能希望安装一个由用户构建并签名的 `Shin` 引导加载程序，以实现 `SBAT` 和 `MOK` 的集成，详细信息请参阅 OpenCore ShimUtils。
 
-### 11.6.1 Configuration
+### 11.7.1 Configuration
 
 在大多数情况下，默认的参数值应该可以很好地工作，但如果需要，可以在 `UEFI/Drivers/Arguments` 中为驱动指定以下选项：
 
@@ -252,7 +252,7 @@ OpenLinuxBoot 通常需要固件中没有的文件系统驱动，比如 `EXT4` �
 允许手动指定在自动检测模式下使用的内核选项。另一种格式 `autoopts:{PARTUUID}` 更适用于有多个发行版的情况，但不需要 `PARTUUID` 的 `autoopts` 可能对只有一个发行版更方便。如果用 `+=` 指定，那么这些选项将在自动检测的选项之外使用，如果用 `=` 指定，它们将被替代使用。只用于自动检测的 Linux（这里指定的值永远不会用于从 `/loader/entries/*.conf` 文件创建的条目）。
 作为使用范例，可以在 Ubuntu 和相关发行版上使用 `+=` 格式添加 `vt.handoff` 选项，比如 `autoopts+="vt.handoff=7"`  或 `autoopts+="vt.handoff=3"`（通过发行版的默认引导程序启动时检查 `cat /proc/cmdline` ），以便在自动检测的 GRUB 默认值中添加 `vt.handoff` 选项，并避免在发行版闪屏前显示闪光的文本。
 
-### 11.6.2 其他信息
+### 11.7.2 其他信息
 
 OpenLinuxBoot 可以检测到根据 [`Boot Loader Specification`](https://systemd.io/BOOT_LOADER_SPECIFICATION/) 或密切相关的 [`systemd BootLoaderSpecByDefault`](https://fedoraproject.org/wiki/Changes/BootLoaderSpecByDefault) 创建的 `loader/entries/*.conf` 文件。 前者是针对 `systemd-boot` 的，被 Arch Linux 使用，后者适用于大多数与 Fedora 相关的发行版，包括 Fedora 本身、 RHEL 和衍生版。
 
@@ -267,11 +267,11 @@ BootLoaderSpecByDefault（但不是纯粹的 Boot Loader Specification）可以�
 
 `systemd-boot` 用户（可能几乎全是 Arch Linux 用户） 应该注意， OpenLinuxBoot 不支持 `systemd-boot` 特有的 [`Boot Loader Interface`](https://systemd.io/BOOT_LOADER_INTERFACE/)；因此必须使用 `efibootmgr` 而不是 `bootctl` 来与启动菜单进行任何低级的 Linux 命令行交互。
 
-## 11.7 其他引导进入协议驱动程序
+## 11.8 其他引导进入协议驱动程序
 
 除了 OpenLinuxBoot 插件外， 还提供了以下 `OC_BOOT_ENTRY_PROTOCOL` 插件，以在 OpenCore 启动选择器中添加可选的、可配置的启动项。
 
-### 11.7.1 ResetNvramEntry
+### 11.8.1 ResetNvramEntry
 
 增加了一个菜单项，可以重置 NVRAM 并立即重新启动。另外还增加了对热键 `CMD+OPT+P+R` 的支持，以执行同样的操作。请注意，在某些固件和驱动程序的组合中，必须配置 `TakeoffDelay` 选项，以便可靠地检测这个和其他内置热键。
 
@@ -292,7 +292,7 @@ BootLoaderSpecByDefault（但不是纯粹的 Boot Loader Specification）可以�
 
 *注 3*：在非苹果硬件上，该选项仍将设置该变量，但该变量将不会被固件识别，也不会发生 NVRAM 重置。
 
-### 11.7.2 ToggleSipEntry
+### 11.8.2 ToggleSipEntry
 
 在 OpenCore 启动选取器中提供一个启动条目，用于启用和禁用系统完整性保护（SIP）。
 
@@ -317,12 +317,17 @@ BootLoaderSpecByDefault（但不是纯粹的 Boot Loader Specification）可以�
 - `CSR_ALLOW_UNAUTHENTICATED_ROOT（0x800）` 不包括在默认值中，因为使用它时很容易无意中破坏操作系统的密封性，阻止增量的 OTA 更新。
 - 如果在 `csr-active-config` 中指定了后来的操作系统不支持的位（例如在 Catalina 上指定 `0x7F`），那么 `csrutil status` 将报告 SIP 有一个非标准的值，然而保护功能将是一样的。（译者注：就是 SIP 没有被关闭）
 
-## 11.8 AudioDxe
+### 11.8.3 FirmwareSettings
+
+添加一个菜单条目，当支持时将重新启动到 UEFI 固件设置。不支持时不会添加菜单条目，并记录警告。
+
+
+## 11.9 AudioDxe
 
 UEFI固件中的高清晰度音频（HDA）支持驱动程序，适用于大多数英特尔和其他一些模拟音频控制器。
 注意： AudioDxe 是一个阶段性的驱动程序，参考[acidanthera/bugtracker#740](https://github.com/acidanthera/bugtracker/issues/740)了解已知问题。
 
-### 11.8.1 Configuration
+### 11.9.1 Configuration
 
 大多数 UEFI 音频配置是通过 UEFI 音频属性部分处理的，但此外可能需要以下一些配置选项，以允许 `AudioDxe` 正确驱动某些设备。在 `UEFI/Drivers` 部分的驱动程序的 `Arguments` 属性中，所有的选项都被指定为文本字符串，如果需要一个以上的选项，则用空格分隔。
 
@@ -365,7 +370,7 @@ UEFI固件中的高清晰度音频（HDA）支持驱动程序，适用于大多�
   
   *注*：启用这个选项可能会增加可用的通道，在这种情况下，AudioOutMask 的任何自定义设置可能需要改变以匹配新的通道列表。
 
-## 11.9 OpenVariableRuntimeDxe
+## 11.10 OpenVariableRuntimeDxe
 提供内存中模拟的 NVRAM 实现。这对于脆弱的设备（例如：`MacPro5,1`，请参阅此论坛帖子中链接的[讨论](https://forums.macrumors.com/posts/30945127)）或不存在兼容的 NVRAM 实现时非常有用。此驱动程序默认包含在 `OpenDuet` 中。
 
 除了安装模拟 NVRAM 之外，此驱动程序还安装了 OpenCore compatible 协议，可实现以下功能：
@@ -409,7 +414,7 @@ UEFI固件中的高清晰度音频（HDA）支持驱动程序，适用于大多�
 从磁盘上的文件加载 NVRAM 可能很危险，因为它将未受保护的数据传递给固件变量服务。仅在固件未提供硬件 NVRAM 实现或固件中可用的 NVRAM 实现不兼容或危险脆弱（例如，在过度使用可能导致硬件变砖的状态下）时使用。
 {% endnote %}
 
-### 11.9.1 使用模拟 NVRAM 时管理 macOS 更新
+### 11.10.1 使用模拟 NVRAM 时管理 macOS 更新
 OpenCore 与 OpenVariableRuntimeDxe 相结合，如果该文件被用于启动 macOS Installer 启动项，则只使用一次已保存的 `nvram.plist` 文件。之后，已使用的设置将被移至 `nvram.used`，而来自 `nvram.fallback` 的 `fallback` 设置（如果有的话）将被使用。`Launchd.command` 总是将之前的 NVRAM 设置复制到 `fallback` 中，每次它都会保存新的设置。
 
 此策略用于解决 `Launchd.command` 脚本未运行的限制，因此无法在 macOS 安装程序的第二次和后续重新启动期间保存 NVRAM 更改（特别是默认启动条目更改）。
@@ -429,7 +434,7 @@ OpenCore 与 OpenVariableRuntimeDxe 相结合，如果该文件被用于启动 m
 
 注意：当使用模拟 NVRAM 但不是从现有已安装的 macOS 中安装时（即从 macOS 恢复中或从安装 USB 安装时），请参阅此论坛 [帖子](https://applelife.ru/threads/ustanovka-macos-big-sur-11-na-intel-pc.2945052/page-393#post-916248)（俄语）以获取其他选项。
 
-## 11.10 属性列表
+## 11.11 属性列表
 
 ### 1. `APFS`
 
@@ -503,7 +508,7 @@ macOS 引导程序和 OpenCore 的音频本地化是分开的。macOS 引导程�
 **Type**: `plist array`
 **Description**: 设计为用 `plist dict` 值填充，用于描述对特定固件和硬件功能要求很高的内存区域，这些区域不应该被操作系统使用。比如被 Intel HD 3000 破坏的第二个 256MB 区域，或是一个有错误的 RAM 的区域。详情请参考下面的 ReservedMemory Properties 部分。
 
-## 11.11 APFS 属性
+## 11.12 APFS 属性
 
 ### 1. `EnableJumpstart`
 
@@ -561,7 +566,7 @@ APFS 驱动版本将 APFS 驱动与 macOS 版本联系起来。苹果公司最�
 - `-1` --- 允许加载任何版本（强烈不推荐）。
 - 其他数值 --- 使用自定义的最小APFS版本，例如：macOS Catalina 10.15.4 的 `1412101001000000`。你可以从 OpenCore 的启动日志和 [OcApfsLib](https://github.com/acidanthera/OpenCorePkg/blob/master/Include/Acidanthera/Library/OcApfsLib.h) 中找到 APFS 驱动的版本号。
 
-## 11.12 AppleInput 属性
+## 11.13 AppleInput 属性
 
 ### 1. `AppleEvent`
 
@@ -720,7 +725,7 @@ Apple OEM 的默认值是 5（50ms）。`0` 是这个选项的无效值（将发
 
 半径由 UIScale 进行缩放。当指针离开这个半径时，PointerDwellClickTimeout 和 PointerDwellDoubleClickTimeout 的超时被重置，新的位置是新的停留点击公差半径的中心。
 
-## 11.13 Audio 属性
+## 11.14 Audio 属性
 
 ### 1. `AudioCodec`
 
@@ -875,7 +880,7 @@ Apple OEM 的默认值是 5（50ms）。`0` 是这个选项的无效值（将发
 
 某些编解码器在重新配置后需要特定延迟（由供应商提供，例如音量设置），此选项可对其进行配置。一般来说，必要的延迟时间可能长达 0.5 秒。
 
-## 11.14 Drivers 属性
+## 11.15 Drivers 属性
   
 ### 1. `Comment`
 
@@ -909,7 +914,7 @@ Apple OEM 的默认值是 5（50ms）。`0` 是这个选项的无效值（将发
 **Failsafe**: Empty
 **Description**:  一些OpenCore插件接受可选的额外参数，可以在这里指定为一个字符串（译者注：即驱动参数）。
 
-## 11.15 Input 属性
+## 11.16 Input 属性
 
 ### 1. `KeyFiltering`
 
@@ -992,7 +997,7 @@ Apple OEM 的默认值是 5（50ms）。`0` 是这个选项的无效值（将发
   
 建议值为 `50000`（即 5 毫秒）或稍高一些。选择 ASUS Z87 主板时，请使用 `60000`，苹果主板请使用 `100000`。你也可以将此值设置为 `0`，不改变固件始终刷新的频率。
 
-## 11.16 Output 属性
+## 11.17 Output 属性
 
 ### 1. `InitialMode`
 
@@ -1208,7 +1213,7 @@ macOS bootloader 要求控制台句柄上必须有 GOP 或 UGA（适用于 10.4 
 
 有些固件不会去实现老旧的 UGA 协议，但是有些更老的 EFI 应用程序（ 例如 10.4 的 EfiBoot）可能需要用它来进行屏幕输出。
 
-## 11.17 ProtocolOverrides 属性
+## 11.18 ProtocolOverrides 属性
 
 ### 1. `AppleAudio`
 
@@ -1348,7 +1353,7 @@ Apple 音频协议允许 macOS bootloader 和 OpenCore 播放声音和信号，�
 **Failsafe**: `false`
 **Description**: 用内置版本替换 Unicode Collation 服务。建议启用这一选项以确保 UEFI Shell 的兼容性。一些较旧的固件破坏了 Unicode 排序规则，启用后可以修复这些系统上 UEFI Shell 的兼容性 (通常为用于 IvyBridge 或更旧的设备)
 
-## 11.18 Quirks 属性
+## 11.19 Quirks 属性
 
 ### 1. `ActivateHpetSupport`
 
@@ -1506,7 +1511,7 @@ Resizable BAR 技术允许通过将可配置的内存区域 BAR 映射到 CPU �
 
 *注*：如果惠普笔记本在 OpenCore 界面没有看到引导项，启用这一选项。
 
-## 11.19 ReservedMemory 属性
+## 11.20 ReservedMemory 属性
 
 ### 1. `Address`
 
