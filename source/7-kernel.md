@@ -3,7 +3,7 @@ title: 7. Kernel
 description: OpenCore 安全配置，Kext 加载顺序以及屏蔽
 type: docs
 author_info: 由 Sukka、derbalkon、cike-567 整理，由 Sukka、derbalkon、cike-567 翻译。
-last_updated: 2023-06-13
+last_updated: 2024-02-09
 ---
 
 ## 7.1 简介
