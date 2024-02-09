@@ -78,8 +78,8 @@ OpenCore 的设计初衷是在 固件 和 操作系统 之间提供一个安全�
 6. 使用私钥给所有已安装的驱动程序和工具签名。不要对提供管理员权限的工具（例如：UEFI Shell）签名。
 7. 加密存储你的配置，详见 [Vault](8-misc.html#12-Vault) 部分。
 8. 使用同一私钥签名该系统使用的所有 OpenCore 二进制文件（`BOOTX64.efi`, `BOOTIa32.efi`, `OpenCore.efi`, 自定义启动器）。
-9. 如果需要用到第三方操作系统（非微软或 Apple 制造）的 bootloader，也同样为它们签名。对于 Linux，可以选择安装微软签名的 Shim bootloader，具体解释见 [Debian Wiki](https://wiki.debian.org/SecureBoot)。
-10. 在 BIOS 中开启 UEFI 安全启动，并用自己的私钥安装证书。很多文章都介绍了生成证书的具体方法，比如 [这篇文章](https://habr.com/en/post/273497)，本文档不再赘述。如果需要启动 Windows，还需要添加 [Microsoft Windows Production CA 2011](http://go.microsoft.com/fwlink/?LinkID=321192) 证书。如果需要启动 Option ROM，或决定使用已签名的 Linux 驱动程序，还需要添加 [Microsoft UEFI Driver Signing CA](http://go.microsoft.com/fwlink/?LinkId=321194)。
+9. 如有需要，对所有第三方操作系统（非微软或 Apple 制造）的 bootloader 进行签名。对于 Linux，可以选择安装一个用户构建的、用户签名的 Shim bootloader，实现 `SBAT` 和 `MOK` 集成，具体说明请参见 OpenCore 源代码或发布版本中的 /utilities/shimutils 目录。
+10. 在 BIOS 中开启 UEFI 安全启动，并用自己的私钥安装证书。很多文章都介绍了生成证书的具体方法，比如 [这篇文章](https://habr.com/en/post/273497)，本文档不再赘述。如果需要启动 Windows，还需要添加 [Microsoft Windows Production CA 2011](http://go.microsoft.com/fwlink/?LinkID=321192) 证书。如果不使用用户构建的 Shim 来启动选项 ROM 或使用签名的 Linux 驱动程序，还需要 [Microsoft UEFI Driver Signing CA](http://go.microsoft.com/fwlink/?LinkId=321194)。
 11. 设置密码保护防止固件设置被篡改，避免 UEFI 安全启动在你不知情的情况下被禁用。
 
 ## 12.3 Windows 支持
@@ -88,7 +88,7 @@ OpenCore 的设计初衷是在 固件 和 操作系统 之间提供一个安全�
 
 虽然 OpenCore 并没有提供官方的 Windows 支持，但是使用 Boot Camp 安装 64 位 UEFI Windows（即 Windows 8 及更高版本）应该是可以正常工作的。安装第三方 UEFI、或者仅部分支持 UEFI 引导的系统（如 Windows 7）可能需要额外注意。不论如何，记住以下几点：
 
-- MBR (Master Boot Record) 属于 Legacy 引导，因此将不会被支持。
+- MBR（Master Boot Record）安装属于 Legacy 引导，只能在 OpenLegacyBoot 驱动器上提供支持。
 - 在 OpenCore 上应用的所有更改（ACPI、NVRAM、SMBIOS）都应该与操作系统本身无关。OpenCore 会将这些改动生效于所有操作系统，这样在 Windows 上可以获得 Boot Camp 的体验。
 - macOS 要求硬盘中的第一份分区为 EFI 分区，并且与 Windows 的默认布局不支持。尽管 OpenCore 确实提供了一个 [解决方法](https://github.com/acidanthera/bugtracker/issues/327)，但是强烈建议不要依赖这个方法。
 - Windows 系统可能需要重新激活。为了避免这种情况发生，请考虑将 SystemUUID 设置为原始固件的 UUID。请注意，在旧固件上 UUID 可能是无效的（非随机的）。如果你还遇到了什么问题，可以考虑使用 HWID 或 KMS38 的 Windows 许可证。从 OpenCore 0.5.8 开始，你还可以通过设置 `UpdateSMBIOSMode` 为 `Custom` 来避免 OEM 激活失效。Windows 激活的细节不在本文档的讨论范围内，你应该能够在网上查找到相关资料。
