@@ -1055,7 +1055,7 @@ Terminus和TerminusCore是根据《SIL O)pen字体许可证》1.1版提供的。
 **Failsafe**: `false`
 **Description**: 当默认情况下无法获得所需分辨率时，强制设置 `Resolution` 中所填写的分辨率，多用于老的 Intel GMA 和第一代 Intel HD Graphics (Ironlake/Arrandale)。将  `Resolution` 设置为  `Max` 时，将尝试从所连接的显示器的 EDID 中提取最大的可用分辨率。
 
-*注*：该选项依赖 [`OC_FORCE_RESOLUTION_PROTOCOL`](https://github.com/acidanthera/OpenCorePkg/blob/master/Include/Acidanthera/Protocol/OcForceResolution.h) 协议。目前只有 `OpenDuetPkg` 支持该协议，而 `OpenDuetPkg` 的实现目前仅支持 Intel iGPU。
+*注*：该选项依赖 [`OC_FORCE_RESOLUTION_PROTOCOL`](https://github.com/acidanthera/OpenCorePkg/blob/master/Include/Acidanthera/Protocol/OcForceResolution.h) 协议。目前只有 `OpenDuetPkg` 支持该协议。 `OpenDuetPkg` 的实现目前仅支持英特尔集成显卡和部分 ATI 显卡。
 
 ### 6. `ClearScreenOnModeSwitch`
 
