@@ -309,6 +309,10 @@ OpenCore 启动选择器中的启动选项的显示顺序和启动过程，是�
 - 为了使 tools 的图标和屏幕朗读工作正常（例如：UEFI Shell），在 `Flavour` 设置中指定的系统的默认启动项图标（见 Docs/Flavours.md）将仍然被应用，即使 `Flavour` 是禁用状态。在这个情况下非系统的图标将会被忽略。此外，UEFIShell 和 NVRAMReset 的 `flavours` 将会被特殊处理，以辨识它们的正确的屏幕朗读器、默认 builtin 标签等。
 - 一个推荐的 `falvours` 列表在 `Docs/Flavours.md` 中
 
+- `0x0100` - `OC_ATTR_USE_REVERSED_UI`，反转关机和重启按钮的位置，影响 OpenCanopy 和内置选择器。反向设置与旧版 macOS 相匹配，因为它是 OpenCore 中以前的默认设置，可能更适合一些自定义背景。仅当 `OC_ATTR_USE_MINIMAL_UI` 未设置时适用。
+- `0x0200` - `OC_ATTR_REDUCE_MOTION`，减少 OpenCanopy 中的密码和菜单动画，仅保留传达信息而其他情况下未提供的动画。
+  *注*：这些相同的动画，以及额外的动画，如果其信息由语音辅助提供，则在启用 PickerAudioAssist 时将自动禁用。
+
 ### 9. `PickerAudioAssist`
 
 **Type**: `plist boolean`
