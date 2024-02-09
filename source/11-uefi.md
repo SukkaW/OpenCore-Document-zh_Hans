@@ -1450,7 +1450,15 @@ Apple 音频协议允许 macOS bootloader 和 OpenCore 播放声音和信号，�
 
 这个 Quirk 使得 `ResizeGpuBars` 和 `ResizeAppleGpuBars` 使用 `PciRootBridgeIo` 而不是 `PciIo`。 这在具有错误的 `PciIo` 实现的系统上是必须的，在这些系统上尝试配置 Resizable BAR 会导致 `Capability I/O` 错误。通常在已使用 [`ReBarUEFI`](https://github.com/xCuri0/ReBarUEFI)  修改的旧系统上是必需的。
 
-### 13. `ResizeGpuBars`
+### 13. `ShimRetainProtocol`
+
+**Type**: `plist boolean`
+**Failsafe**: `false`
+**Description**: 请求 `Linux Shim` 保持协议安装，以供后续镜像加载使用。
+
+此选项仅在从 `Shim` 链接到 OpenCore 时才相关。必须设置为允许 OpenCore 启动由 `Shin` 中存在的证书验证但系统安全引导数据库中不存在的项目。
+
+### 14. `ResizeGpuBars`
 
 **Type**: `plist integer`
 **Failsafe**: `-1`
@@ -1478,7 +1486,7 @@ Resizable BAR 技术允许通过将可配置的内存区域 BAR 映射到 CPU �
 
 *注 2*：虽然这个 Quirk 可以增加 GPU PCI BAR 的大小，但这在大多数固件上是行不通的，因为这个 Quirk 不会重新定位内存中的 BAR，而且它们可能会重叠。在大多数情况下，最好将固件更新到最新版本或使用专门的驱动程序对其进行自定义，例如 [ReBarUEFI](https://github.com/xCuri0/ReBarUEFI)。
   
-### 14. `TscSyncTimeout`
+### 15. `TscSyncTimeout`
 
 **Type**: `plist integer`
 **Failsafe**: `0`
@@ -1490,7 +1498,7 @@ Resizable BAR 技术允许通过将可配置的内存区域 BAR 映射到 CPU �
 
 *注*：这个 Quirk 不能取代内核驱动的原因是它不能在 ACPI `S3` 模式（睡眠唤醒）下运行，而且 UEFI 固件提供的多核心支持非常有限，无法精确地更新 `MSR` 寄存器。
 
-### 15. `UnblockFsConnect`
+### 16. `UnblockFsConnect`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
