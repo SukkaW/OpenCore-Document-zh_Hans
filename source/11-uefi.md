@@ -149,7 +149,7 @@ OpenCanopy 为 `PickerAttributes` 提供了全面的支持，并提供了一套�
 
 ## 11.6 OpenLegacyBoot
 
-OpenLegacyBoot 是一个实现 `OC_BOOT_ENTRY_PROTOCOL` 的 OpenCore 插件。它旨在检测和引导已安装的传统操作系统。
+OpenLegacyBoot 是一个实现 `OC_BOOT_ENTRY_PROTOCOL` 的 OpenCore 插件。它旨在检测并引导支持的系统上已安装的 legacy 操作系统，例如 OpenDuet 和支持 legacy boot 的 Mac 机型。
 
 使用方法如下：
 
