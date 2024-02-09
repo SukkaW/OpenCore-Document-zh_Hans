@@ -250,6 +250,18 @@ Description: 搜索的最大字节数。
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
+**Description**: 修复在早期 Mac OS X 引导时出现的错误。
+
+现代安全 PE 加载器会拒绝从 macOS 10.4 和 10.5 中加载 `boot.efi` 图像文件，因为这些文件包含了错误和非法重叠部分。这个补丁可以检测这些问题并在内存中对镜像进行预处理，以便数据节点加载器可以接受它们。在内存中的预处理与安全引导不兼容，因为加载的镜像与磁盘上的镜像不同。因此，无法根据原始磁盘镜像内容对通过此方式加载的文件进行签名。某些固件将提供注册新、未知镜像的哈希值的选项，这种方法仍然有效。另一方面，用不太安全的方式启动这些未信任的镜像也并不特别明智。
+
+*注 1*：这个补丁只用于加载苹果指定 FAT（32 位和 64 位版本合并在一个镜像文件中）文件，并且在最新版本的 macOS 上的 Apple 安全引导路径中从未应用过。
+
+*注 2*：这个补丁只在加载 Mac OS X 10.4 和 10.5 时才需要，而且即使需要，前提是固件本身包含现代的、更安全的 PE COFF 镜像加载器。这包括当前的 OpenDuet 构建。
+
+### 10. `FixupAppleEfiImages`
+
+**Type**: `plist boolean`
+**Failsafe**: `false`
 **Description**: 修复早期 Mac OS X `boot.efi` 镜像中的错误。
 
 现代安全的 PE 加载器将拒绝加载来自 Mac OS X 10.4 和 10.5 的 `boot.efi` 镜像，因为这些文件包含 `W^X` 错误和非法重叠的部分。
@@ -260,7 +272,7 @@ Description: 搜索的最大字节数。
 
 *注 2*：只有在加载 Mac OS X 10.4 和 10.5 时才需要此特殊处理程序，即使是在固件本身包含现代更安全的 `PE COFF` 镜像加载程序的情况下也是如此。这包括当前的 `OpenDuet` 构建。
 
-### 10. `ForceBooterSignature`
+### 11. `ForceBooterSignature`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
@@ -270,7 +282,7 @@ Description: 搜索的最大字节数。
 
 *注*：OpenCore 启动器路径由 `LauncherPath` 属性决定。
 
-### 11. `ForceExitBootServices`
+### 12. `ForceExitBootServices`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
@@ -280,7 +292,7 @@ Description: 搜索的最大字节数。
 
 *注*：是否启用这个 Quirk 取决于你是否遇到了 Early Boot 故障。除非你详细了解这一选项可能导致的后果，否则请勿启用这一选项。
 
-### 12. `ProtectMemoryRegions`
+### 13. `ProtectMemoryRegions`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
@@ -295,7 +307,7 @@ Description: 搜索的最大字节数。
 
 *注*：是否启用这一 Quirk 取决于你是否遇到了休眠、睡眠无法唤醒、启动失败或其他问题。一般来说，只有古董固件才需要启用。
 
-### 13. `ProtectSecureBoot`
+### 14. `ProtectSecureBoot`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
@@ -305,7 +317,7 @@ Description: 搜索的最大字节数。
 
 *注*：这个 Quirk 主要试图避免碎片整理导致的 NVRAM 相关问题，例如：Insyde 或 `MacPro5,1`。
 
-### 14. `ProtectUefiServices`
+### 15. `ProtectUefiServices`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
@@ -319,7 +331,7 @@ GRUB-shim 对各种 UEFI image services 进行了类似的即时更改，这些�
 
 *注 2*：如果 OpenCore 是从启用了 BIOS 安全启动的 GRUB 中链式加载的，则需要这个 Quirk。
 
-### 15. `ProvideCustomSlide`
+### 16. `ProvideCustomSlide`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
@@ -329,7 +341,7 @@ GRUB-shim 对各种 UEFI image services 进行了类似的即时更改，这些�
 
 *注*：OpenCore 会自动检查是否需要启用这一选项。如果 OpenCore 的调试日志中出现 `OCABC: Only N/256 slide values are usable!` 则请启用这一选项。
 
-### 16. `ProvideMaxSlide`
+### 17. `ProvideMaxSlide`
 
 **Type**: `plist integer`
 **Failsafe**: `0`
@@ -339,7 +351,7 @@ GRUB-shim 对各种 UEFI image services 进行了类似的即时更改，这些�
 
 *注*：当 `ProvideCustomSlide` 启用、并且随机化的 slide 落入不可用的范围时，如果出现随机的启动失败，则有必要开启这个 Quirk。开启 `AppleDebug` 时，调试日志通常会包含 `AAPL: [EB|‘LD:LKC] } Err(0x9)` 这样的信息。如果要找到最合适的值，请手动将 `slide=X` 追加到 `boot-args` 里，并用日志记录下不会导致启动失败的最大值。
 
-### 17. `RebuildAppleMemoryMap`
+### 18. `RebuildAppleMemoryMap`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
@@ -354,7 +366,7 @@ Apple 内核在解析 UEFI 内存映射时有几个限制：
 
 *注 2*：根据是否遇到第一阶段启动失败再决定是否启用这一 Quirk。在支持内存属性表 (MAT) 的平台上，这一 Quirk 是 `EnableWriteUnprotector` 更好的替代。在使用 `OpenDuetPkg` 时一般是不需要启用这个 Quirk 的，但如果要启动 macOS 10.6 或更早的版本则可能需要启用，原因暂不明确。
 
-### 18. `ResizeAppleGpuBars`
+### 19. `ResizeAppleGpuBars`
 
 **Type**: `plist boolean`
 **Failsafe**: `-1`
@@ -372,7 +384,7 @@ Apple 内核在解析 UEFI 内存映射时有几个限制：
 
 *注*：请参阅 `ResizeGpuBars` quirk 了解 GPU PCI BAR size 配置和有关该技术的更多详细信息。
 
-### 18. `SetupVirtualMap`
+### 20. `SetupVirtualMap`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
@@ -382,7 +394,7 @@ Apple 内核在解析 UEFI 内存映射时有几个限制：
 
 *注*：是否启用这个 Quirk 取决于你是否遇到了 Early Boot 故障。
 
-### 20. `SignalAppleOS`
+### 21. `SignalAppleOS`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
@@ -390,7 +402,7 @@ Apple 内核在解析 UEFI 内存映射时有几个限制：
 
 Mac 设备在不同的操作系统中具有不同的行为，因此如果你在使用 Mac 设备，这一功能会非常有用。例如，你可以通过启用这一选项为某些双 GPU 的 MacBook 型号中在 Windows 和 Linux 中启用 Intel GPU。
 
-### 21. `SyncRuntimePermissions`
+### 22. `SyncRuntimePermissions`
 
 **Type**: `plist boolean`
 **Failsafe**: `false`
