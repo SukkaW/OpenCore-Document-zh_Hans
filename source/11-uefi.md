@@ -26,6 +26,7 @@ last_updated: 2023-06-13
 - [`NvmExpressDxe`](https://github.com/acidanthera/audk)* --- 来自`MdeModulePkg` 的 NVMe 驱动程序。从 Broadwell 开始的大多数固件都包含此驱动程序。对于 Haswell 以及更早的固件，如果安装了 NVMe SSD 驱动器，则将其嵌入固件中可能会更理想。
 - [`OpenCanopy`](https://github.com/acidanthera/OpenCorePkg)* --- OpenCore 插件之一，用于实现图形引导界面。
 - [`OpenRuntime`](https://github.com/acidanthera/OpenCorePkg)* --- 实现 `OC_FIRMWARE_RUNTIME` 协议的 OpenCore 插件。
+- [`OpenLegacyBoot`](https://github.com/acidanthera/OpenCorePkg)* --- OpenLegacyBoot 是一个 OpenCore 插件，实现了 `OC_BOOT_ENTRY_PROTOCOL`，允许从 Mac 上的 OpenCore 检测和引导传统操作系统，适用于 OpenDuet 和带有 `CSM` 的系统。
 - [`OpenLinuxBoot`](https://github.com/acidanthera/OpenCorePkg)* --- 实现 `OC_BOOT_ENTRY_PROTOCOL` 的 OpenCore 插件，允许直接检测和从 OpenCore 启动 Linux 发行版，无需通过 GRUB 进行链式加载。
 - [`OpenNtfsDxe`](https://github.com/acidanthera/OpenCorePkg)* --- New Technologies File System (NTFS) read-only 驱动程序。`NTFS` 是基于 `Windows NT` 的 `Microsoft Windows` 版本的主要文件系统。
 - [`OpenUsbKbDxe`](https://github.com/acidanthera/OpenCorePkg)* --- USB 键盘驱动，在自定义 USB 键盘驱动程序的基础上新增了对 `AppleKeyMapAggregator` 协议的支持。这是内置的 `KeySupport` 的等效替代方案。根据固件不同，效果可能会更好或者更糟。
@@ -146,7 +147,30 @@ OpenCanopy 为 `PickerAttributes` 提供了全面的支持，并提供了一套�
 - NVRAM 隔离，能够保护所有变量避免被不信任的操作系统写入（如 `DisableVariableWrite`）。
 - UEFI Runtime Services 内存保护管理，以避开只读映射的问题（如 `EnableWriteUnprotector`）。
 
-## 11.6 OpenLinuxBoot
+## 11.6 OpenLegacyBoot
+
+OpenLegacyBoot 是一个实现 `OC_BOOT_ENTRY_PROTOCOL` 的 OpenCore 插件。它旨在检测和引导已安装的传统操作系统。
+
+使用方法如下：
+
+在 `config.plist` 的 `Drivers` 部分中添加 `DpenLegacyBoot.efi`，以及可选地（见下文）添加 `OpenNtfsDxe.efi`。
+
+如果尚未完成此步骤，请像平常一样安装 `Windows` 或其他传统操作系统——在这个阶段，`OpenLegacyBoot` 不参与其中，可能无法从诸如 USB 设备的安装介质引导。
+
+重新启动进入 OpenCore：安装的传统操作系统应该会出现，并且在选择后直接从 OpenCore 引导。
+
+功能，但加载它们将启用 `contentDetails` 和 `VolumeIcon.icns` 文件以进行引导项自定义。
+
+### 11.6.1 配置
+
+在大多数情况下不需要额外配置即可正常工作，但如果有需要，可以在 `UEFI/Drivers/Arguments` 中为驱动程序指定以下选项：
+
+- --hide-devices-String 值，无默认值。
+  当此选项存在且具有一个或多个由分号分隔的数值时
+  （例如-hide-devices=PciRoot(0x0)/Pci(0x1F.0x2)/Sata(0x0.0xFFFF,0x0)/HD(2,GPT...)），它会禁用对指定磁盘的扫描，以搜索传统操作系统的引导扇区。
+
+
+## 11.7 OpenLinuxBoot
 
 OpenLinuxBoot 是一个实现 `OC_BOOT_ENTRY_PROTOCOL` 的 OpenCore 插件。它的目的是自动检测和启动大多数 Linux 发行版，而不需要额外的配置。
 
@@ -172,7 +196,7 @@ OpenLinuxBoot 通常需要固件中没有的文件系统驱动，比如 `EXT4` �
   - OpenLinuxBoot 使用 `PARTUUID` 而不是文件系统的 `UUID` 来识别 `initrd` 的位置，这是设计上的问题，因为 UEFI 文件系统驱动不提供 Linux 文件系统的 `UUID` 值。
   - 不太重要的图形交接选项（比如下面 autoopts 中讨论的 Ubuntu 例子）不会完全匹配，这并不重要，只要发行版能够成功启动。
 
-如果使用具有安全启动功能的 OpenLinuxBoot，用户可能希望使用 OpenCore 实用程序中包含的 `shim-to-cert.tool`，它可以用来提取直接启动发行版内核所需的公钥，就像使用 OpenCore 与 OpenLinuxBoot 时那样，而不是通过 `GRUB shim`。对于非 GRUB 发行版，所需的公钥必须通过用户研究找到。
+如果在使用 OpenLinuxBoot 时启用了安全引导，用户可能希望安装一个由用户构建并签名的 `Shin` 引导加载程序，以实现 `SBAT` 和 `MOK` 的集成，详细信息请参阅 OpenCore ShimUtils。
 
 ### 11.6.1 Configuration
 
