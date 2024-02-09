@@ -225,9 +225,9 @@ OpenCore 启动选择器中的启动选项的显示顺序和启动过程，是�
 
 **Type**: `plist string`
 **Failsafe**: `false`
-**Description**: OpenCore 当前实例的可选标识符。
+**Description**: 当前 OpenCore 实例的可选标识符。
 
-这通常应该是一个短的字母数字字符串。当前该值的用途是选择性地将 `.contentVisibility` 文件定位到 OpenCore 的特定实例，如[引导算法](https://oc.skk.moe/8-misc.html#8-1-1-引导算法)部分中所述。
+通常应该是一个简短的字母数字字符串。目前该值的用途是选择性地将 `.contentVisibility` 文件定位到特定的 OpenCore 实例。如[引导算法](https://oc.skk.moe/8-misc.html#8-1-1-引导算法)部分中所述。
 
 ### 6. `LauncherOption`
 
