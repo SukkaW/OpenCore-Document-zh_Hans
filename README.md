@@ -36,3 +36,9 @@ npm run server # 运行一个 Server 并 watch 所有改动
 ## 贡献
 
 请阅读 [贡献指南](https://oc.skk.moe/about/contributing.html)。
+
+<p align="center">
+  <a href="https://github.com/sponsors/SukkaW/">
+    <img src="https://sponsor.cdn.skk.moe/sponsors.svg"/>
+  </a>
+</p>
