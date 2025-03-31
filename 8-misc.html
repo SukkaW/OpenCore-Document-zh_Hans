@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
 <title>8. Misc | OpenCore 简体中文参考手册(非官方)</title>
-<meta name="generator" content="Hexo 5.1.1">
+<meta name="generator" content="Hexo 7.3.0">
 <meta http-equiv="x-dns-prefetch-control" content="on">
 <meta name="description" content="由 Sukka 和黑苹果爱好者们维护的 OpenCore 文档简体中文翻译，实时更新 OpenCore 上游文档改动。努力提供权威的 OpenCore 简体中文参考资料。">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -486,7 +486,7 @@
 <p>保存的文件为 <code>panic-YYYY-MM-DD-HHMMSS.txt</code>。强烈建议使用 <code>keepsyms=1</code> 引导参数来查看 Panic 日志中的调试符号。如果没有，可以用 <code>kpdescribe.sh</code> 实用工具（OpenCore 绑定）来部分恢复堆栈跟踪。</p>
 <p>开发者内核和调试内核会产生更有用的 Kernel Panic。调试的时候，可以考虑从 <a target="_blank" rel="noopener" href="https://developer.apple.com">developer.apple.com</a> 下载并安装 <code>KernelDebugKit</code>。如果要激活开发者内核，需要添加一个 <code>kcsuffix=development</code> 引导参数。使用 <code>uname -a</code> 命令来确保你当前加载的内核是一个开发者（或调试）内核。</p>
 <p>如果没有使用 OpenCore 的 Kernel Panic 保存机制，仍然可以在 <code>/Library/Logs/DiagnosticReports</code> 目录下找到 Panic 日志。从 macOS Catalina 开始，Kernel Panic 会以 JSON 格式储存，所以在传递给 <code>kpdescribe.sh</code> 之前需要预处理：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash">cat Kernel.panic | grep macOSProcessedStackshotData |<br>  python3 -c <span class="hljs-string">&#x27;import json,sys;print(json.load(sys.stdin)[&quot;macOSPanicString&quot;])&#x27;</span><br></code></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">cat</span> Kernel.panic | grep macOSProcessedStackshotData |<br>  python3 -c <span class="hljs-string">&#x27;import json,sys;print(json.load(sys.stdin)[&quot;macOSPanicString&quot;])&#x27;</span><br></code></pre></td></tr></table></figure>
 
 <h3 id="3-DisableWatchDog"><a href="#3-DisableWatchDog" class="headerlink" title="3. DisableWatchDog"></a>3. <code>DisableWatchDog</code></h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: <code>false</code><br><strong>Description</strong>: 某些固件启动操作系统的速度可能不够快（尤其是调试模式下），看门狗定时器会因此中止引导过程。此选项用来关闭看门狗定时器。</p>
 <h3 id="4-DisplayDelay"><a href="#4-DisplayDelay" class="headerlink" title="4. DisplayDelay"></a>4. <code>DisplayDelay</code></h3><p><strong>Type</strong>: <code>plist integer</code><br><strong>Failsafe</strong>: <code>0</code><br><strong>Description</strong>: 屏幕上打印每行输出之间的延迟。</p>
@@ -525,7 +525,7 @@
 </ul>
 <p>控制台日志会比其他日志少，根据 build 类型（<code>RELEASE</code>、<code>DEBUG</code> 或 <code>NOOPT</code>）的不同，读取到的日志量也会不同（从最少到最多）。</p>
 <p>Data Hub 日志中不包括 Kernel 和 Kext 的日志。要获取 Data Hub 日志，请使用以下命令：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">ioreg -lw0 -p IODeviceTree | grep boot-log | sort | sed <span class="hljs-string">&#x27;s/.*&lt;\(.*\)&gt;.*/\1/&#x27;</span> | xxd -r -p<br></code></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">ioreg -lw0 -p IODeviceTree | grep boot-log | <span class="hljs-built_in">sort</span> | sed <span class="hljs-string">&#x27;s/.*&lt;\(.*\)&gt;.*/\1/&#x27;</span> | xxd -r -p<br></code></pre></td></tr></table></figure>
 
 <p>UEFI 变量日志中不包含某些信息，也没有性能数据。为了保持系统的完整性，日志大小被限制在 32KB。有些固件可能会提前截断它，或者在没有内存的情况下完全放弃。使用非易失性 <code>flag</code> 将会在每打印一行后把日志写入 NVRAM 闪存。如要获取 UEFI 变量日志，请在 macOS 中使用以下命令：</p>
 <p>要获取 UEFI 变量日志，请在 macOS 中使用以下命令：</p>
@@ -617,7 +617,7 @@
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash">bless --folder <span class="hljs-string">&quot;/Volumes/Macintosh HD/System/Library/CoreServices&quot;</span> \<br>  --bootefi --personalize<br></code></pre></td></tr></table></figure>
 
 <p>macOS 11 为没有 T2 芯片的 Mac 引入了专用的 <code>x86legacy</code> 机型，对于 macOS 11.0 之前的版本，这个机型的 Apple 安全启动可能无法达到预期效果。如果要使用个性化的 Apple 安全启动重新安装操作系统，请记住，当前版本的 macOS 安装器（测试版本 10.15.6）通常会把 <code>/var/tmp</code> 分区的可用内存耗尽，因此在 macOS 安装器镜像下载后不久，就会出现 <code>Unable to verify macOS</code> 的错误信息。为了解决这个问题，需要在开始安装前，在 macOS Recovery 终端输入如下命令，为 macOS 个性化分配一个 2MB 的专用 RAM 磁盘：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs bash">disk=$(hdiutil attach -nomount ram://4096)<br>diskutil erasevolume HFS+ SecureBoot <span class="hljs-variable">$disk</span><br>diskutil unmount <span class="hljs-variable">$disk</span><br>mkdir /var/tmp/OSPersonalizationTemp<br>diskutil mount -mountpoint /var/tmp/OSPersonalizationTemp <span class="hljs-variable">$disk</span><br></code></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs bash">disk=$(hdiutil attach -nomount ram://4096)<br>diskutil erasevolume HFS+ SecureBoot <span class="hljs-variable">$disk</span><br>diskutil unmount <span class="hljs-variable">$disk</span><br><span class="hljs-built_in">mkdir</span> /var/tmp/OSPersonalizationTemp<br>diskutil mount -mountpoint /var/tmp/OSPersonalizationTemp <span class="hljs-variable">$disk</span><br></code></pre></td></tr></table></figure>
 
 <h3 id="3-AuthRestart"><a href="#3-AuthRestart" class="headerlink" title="3. AuthRestart"></a>3. <code>AuthRestart</code></h3><p><strong>Type</strong>: <code>plist boolean</code><br><strong>Failsafe</strong>: <code>false</code><br><strong>Description</strong>: 启用与 <code>VirtualSMC</code> 兼容的 authenticated restart。</p>
 <p><code>authenticated restart</code> 可以在重启 FileVault2 分区时不用再次输入密码。你可以使用下述指令执行一次：<code>sudo fdesetup authrestart</code>。macOS 在安装系统更新使用的也是 <code>authenticated restart</code>。</p>
@@ -645,7 +645,7 @@
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">nvram 4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102:boot-path<br></code></pre></td></tr></table></figure>
 
 <p>如要使用启动器路径加载启动器卷宗，请在 macOS 中使用以下命令：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash">u=$(nvram 4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102:boot-path | sed <span class="hljs-string">&#x27;s/.*GPT,\([^,]*\),.*/\1/&#x27;</span>); \<br>  <span class="hljs-keyword">if</span> [ <span class="hljs-string">&quot;<span class="hljs-variable">$u</span>&quot;</span> != <span class="hljs-string">&quot;&quot;</span> ]; <span class="hljs-keyword">then</span> sudo diskutil mount <span class="hljs-variable">$u</span> ; <span class="hljs-keyword">fi</span><br></code></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash">u=$(nvram 4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102:boot-path | sed <span class="hljs-string">&#x27;s/.*GPT,\([^,]*\),.*/\1/&#x27;</span>); \<br>  <span class="hljs-keyword">if</span> [ <span class="hljs-string">&quot;<span class="hljs-variable">$u</span>&quot;</span> != <span class="hljs-string">&quot;&quot;</span> ]; <span class="hljs-keyword">then</span> <span class="hljs-built_in">sudo</span> diskutil mount <span class="hljs-variable">$u</span> ; <span class="hljs-keyword">fi</span><br></code></pre></td></tr></table></figure>
 
 <p>如果要获取 OpenCore 版本信息，请在 macOS 中使用以下命令：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">nvram 4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102:opencore-version<br></code></pre></td></tr></table></figure>
@@ -682,7 +682,7 @@
 <li>创建 <code>vault.sig</code></li>
 </ul>
 <p>可以参照如下指令：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">cd</span> /Volumes/EFI/EFI/OC<br>/path/to/create_vault.sh .<br>/path/to/RsaTool -sign vault.plist vault.sig vault.pub<br>off=$(($(strings -a -t d OpenCore.efi | grep &quot;=BEGIN OC VAULT=&quot; | cut -f1 -d&#x27; &#x27;)+<span class="hljs-number">16</span>))<br>dd of=OpenCore.efi <span class="hljs-keyword">if</span>=vault.pub bs=1 seek=<span class="hljs-variable">$off</span> count=528 conv=notrunc<br>rm vault.pub<br></code></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">cd</span> /Volumes/EFI/EFI/OC<br>/path/to/create_vault.sh .<br>/path/to/RsaTool -sign vault.plist vault.sig vault.pub<br>off=$(($(strings -a -t d OpenCore.efi | grep &quot;=BEGIN OC VAULT=&quot; | cut -f1 -d&#x27; &#x27;)+<span class="hljs-number">16</span>))<br><span class="hljs-built_in">dd</span> of=OpenCore.efi <span class="hljs-keyword">if</span>=vault.pub bs=1 seek=<span class="hljs-variable">$off</span> count=528 conv=notrunc<br><span class="hljs-built_in">rm</span> vault.pub<br></code></pre></td></tr></table></figure>
 
 <p><em>注 1</em>：必须使用外部方法来验证 <code>OpenCore.efi</code> 和 <code>BOOTx64.efi</code> 的安全启动路径，尽管它们看似显而易见。为此，建议你至少使用自定义证书来启用 UEFI 的 SecureBoot，并使用自定义的密钥来签名 <code>OpenCore.efi</code> 和 <code>BOOTx64.efi</code> 。关于在现代固件上定制安全启动的更多细节，请参见 <a target="_blank" rel="noopener" href="https://habr.com/post/273497/">Taming UEFI SecureBoot</a>（俄文）。</p>
 <p><em>注 2</em>：当 <code>vault.plist</code> 存在，或者当公钥嵌入到 <code>OpenCore.efi</code> 中的时候，无论这个选项是什么，<code>vault.plist</code> 和 <code>vault.sig</code> 都会被使用。在这两种情况下，出现错误将中止启动过程。设置这个选项可以让 OpenCore 在配置不符合要求时警告用户，以达到预期的更高安全级别。</p>

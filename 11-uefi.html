@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
 <title>11. UEFI | OpenCore 简体中文参考手册(非官方)</title>
-<meta name="generator" content="Hexo 5.1.1">
+<meta name="generator" content="Hexo 7.3.0">
 <meta http-equiv="x-dns-prefetch-control" content="on">
 <meta name="description" content="由 Sukka 和黑苹果爱好者们维护的 OpenCore 文档简体中文翻译，实时更新 OpenCore 上游文档改动。努力提供权威的 OpenCore 简体中文参考资料。">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -241,7 +241,7 @@
 <h2 id="11-3-工具与应用程序"><a href="#11-3-工具与应用程序" class="headerlink" title="11.3 工具与应用程序"></a>11.3 工具与应用程序</h2><p>一些不依赖 OpenCore 的工具可以帮助调试固件和硬件。下面列出了一些已知的工具。虽然有些工具可以从 OpenCore 启动，但大部分工具都应该直接或从 <code>OpenCoreShell</code> 中单独运行。</p>
 <p>要启动到 <code>OpenShell</code> 或任何其他工具，直接将 <code>OpenShell.efi</code> 保存在 FAT32 分区中的 <code>EFI/BOOT/BOOTX64.EFI</code> 下。此时分区方案是 <code>GPT</code> 还是 <code>MBR</code> 并不重要。</p>
 <p>这种方法在 Mac 和其他计算机上都可以使用。还有一种只能在 Mac 上的 HFS+ 或 APFS 分区上使用的方法：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash">sudo bless --verbose --file /Volumes/VOLNAME/DIR/OpenShell.efi \<br>  --folder /Volumes/VOLNAME/DIR/ --setBoot<br></code></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">sudo</span> bless --verbose --file /Volumes/VOLNAME/DIR/OpenShell.efi \<br>  --folder /Volumes/VOLNAME/DIR/ --setBoot<br></code></pre></td></tr></table></figure>
 
 <center><em><strong>Listing 3</strong>: Bless 工具</em></center><br>
 

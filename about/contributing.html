@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
 <title>贡献指南 | OpenCore 简体中文参考手册(非官方)</title>
-<meta name="generator" content="Hexo 5.1.1">
+<meta name="generator" content="Hexo 7.3.0">
 <meta http-equiv="x-dns-prefetch-control" content="on">
 <meta name="description" content="由 Sukka 和黑苹果爱好者们维护的 OpenCore 文档简体中文翻译，实时更新 OpenCore 上游文档改动。努力提供权威的 OpenCore 简体中文参考资料。">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -186,7 +186,7 @@
 <h2 id="Markdown-文件的-Front-Matter-的字段说明"><a href="#Markdown-文件的-Front-Matter-的字段说明" class="headerlink" title="Markdown 文件的 Front-Matter 的字段说明"></a>Markdown 文件的 Front-Matter 的字段说明</h2><figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs markdown">---<br>title: # 标题<br>description: # 副标题、当前页面的一句话简介（可选）<br>type: docs # 文件类型。不同类型的文件、构建后的页面左边侧边栏的内容不同<br>author<span class="hljs-emphasis">_info: # 整理者、翻译者、校对者信息（可选）</span><br><span class="hljs-emphasis">last_</span>updated: # 最后修改日期，使用 ISO 8681 格式（YYYY-MM-DD，可选）<br>---<br></code></pre></td></tr></table></figure>
 
 <p>当你完成了对一个文件的整理、翻译后，别忘了修改 <code>author_info</code> 和 <code>last_updated</code> 两个字段！</p>
-<h2 id="Commit-Message-规范"><a href="#Commit-Message-规范" class="headerlink" title="Commit Message 规范"></a>Commit Message 规范</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs plain">&lt;type&gt;(&lt;scope&gt;): &lt;subject&gt;<br>&lt;BLANK LINE(Not necessary)&gt;<br>&lt;body&gt;<br></code></pre></td></tr></table></figure>
+<h2 id="Commit-Message-规范"><a href="#Commit-Message-规范" class="headerlink" title="Commit Message 规范"></a>Commit Message 规范</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">&lt;type&gt;(&lt;scope&gt;): &lt;subject&gt;<br>&lt;BLANK LINE(Not necessary)&gt;<br>&lt;body&gt;<br></code></pre></td></tr></table></figure>
 
 <p><strong>type</strong></p>
 <ul>
@@ -221,7 +221,7 @@
 </ul>
 <p><strong>body</strong></p>
 <p>Body 部分是 可选的 对本次 commit 的详细描述，可以分成多行。下面是一个范例。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs plain">docs(commit): add about body of commit message<br>More detailed explanatory text, if necessary. Wrap it to about 72 characters or so.<br><br>Further paragraphs come after blank lines.<br><br>- Bullet points are okay, too<br>- Use a hanging indent<br></code></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">docs(commit): add about body of commit message<br>More detailed explanatory text, if necessary. Wrap it to about 72 characters or so.<br><br>Further paragraphs come after blank lines.<br><br>- Bullet points are okay, too<br>- Use a hanging indent<br></code></pre></td></tr></table></figure>
 
 <p>和 title.subject 不同，Body 的要求如下：</p>
 <ul>

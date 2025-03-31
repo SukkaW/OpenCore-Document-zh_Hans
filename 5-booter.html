@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
 <title>5. Booter | OpenCore 简体中文参考手册(非官方)</title>
-<meta name="generator" content="Hexo 5.1.1">
+<meta name="generator" content="Hexo 7.3.0">
 <meta http-equiv="x-dns-prefetch-control" content="on">
 <meta name="description" content="由 Sukka 和黑苹果爱好者们维护的 OpenCore 文档简体中文翻译，实时更新 OpenCore 上游文档改动。努力提供权威的 OpenCore 简体中文参考资料。">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -228,7 +228,7 @@
 </ul>
 <p>在调试睡眠问题时，可能需要（临时）禁用 Power Nap 和自动关闭电源，因为这二者似乎有时会导致旧的平台唤醒黑屏或循环启动。具体问题可能因人而异，但通常你应首先检查 ACPI 表。</p>
 <p>这是在 <a target="_blank" rel="noopener" href="http://www.insanelymac.com/forum/topic/329624-need-cmos-reset-after-sleep-only-after-login/#entry2534645">Z68 主板</a> 上找到的一些 Bug。要关闭 Power Nap 和其他功能，请在终端中运行以下命令：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs bash">sudo pmset autopoweroff 0<br>sudo pmset powernap 0<br>sudo pmset standby 0<br></code></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">sudo</span> pmset autopoweroff 0<br><span class="hljs-built_in">sudo</span> pmset powernap 0<br><span class="hljs-built_in">sudo</span> pmset standby 0<br></code></pre></td></tr></table></figure>
 
 <p><em>注</em>：这些设置可能会在硬件更改、操作系统更新和某些其他情况下重置。要查看它们的当前状态，请在终端中使用 <code>pmset -g</code> 命令。</p>
 <h2 id="5-2-属性列表"><a href="#5-2-属性列表" class="headerlink" title="5.2 属性列表"></a>5.2 属性列表</h2><h3 id="1-MmioWhitelist"><a href="#1-MmioWhitelist" class="headerlink" title="1. MmioWhitelist"></a>1. <code>MmioWhitelist</code></h3><p><strong>Type</strong>: <code>plist array</code><br><strong>Failsafe</strong>: Empty<br><strong>Description</strong>: 设计为用 <code>plist dict</code> 值填充，用来描述在启用 <code>DevirtualiseMmio</code> 这个 Quirk 时特定固件能够运作的关键地址。详见下面的 MmioWhitelist 属性部分。</p>

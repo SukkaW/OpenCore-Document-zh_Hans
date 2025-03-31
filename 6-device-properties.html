@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
 <title>6. DeviceProperties | OpenCore 简体中文参考手册(非官方)</title>
-<meta name="generator" content="Hexo 5.1.1">
+<meta name="generator" content="Hexo 7.3.0">
 <meta http-equiv="x-dns-prefetch-control" content="on">
 <meta name="description" content="由 Sukka 和黑苹果爱好者们维护的 OpenCore 文档简体中文翻译，实时更新 OpenCore 上游文档改动。努力提供权威的 OpenCore 简体中文参考资料。">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -209,7 +209,7 @@
             <div class="content">
                 <h2 id="6-1-简介"><a href="#6-1-简介" class="headerlink" title="6.1 简介"></a>6.1 简介</h2><p>设备相关配置通过专用的缓存区（<code>EfiDevicePathPropertyDatabase</code>）提供给 macOS，这个缓冲区是设备路径到属性名称与值的键值对的序列化映射。</p>
 <p>属性相关数据可以使用 <a target="_blank" rel="noopener" href="https://github.com/acidanthera/gfxutil">gfxutil</a> 进行调试。在 macOS 下获取当前属性数据请使用 <code>ioreg</code>：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs bash">ioreg -lw0 -p IODeviceTree -n efi -r -x | grep device-properties |<br>  sed <span class="hljs-string">&#x27;s/.*&lt;//;s/&gt;.*//&#x27;</span> &gt; /tmp/device-properties.hex &amp;&amp;<br>  gfxutil /tmp/device-properties.hex /tmp/device-properties.plist &amp;&amp;<br>  cat /tmp/device-properties.plist<br></code></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs bash">ioreg -lw0 -p IODeviceTree -n efi -r -x | grep device-properties |<br>  sed <span class="hljs-string">&#x27;s/.*&lt;//;s/&gt;.*//&#x27;</span> &gt; /tmp/device-properties.hex &amp;&amp;<br>  gfxutil /tmp/device-properties.hex /tmp/device-properties.plist &amp;&amp;<br>  <span class="hljs-built_in">cat</span> /tmp/device-properties.plist<br></code></pre></td></tr></table></figure>
 
 <p>设备属性属于 macOS IO Registry 中的 <code>IODeviceTree</code>(<code>gIODT</code>) 层面，这个层面有很多与平台初始化相关的构建阶段（Construction Stage）。尽管早期的构建阶段是由 XNU 内核用 <code>IODeviceTreeAlloc</code> Method 来执行的，绝大部分仍然是由 Platform Expert 来构建、用 <code>AppleACPIPlatformExpert.kext</code> 来实现的。</p>
 <p>AppleACPIPlatformExpert 包含了两个阶段的 <code>IODeviceTree</code> 构建，通过调用<code>AppleACPIPlatformExpert::mergeDeviceProperties</code> 来实现：</p>

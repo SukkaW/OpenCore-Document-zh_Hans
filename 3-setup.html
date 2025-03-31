@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
 <title>3. Setup | OpenCore 简体中文参考手册(非官方)</title>
-<meta name="generator" content="Hexo 5.1.1">
+<meta name="generator" content="Hexo 7.3.0">
 <meta http-equiv="x-dns-prefetch-control" content="on">
 <meta name="description" content="由 Sukka 和黑苹果爱好者们维护的 OpenCore 文档简体中文翻译，实时更新 OpenCore 上游文档改动。努力提供权威的 OpenCore 简体中文参考资料。">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -245,7 +245,7 @@
 <p>-使用 pull-request 方法的外部贡献者应在 pull-request 消息中要求维护者处理 PDF 重建问题。<br>-内部贡献者应在合并时以相同或单独的提交中重建文档。当 pull-request 消息中缺少必要的工具时，可以要求其他维护人员重建文档。</p>
 <p><code>XCODE5</code> 是官方唯一支持的工具链。其他工具链虽然也有可能正常使用，但我们的态度是既不推荐、也不支持。我们欢迎贡献一些干净、简洁的补丁，代码规范务必遵循 <a target="_blank" rel="noopener" href="https://github.com/tianocore/tianocore.github.io/wiki/Code-Style-C">EDK II C Codestyle</a>。</p>
 <p>要使用 <code>XCODE5</code> 编译，除了 <a target="_blank" rel="noopener" href="https://developer.apple.com/xcode">Xcode</a> 之外，还需要安装 <a target="_blank" rel="noopener" href="https://www.nasm.us">NASM</a> 和 <a target="_blank" rel="noopener" href="https://github.com/acidanthera/ocbuild/tree/master/external">MTOC</a>。建议使用最新的 Xcode 版本，不必因为工具链叫 <code>XCODE5</code> 而纠结于 Xcode 的版本号。命令行举例如下：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs bash">git <span class="hljs-built_in">clone</span> --depth=1 https://github.com/acidanthera/audk UDK<br><span class="hljs-built_in">cd</span> UDK<br>git submodule update --init --recommend-shallow<br>rm -rf OpenCorePkg<br>git <span class="hljs-built_in">clone</span> --depth=1 https://github.com/acidanthera/OpenCorePkg<br>. ./edksetup.sh<br>make -C BaseTools<br>build -a X64 -b RELEASE -t XCODE5 -p OpenCorePkg/OpenCorePkg.dsc<br></code></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs bash">git <span class="hljs-built_in">clone</span> --depth=1 https://github.com/acidanthera/audk UDK<br><span class="hljs-built_in">cd</span> UDK<br>git submodule update --init --recommend-shallow<br><span class="hljs-built_in">rm</span> -rf OpenCorePkg<br>git <span class="hljs-built_in">clone</span> --depth=1 https://github.com/acidanthera/OpenCorePkg<br>. ./edksetup.sh<br>make -C BaseTools<br>build -a X64 -b RELEASE -t XCODE5 -p OpenCorePkg/OpenCorePkg.dsc<br></code></pre></td></tr></table></figure>
 
 <center><em><strong>Listing 1</strong>: 编译指令</em></center><br>
 
