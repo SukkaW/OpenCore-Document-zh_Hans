@@ -29,25 +29,7 @@
   </url>
   
   <url>
-    <loc>https://oc.skk.moe/5-booter.html</loc>
-    
-    <lastmod>2025-03-31</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
     <loc>https://oc.skk.moe/6-device-properties.html</loc>
-    
-    <lastmod>2025-03-31</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://oc.skk.moe/9-nvram.html</loc>
     
     <lastmod>2025-03-31</lastmod>
     
@@ -65,7 +47,7 @@
   </url>
   
   <url>
-    <loc>https://oc.skk.moe/8-misc.html</loc>
+    <loc>https://oc.skk.moe/9-nvram.html</loc>
     
     <lastmod>2025-03-31</lastmod>
     
@@ -74,7 +56,7 @@
   </url>
   
   <url>
-    <loc>https://oc.skk.moe/11-uefi.html</loc>
+    <loc>https://oc.skk.moe/8-misc.html</loc>
     
     <lastmod>2025-03-31</lastmod>
     
@@ -101,7 +83,25 @@
   </url>
   
   <url>
+    <loc>https://oc.skk.moe/11-uefi.html</loc>
+    
+    <lastmod>2025-03-31</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://oc.skk.moe/3-setup.html</loc>
+    
+    <lastmod>2025-03-31</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://oc.skk.moe/5-booter.html</loc>
     
     <lastmod>2025-03-31</lastmod>
     
