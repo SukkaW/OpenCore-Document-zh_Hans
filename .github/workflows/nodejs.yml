@@ -8,28 +8,20 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        node-version:
-          - 12.x
-
     steps:
-    - name: Checkout
-      uses: actions/checkout@v2 # If you're using actions/checkout@v2 you must set persist-credentials to false in most cases for the deployment to work correctly.
+    - uses: actions/checkout@v4
       with:
         persist-credentials: false
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v1
+    - uses: pnpm/action-setup@v4
+    - uses: actions/setup-node@v4
       with:
-        node-version: ${{ matrix.node-version }}
-    - run: npm set audit false && node -v && npm -v
-    - run: npm i
-    - run: npm run build
-    - name: Deploy
-      uses: peaceiris/actions-gh-pages@v3
+        node-version-file: '.node-version'
+        cache: 'pnpm'
+    - run: pnpm i
+    - run: pnpm run build
+    - uses: peaceiris/actions-gh-pages@v4
       with:
-        github_token: ${{ secrets.ACCESS_TOKEN }}
+        personal_token: ${{ secrets.ACCESS_TOKEN }}
         user_name: ${{ secrets.GIT_USERNAME }}
         user_email: ${{ secrets.GIT_EMAIL }}
         publish_branch: gh-pages
