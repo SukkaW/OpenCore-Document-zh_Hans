@@ -17,16 +17,19 @@
 
 ## 构建
 
-「OpenCore 简体中文参考手册」使用 [Hexo](https://hexo.io) 和 [hexo-theme-doku](https://doku.skk.moe) 进行构建。Hexo 的安装和使用依赖 Node.js 和 Git，请参考 [Hexo 的文档](https://hexo.io/zh-cn/docs/)。
+「OpenCore 简体中文参考手册」使用 [Hexo](https://hexo.io) 和 [hexo-theme-doku](https://doku.skk.moe) 进行构建。Hexo 的安装和使用依赖 [Node.js](https://nodejs.org)、Git、[pnpm](https://pnpm.io)，请参考 [Hexo 的文档](https://hexo.io/zh-cn/docs/)。
 
 如果你仅在本项目使用 Hexo，无需全局安装 Hexo：
 
 ```bash
 git clone https://github.com/SukkaW/OpenCore-Document-zh_Hans.git && cd OpenCore-Document-zh_Hans
-npm install # 安装构建依赖
-npm run clean # 清理编译缓存和输出目录
-npm run build # 编译页面并输出到 public 目录
-npm run server # 运行一个 Server 并 watch 所有改动
+pnpm install
+# 清理编译缓存和输出目录
+pnpm run clean
+# 编译页面并输出到 public 目录
+pnpm run build
+# 运行一个 Server 并 watch 所有改动
+pnpm run server
 ```
 
 ## 发布
