@@ -245,7 +245,7 @@
 <p>译者注：空壳 Kext 没有可执行文件（例如：<code>USBPorts.kext</code>），此项留空即可。</p>
 </blockquote>
 <h3 id="6-MaxKernel"><a href="#6-MaxKernel" class="headerlink" title="6. MaxKernel"></a>6. <code>MaxKernel</code></h3><p><strong>Type</strong>: <code>plist string</code><br><strong>Failsafe</strong>: Empty string<br><strong>Description</strong>: 在小于等于指定的 macOS 版本或更高版本中添加该 Kext 驱动程序。</p>
-<p>你可以使用 <code>uname -r</code> 指令获取当前内核版本，一般为三个整数、中间由半角局点分隔，如 <code>18.7.0</code> 代表的是 <code>10.14.6</code>。OpenCore 对内核版本解释的实现方式如下图所示：</p>
+<p>你可以使用 <code>uname -r</code> 指令获取当前内核版本，一般为三个整数、中间由半角句点分隔，如 <code>18.7.0</code> 代表的是 <code>10.14.6</code>。OpenCore 对内核版本解释的实现方式如下图所示：</p>
 <p><img src="/img/7-1.svg" alt="7-1.svg"></p>
 <p>内核版本比较的实现如下图所示：</p>
 <p><img src="/img/7-2.svg" alt="7-2.svg"></p>
